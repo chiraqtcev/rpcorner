@@ -1,0 +1,430 @@
+#ifndef MAP_START
+#define MAP_START
+
+#include "_utils.fos"
+#include "_cell.fos"
+#include "map_start_h.fos"
+
+void _StartMapInit( Map& map, bool firstTime )
+{
+    map.SetEvent( MAP_EVENT_OUT_CRITTER, "_crOut" );
+    map.SetEvent( MAP_EVENT_IN_CRITTER, "_crIn" );
+}
+
+void _InitStartGM( Critter& cr, bool firstTime )
+{
+    cr.StatBase[ ST_PERCEPTION ] = 10;
+    cr.StatBase[ ST_DIALOG_ID ] = 331;
+    cr.ShowCritterDist1 = 15;
+    cr.ModeBase[ MODE_NO_WALK ] = 1;
+    cr.ModeBase[ MODE_NO_RUN ] = 1;
+    cr.ModeBase[ MODE_NO_STEAL ] = 1;
+    cr.ModeBase[ MODE_NO_PVP ] = 1;
+    cr.ModeBase[ MODE_INVULNERABLE ] = 1;
+    cr.ModeBase[ MODE_NO_PUSH ] = 1;
+    cr.ModeBase[ MODE_NO_ENEMY_STACK ] = 1;
+    cr.ModeBase[ MODE_NO_UNARMED ] = 1;
+    cr.ParamBase[ QST_INVIS ] = 40;
+    cr.SetEvent( CRITTER_EVENT_TALK, "_StartGM_talk" );
+    cr.SetEvent( CRITTER_EVENT_SHOW_CRITTER, "_StartGM_sight" );
+}
+
+void _StartGM_sight( Critter& cr, Critter& showCr )
+{
+    Map@ map = cr.GetMap();
+    Critter@[] critters;
+    if( showCr.IsPlayer() && showCr.ParamBase[ QST_GAMEMODE ] == GAME_START && ( map.GetCrittersHex( cr.HexX, cr.HexY, 15, FIND_LIFE_AND_KO | FIND_ONLY_PLAYERS, critters ) <= 1 ) )
+    {
+        uint16[] GMskins =
+        {
+            0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 20, 21, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 48, 53, 57, 61, 62, 63, 64, 66,
+            69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 82, 83, 85, 87, 88, 91, 94, 95, 96, 99, 103, 110, 120
+        };
+        cr.ChangeCrType( GMskins[ Random( 0, GMskins.length() ) ] );
+    }
+}
+
+bool _StartGM_talk( Critter& player, Critter& talkCr, bool attach, uint talkCount )
+{
+	ShowStartVars( talkCr );
+	return false;
+}
+
+void ShowStartVars( Critter& player )
+{
+    iMenuHandler@ handler = StartMenu();
+    iDialogBox@ menu = OpenMenu( player, "Активация", handler );
+    return;
+}
+
+class StartMenu: CenteredMenuHandler 
+{
+    StartMenu() {}
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+    {
+        if( menu.Button( "Начать игру" )  )
+        {
+            PrepareStart( cr );       
+            return false;  
+        }
+        
+        if( menu.Button( "Режим: " + ( cr.ParamBase[ QST_GAMEMODE ] == GAME_START || cr.ParamBase[ QST_GAMEMODE ] == GAME_SURVIVAL ? "с нуля" : "квента" ) ) )
+        {
+            if( cr.ParamBase[ QST_GAMEMODE ] == GAME_START )
+            {
+                cr.ParamBase[ QST_GAMEMODE ] = GAME_INVALID;
+                return true;
+            }
+
+            if( cr.ParamBase[ QST_GAMEMODE ] == GAME_INVALID )
+            {
+                cr.ShowScreen( SCREEN_DIALOGBOX, 1, "dlg_ChangeRegime" );
+                cr.Say( SAY_DIALOGBOX_TEXT, "Вы уверены, что хотите установить себе режим Выживания? Учтите, что ваш инвентарь обнулится." );
+                cr.Say( SAY_DIALOGBOX_BUTTON( 0 ), "Сменить");   
+                return false;   
+            }      
+            return false;        
+        }
+
+        if( menu.Button( "Пол: " + ( cr.ParamBase[ ST_GENDER ] == GENDER_MALE ? "мужской" : "женский" ) )  )
+        {
+            cr.Stat[ ST_GENDER ] == GENDER_MALE ? cr.StatBase[ ST_GENDER ] = GENDER_FEMALE : cr.StatBase[ ST_GENDER ] = GENDER_MALE;
+            cr.Stat[ ST_GENDER ] == GENDER_FEMALE ? cr.StatBase[ ST_BASE_CRTYPE ] = CRTYPE_DEFAULT_F : cr.StatBase[ ST_BASE_CRTYPE ] = CRTYPE_DEFAULT_M;
+            cr.ChangeCrType( cr.StatBase[ ST_BASE_CRTYPE ] );
+            return true;
+        }
+
+        if( menu.Button( "Скин ID: " +  cr.StatBase[ ST_BASE_CRTYPE ] )  )
+        {
+            skinchanger_show( cr );
+            cr.SetDir(3);  
+            return false;          
+        }
+
+        if( cr.ParamBase[ QST_GAMEMODE ] == GAME_INVALID && menu.Button( "Стартовый набор" ) )
+        {
+            cr.ShowScreen( SCREEN_DIALOGBOX, 7, "answer_crate" );
+            cr.Say( SAY_DIALOGBOX_TEXT, "Набор предметов, с которыми вы появитесь на карте." );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 0 ), "Холодное");
+            cr.Say( SAY_DIALOGBOX_BUTTON( 1 ), "Стрелковое" );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 2 ), "Аммунация" );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 3 ), "Инструменты" );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 4 ), "Броня" );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 5 ), "Питание" );
+            cr.Say( SAY_DIALOGBOX_BUTTON( 6 ), "Остальное" );
+            return false;
+        }
+        
+        return true;
+    }
+
+    string@ Description( Critter& cr )
+    {
+        return "Добро пожаловать на сервер Ролевого Уголка! У вас установлен режим " + ( cr.ParamBase[ QST_GAMEMODE ] == GAME_START ? "Выживание, вы можете начать игру без одобрения ГМа." : "Приключение, вы можете начать игру только с одобрением ГМа (по квенте)" );
+    }
+
+    string@ ButtonCancel()
+    {
+        return ButtonDecorator( "Закрыть меню", null );
+    }
+    
+    bool ShouldRedraw( Critter& cr )
+    {
+        return false;
+    }
+}
+
+
+void dlg_ChangeRegime( Critter& player, uint answerI, string& answerS )
+{
+    if( answerI == 0 )
+    {
+        player.ParamBase[ QST_GAMEMODE ] = GAME_START;
+
+        Item@[] items;
+        player.GetItems( SLOT_ARMOR, items );
+        player.GetItems( SLOT_HAND1, items );
+        player.GetItems( SLOT_HAND2, items );
+        player.GetItems( SLOT_INV, items );
+        player.GetItems( SLOT_MISC, items );
+        player.GetItems( SLOT_HEAD, items );
+        player.GetItems( SLOT_BACK, items );            
+        DeleteItems( items );        
+        ShowStartVars( player );
+    }
+}
+
+void StartGame( Critter@ player, int, int, int, string@, int[]@ )
+{
+    player.SetEvent( CRITTER_EVENT_USE_ITEM, null );
+    player.SetEvent( CRITTER_EVENT_DROP_ITEM, null );
+    player.SetEvent( CRITTER_EVENT_ATTACK, null );
+    player.SetEvent( CRITTER_EVENT_DEAD, null );  
+
+    if( player.ParamBase[ QST_GAMEMODE ] == GAME_ADVENTURE )
+        player.ParamBase[ ST_EXPERIENCE ] += 120000; // 12 lvl
+
+    player.ToKnockout( KNOCKOUT_ANIM2_DEFAULT( ( Random( 0, 1 ) == 1 ) ), 200, player.HexX, player.HexY );
+	teleToRangomSpawn( player, 0, 0, 0 );
+}
+
+//~run map_start teleToRangomSpawn id 0 0
+void teleToRangomSpawn( Critter& player, int id, int, int )
+{
+    if( id < 0 || id >= StartTeleports.length() )
+		id = Random( 0, StartTeleports.length()-1 );
+	
+    Location @ loc = GetLocationByPid( StartTeleports[id][PARAM_LOC], 0 );
+	if( !valid( loc ) ) { player.Say( SAY_NETMSG, "Loc #" + StartTeleports[id][PARAM_LOC] + " not found!"); return; }
+    Map @ map = loc.GetMapByIndex(0);
+	if( !valid( map ) ) { player.Say( SAY_NETMSG, "Map #0 at Loc #" + StartTeleports[id][PARAM_LOC] + " not found!"); return; }
+	
+    SayLog( player, crInfo( player ) + " телепортировался на + " + map.Id + " " + StartTeleports[id][PARAM_X] + " " + StartTeleports[id][PARAM_Y] );
+    player.TransitToMap( map.Id, StartTeleports[id][PARAM_X], StartTeleports[id][PARAM_Y], 0 );
+}
+
+void PrepareStart( Critter@ player )
+{
+    if( !valid( player ) )
+        return;
+
+    switch( player.ParamBase[ QST_GAMEMODE ] )
+    {
+        
+        case( GAME_START ):
+        {
+            player.ShowScreen( SCREEN_DIALOGBOX, CoatMassive.length(), "dlg_SpawnCoat" );
+            player.Say( SAY_DIALOGBOX_TEXT, "Выберите одежду" );
+
+            for( uint i = 0; i != CoatMassive.length(); i++ )
+            {
+                if( i == 0 ) 
+                {
+                    player.Say( SAY_DIALOGBOX_BUTTON( i ), "Без одежды"); 
+                    continue;
+                }
+                
+                if( i == CoatMassive.length() )
+                {
+                    player.Say( SAY_DIALOGBOX_BUTTON( i ), "Отмена"); 
+                    continue;
+                }
+
+                player.Say( SAY_DIALOGBOX_BUTTON( i ), "" + _GetProtoName( CoatMassive[i] ) );
+            }
+            break;
+        }
+
+        case( GAME_ADVENTURE ):
+        case( GAME_SURVIVAL ):
+        {
+            RequestStartGameRemote( player );         
+            break;  
+        }
+
+        default: 
+            player.Say( SAY_NETMSG, "У вас установлен режим Приключение, для продолжения ГМу необходимо активировать вас." );
+    }
+}
+
+void _crIn( Map& map, Critter& cr )
+{
+    if( cr.IsPlayer() && !isGM( cr ) )
+    {
+        cr.SetEvent( CRITTER_EVENT_USE_ITEM, "_Start_Player_use" );
+        cr.SetEvent( CRITTER_EVENT_DROP_ITEM, "_Start_Player_drop" );
+        cr.SetEvent( CRITTER_EVENT_ATTACK, "_Start_Player_attack" );
+        cr.SetEvent( CRITTER_EVENT_DEAD, "_Start_Player_dead" );
+    }
+}
+
+void _crOut( Map& map, Critter& cr )
+{
+	cr.SetEvent( CRITTER_EVENT_USE_ITEM, null );
+	cr.SetEvent( CRITTER_EVENT_DROP_ITEM, null );
+	cr.SetEvent( CRITTER_EVENT_ATTACK, null );
+	cr.SetEvent( CRITTER_EVENT_DEAD, null );
+}
+
+void _Start_Player_dead( Critter& cr, Critter@ killer )
+{
+    Map@ start = GetMapByPid( MAP_UTILITY_START, 0 );
+    _crOut( start, cr );
+    Item@[] items;
+    cr.GetItems( SLOT_ARMOR, items );
+    cr.GetItems( SLOT_INV, items );
+    cr.GetItems( SLOT_HAND1, items );
+    cr.GetItems( SLOT_HAND2, items );
+    DeleteItems( items );
+}
+
+void _Start_Player_drop( Critter& cr, Item& item )
+{
+    cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_START_ANNIHILATION );
+    if( valid( item ) )
+	{
+        DeleteItem( item );
+	}
+}
+
+bool _Start_Player_attack( Critter& cr, Critter& target )
+{
+	cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_START_INAPPROPRIATE );
+    return true;
+}
+
+bool _Start_Player_use( Critter& cr, Item& item, Critter@ onCritter, Item@ onItem, Scenery@ onScenery )
+{
+    cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_START_INAPPROPRIATE );
+    return true;
+}
+
+void dlg_spawn( Critter& player, uint answerI, string& answerS )
+{
+    int id = ( answerI == 0 ? Random(0, 3) : Random(4, 5) );
+
+    player.SetEvent( CRITTER_EVENT_USE_ITEM, null );
+    player.SetEvent( CRITTER_EVENT_DROP_ITEM, null );
+    player.SetEvent( CRITTER_EVENT_ATTACK, null );
+    player.SetEvent( CRITTER_EVENT_DEAD, null );  
+
+    if( player.ParamBase[ QST_GAMEMODE ] == GAME_ADVENTURE )
+        player.ParamBase[ ST_EXPERIENCE ] += 120000; // 12 lvl
+
+    player.ToKnockout( KNOCKOUT_ANIM2_DEFAULT( ( Random( 0, 1 ) == 1 ) ), 200, player.HexX, player.HexY );
+    Location @ loc = GetLocationByPid( StartTeleports[id][PARAM_LOC], 0 );
+    Map @ map = loc.GetMapByIndex(0);
+    SayLog(player, crInfo( player ) + " телепортировался на + " + map.Id + " " + StartTeleports[id][PARAM_X] + " " + StartTeleports[id][PARAM_Y]);
+    player.TransitToMap( map.Id, StartTeleports[id][PARAM_X], StartTeleports[id][PARAM_Y], 0 );
+}
+
+
+void dlg_SpawnCoat( Critter& player, uint answerI, string& answerS )
+{
+    Item@[] items;
+    player.GetItems( SLOT_ARMOR, items );
+    player.GetItems( SLOT_HAND1, items );
+    player.GetItems( SLOT_HAND2, items );
+    player.GetItems( SLOT_INV, items );
+    player.GetItems( SLOT_MISC, items );
+    player.GetItems( SLOT_HEAD, items );
+    player.GetItems( SLOT_BACK, items );            
+    DeleteItems( items );   
+    
+    player.Say(SAY_NETMSG, "В ваш инвентарь были добавлены предметы. " );
+
+    if(answerI != 0)
+        player.AddItem( CoatMassive[answerI], 1 );
+
+    player.AddItem( PID_GLASS_BOTTLE_FULL, Random( 1, 2 ) );
+    player.AddItem( StartFoodMassive[ Random( 0, StartFoodMassive.length()-1 ) ], 1 );
+    player.AddItem( StartFoodMassive[ Random( 0, StartFoodMassive.length()-1 ) ], 1 );
+    player.ParamBase[ QST_GAMEMODE ] = GAME_SURVIVAL;
+}
+
+
+void answer_crate( Critter& player, uint answerI, string& answerS )
+{
+    StartCrate( player, answerI );
+}
+
+
+void StartCrate( Critter& player, uint category ) //exported
+{
+    if( category >= ItemMassive.length() ) return;
+    
+    Map@ map = GetMapByPid( MAP_UTILITY_START, 0 );
+    uint16 x = 10, y = 10;
+    map.GetEntireCoords( category + 1, 0, x, y );
+    Item@ Cont = map.GetItem( x, y, 245 );
+
+    if( !valid( Cont ) ) 
+        @Cont = map.AddItem( x, y, 245, 1 );
+
+    if( !valid( Cont ) )
+    {
+        player.Say( SAY_NETMSG, "Что-то пошло не так, код 1415." );
+        return;
+    }
+
+    CleanCrate( Cont );
+
+    uint[] data = { player.Id, Cont.Id, category };
+    CreateTimeEvent( AFTER(REAL_SECOND( 0.3 )), "e_delayed_FillContainer", data, false );
+    CreateTimeEvent( AFTER(REAL_SECOND( 0.6 )), "e_delayed_ShowContainer", data, false );
+}
+
+
+uint e_delayed_ShowContainer( uint[] @ values )
+{
+    if( !valid(values) || values.length() < 2 ) 
+        return 0;
+
+    Critter@ player = GetCritter( values[0] );
+    if( !valid(player) ) 
+        return 0;
+
+    Item@ cont = GetItem( values[1] );
+
+    if( !valid(cont) ) 
+        return 0;
+
+    ShowContainer( player, cont, TRANSFER_FAR_CONT );
+    return 0;
+}
+
+void CleanCrate( Item& cont ) 
+{
+    Item@[] allitems;
+    cont.GetItems( uint( -1 ), allitems );
+    DeleteItems( allitems );
+    cont.Update();
+}
+
+uint e_delayed_FillContainer( uint[] @ values )
+{
+    if( !valid(values) || values.length() < 3 ) 
+        return 0;
+
+    Critter@ player = GetCritter( values[0] );
+    if( !valid(player) ) 
+        return 0;
+
+    Item@ cont = GetItem( values[1] );
+
+    if( !valid(cont) ) 
+        return 0;
+
+    LoadCrate( player, cont, values[2] );
+    return 0;
+}
+
+void LoadCrate( Critter& player, Item& cont, uint category )
+{
+    for( int i = ItemMassive[category].length() - 1; i >= 0; i-- )
+    {
+        uint proto = ItemMassive[category][i];
+
+        if( proto == 0 ) 
+            continue;
+
+        Item@ myitem = cont.GetItem( proto, 0 );
+        
+        if( !valid( myitem ) )
+            @myitem = cont.AddItem( proto, 1, 0 );
+
+        if( valid(myitem) && myitem.IsStackable() && myitem.GetCount() < 500 ) 
+            myitem.SetCount( 500 );
+        
+        if( myitem.GetType() == ITEM_TYPE_WEAPON && myitem.Proto.Weapon_MaxAmmoCount > 0 && myitem.AmmoCount > 0 )
+            myitem.AmmoCount = 0;
+
+        myitem.Update();
+
+        if( !valid(myitem) ) 
+            Log( "Proto [" + proto + "] does not exists." );
+    }
+}
+
+#endif

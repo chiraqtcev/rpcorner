@@ -1,0 +1,1390 @@
+#ifndef GAMEPLAY
+#define GAMEPLAY
+
+#include "_utils.fos"
+#include "_global_events.fos"
+#include "gathering_h.fos"
+#include "wildplant_h.fos"
+#include "waterworks_h.fos"
+#include "local_population_h.fos"
+#include "radiation_h.fos"
+#include "drugs_h.fos"
+#include "poison_h.fos"
+#include "effects_h.fos"
+#include "speed_h.fos"
+#include "gm_h.fos"
+
+import void ChangeMonsterCount( Critter& cr, bool increase ) from "globalmap_group";
+import void ChangeMonsterCount( Critter& cr, uint8 count, bool increase ) from "globalmap_group";
+//import void GlobalCellPopulation() from "globalmap_group";
+import void GlobalCellSpawnLo( bool renew ) from "globalmap_group";
+import void DypsneaCr( Critter& cr ) from "globalmap_group";
+
+import void RottenFood( Critter& cr ) from "rotting";
+import void RottenFood( Map@ map ) from "rotting";
+
+import bool MovePosition( Critter& player ) from "mio_deviants_toolkit";
+
+import void ToiletBowl( Critter& cr ) from "mio_tests";
+import void SetDate( Critter& cr ) from "mio_tests";
+import void Version( Critter& cr ) from "mio_tests";
+
+import void StopCustomAnimation( Critter& cr ) from "client_iterations";
+
+bool SwitchGameMode( Critter& cr, int mode )
+{
+    if( cr.Param[ QST_GAMEMODE ] != GAME_START )
+    {
+        Log( "Невозможно сменить гейммод у " + GetPlayerName( cr.Id ) + " (" + cr.Id + ")" );
+        return false;
+    }
+    if( mode <= GAME_START || mode >= GAME_MAX )
+    {
+        Log( "Неверный целевой гейммод, " + GetPlayerName( cr.Id ) + " (" + cr.Id + ")" );
+        return false;
+    }
+
+    cr.ParamBase[ QST_GAMEMODE ] = mode;
+    return true;
+}
+
+bool IsInGame( Critter& cr )
+{
+    return ( cr.WorldX < 350 || cr.WorldY < 600 );
+}
+
+class Gameplay : iManagerModule, iManager_loop,
+      iManager_critter_init, iManager_critter_finish,
+      iManager_critter_idle, iManager_critter_dead, iManager_critter_respawn,
+      iManager_map_critter_in, iManager_map_critter_out,
+      iManager_world_save, iManager_time  // , iManager_player_registration, iManager_player_login, iManager_time
+{
+    Gameplay()
+    {
+        AddStartCallback( "gameplay", "start" );
+    }
+    bool manager_init()
+    {
+        // вызывается в порядке приоритетов
+        return true;
+    }
+    uint global_loop()
+    {
+        return uint( -1 );
+    }
+    bool global_critter_init( Critter& cr, bool firstTime )
+    {
+        if( cr.IsNpc() )
+            return true;
+
+        if( firstTime )
+        {
+            cr.ParamBase[ QST_GAMEMODE ] = GAME_INVALID;
+
+			for(uint y=0; y<__GlobalMapHeight; y++)
+				for(uint x=0; x<__GlobalMapWidth; x++)
+					cr.SetFog(x, y, FOG_NONE);
+		}
+
+        if( cr.Param[ QST_GAMEMODE ] == GAME_INVALID )
+        {
+            if( TeleportToStart( cr ) )
+                cr.ParamBase[ QST_GAMEMODE ] = GAME_START;
+            else
+            {
+                cr.Disconnect();
+                return false;
+            }
+        }
+
+        Map@ map = cr.GetMap();
+
+        if( !IsInGame( cr ) )
+        {
+            if( cr.ParamBase[ QST_GAMEMODE ] > GAME_START && (map is null) )
+            {
+                CreateModeStart( cr );
+            }
+        }
+
+        AfterLogin( cr );
+
+        return true;
+    }
+    bool global_critter_finish( Critter& cr, bool toDelete )
+    {
+        return true;
+    }
+    bool global_critter_idle( Critter& cr )
+    {
+		if( cr.IsPlayer() )
+		{
+			if( cr.ParamBase[ QST_GAMEMODE ] == GAME_TEST )
+				cr.RunClientScript( "client_main@_testmode", cr.ParamBase[ CR_TEST_MODE ], 0, 0, null, null );
+			
+			if( cr.ParamBase[ QST_GAMEMODE ] == GAME_START )
+			{
+				Map@ map = cr.GetMap();
+				if( !valid( map ) || map.GetProtoId() != MAP_UTILITY_START )
+				{
+					cr.Say( SAY_EMOTE, "С громким хлопком скукоживается в точку" );
+					cr.ParamBase[ QST_GAMEMODE ] = GAME_SURVIVAL;
+					cr.ToDead( ANIM2_DEAD_EXPLODE, null );
+				}
+			}
+
+			cr.ParamBase[ CR_ITEMS_WEIGHT ] = ItemsWeight( cr );
+			checkShadow( cr );
+
+			if( cr.GetTimeEvents( CTE_MOVING_AP, null, null, null ) < 1 )
+				cr.AddTimeEvent( "cte_MovingAP", 0, CTE_MOVING_AP, 0 );		
+		}
+		else if( !cr.IsDead() && !cr.IsBusy() && !cr.IsKnockout() )
+		{
+			Item@[] items; 
+			uint count = cr.GetItems( SLOT_INV, items );
+			if( count > 0 && cr.Stat[ ST_CURRENT_HP ] < cr.Stat[ ST_MAX_LIFE ] )
+			{
+				Item@ food;
+				for( uint i = 0; i < count; i++ )
+					if( items[i].GetType() == ITEM_TYPE_FOOD )
+					{
+						@food = items[i];
+						break;
+					}
+				
+				if( valid( food ) )
+				{
+					cr.Say( SAY_EMOTE_ON_HEAD, "Ест" );
+					_SubItem( food, 1 );
+
+					cr.Wait( 1000 );
+					cr.Animate( 0, ANIM2_PICKUP, null, true, false );
+					cr.StatBase[ ST_CURRENT_HP ] += food.Proto.Food_Restore * 10;
+				}
+			}		
+		}		
+		
+		if( cr.IsDead() && cr.IsPlayer() )
+		{
+			Map @map = cr.GetMap();
+			if( valid(map) && map.GetProtoId() == MAP_HELL )
+			{
+				GameVar@ canPray = GetGlobalVar( GVAR_Pray_Battleground );
+				if( canPray.GetValue() != 0 )
+				{
+					Location@ location = GetLocationByPid( LOCATION_HEAVEN, 0 );
+					if( valid( location ) )
+					{
+						@map = location.GetMapByIndex( 0 );
+						if( valid( map ) )
+							cr.TransitToMap( map.Id, 241 );
+					}
+					cr.ToLife();
+					FullHeal( cr );
+					return true;
+				}
+			}
+		}
+		
+        if( cr.IsDead() && cr.Stat[ ST_REPLICATION_TIME ] >= 0 && cr.Timeout[ TO_REPLICATION ] == 0 )
+        {
+            if( cr.IsPlayer() && !RespawnCritter( cr ) )
+                cr.TimeoutBase[ TO_REPLICATION ] = __FullSecond + REAL_MINUTE( 10 );
+        }
+
+		if( cr.StatBase[ ST_DYSPNEA ] < 100 && cr.GetTimeEvents( CTE_DYSPNEA, null, null, null ) < 1 )
+			DypsneaCr(cr);
+
+		if( cr.Stat[ ST_POISONING_LEVEL ] > 0 && cr.GetTimeEvents( CTE_POISON, null, null, null ) < 1 )
+			cr.AddTimeEvent( "poison@cte_Poison", REAL_SECOND( 5 ), CTE_POISON );
+			
+		if( cr.GetTimeEvents( CTE_AP_REGEN, null, null, null ) < 1 )
+			cr.AddTimeEvent( "apregen@cte_RegenAp", REAL_MS(0), CTE_AP_REGEN );
+
+        return true;
+    }
+    bool global_critter_dead( Critter& cr, Critter@ killer )
+    {
+		if( cr.IsNpc() && cr.GetTimeEvents( CTE_ROTTEN, null, null, null ) < 1 )
+			cr.AddTimeEvent( "mob@cte_rotten", 0, CTE_ROTTEN, 0 );		
+		
+        Map@ map = cr.GetMap();
+        if( map is null )
+        {
+            Log( "Error! Death map is null" );
+            return false;
+        }
+
+		old_drop_stuff_if_bluddy( cr, map );
+
+        int replTime = cr.Stat[ ST_REPLICATION_TIME ];
+        if( cr.Stat[ ST_BODY_TYPE ] == BT_ROBOT && cr.IsPlayer() )
+            replTime = -1;
+
+        if( replTime < 0 )
+        {
+            if( cr.StatBase[ ST_BODY_TYPE ] > 0 )
+            {
+                ChangeMonsterCount( cr, 1, false );
+            }
+            return true;
+        }         // No respawn
+
+        if( replTime == 0 )     // Take default values
+        {
+            if( cr.IsPlayer() )
+            {
+                /*if(act_var_check(cr)) replTime=max(abs(cr.Stat[ST_CURRENT_HP])-30, 0)*2+10;
+                   else replTime=15;*/
+                if( cr.Anim2Dead <= ANIM2_DEAD_BURST )
+                    replTime = REAL_MINUTE( 45 );
+                else
+                    replTime = REAL_MINUTE( 15 );
+                // replTime*=REAL_SECOND(1);
+            }
+            else
+            {
+				replTime = Random( 30, 60 );                // 30-60 minutes
+				replTime *= REAL_MINUTE( 1 );
+            }
+        }
+        else
+        {
+            replTime *= REAL_MINUTE( 1 );
+        }
+
+		if( cr.IsPlayer() )
+			cr.TimeoutBase[ TO_REPLICATION ] = __FullSecond + replTime;
+
+        return true;
+    }
+
+    bool RespawnCritter( Critter& cr )
+    {
+		return _RespawnCritter( cr );
+    }
+
+    bool global_critter_respawn( Critter& cr )
+    {
+        // if(cr.IsNpc()) {return true;}
+
+        return true;
+    }
+	
+    bool global_map_critter_in( Map& map, Critter& cr )
+    {
+		if(cr.IsNpc()) return true;
+		
+		cr.RunClientScript("client_main@updateMapId", map.Id, 0, 0, null, null);
+		
+        return true;
+    }
+    bool global_map_critter_out( Map& map, Critter& cr )
+    {
+		if(cr.IsNpc()) return true;
+		
+		//map.SetData( 0, map.GetData( 0 ) - 1 );
+        return true;
+    }
+    bool global_world_save()
+    {
+        return true;
+    }
+    bool global_player_registration( uint ip, string& name, uint& textMsg, uint& strNum )
+    {
+        return true;
+    }
+    bool global_player_login( uint ip, string& name, uint id, uint& textMsg, uint& strNum )
+    {
+        Critter@ cr = GetCritter( id );
+        if( cr !is null )
+            AfterLogin( cr );
+        return true;
+    }
+    void AfterLogin( Critter& cr )
+    {
+		if( !cr.IsPlayer() ) return;
+		
+		if( cr.StatBase[ST_CARRY_WEIGHT_EXT] != 0 )
+		{
+			LogInfoTime( "logs\\debug.txt", crInfo( cr ) + " обнулён бонус к переносимому весу: " 
+				+ cr.StatBase[ST_CARRY_WEIGHT_EXT] + " / " +  cr.Stat[ST_CARRY_WEIGHT] + "." );
+			cr.StatBase[ST_CARRY_WEIGHT_EXT] = 0;
+		}
+		// Проверка на нулевые скилы, которые качаются от юза.
+		if( cr.SkillBase[ SK_MINING ] == 0 ) {
+			cr.SkillBase[ SK_MINING ] += 0 + 5 * cr.StatBase[ ST_STRENGTH ] + 4 * cr.StatBase[ ST_AGILITY ] + 3 * cr.StatBase[ ST_PERCEPTION ] + 2 * cr.StatBase[ ST_INTELLECT ];
+		}
+		if( cr.SkillBase[ SK_CHOPPING ] == 0 ) {
+			cr.SkillBase[ SK_CHOPPING ] += 0 + 5 * cr.StatBase[ ST_STRENGTH ] + 4 * cr.StatBase[ ST_AGILITY ] + 3 * cr.StatBase[ ST_PERCEPTION ] + 2 * cr.StatBase[ ST_INTELLECT ];
+		}
+		if( cr.SkillBase[ SK_SCAVENGING ] == 0 ) {
+			cr.SkillBase[ SK_SCAVENGING ] += 0 + 6 *cr.StatBase[ ST_LUCK ] + 5 * cr.StatBase[ ST_INTELLECT ] + 4 * cr.StatBase[ ST_PERCEPTION ] + 3 * cr.StatBase[ ST_AGILITY ] + 2 * cr.StatBase[ ST_STRENGTH ];
+		}
+		if( cr.SkillBase[ SK_HUNTING ] == 0 ) {
+			cr.SkillBase[ SK_HUNTING ] += 0 + 5 * cr.StatBase[ ST_AGILITY ] + 4 * cr.StatBase[ ST_INTELLECT ] + 3 * cr.StatBase[ ST_PERCEPTION ] + 2 * cr.StatBase[ ST_STRENGTH ];
+		}
+		if( cr.SkillBase[ SK_FISHING ] == 0 ) {
+			cr.SkillBase[ SK_FISHING ] += 0 + 6 *cr.StatBase[ ST_LUCK ] + 5 * cr.StatBase[ ST_PERCEPTION ] + 4 * cr.StatBase[ ST_AGILITY ] + 3 * cr.StatBase[ ST_INTELLECT ] + 2 * cr.StatBase[ ST_STRENGTH ];
+		}
+		if( cr.SkillBase[ SK_FARMING ] == 0 ) {
+			cr.SkillBase[ SK_FARMING ] += 0 + 5 * cr.StatBase[ ST_INTELLECT ] + 4 * cr.StatBase[ ST_PERCEPTION ] + 3 * cr.StatBase[ ST_STRENGTH ] + 2 * cr.StatBase[ ST_AGILITY ];
+		}
+		if( cr.SkillBase[ SK_COOKING ] == 0 ) {
+			cr.SkillBase[ SK_COOKING ] += 0 + 5 * cr.StatBase[ ST_INTELLECT ] + 4 * cr.StatBase[ ST_PERCEPTION ] + 3 * cr.StatBase[ ST_AGILITY ];
+		}
+		if( cr.SkillBase[ SK_SEX ] == 0 ) {
+			cr.SkillBase[ SK_SEX ] += 0 + 5 * cr.StatBase[ ST_STRENGTH ] + 4 * cr.StatBase[ ST_AGILITY ] + 3 * cr.StatBase[ ST_INTELLECT ];
+		}
+		
+		if( isGM( cr ) )
+		{
+			GameVar@ autoOffOldGMs = GetGlobalVar( GVAR_autoOffOldGMs );		
+			if( autoOffOldGMs.GetValue() != 0 )
+			{
+				cr.StatBase[ ST_ACCESS_LEVEL ] = 0;
+			}
+		}
+		
+		if( cr.StatBase[ ST_BODY_TYPE ] != BT_ROBOT )
+		{
+			if( cr.GetTimeEvents( CTE_THIRST, null, null, null ) < 1 )
+			{
+				cr.AddTimeEvent( "cte_Thirst", REAL_SECOND( cr.Param[ CR_THIRST_SPEED ] ), CTE_THIRST, 0 );
+			}
+			
+			if( cr.GetTimeEvents( CTE_HUNGER, null, null, null ) < 1 )
+			{
+				cr.AddTimeEvent( "cte_Hunger", REAL_SECOND( cr.Param[ CR_HUNGER_SPEED ] ), CTE_HUNGER, 0 );
+			}
+			
+			if( cr.StatBase[ ST_DRUNK ] > 0 && cr.GetTimeEvents( CTE_DRUNK, null, null, null ) < 1 )
+			{
+				cr.AddTimeEvent( "cte_Drunk", REAL_SECOND( cr.Param[ CR_DRUNK_SPEED ] ), CTE_DRUNK, 0 );
+			}
+			
+			if (cr.StatBase [ ST_GLOBAL_OVERDOSE ] > 0 && cr.GetTimeEvents( CTE_GLOBAL_OVERDOSE, null, null, null ) < 1 )
+			{
+				cr.AddTimeEvent ( "cte_Global_Overdose", REAL_SECOND( cr.Param[ CR_GLOBAL_OVERDOSE_SPEED ]), CTE_GLOBAL_OVERDOSE, 0);
+			}
+		}		
+		
+		if( cr.GetTimeEvents( CTE_DIRT, null, null, null ) < 1 )
+		{
+			cr.AddTimeEvent( "cte_Dirt", 0, CTE_DIRT, 0 );			
+		}
+		
+		cr.EraseTimeEvents( CTE_MOVING_AP );
+		cr.AddTimeEvent( "cte_MovingAP", 0, CTE_MOVING_AP, 0 );		
+
+		checkShadow( cr );
+		
+		RottenFood( cr );
+		
+		if( cr.StatBase[ ST_UNSPENT_PERKS ] > 0 )
+		{
+			cr.StatBase[ ST_UNSPENT_PERKS ] = 0;
+		}
+		// Катапульта для спящих красавиц.
+		if( cr.Param[ WAKE_DATE ] != 0 )
+		{
+			cr.AddTimeEvent( "cte_ToiletBowl", REAL_SECOND( 3 ), CTE_DRAGGING, 0 );
+			
+			cr.EraseTimeEvents( CTE_IDR );
+			cr.AddTimeEvent( "cte_IngameDateRegistration", REAL_HOUR( 1 ), CTE_IDR, 0 );
+		}
+		else
+		{
+			SetDate( cr );
+		}
+		
+		if( cr.GetTimeEvents( CTE_SLEEPING, null, null, null ) > 0 )
+			cr.EraseTimeEvents( CTE_SLEEPING );
+    }
+
+    bool global_time( int8 type )
+    {
+        if( type == TIME_NEW_HOUR )
+        {
+            GlobalCellSpawnLo(false);
+			
+           	GameVar@ cycle = GetGlobalVar( GVAR_rotten_cycle );
+			if(valid(cycle)) 
+			{
+				if( cycle.GetValue() < 999 )
+				{ 
+					cycle.opAddAssign( 1 );
+				}
+				else
+				{
+					cycle.opAssign( 0 );
+				}
+			}
+			//rotting
+			Map@ map;
+	
+			for( uint i = 1; i < 10000; i++ )
+			{
+				uint[] ignored_map_pids = { MAP_UTILITY_START, MAP_DREAM, MAP_HEAVEN, MAP_HELL };
+		
+				if( ignored_map_pids.find( i ) != -1 )
+				{
+					continue;
+				}
+	
+				@map = GetMapByPid( i, 0 );
+				if( !valid( map ) )
+				{
+					continue;
+				}
+		
+				RottenFood( map );
+
+				Critter@[] crs;
+				if( map.GetCritters( 0, FIND_ONLY_PLAYERS, crs ) > 0 )
+				{
+					for( uint j = 0; j < crs.length(); j++ )
+					{
+						RottenFood( crs[j] );
+					}
+				}
+			}
+		}
+
+        if( type == TIME_NEW_DAY )       // 142
+        {
+            //GlobalCellPopulation();
+			
+			//OreAutoInit();
+			JunkAutoInit();
+			WildplantAutoInit();
+			ForceSpawnMobs();
+			CutTreeManager();
+        }
+        return true;
+    }
+}
+
+//import bool _RespawnCritter( Critter& cr ) from "gameplay";
+bool _RespawnCritter( Critter& cr )
+{
+	Map@ dieMap = cr.GetMap();
+
+	if( cr.IsNpc() )
+	{
+		return respawn_npc( cr, dieMap );
+	}
+
+	if( cr.Stat[ ST_BODY_TYPE ] == BT_ROBOT )
+	{
+		return false;
+	}
+	
+	int GM = cr.Param[ QST_GAMEMODE ];
+
+	uint16 hx0 = cr.HexX, hy0 = cr.HexY, hx = 0, hy = 0;
+	uint8  condition = cr.Anim2Dead;
+	uint dir = condition == ANIM2_DEAD_FRONT ? ( cr.Dir + 3 ) % 6 : cr.Dir;
+	Map@   map = null;
+	
+	if( GM == GAME_SURVIVAL || GM == GAME_ADVENTURE )
+	{
+		Location@ loc = GetLocationByPid( LOCATION_HEAVEN, 0 );
+
+		if( loc is null )
+		{
+			uint locid = CreateLocation( LOCATION_HEAVEN, cr.WorldX, cr.WorldY, null );
+			@loc = GetLocation( locid );
+
+			if( not valid( loc ) )
+			{
+				Log( "can't create dead loc" );
+				return false;
+			}
+		}
+
+		@map = loc.GetMapByIndex( 0 );
+
+		if( not valid( map ) )
+		{
+			Log( "can't get dead map" );
+			return false;
+		}
+
+		if( !cr.TransitToMap( map.Id, 241 ) )
+		{
+			// Continue dead
+			cr.TimeoutBase[ TO_REPLICATION ] = __FullSecond + REAL_MINUTE( 1 );
+			return true;
+		}
+	}
+	else
+	{
+		@map = @dieMap;
+		hx = cr.HexX;
+		hy = cr.HexY;
+		if( not map.IsHexPassed( hx, hy ) )
+		{
+			bool founded = false;
+			for( int x = -1; x <= 1; x++ )
+			{
+				for( int y = -1; y <= 1; y++ )
+				{
+					if( x == 0 && y == 0 )
+						continue;                                      // Skip direct position
+					if( ( hx % 2 ) == 1 && ( ( x == -1 && y == 1 ) || ( x == 1 && y == 1 ) ) )
+						continue;
+					if( ( hx % 2 ) == 0 && ( ( x == -1 && y == -1 ) || ( x == 1 && y == -1 ) ) )
+						continue;
+
+					if( map.IsHexPassed( hx + x, hy + y ) )
+					{
+						hx += x;
+						hy += y;
+						founded = true;
+						break;
+					}
+				}
+				if( founded )
+				{
+					break;
+				}
+			}
+
+			if( not founded )
+			{
+				// Continue dead
+				cr.TimeoutBase[ TO_REPLICATION ] = __FullSecond + REAL_MINUTE( 1 );
+				return true;
+			}
+		}
+		cr.TransitToMap( map.Id, hx, hy, Random( 0, 5 ) );
+	}
+
+	if( _CritCanDropItemsOnDead( cr ) )
+	{
+		Item@[] items;
+		cr.GetItems( -1, items );
+		// Disable drop of hidden items
+		for( uint i = 0, j = items.length(); i < j; i++ )
+		{
+			if( FLAG( items[ i ].Flags, ITEM_HIDDEN ) )
+			{
+				@items[ i ] = null;
+			}
+		}
+		
+		Item@ skeleton;
+		if( condition < ANIM2_DEAD_PULSE )
+		{
+			@skeleton = dieMap.AddItem( hx0, hy0, PID_VAULT_DWELLER_BONES, 1 );
+		}
+		if( valid( skeleton ) )
+		{
+			if( cr.ParamBase[ CR_DEATH_STAGE ] != -1 )
+				skeleton.Val0 = cr.Id;
+
+			skeleton.Val1 = cr.Stat[ ST_BODY_TYPE ];
+			skeleton.Val2 = cr.Stat[ ST_AGE ];
+			skeleton.Val3 = cr.Stat[ ST_GENDER ];
+
+			skeleton.Val4 = cr.Stat[ ST_CHARISMA ];
+			skeleton.Val5 = cr.Stat[ ST_STRENGTH ];
+			skeleton.Val6 = cr.Stat[ ST_ENDURANCE ];
+			skeleton.Val7 = cr.Stat[ ST_AGILITY ];
+
+		//TODO: Переносить лексемы криттера на останки. Проблема в том, что на стороне сервера невозможно взять лексему криттера.
+			
+			MoveItems( items, skeleton, 0 );
+			uint[] values = { dieMap.Id, skeleton.Id };
+			CreateTimeEvent( __FullSecond + REAL_MINUTE( 180 ), "e_deleteBody", values, true );
+			
+			setCorpsePicMap( skeleton, dir );
+		}
+		else
+		{
+			MoveItems( items, dieMap, hx0, hy0 );
+		}
+	}
+
+	cr.ToLife();
+	cr.StatBase[ ST_CURRENT_HP ] = cr.Stat[ ST_MAX_LIFE ];
+
+	return true;
+}
+
+//~run gameplay RespawnSelfAtCorpse 0 0 0
+void RespawnSelfAtCorpse( Critter& cr, int stage, int, int )
+{
+	cr.ToDead( 0, null );
+	
+	Map@ map = cr.GetMap();
+	uint x = cr.HexX;
+	uint y = cr.HexY;
+	uint dir = cr.Dir;
+	cr.ParamBase[ CR_DEATH_STAGE ] = stage;
+	_RespawnCritter( cr );
+	cr.TransitToMap( map.Id, x, y, dir );
+}
+
+//import bool setCorpsePicMap( Item& item, uint dir ) from "gameplay";
+bool setCorpsePicMap( Item& item, uint dir )
+{
+	if( item.GetProtoId() != PID_VAULT_DWELLER_BONES )
+	{
+		return false;
+	}
+	
+	//item.Val0 = dir;
+	item.PicMap = GetStrHash( "art\\items\\misc\\corpse\\corpse" + dir + ".png" );
+	item.Update();
+	
+	return true;
+}
+
+//~run gameplay RespawnWorld 0 0 0
+void RespawnWorld( Critter& cr, int p0, int p1, int p2 )
+{
+	//GlobalCellPopulation();
+	GlobalCellSpawnLo(true);
+	
+	//ForceSpawnOres();
+	FoceSpawnJunk();
+	FoceSpawnPlants();
+	ForceSpawnMobs();
+	FoceWellsCharge();
+	FoceWaterPumpsCharge();
+	
+	cr.Say( SAY_NETMSG, "|0xFFFF00 Command done" );
+}
+
+uint cte_ban( Critter& player, int identifier, uint& rate )
+{
+    player.RunClientScript("client_main@CheckHardBan", 0, 0, 0, null, null);
+    return 0;
+}
+
+//DIRT
+uint cte_Dirt( Critter& cr, int identifier, uint& rate )
+{
+	int8 Dirtiness = cr.Param[ CR_DIRTINESS ];
+
+	if( isGM( cr ) || cr.IsDead() || cr.IsKnockout() || cr.Param[ QST_GAMEMODE ] == GAME_START )
+	{
+		return REAL_MINUTE( 10 );
+	}
+
+	uint8 Dirt = 1;
+	uint16 Chance = 1;
+	if( MovePosition( cr ) )
+	{
+		Chance += ( 100 * ItemsWeight( cr ) / cr.Stat[ ST_CARRY_WEIGHT ] );
+
+		if( cr.IsRuning )
+		{
+			Dirt += 1;
+			Chance += 100;
+		}
+	}
+
+	Chance = CLAMP( Chance, 0, 200 );
+	if( Random( Chance, 200 ) == 200 )
+	{
+		Dirtiness += Dirt;
+		if( Random( 1, 10 ) == 10 )
+		{
+			cr.StatBase[ ST_THIRST ] -= 1;
+		}
+		
+		if( Random( 1, 20 ) == 20 )
+		{
+			cr.StatBase[ ST_HUNGER ] -= 1;
+		}
+	}
+
+	cr.ParamBase[ CR_DIRTINESS ] = CLAMP( Dirtiness, 0, 100 );
+	
+	if( cr.Param[ CR_DIRTINESS ] >= 85 )
+	{
+		DirtCharDebuff( cr );
+	}
+	else
+	{
+		DirtCharRestore( cr );
+	}
+	
+	return REAL_SECOND( 10 );
+}
+
+void DirtCharDebuff( Critter& cr ) 
+{
+	if( cr.ParamBase[ CR_DIRTY ] <= 0 )
+	{
+		cr.ParamBase[ CR_DIRTY ] = 1;
+		cr.StatBase[ ST_CHARISMA_EXT ] -= 1;
+		
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_YOU_DIRTY );
+	} 
+}
+
+void DirtCharRestore( Critter& cr )
+{
+	if( cr.ParamBase[ CR_DIRTY ] > 0 )
+	{
+		cr.ParamBase[ CR_DIRTY ] = 0;
+		cr.StatBase[ ST_CHARISMA_EXT ] += 1;
+	
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_YOU_WASHED );
+	}
+}
+
+// THIRST 
+uint cte_Thirst( Critter& cr, int identifier, uint& rate )
+{
+	if( cr.Param[ CR_HUNGER_SPEED ] == 0 )
+		return 0;
+	
+	if( cr.StatBase[ ST_BODY_TYPE ] == BT_ROBOT )
+		return 0;
+	
+	cr.StatBase[ ST_THIRST ] -= Random( 0, 2 );
+
+	if( cr.StatBase[ ST_THIRST ] <= 0 )
+	{
+		ThirstCharDebuff( cr );
+	}
+	else
+	{
+		ThirstCharRestore( cr );
+	}
+
+	return REAL_SECOND( cr.Param[ CR_THIRST_SPEED ] );
+}
+
+void ThirstCharDebuff( Critter& cr ) 
+{
+	if( cr.ParamBase[ CR_THIRSTY ] <= 0 )
+	{
+		cr.ParamBase[ CR_THIRSTY ] = 1;
+		cr.StatBase[ ST_ACTION_POINTS ] -= 20;
+		
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_AP_LOSS_THIRST );
+	} 
+}
+
+void ThirstCharRestore( Critter& cr )
+{
+	if( cr.ParamBase[ CR_THIRSTY ] > 0 )
+	{
+		cr.ParamBase[ CR_THIRSTY ] = 0;
+		cr.StatBase[ ST_ACTION_POINTS ] += 20;
+	
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_AP_RESTORED );
+	}
+}
+
+// HUNGER
+uint cte_Hunger( Critter& cr, int identifier, uint& rate )
+{
+	if( cr.Param[ CR_HUNGER_SPEED ] == 0 )
+		return 0;
+
+	if( cr.StatBase[ ST_BODY_TYPE ] == BT_ROBOT )
+		return 0;
+
+	cr.StatBase[ ST_HUNGER ] -= Random( 0, 2 );
+
+	if( cr.StatBase[ ST_HUNGER ] <= 0 )
+	{
+		HungerCharDebuff( cr );
+	}
+	else
+	{
+		HungerCharRestore( cr );
+	}
+	
+	return REAL_SECOND( cr.Param[ CR_HUNGER_SPEED ] );
+}
+
+void HungerCharDebuff( Critter& cr ) 
+{
+	if( cr.ParamBase[ CR_HUNGRY ] <= 0 )
+	{
+		cr.ParamBase[ CR_HUNGRY ] = 1;
+		cr.StatBase[ ST_ACTION_POINTS ] -= 20;
+		
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_AP_LOSS_HUNGER );
+	} 
+}
+
+void HungerCharRestore( Critter& cr )
+{
+	if( cr.ParamBase[ CR_HUNGRY ] > 0 )
+	{
+		cr.ParamBase[ CR_HUNGRY ] = 0;
+		cr.StatBase[ ST_ACTION_POINTS ] += 20;
+	
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_AP_RESTORED );
+	}
+}
+
+//Getting Drunk
+uint cte_Drunk( Critter& cr, int identifier, uint& rate )
+{
+    if( cr.IsDead() )
+	{
+        return REAL_MINUTE( 1 );
+	}
+	
+    int levelVal = cr.Stat[ ST_DRUNK ];
+    if( levelVal > 0 )
+    {
+        int modifier = ( ( cr.ParamBase[ ST_ENDURANCE ] + cr.ParamBase[ ST_STRENGTH ] ) / 2 );
+		cr.StatBase[ ST_DRUNK ] = CLAMP( levelVal - modifier, 0, 2000 );
+		drunkVFX( cr );
+        if( levelVal >= 80 && Random( 1, 100 ) >= ( cr.ParamBase[ ST_ENDURANCE ] * 10 - 5 ) )
+		{
+			uint[] durations;
+			uint[] indexes;
+			uint amount = cr.GetTimeEvents( CTE_VOMIT, indexes, durations, null );
+			if( amount < 1 )
+			{
+				cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_FEEL_SICK );
+				uint vomitTime = Random( 5, 15 );
+				cr.AddTimeEvent( "poison@cte_vomit", REAL_MINUTE( vomitTime ), CTE_VOMIT, 0 );
+				vomitTime --;
+				cr.AddTimeEvent( "poison@cte_vomit_warn", REAL_MINUTE( vomitTime ), CTE_VOMIT_WARN, 0 );
+			}
+		}
+	}
+
+    if( cr.Stat[ ST_DRUNK ] == 0 )
+    {
+        return 0;
+    }
+
+    return REAL_SECOND( cr.Param[ CR_DRUNK_SPEED ] );
+}
+
+void drunkVFX( Critter& cr )
+{
+	int levelVal = cr.Stat[ ST_DRUNK ];
+	int roll = Random( 1, 100 ) + levelVal; 
+	if( roll >= Random( 1, 300 ) )
+	{
+		uint rollFX = Random( 0, 3 );
+		switch( rollFX )
+		{
+			case( 0 ):
+				FlushScreen( cr, COLOR_BLACK, 0, 3000 );
+				break;
+			case( 1 ):
+				FlushScreen( cr, COLOR_BLACK, 0, 6000 );
+				break;
+			case( 2 ):
+				FlushScreen( cr, COLOR_BLACK, 0, 9000 );
+				break;
+			case( 3 ):
+				QuakeScreen( cr, 1, 7000 );
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+//Overdose with healing items and drugs
+uint cte_Global_Overdose( Critter& cr, int identifier, uint& rate )
+{
+	cr.StatBase[ ST_GLOBAL_OVERDOSE ] --;
+	
+    if( cr.Stat[ ST_GLOBAL_OVERDOSE ] == 0 )
+    {
+        return 0;
+    }
+
+    return REAL_MS( cr.Param[ CR_GLOBAL_OVERDOSE_SPEED ] );
+}
+
+uint cte_ToiletBowl( Critter& cr, int identifier, uint& rate )
+{
+	Version( cr );
+	ToiletBowl( cr );
+	return 0;
+}
+
+uint cte_IngameDateRegistration( Critter& cr, int identifier, uint& rate )
+{
+	SetDate( cr );
+	return 0;
+}
+
+Gameplay gameplay;
+
+void start()
+{
+    iManagerModule@  module = gameplay;
+    iManagerElement@ manager = manager_add_module( module, "Gameplay", 40 );
+    if( manager is null )
+	{
+        return;
+	}
+}
+
+// используется
+bool CreateModeStart( Critter& cr )
+{
+    return TeleportToStart( cr );
+}
+
+// используется
+bool TeleportToStart( Critter& cr )
+{
+    Map@ start = GetMapByPid( MAP_UTILITY_START, 0 );
+
+    if( valid( start ) && cr.TransitToMap( start.Id, 0 ) )
+    {
+		cr.AddTimeEvent( "cte_ban", 2 * __TimeMultiplier, 0, 0 );
+        return true;
+    }
+    Log( "Transit to start error! PlayerId: " + cr.Id );
+    return false;
+}
+
+// используется
+bool respawn_npc( Critter& cr, Map@ map )
+{
+    if( not valid( map ) ) // On global, delete
+    {
+        DeleteNpc( cr );
+        return true;
+    }
+
+    uint16 hx = cr.HexX,
+           hy = cr.HexY;
+
+    if( not map.IsHexPassed( hx, hy ) )
+    {
+        bool founded = false;
+        for( int x = -1; x <= 1; x++ )
+        {
+            for( int y = -1; y <= 1; y++ )
+            {
+                if( x == 0 && y == 0 )
+                    continue;                              // Skip direct position
+
+                if( __MapHexagonal )
+                {
+                    if( ( hx % 2 ) == 1 && ( ( x == -1 && y == 1 ) || ( x == 1 && y == 1 ) ) )
+                        continue;
+                    if( ( hx % 2 ) == 0 && ( ( x == -1 && y == -1 ) || ( x == 1 && y == -1 ) ) )
+                        continue;
+                }
+
+                if( map.IsHexPassed( hx + x, hy + y ) )
+                {
+                    hx += x;
+                    hy += y;
+                    founded = true;
+                    break;
+                }
+            }
+            if( founded )
+                break;
+        }
+
+        if( not founded )
+        {
+            // Continue dead
+            cr.TimeoutBase[ TO_REPLICATION ] = __FullSecond + REAL_MINUTE( 1 );
+            return true;
+        }
+    }
+
+    cr.TransitToMap( map.Id, hx, hy, Random( 0, 5 ) );
+    cr.ToLife();
+
+    cr.DropPlanes();
+    cr.ClearEnemyStackNpc();
+    cr.StatBase[ ST_LAST_WEAPON_ID ] = 0;
+
+    if( cr.Stat[ ST_DEAD_BLOCKER_ID ] != 0 )
+    {
+        Item@ block = ::GetItem( cr.Stat[ ST_DEAD_BLOCKER_ID ] );
+        if( valid( block ) )
+            DeleteItem( block );
+        cr.StatBase[ ST_DEAD_BLOCKER_ID ] = 0;
+    }
+
+    cr.DamageBase[ DAMAGE_EYE ] = 0;
+    cr.DamageBase[ DAMAGE_RIGHT_ARM ] = 0;
+    cr.DamageBase[ DAMAGE_LEFT_ARM ] = 0;
+    cr.DamageBase[ DAMAGE_RIGHT_LEG ] = 0;
+    cr.DamageBase[ DAMAGE_LEFT_LEG ] = 0;
+
+    cr.StatBase[ ST_CURRENT_HP ] = cr.Stat[ ST_MAX_LIFE ];
+    cr.Stat[ ST_ACTION_POINTS ] * 100;
+
+    DropPoison( cr );
+    DropRadiation( cr );
+    DropDrugEffects( cr );
+    cr.DropTimers();
+    for( uint i = TIMEOUT_BEGIN; i <= TIMEOUT_END; i++ )
+	{
+        if( i != TO_TIREDNESS )
+		{
+            cr.TimeoutBase[ i ] = 0;
+		}
+	}
+    return true;
+}
+
+// используется
+void old_drop_stuff_if_bluddy( Critter& cr, Map& map )
+{
+    if( ( cr.Anim2Dead == ANIM2_DEAD_PULSE_DUST || cr.Anim2Dead == ANIM2_DEAD_EXPLODE ) && _CritCanDropItemsOnDead( cr ) )
+    {
+        // Drop all, exclude armor
+        Item@[] items;
+        cr.GetItems( SLOT_INV, items );
+        cr.GetItems( SLOT_HAND1, items );
+        cr.GetItems( SLOT_HAND2, items );
+		cr.GetItems( SLOT_MISC, items );
+		cr.GetItems( SLOT_HEAD, items );
+		cr.GetItems( SLOT_BACK, items );
+        // Disable drop of hidden items
+        for( uint i = 0, j = items.length(); i < j; i++ )
+        {
+            if( FLAG( items[ i ].Flags, ITEM_GAG ) )
+            {
+                Item@ item = items[ i ];
+                if( valid( item ) )
+				{
+                    DeleteItem( item );
+                }
+				@items[ i ] = null;
+            }
+            else if( FLAG( items[ i ].Flags, ITEM_HIDDEN ) )
+			{
+                @items[ i ] = null;
+			}
+		}
+        MoveItems( items, map, cr.HexX, cr.HexY );
+    }
+}
+
+uint e_deleteBody( uint[] @ values )
+{
+    Map@  map = GetMap( values[ 0 ] );
+    Item@ item = GetItem( values[ 1 ] );
+    Item@[] items;
+    if( valid( item ) )
+    {
+        item.GetItems( uint( -1 ), items );
+
+        if( valid( map ) )
+		{
+            MoveItems( items, map, item.HexX, item.HexY );
+        }
+		else
+		{
+            DeleteItems( items );
+		}
+        DeleteItem( item );
+    }
+    return 0;
+}
+
+void checkShadow( Critter& cr )
+{
+	uint id = cr.Param[ CR_SHADOW_ID ];
+	Item@ shadow;
+
+	Map@ map = cr.GetMap();
+	if( !valid( map ) )
+	{
+		return;
+	}
+	
+	if( id == 0 ) 
+	{
+		@shadow = map.AddItem( cr.HexX, cr.HexY, PID_SHADOW, 1 );
+	}
+	else
+	{
+		@shadow = GetItem( id );
+	}
+	
+	if( !valid( shadow ) )
+	{
+		@shadow = map.AddItem( cr.HexX, cr.HexY, PID_SHADOW, 1 );
+		if( !valid( shadow ) )
+		{
+			return;
+		}
+	}
+	
+	if( cr.IsDead() )
+	{
+		DeleteItem( shadow );
+		cr.ParamBase[ CR_SHADOW_ID ] = 0;
+		return;
+	}
+
+	MoveItem( shadow, 1, map, cr.HexX, cr.HexY );
+
+	if( shadow.GetProtoId() != PID_SHADOW )
+	{
+		DeleteItem( shadow );		
+		@shadow = map.AddItem( cr.HexX, cr.HexY, PID_SHADOW, 1 );
+	}
+
+	shadow.Val0 = cr.Id;
+	cr.ParamBase[ CR_SHADOW_ID ] = shadow.Id;
+}
+
+void _InitShadow( Item& item, bool firstTime )
+{
+	item.SetEvent( ITEM_EVENT_WALK, "e_ShadowMoving" );
+}
+
+void e_ShadowMoving( Item& item, Critter& cr, bool entered, uint8 dir ) 
+{
+	if( item.Val0 != int( cr.Id ) )
+	{
+		return;
+	}
+	
+	if( entered )
+	{
+		return;
+	}
+	
+	CheckDragging( cr );
+	
+	MoveItem( item, 1, cr.GetMap(), cr.HexX, cr.HexY );
+	_testInfo( cr, CR_TEST_MODE_SPEED, SAY_EMOTE, "Moving at [" + cr.HexX + ", " + cr.HexY + "]" );
+	
+	if( cr.ParamBase[ CR_IS_WINDUPED ] != 0 || cr.StatBase[ ST_CUSTOM_ANIMATION ] != 0 )
+	{
+		cr.ParamBase[ CR_IS_WINDUPED ] = 0;
+		StopCustomAnimation( cr );
+		cr.SetAnims( COND_LIFE, 0, ANIM2_IDLE );
+	}
+	
+	if( !cr.IsRuning )
+		return;
+	
+	uint[] armorPerks = { ARMOR_PERK_POWERED, ARMOR_PERK_ADVANCED_I, ARMOR_PERK_ADVANCED_II, ARMOR_PERK_ECZO, ARMOR_PERK_ECZO_2 };
+	bool powerArmor = armorPerks.find( cr.Stat[ ST_CURRENT_ARMOR_PERK ] ) != -1;
+	
+	float weight = powerArmor ? 0 : ItemsWeight( cr );
+	float max_weight = cr.Stat[ ST_CARRY_WEIGHT ] * 0.7;
+	float weight_penalty = 5.0 * weight / max_weight;
+	
+	_testInfo( cr, CR_TEST_MODE_SPEED, SAY_NORM, weight_penalty + " " + cr.StatBase[ ST_CURRENT_AP ] );
+	
+	cr.StatBase[ ST_CURRENT_AP ] -= 100 * ( 1 + weight_penalty );
+	
+	if( cr.StatBase[ ST_CURRENT_AP ] < 0 )
+	{
+		cr.Wait( 0 );
+		cr.SayMsg( SAY_EMOTE_ON_HEAD, TEXTMSG_TEXT, STR_EMOTE_PANTING );
+	}
+}
+
+uint cte_MovingAP( Critter& cr, int identifier, uint& rate )
+{
+	checkShadow( cr );
+	return REAL_SECOND( 1 );
+}
+
+void CheckDragging( Critter& cr )
+{
+	if( cr.ParamBase[ CR_YOU_DRAG ] != 0 )
+	{
+		Critter@ target = GetCritter( cr.ParamBase[ CR_YOU_DRAG ] );
+		if( !valid( target ) )
+		{
+			cr.ParamBase[ CR_YOU_DRAG ] = 0;
+			return;
+		}
+		
+		Map@ cMap = cr.GetMap();
+		if( !valid( cMap) )
+		{
+			DropCr( cr, target );
+			return;
+		}
+	
+		Map@ tMap = target.GetMap();
+		if( valid( tMap ) && tMap.GetProtoId() == MAP_HEAVEN )
+		{ 
+			DropCr( cr, target ); 
+			return; 
+		}
+		
+		if( !valid( tMap) || cr.IsRuning || cr.IsDead() || cr.IsKnockout() || ( !target.IsDead() && !target.IsKnockout() ) )
+		{ 	
+			DropCr( cr, target );
+			return;
+		}
+		
+		if( GetDistantion( cr.HexX, cr.HexY, target.HexX, target.HexY ) > 2 && ( tMap.Id == cMap.Id ) )
+		{ 
+			DropCr( cr, target );
+			return;
+		}
+	
+		Map@ map = cr.GetMap();
+		if( !valid( map ) ) return;
+		
+		uint16 hx = cr.HexX, hy = cr.HexY;
+		uint8 crDir = cr.Dir;
+		uint8 revDir = ( crDir + 3 ) % 6;
+		map.MoveHexByDir( hx, hy, revDir, 1 );
+		uint[] values = { cr.Id, target.Id, hx, hy, crDir };
+		CreateTimeEvent( AFTER( REAL_MS( 500 ) ), "e_TeleportIt", values, false );
+	}
+}
+
+uint e_TeleportIt( uint[]@ values )
+{
+	Critter@ cr = GetCritter( values[0] );
+	Critter@ target = GetCritter( values[1] );
+	if( !valid( target ) )
+	{
+		cr.ParamBase[ CR_YOU_DRAG ] = 0;
+	}
+	uint16 hx = values[2];
+	uint16 hy = values[3];
+	uint8 crDir = values[4];
+	
+	Map@ cMap = cr.GetMap();
+	if( !valid( cMap) )
+	{
+		DropCr( cr, target );
+		return 0;
+	}
+	
+	Map@ tMap = target.GetMap();
+	if( tMap.Id != cMap.Id )
+	{ 
+		Location@ loc = cMap.GetLocation();
+		if( !valid( loc ) )
+		{
+			return 0;
+		}
+		
+		if( tMap.Id == MAP_HEAVEN || tMap.Id == MAP_HELL || tMap.Id == MAP_UTILITY_START || tMap.Id == MAP_DREAM )
+		{
+			DropCr( cr, target );
+			return 0;
+		}
+		
+		uint16 hx = cr.HexX, hy = cr.HexY;
+		uint8 crDir = cr.Dir;
+		uint8 revDir = ( crDir + 3 ) % 6;
+		cMap.MoveHexByDir( hx, hy, revDir, 1 );
+		
+		target.TransitToMap( cMap.Id, hx, hy, cr.Dir ); 
+		target.SetWorldPos( loc.WorldX, loc.WorldY );
+
+		ChangeCritterSpeed( cr ); 
+		return 0; 
+	}
+		
+	if( tMap.IsHexPassed( hx, hy ) )
+	{
+		Critter@[] dragged = {target};
+		Critter@[] seeTarget;
+		tMap.GetCrittersSeeing( dragged, true, FIND_LIFE_AND_KO, seeTarget );
+		target.TransitToHex( hx, hy, crDir, 0 );
+
+		if( seeTarget.length() > 0 )
+		{
+			for( uint i = 0; i < seeTarget.length(); i ++ )
+			{
+				Critter@ seeTargetCr = seeTarget[i];
+				uint[] vals = { seeTargetCr.Id };
+				CreateTimeEvent( AFTER( REAL_MS( 500 ) ), "e_ShowDraggedCr", vals, false );
+			}
+		}
+	}
+	else
+	{
+		DropCr( cr, target );
+	}
+	return 0;
+}
+
+uint e_ShowDraggedCr( uint[]@ vals )
+{
+	Critter@ seeTargetCr = GetCritter( vals[0] );
+	if( valid( seeTargetCr ) )
+	{
+		seeTargetCr.RefreshVisible();
+	}
+	return 0;
+}
+
+void DragAndDrop( Critter& cr, Critter@ target )
+{
+	if( !valid( target ) )
+	{ 
+		cr.ParamBase[ CR_YOU_DRAG ] = 0;
+		return; 
+	}
+	
+	if( target.Mode[ MODE_NO_PUSH ] != 0 )
+	{
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_YOU_CANT_DO_THAT );
+		return;
+	}
+	
+	if( !target.IsDead() && !target.IsKnockout() )
+	{ 
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_BODY_MUST_LIE );
+		return; 
+	}	
+	
+	if( GetDistantion( cr.HexX, cr.HexY, target.HexX, target.HexY ) > 1 )
+	{
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_BODY_TOO_FAR );
+		return;
+	}
+	
+	if( target.ParamBase[ CR_DRAGS_YOU ] == int( cr.Id ) )
+	{
+		DropCr( cr, target );
+		return;
+	}
+	
+	if( target.Param[ CR_DRAGS_YOU ] != int( cr.Id ) && target.Param[ CR_DRAGS_YOU ] != 0 )
+	{	
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_BODDY_BEING_DRAGGED );
+		return;	
+	}
+	
+	if( cr.Param[ CR_YOU_DRAG ] != int( target.Id ) && cr.Param[ CR_YOU_DRAG ] != 0 )
+	{	
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_DRAG_ONLY_ONE );
+		return;	
+	}
+	
+	target.ParamBase[ CR_DRAGS_YOU] = cr.Id;
+	cr.ParamBase[ CR_YOU_DRAG ] = target.Id;
+	cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_START_DRAGGING );
+	ChangeCritterSpeed( cr );
+}
+
+void DropCr( Critter@ cr, Critter@ target )
+{
+	cr.ParamBase[ CR_YOU_DRAG ] = 0;
+	target.ParamBase[ CR_DRAGS_YOU ] = 0;
+	cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_STOPED_DRAGGING );
+	ChangeCritterSpeed( cr );
+}
+
+#endif //GAMEPLAY

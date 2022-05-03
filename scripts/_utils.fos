@@ -1,0 +1,112 @@
+//DEBUG DEFINES:
+// #define DEBUG_MSG
+
+
+#include "_macros.fos"
+///Этот модуль содержит в себе базовый функционал, используемый во всех остальных модулях. Считай, macros mk2.
+#include "_colors.fos"
+#include "_msgstr.fos"
+
+///Объявления дефолтных групп пидов.
+#include "_groups.fos"
+
+/*********Примитивные математические функции************/
+#include "module/utils/math.fos"
+
+/*********Нормальное распределение************/
+#include "module/utils/disp.fos"
+
+/*********Базовые структуры и костыли для упрощения работы с ООП************/
+#include "module/utils/OOP.fos"
+
+/*********Базовые структуры для 2Д Графики************/
+#include "module/utils/plot.fos"
+
+/*********Примитивные вспомогательные функции, в основном - строковые************/
+#include "module/utils/junk.fos"
+
+/*********Поисковые ф-ции по базам данных************/
+#include "search.fos"
+
+/*********Наборы карт и утилиты по обращению к ним************/
+#include "_mapsets.fos"
+
+#ifdef __CLIENT
+
+	#include "_client_defines.fos"
+
+	/*********Клиентские функции отрисовки графиков и интерфейсов**************/
+	#include "module/utils/client/gui.fos"
+	#include "module/utils/client/io.fos"
+	#ifndef PHYSICAL_UI
+		#include "module/utils/client/visible_items_h.fos"
+	#endif //PHYSICAL_UI
+
+#endif
+
+
+#ifdef __SERVER
+	#include "_dialogbox.fos"
+
+	#ifndef __MANAGER_MODULE__
+		import uint GetAllPlayers( Critter@[]& crs ) from "manager";
+	#endif
+	
+	import string@ GetTextMsgStr(uint) from "fomsg";
+	import string@ GetItemMsgStr(uint) from "fomsg";
+	import string@ GetGameMsgStr(uint) from "fomsg";
+	import string@ GetDlgMsgStr(uint) from "fomsg";
+	import string@ GetGmMsgStr(uint) from "fomsg";
+	
+	/*********Набор базовых функций для серверных скриптов**************/
+	#include "module/utils/server/stdlib.fos"
+	
+	/*********Вспомогательные функции вывода данных криттерам**************/
+	#include "module/utils/server/msg.fos"
+
+	/*********Вспомогательные функции для работы с объектами**************/
+	#include "module/utils/server/getters.fos"
+
+	/*********Вспомогательные функции для логгирования**************/
+	#include "module/utils/server/logs.fos"
+
+	/*********Вспомогательные функции для логгирования**************/
+	#include "module/utils/server/gm.fos"
+
+	//TODO: Доделать динамические менюшки.
+	//TODO: Доделать карманную ГМку.
+
+	/*********Дебаг-информация. Требуется сильно развить эту тему************/
+	#include "module/debug/log.fos"
+
+#endif
+
+/*********Мутуальные скрипты (и клиентские и серверные одновременно)**************/
+#ifdef __SERVER
+
+	#ifndef CritterMutual
+		#define CritterMutual Critter
+	#endif
+
+	#ifndef ItemMutual
+		#define ItemMutual  Item
+	#endif
+#endif
+
+#ifdef __CLIENT
+
+	#ifndef CritterMutual
+		#define CritterMutual CritterCl
+	#endif
+
+	#ifndef ItemMutual
+		#define ItemMutual  ItemCl
+	#endif
+
+#endif
+
+/*********Рассчет смертельного урона************/
+#include "module/utils/mutual/deathHP.fos"
+
+/*********Стандартные ф-ии и утилиты************/
+#include "module/utils/mutual/stdlib.fos"

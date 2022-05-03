@@ -1,0 +1,342 @@
+# Skill raise
+{15}{}{Skill @lex skill@ is increased by @lex value@ points}
+
+# Generic messages
+{510}{}{Yes} # Magic ball
+{511}{}{No} # Magic ball
+{520}{}{powders nose} # Cosmetic
+{530}{}{. smokes .oO} # Cigarettes
+
+# General interactive machines
+{1000}{}{inserts money into machine}
+{1001}{}{|0xFFFF00 Machine is locked.}
+{1002}{}{opens the machine}
+
+# One-hand Bandit
+{2001}{}{|0xFFFF00 There is no money left in the machine.}
+{2002}{}{|0xFFFF00 There is not enough money in the machine to cover the bet.}
+{2003}{}{|0xFFFF00 JACKPOT!!! @lex result@$}
+{2004}{}{|0xFFFF00 Win: @lex result@$}
+{2005}{}{|0xFF0000 Lose!}
+{2006}{}{|0xFFFF00 You dont have enough money.}
+{2007}{}{|0xFFFF00 Bet }
+
+# Coinflip
+{2050}{}{flips a coin: |0x7CFC00 Bermin|0xFF00FF .}
+{2051}{}{flips a coin: |0x7CFC00 Buck|0xFF00FF .}
+
+# Dice use
+{2053}{}{rolls: |0x7CFC00 @lex result@|0xFF00FF .}
+
+# Cards
+{2054}{}{|0xFFFF00 The deck is empty!}
+{2055}{}{|0xFFFF00 There are no cards in the deck!}
+{2056}{}{draws: }
+{2057}{}{deals a card}
+{2058}{}{|0xFFFF00 You were delt a card.}
+{2059}{}{shufles the deck}
+{2060}{}{collects cards}
+{2061}{}{|0xFFFF00 You can only add cards to this hand.}
+{2062}{}{shows: }
+{2063}{}{Your hand:  }
+
+# Vending Machines
+{2100}{}{collects goods}
+{2101}{}{collects change}
+{2102}{}{selects new item}
+
+# Jukebox
+{2150}{}{|0xFFFF00 You realize that the selected treck is not present!}
+{2151}{}{|0xFFFF00 Seams like there is no change!}
+
+# Terminal
+{2200}{}{|0xFFFF00 You have blocked access to the terminal.}
+{2201}{}{opens security card reciever}
+{2202}{}{|0xFFFF00 The terminal does not accept this item!}
+{2203}{}{selects the security card}
+{2204}{}{disables security card}
+
+# Combat
+{2300}{}{|0xFFFF00 You can not fire from this weapon without windup to spin the barrels!}
+{2301}{}{entangled}
+{2302}{}{entangled}
+{2303}{}{entangled}
+{2304}{}{|0xFFFF00 Your weapon has missfired!}
+
+# Taste
+{6487}{}{\nHomebrew with taste of }
+{6488}{}{cabbage}
+{6489}{}{nuts}
+{6490}{}{bread}
+{6491}{}{paslena berries}
+{6492}{}{mutated fruits}
+{6493}{}{vanilla}
+{6494}{}{corn}
+{6495}{}{cookies}
+{6496}{}{protein bar}
+{6497}{}{candies}
+{6498}{}{caramer}
+{6499}{}{You smell liquid inside canteen to be:}
+
+# St Peter
+{6500}{}{Stop it, my son, it's useless.}
+{6501}{}{There is a lot of filth in you.}
+{6502}{}{I understand your pain. Calm down, child.}
+{6503}{}{Anger destroys you, don't go on about it.}
+{6504}{}{It's not an easy path for you, you're embittered.}
+{6505}{}{Your anger is unfair. Stop it now.}
+
+{6506}{}{It's not time yet, you can't pass.}
+{6507}{}{Patience, my son, patience.}
+{6508}{}{Your time hasn't come yet. I can't let you pass.}
+{6509}{}{Don't rush there, you have a whole eternity ahead of you.}
+{6510}{}{You've lived your whole life in a hurry, take a break at least for now.}
+
+# Roulette
+{7001}{}{zero}
+{7002}{}{double zero}
+{7003}{}{red}
+{7004}{}{black}
+{7005}{}{number }
+{7006}{}{Your winnings: }
+{7007}{}{Invalid number}
+{7008}{}{Incorrect bid}
+{7009}{}{Number accepted}
+{7010}{}{Bid accepted}
+{7011}{}{Current bid: @lex betsize@}
+{7012}{}{You bet on the numbers:}
+{7013}{}{@lex result@}
+{7014}{}{Make your bet}
+
+#Russian Roulette
+{9000}{}{he lost at "Russian Roulette"@@his brains got blown out@@today is not his lucky day@@he shouldn't have agreed to this@@he splattered everything around with his blood@@he screamed and pulled the trigger, the scream was cut off...@@he shot himself@@he did not hesitate to splatter the area with his brains}
+{9001}{}{the gun clicked, but nothing happens@@he almost shit himself, but nothing happened...@@he screamed as he pulled the trigger, but everything turned out ok!@@fortune smiled to him!@@he won at "Russian Roulette"@@LUCKY!@@he held his breath and pulled the trigger, but everything went fine}
+{9002}{}{she lost at "Russian Roulette"@@she took her brains out@@today is not her day@@she shouldn't have agreed to this@@she poured her blood all over the place@@she screamed as she pulled the trigger, but the scream was cut off...@@she shot herself@@without hesitation, she splattered the area with her brains}
+{9003}{}{the gun clicked, but nothing happened@@she almost shit herself, but nothing happened...@@she screamed and pulled the trigger, but everything turned out ok!@@fortune smiled on her@@she won at the "Russian Roulette"@@LUCKY@@she held her breath and pulled the trigger, but everything went fine}
+
+#Resource Gathering
+{9004}{}{picks a plant}
+{9005}{}{|0xFFFF00 You haven't found anything useful.}
+{9006}{}{You've collected:}
+{9007}{}{|0x3CF800 .}
+{9008}{}{|0xFFFF00 You've picked the plant during the wrong growth stage and decided to dump it away.}
+{9009}{}{|0xFFFF00 You are too tired, take a rest.}
+{9010}{}{|0xFFFF00 You must have a tool equiped in your hand.}
+{9011}{}{|0xFFFF00 You are injured and can't perform the task.}
+{9012}{}{|0xFFFF00 It was a good idea before you realized there is no juice left in the drill.}
+{9013}{}{|0xFFFF00 The drill is too damaged.}
+{9014}{}{|0xFFFF00 You have to kill your prey first.}
+{9015}{}{|0xFFFF00 You can't skin this.}
+{9016}{}{|0xFFFF00 There is nothing to skin.}
+{9017}{}{|0xFFFF00 You've damaged the skin during the process.}
+{9018}{}{|0xFFFF00 This tool is not good for chopping.}
+{9019}{}{|0xFFFF00 There is nothing to chop, you have to uproot it.}
+
+#Raising skills
+{9496}{}{|0xFFFF00 You have become a real sex expert!}
+{9497}{}{|0xFFFF00 You did not manage to raise your skill.}
+{9498}{}{|0x3CF800 Skill: }
+{9499}{}{|0x3CF800  is raised by }
+
+#Accidental injuries
+{9500}{}{|0xFFFF00 You've managed to avoid a terrible injury at the last moment, but still: \n}
+{9501}{}{|0xFFFF00 You've recieved a heavy bruise as a result of your mistake.}
+{9502}{}{|0xFFFF00 You've made a mistake and cut your hand.}
+{9503}{}{|0xFFFF00 You've hit yourself with a tool and made a deep cut in your flesh.}
+{9504}{}{|0xFFFF00 Because of a bad move you have received a serious production injury.}
+{9505}{}{|0xFFFF00 You have received a deep brow cut as a result of your mistake.}
+
+#Blood loss
+{9510}{}{|0xFFFF00 You start feeling weak from heavy blood loss.}
+{9511}{}{|0xFFFF00 You feel cold and weak, you slowly start to die from massive blood loss.}
+
+#Vomiting
+{9512}{}{|0xFFFF00 You feel sick...}
+{9513}{}{vomits}
+{9514}{}{|0xFFFF00 Seems like you are about to vomit...}
+
+#Resurection
+{9520}{}{|0xFFFF00 You've used the item but it hasn't helped}
+{9521}{}{|0xFFFF00 Your body survived but you health is significantly damaged.}
+{9522}{}{|0xFFFF00 You realise that this will cause the patient to have a heart attack.}
+
+#Food / drink
+{9523}{}{the belly rumbles}
+{9524}{}{licks dry lips}
+{9525}{}{staggers}
+{9526}{}{|0xFFFF00 The damage received is too high, you will die soon without outside medical help.}
+{9527}{}{|0xFFFF00 You suffer from hunger.}
+{9528}{}{|0xFFFF00 You suffer from dehydration.}
+{9529}{}{|0xFFFF00 You no longer feel the taste of alcohol...}
+{9530}{}{|0xFFFF00 You have become slower because of dehydration.}
+{9531}{}{|0xFFFF00 You have become slower because of hunger.}
+{9532}{}{|0xFFFF00 You've restored your strength.}
+
+#Dragging
+{9540}{}{|0xFFFF00 You can't do that.}
+{9541}{}{|0xFFFF00 The target must be prone or be dead!}
+{9542}{}{|0xFFFF00 The target is too far away.}
+{9543}{}{|0xFFFF00 The body is being dragged.}
+{9544}{}{|0xFFFF00 You can't drag more than one body.}
+{9545}{}{|0xFFFF00 You start dragging the body.}
+{9546}{}{|0xFFFF00 You've dropped the body.}
+
+#Dirt
+{9550}{}{|0xFFFF00 Your look and stench start to disgust everyone around you. You better take a bath.}
+{9551}{}{|0xFFFF00 You have stopped being repulsive.}
+
+#Various Items
+{9800}{}{makes a picture}
+{9801}{}{removes ash}
+{9802}{}{removes remains}
+{9803}{}{wipes blood}
+
+#Ropes and shackles
+{9841}{}{|0xFFFF00 This is pointless, the target is dead!}
+{9842}{}{|0xFFFF00 You are not human, you don't know how to use handcuffs!}
+{9843}{}{|0xFFFF00 You can't put handcuffs on this creature.}
+{9844}{}{|0xFFFF00 You have cuffed yourself.}
+{9845}{}{|0xFFFF00 You have tied yourself.}
+{9846}{}{|0xFFFF00 You are already cuffed.}
+{9847}{}{|0xFFFF00 You are already tied.}
+{9848}{}{|0xFFFF00 The target is already cuffed.}
+{9849}{}{|0xFFFF00 The target is already tied.}
+{9850}{}{|0xFFFF00 This won't be that easy.}
+{9851}{}{|0xFFFF00 You can't remove the gag, you are being cuffed.}
+{9852}{}{|0xFFFF00 You can't remove the gag, you are being tied.}
+{9853}{}{|0xFFFF00 You can't remove the gag at this moment.}
+{9854}{}{takes handcuffs off}
+{9855}{}{|0xFFFF00 You were released from handcuffs.}
+{9856}{}{|0xFFFF00 The key does not fit.}
+{9857}{}{|0xFFFF00 You have broken free from the handcuffs.}
+{9858}{}{|0xFFFF00 Neither the target, nor you are cuffed.}
+{9859}{}{puts on the handcuffs}
+{9860}{}{ties up}
+{9861}{}{|0xFFFF00 You have been cuffed!}
+{9862}{}{|0xFFFF00 You have been tied up!}
+{9863}{}{|0xFFFF00 You have removed the rope.}
+{9864}{}{|0xFFFF00 You did not manage to release yourself.}
+{9865}{}{|0xFFFF00 Your prisoner has broken free!}
+{9866}{}{|0xFFFF00 First you have to  take the gag out of the mouth.}
+{9867}{}{|0xFFFF00 This is impossible.}
+{9868}{}{|0xFFFF00 The target has already a slave collar.}
+{9869}{}{|0xFFFF00 The target has already a gag on.}
+{9870}{}{puts a gag in the mouth}
+{9871}{}{|0xFFFF00 You've put a gag in your own mouth.}
+{9872}{}{|0xFFFF00 You've put a gag in the target's mouth.}
+{9873}{}{|0xFFFF00 A gag has been put in your mouth.}
+{9874}{}{|0xFFFF00 The slave collar is being put on you!}
+{9875}{}{Agree}
+{9876}{}{|0xFFFF00 The target already has a slave collar}
+{9877}{}{puts a collar on the slave}
+{9878}{}{|0xFFFF00 You've put a collar on a yourself.}
+{9879}{}{|0xFFFF00 You've put a collar on a slave.}
+{9880}{}{|0xFFFF00 You now have your personal decorative slave collar.}
+{9881}{}{|0xFFFF00 You have punished the slave.}
+{9882}{}{|0xFFFF00 Your neck is burning, the body is shaking.}
+{9883}{}{shakes in agony}
+{9884}{}{|0xFFFF00 Your neck is burning, the body shakes with multiple electric strikes.}
+{9885}{}{|0xFFFF00 Your neck is burning, the body shakes under intolerable pain.}
+{9886}{}{|0xFFFF00 You have executed the slave}
+{9887}{}{|0xFFFF00 The pain of thousand needles shaken you.}
+{9888}{}{|0xFFFF00 You have freed the slave.}
+{9889}{}{|0xFFFF00 The collar opened.}
+{9890}{}{|0xFFFF00 The slave is trying to take off the collar.}
+{9891}{}{presses a button}
+{9892}{}{|0xFFFF00 The shackles don't require repair}
+{9893}{}{|0xFFFF00 You need an iron blank for the key after fixing the lock.}
+{9894}{}{|0xFFFF00 You have fixed shackles and inserted a new key.}
+{9895}{}{|0xFFFF00 There is no point in using the wielding kit, you can take the shackles off anyway.}
+{9896}{}{removes shackles}
+{9897}{}{|0xFFFF00 You were released from the shackles.}
+{9898}{}{|0xFFFF00 You have released yourself from the shackles.}
+
+#Forgot to activate character
+{9899}{}{with a loud bang you have been compressed in a spot}
+
+#General Autoemotes
+{9900}{}{panting}
+{9901}{}{rubs a bruise}
+{9902}{}{shouts in pain}
+{9903}{}{grabs wounded limb, trying to stop blood}
+{9904}{}{screams in pain}
+{9905}{}{screams in agony}
+
+#Suicide
+{9978}{}{performs harakiri...}
+{9979}{}{tries to choke self...}
+{9980}{}{spins the cylinder and puts a gun to own head...}
+{9981}{}{puts the barrel in their mouth...}
+{9982}{}{aims at own abdomen, with the finger on the trigger...}
+{9983}{}{holds grenade to own chest and pulls the pin...}
+{9984}{}{opens a bottle and pours liquid all over themself, takes a lighter from their pocket...
+{9985}{}{presses sharp object to their own belly...}
+{9986}{}{is about to swallow contents of a vial...}
+{9987}{}{|0xFFFF00 You have nothing to kill yourself with.}
+{9988}{}{blows own brains out}
+{9989}{}{the skull explodes with a fountain of blood, covering everything nearby with it}
+{9991}{}{multiplies by two}
+{9992}{}{the head evaporates in an instant}
+{9993}{}{the body is shaking under electrical charge}
+{9994}{}{tried to kill oneself wasting ammo, while weapon awkwardly falls to the ground}
+{9995}{}{trigger guard flies to the side}
+{9996}{}{|0xFFFF00 The  grenade went off without any effect.}
+{9997}{}{drinks the vial}
+{9998}{}{burns oneself, the fire consumes everything nearby}
+
+#Toilet
+{9999}{}{flushes something down the toilet}
+
+#StartMap
+{10000}{}{|0xFFFF00 Error, please contact GM.}
+{10001}{}{|0xFFFF00 Start of the game is possible for new characters only.}
+{10002}{}{|0xFFFF00 Start of the game is possible only on a starting location.}
+{10003}{}{|0xFFFF00 Please try again.}
+{10004}{}{|0xFFFF00 Survival mode selected.}
+{10005}{}{|0xFFFF00 Area not found.}
+{10006}{}{|0xFFFF00 Map not found.}
+{10007}{}{|0xFFFF00 The region is filled with sadness, but it seams like the next few steps forward will change your destiny...}
+{10008}{}{|0xFFFF00 The item was consumed by the void.}
+{10009}{}{|0xFFFF00 This is inappropriate.}
+
+#Grid_to_global_warning
+{15000}{}{|0xFFFF00 You are getting scared.}
+{15000}{}{|0xFFFF00 You have nowhere else to go.}
+{15000}{}{|0xFFFF00 You see only dead wasteland in front of you and understand that going there, will condemn you to certain death. You have no choice but to continue your miserable existence here, fighting for a piece of meat with other people and animals.}
+{15000}{}{|0xFFFF00 There is no life there.}
+{15000}{}{|0xFFFF00 There is nothing waiting for you there.}
+
+# lifts:
+# {2GG00} is key card item proto name from data/ItemNames.lst where GG is lifts group
+# {2GGFF} is floor name where GG is lifts group, FF is floor
+
+{20100}{}{PID_V15_KEYCARD}
+{20101}{}{4 - Control room}
+{20102}{}{3 - Meeting room}
+{20103}{}{2 - Barracks}
+{20104}{}{1 - Dining Room}
+{20105}{}{0 - Galley}
+
+{20201}{}{1 - Trading}
+{20202}{}{2 - Bar}
+{20203}{}{3 - Industrial area}
+{20204}{}{4 - Hole}
+
+{20301}{}{4 - Suites}
+{20302}{}{3 - Business rooms}
+{20303}{}{2 - Economy rooms}
+{20304}{}{1 - Club}
+{20305}{}{0 - Lobby}
+
+{20400}{}{PID_SECURITY_CARD}
+{20401}{}{1 - Surface}
+{20402}{}{2 - Bunker}
+{20403}{}{3 - Technical level}
+
+{20501}{}{0 - Surface}
+{20502}{}{1 - Chemical Plant}
+
+{20601}{}{1 - First Floor}
+{20602}{}{0 - Lobby}
+
+{20701}{}{0 - Lobby}

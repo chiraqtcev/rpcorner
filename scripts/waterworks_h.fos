@@ -1,0 +1,47 @@
+#ifndef WATERWORKS_H
+#define WATERWORKS_H
+
+	#define STATE 						Val0
+	#define MAX_CHARGE 					Val1
+	#define REMAINING_CHARGE			Val2
+	#define EVENT 						Val3
+	#define PUMP_EFFICIENCY				Val4
+	#define WATERSOURCE_DNA				Val5 							// тип воды в источнике
+	#define BUCKET_POSITION				Val6
+	#define BROKEN						Val7
+	#define ENERGY						Val8
+	#define NEED_ENERGY					Val9
+
+	#define BROKEN_MECHANICS			( 0x01 ) 						// механическая поломка
+	#define BROKEN_FILTER				( 0x02 )						// загрязненный фильтр
+
+	#define WATER_FILL_TIME 			REAL_HOUR( 1 )				 	// - wells
+	#define PUMP_FILL_TIME 				REAL_MS( 60000 ) 				// - waterpumps
+
+	#define REMAINING_USES				Val0
+	#define BUCKET_DNA					Val1
+	#define EXTRA_WEIGHT				Val2
+
+	// Контейнеры с водой 
+	#define BARREL_STATE				Val0
+	#define BARREL_MAX_CHARGE 			Val1
+	#define BARREL_CHARGE				Val2
+	#define BARREL_DNA					Val5
+
+	const uint16[] WaterBarrels		  =	{ PID_W_CON_01, PID_W_CON_02, PID_W_CON_03, PID_W_CON_04, PID_W_CON_05, PID_W_CON_06 };
+	const uint16[] WaterBottles		  =	{ PID_GLASS_BOTTLE_FULL, PID_GLASS_BOTTLE_FULL_PRT, PID_GLASS_BOTTLE_DIRTY_FULL, PID_GLASS_BOTTLE_DIRTY_FULL_PRT };
+
+	const uint16[] Wells 			  =	{ PID_WELL_1, PID_WELL_2, PID_NEW_WELL };
+	const string[] WellReelSounds 	  = { "wellReel1.ogg", "wellReel2.ogg" };
+
+	#ifndef WATERWORKS
+		import void StartMenuWell( Critter& cr, Item& well ) from "waterworks";
+		import void StartMenuWaterPump( Critter& cr, Item& waterPump ) from "waterworks";
+		import void FoceWellsCharge() from "waterworks";
+		import void FoceWaterPumpsCharge() from "waterworks";
+		import void Cleaning( Critter& player, uint soap_pid, int water_source ) from "waterworks";
+		import void Cleaning( Critter& player, Critter& target, uint soap_pid, int water_source ) from "waterworks";
+		import void StartWaterBarrelMenu( Critter& cr, Item& barrel ) from "waterworks";
+	#endif WATERWORKS
+
+#endif //WATERWORKS_H

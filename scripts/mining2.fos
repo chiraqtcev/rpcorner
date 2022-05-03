@@ -1,0 +1,325 @@
+/* 
+
+Пришла пора – и фонари зажглись,
+И мир повис в гнилом табачном дыме.
+Ты, как я погляжу, опять грустишь?
+Напрасно – жизнь не слишком тороплива,
+Хоть кажется – мол, рвётся ввысь стрелой,
+Или, напротив, молниею с неба
+Обрушится лавинной прямотой,
+Выдавливая искорки Заветов
+Из мозга, воспалённого хворьбой,
+Из разума, разнузданного волей
+Она пройдёт проторенной тропой,
+Не причиняя, впрочем, прежней боли.
+Не надо так смотреть! Я не жесток,
+В речах моих нет злобы и коварства.
+Мы привыкаем ко всему – в свой срок,
+Взгляни в окно – мешаются контрасты
+В один извечно-тающий пейзаж.
+В застывшей серости ни Тьмы, ни Света –
+Покой. Порядок.
+
+C любовью, чиракцев.
+
+*/ 
+
+#ifndef MINING1
+#define MINING1
+
+#include "_utils.fos"
+#include "mining_h.fos"
+#include "gathering_h.fos"
+#include "fofmod_h.fos"
+
+import void PlayCustomAnimation( Critter& cr, int anim, int p1, int p2 ) from "client_iterations";
+import void StopCustomAnimation( Critter& cr ) from "client_iterations";
+import void FOFMOD_PlaySound( Critter& cr, Map& map, string& sound, int distance ) from "fofmod";
+
+uint16 FindOre( Item& item )
+{    
+    int index = 0;
+
+    for( uint i = 0, l = OreMassive.length(); i < l; i++ )
+    {
+        index = OreMassive[i].find( item.GetProtoId() );
+        if( index != -1 )
+        {
+            return ++ i;
+        }
+    }
+
+    return 0;
+}
+
+bool CheckMining( Critter& cr, Item@ tool, Item@ target ) 
+{
+    Map@ map = cr.GetMap();
+    if( !valid( map ) || !valid( tool ) || !valid( target ) || ToolsMining_Main.find( tool.GetProtoId() ) == -1 || FindOre( target ) == 0 || tool.CritSlot != SLOT_HAND1 || IsTired( cr ) || cr.IsInjured() ) 
+    {
+        SEM( cr, "Вам не удалось начать копать." );
+        return false;
+    }    
+
+    StartMiningMenu( cr, tool, target, 0 );
+    return true; 
+}
+
+void StartMiningMenu( Critter& cr, Item& tool, Item& ore, int p1 ) 
+{
+    Map@ map = cr.GetMap();
+    if( map is null || !valid ( tool ) || !valid ( ore ) )
+        return;
+
+    iMenuHandler@ handler = MiningMenu( tool, ore, map, p1 );
+    iDialogBox@ menu = OpenMenu( cr, "Mining", handler );
+}
+
+class MiningMenu: CenteredMenuHandler {
+
+    int map_id;
+    int tool_id;
+    int ore_id;
+    int deep;
+
+    MiningMenu( Item& tool, Item& ore, Map& map, int p1 ) 
+    {
+        map_id = map.Id;
+
+        if( valid( tool ) )
+            tool_id = tool.Id;
+        
+        ore_id = ore.Id;
+        deep = p1;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu ) 
+    {
+        Map@ map = GetMap( map_id );
+        Item@ tool = GetItem( tool_id );
+        Item@ ore = GetItem( ore_id );
+
+        if( !valid( map ) || !valid( ore ) )
+            return false;
+
+        switch( deep )
+        {
+            case DEEP_MAIN:
+            {
+                if( valid( tool ) )
+                {
+                    if( menu.Button( "Копать" ) )
+                    {
+                        StartMining( cr, tool, ore, ore.ORE_STATUS );
+                    }  
+                }     
+            }
+        } 
+
+        if( menu.Button( "Закрыть" ) )
+        {
+            return false;
+        }  
+        return true;
+    }
+    
+    // UI менюхи
+    string@ Description( Critter& cr ) 
+    {
+        string status;
+        string info;
+
+        switch( deep )
+        {
+            case DEEP_MAIN:
+            {
+                string OreName = "Неизвестная руда";
+                string OreSubName = "Ошибка (VAL2)";
+                string OreSubDescription = "Что-то пошло не так. Обратитесь к GM.";
+
+                Item@ ore = GetItem( ore_id );
+
+                if( RollStat( cr, ST_PERCEPTION ) >= 4 )
+                    OreName = _GetProtoName( ore.GetProtoId() );
+
+                info += "> [ |0xFFFF00 " + OreName + " |0x3CF800 ]\n\n";
+
+                if( ore.ORE_STATUS == STATUS_OK )
+                {
+                    OreSubName = "Горная порода";
+                    OreSubDescription = "Требуются инструменты, чтобы начать поиск полезных ископаемых";
+                }
+
+                if( ore.ORE_STATUS == STATUS_USED )
+                {
+                    OreSubName = "Пласт полезных руд";
+                    OreSubDescription = "Необходимы инструменты для добычи";
+                }
+
+                if( ore.ORE_STATUS == STATUS_EMPTY )
+                {
+                    OreSubName = "Жила опустела";
+                    OreSubDescription = "Необходимо расширить область разработки";
+                }
+
+                if( ore.ORE_STATUS == STATUS_FALL || ore.ORE_STATUS == STATUS_NONE )
+                {
+                    OreSubName = "Случился обвал";
+                    OreSubDescription = "Необходимо подождать, пока порода осядет";
+                }
+
+                info += "|0xFFFF00 " + OreSubName + "|0x3CF800 \n";
+                info += OreSubDescription;
+                break;
+            }
+
+            default:
+            {
+                info += "Произошла ошибка";
+                break;
+            }
+        }
+        return info;
+    }
+    
+    string@ ButtonCancel()
+    {
+        return ButtonDecorator( " ", null );
+    }
+    
+    bool ShouldRedraw( Critter& cr )
+    {
+        return true;
+    }
+}
+
+bool StartMining( Critter& cr, Item& tool, Item& ore, uint status )
+{
+    if( !valid( cr ) || !valid( tool ) || !valid( ore ) || status == 0 )
+    {
+        SEM( cr, "Функция StartMining дала сбой, отпишите в баг-трекер.");
+        return false;
+    }
+
+    if( tool.CritSlot != SLOT_HAND1 || ToolsMining_Main.find( tool.GetProtoId() ) == -1 )
+    {
+        SEM( cr, "У вас нет инструмента в руках.");
+        return false;
+    }
+
+    if( IsTired( cr ) || cr.IsInjured() )
+    {
+        msg_CantWork( cr );
+        return false;
+    }
+
+    if( status != 1 && status != 2 )
+    {
+        SEM( cr, "Вам нечего добывать.");
+        return false;
+    }
+
+    int time = Random( 5, 12 ) - ( RollStat( cr, ST_STRENGTH ) >= 16 ? 1 : 0 ) - ( RollStat( cr, ST_ENDURANCE ) >= 16 ? 1 : 0 );
+    Log( " time ++ " + time);
+
+    uint[] values = { cr.Id, tool.Id, ore.Id, status };
+    CreateTimeEvent( AFTER( REAL_SECOND( time ) ), "e_Mine", values, true );
+    CreateTimeEvent( AFTER( REAL_MS( 700 ) ), "e_MineSound", values, false );
+    PlayCustomAnimation( cr, ANIM2_SWING_1H, 0, 0 );  
+    return true;
+}
+
+uint e_MineSound( uint[]@ values )
+{
+    Critter@ cr = GetCritter( values[0] );
+    Map@ map = cr.GetMap();
+    Item@ tool = GetItem( values[1] );
+    uint toolPid = tool.GetProtoId();
+    string sound = "";
+    switch( toolPid )
+    {
+        case( PID_PRIMITIVE_SLEDGE ):
+        case( PID_SLEDGEHAMMER ):
+        case( PID_SUPER_SLEDGE ):
+        case( PID_SLEDGEHAMMER2 ):
+        case( PID_SM_HAMMER ):
+        case( PID_SM_CLUB ):
+            sound = _GetOneRandom( HammerSounds );
+            break;
+        case( PID_SHOVEL ): 
+        case( PID_PICKAXE ):
+            sound = _GetOneRandom( PickaxeSounds );
+            break;
+        default:
+            break;
+    }
+
+    FOFMOD_PlaySound( cr, map, sound, 30 );
+
+    if( cr.StatBase[ ST_CUSTOM_ANIMATION ] != ANIM2_SWING_1H )
+        return 0;
+
+    CreateTimeEvent( REAL_MS( 700 ), "gathering@e_TiredenessTimeout", cr.Id, true );
+    return REAL_MS( 700 );
+}
+
+uint e_Mine( uint[]@ values )
+{
+    Critter@ cr = GetCritter( values[ 0 ] );
+    Item@ tool = GetItem( values[ 1 ] );
+    Item@ ore = GetItem( values[ 2 ] );
+
+    if( !valid( cr ) || !valid( tool ) || !valid( ore ) || cr.StatBase[ ST_CUSTOM_ANIMATION ] != ANIM2_SWING_1H )
+    {
+        return 0;
+    }
+
+    // Обновляем состояние руды
+    if( ore.ORE_STATUS == STATUS_USED || ore.ORE_STATUS == STATUS_OK )
+    {
+        ore.ORE_HP -= ToolsMining_Damage[ ToolsMining_Main.find( tool.GetProtoId() ) ];
+
+        if( ore.ORE_HP < 1 )
+        {
+            ore.ORE_HP = 100;
+            ore.ORE_STATUS++;
+        }
+
+        int chance = Random( 1, 100 );
+        Log( "chance .. " + chance );
+        if( chance < 6 ) // Произошел обвал
+        {
+            ore.ORE_HP = 100;
+            ore.ORE_STATUS = STATUS_FALL;         
+        }
+        else if( chance < 16 ) // Жила опустела
+        {
+            ore.ORE_HP = 100;
+            ore.ORE_STATUS = STATUS_EMPTY;   
+        }
+    }
+
+    int debuff,
+        result;
+
+    if( cr.Stat[ ST_PERCEPTION ] < 10)
+    // Профит
+    if( ore.ORE_HP => 70 && ore.ORE_HP <= 100)
+        debuff += 1;
+
+    if( ore.ORE_HP => 50 && ore.ORE_HP < 70)
+        debuff += 2;
+
+    if( ore.ORE_HP => 20 && ore.ORE_HP < 50)
+        debuff += 3;
+
+    if( ore.ORE_HP => 1 && ore.ORE_HP < 20)
+        debuff += 4;
+
+
+    // Завершение
+    StopCustomAnimation( cr );
+    return 0;
+}
+
+#endif //MINING

@@ -1,0 +1,32 @@
+import uint manager_loop() from "manager";
+uint next_manager_loop = 0;
+
+import void MenuRedrawLoop(uint tick) from "suck_less";
+
+bool first = true;
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Call every returned value, in milliseconds.
+// Return next call in milliseconds or zero to disable loop.
+uint loop()
+{
+    uint tick = GetTick();
+    if (tick > next_manager_loop) {
+        next_manager_loop = tick + manager_loop();
+    }
+
+    if(first) {
+        first = false;
+        /*
+        uint compat = GetASCompat();
+        InitCompat(compat);
+        */
+    }
+
+    // check for new messages from web server
+    DllLoop();
+
+    MenuRedrawLoop(tick);
+
+    return 1;
+}

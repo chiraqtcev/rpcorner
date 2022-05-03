@@ -1,0 +1,99 @@
+#ifndef LOCAL_POPULATION_H
+#define LOCAL_POPULATION_H
+
+	#define ITEM_ACCESSORY    ( 0 )
+
+	#define RESPAWN_TIME      ( 60 * 60 * 2 * __TimeMultiplier )
+
+	#define LVAR			  #(name)	GetLocalVar( name, map.Id ).GetValue()
+		
+	uint[] mob_spawns = { 
+		LMVAR_CRITTER_RATS,
+		LMVAR_CRITTER_MANTISS,
+		LMVAR_CRITTER_ANTS,
+		LMVAR_CRITTER_ANT_LION,
+		LMVAR_CRITTER_PIGRATS,
+		LMVAR_CRITTER_GRIZRATS,
+		LMVAR_CRITTER_GRISRAT_MUTANT,
+		LMVAR_CRITTER_GECKO_SILVER,
+		LMVAR_CRITTER_GECKO_GOLD,
+		LMVAR_CRITTER_GECKO_CAVE,
+		LMVAR_CRITTER_DOGS,
+		LMVAR_CRITTER_WOLVES,
+		LMVAR_CRITTER_RADSCORPIONS,
+		LMVAR_CRITTER_RADSCORPIONS_BLACK,
+		LMVAR_CRITTER_YAO,
+		LMVAR_CRITTER_CAVESCORPIONS,
+		LMVAR_CRITTER_BRAMIN
+	};
+
+	uint[] beast_spawns = { 
+		LMVAR_CRITTER_EVILPLANTS,	
+		LMVAR_CRITTER_ALIENS,
+		LMVAR_CRITTER_DEATHCLAWS,
+		LMVAR_CRITTER_CROC,
+		LMVAR_CRITTER_SHADOW_CROC,
+		LMVAR_CRITTER_FIREGECKO,
+		LMVAR_CRITTER_BRUTES,
+		LMVAR_CRITTER_CENTAURS,
+		LMVAR_CRITTER_FLOATERS,
+		LMVAR_CRITTER_MURLOCKS,
+		LMVAR_CRITTER_GIANT_WASPS,
+		LMVAR_CRITTER_GIANT_BEETLES,
+		LMVAR_CRITTER_WILD_GHOULS,
+		LMVAR_CRITTER_MILLEPEDE,
+		LMVAR_CRITTER_LAVASH,
+		LMVAR_CRITTER_SPIDER
+	};
+	const string[] mob_names = { "Крысы", "Мантисы", "Муравьи", "Мур. Лев", "Свинокрысы", "Кротокрысы", "Крот. Мутант", "Сер. Гекко", "Зол. Гекко", "Пещерн. Гекко", 
+								 "Собаки", "Волки", "Радскорпы", "Ч Радскорпы", "Яо-Гай", "Пещ. Радскорпы", "Брамины" };
+	
+	const string[] beast_names  = { "Растения", "Ванаминго", "Когти смерти", "Жуткохват", "Тенехват", "Огнегекко", "Бестия", "Кентавр", "Летатели", "Болотники", "Осы", "Тараканы", "Дикие Гули", "Многоножка", "Лаваш", "Паук" };
+	
+	const uint[][] Critter_list = // Прототипы мобов - Mob Proto
+	{
+		{ 1000, 1001, 1002, 1003, 1004, 1005 }, // 0  Крысы
+		{ 1030, 1031, 1032, 1033 }, 			// 1  Мантисы
+		{ 1060, 1061, 1062, 1063 }, 			// 2  Муравьи
+		{ 2203 }, 								// 3  Муравьиный Лев
+		{ 1210, 1211, 1212 }, 					// 4  Свинокрысы
+		{ 1240, 1241, 1242 }, 					// 5  Кротокрысы
+		{ 2206 }, 								// 6  Кротокрыс Мутант
+		{ 1270, 1271, 1272, 1273 }, 			// 7  Серебрянные Гекко
+		{ 1300, 1301, 1302 }, 					// 8  Золотые Гекко
+		{ 2209 }, 								// 9  Пещерный Гекко
+		{ 1151, 1152, 1153, 1154 }, 			// 10 Собаки
+		{ 1180, 1181, 1182, 1183, 1184 }, 		// 11 Волки
+		{ 1360, 1390, 1391 }, 					// 12 Радскорпионы
+		{ 1420, 1421 }, 						// 13 Черные Радскорпионы
+		{ 2227 }, 								// 14 Яо-Гай
+		{ 2215 }, 								// 15 Пещерный Радскорпион
+		{ 1120, 1121, 1122, 1123, 1124 }, 		// 16 Брамины
+		{ 1090, 1091 }, 						// 17 Хищные растения
+		{ 1510, 1511, 1512, 1540 }, 			// 18 Ванаминго
+		{ 1450, 1451, 1452, 1453, 1454 }, 		// 19 Когти смерти
+		{ 2228 }, 								// 20 Жуткохват
+		{ 2229 }, 								// 21 Тенехват
+		{ 1330, 1331 }, 						// 22 Огненные Гекко
+		{ 2223 }, 								// 23 Бестия
+		{ 1600, 1601, 1602, 1603 }, 			// 24 Кентавры
+		{ 1570, 1571, 1572, 1573 }, 			// 25 Летатели
+		{ 1480, 1481, 1482 },  					// 26 Болотники
+		{ 2211 },								// 27 Осы
+		{ 2212 },  								// 28 Тараканы
+		{ 2230, 2231, 2232, 2233 }	,			// 29 Дикие гули		
+		{ 2290 }, 								// Millepede
+		{ 2291 },								// Lavash
+		{ 2292 }								// Spider
+	};
+
+	#ifndef LOCAL_POPULATION
+		import bool SpawnItemCell( uint mapId ) from "local_population";
+		import void AddCritter( Map& map ) from "local_population";
+		import void MobsAutoInit() from "local_population";
+		import void ForceSpawnMobs() from "local_population";
+		import bool GatherItemCell( Critter& player, uint mapId ) from "local_population";
+	#endif //LOCAL_POPULATION
+
+#endif //LOCAL_POPULATION_H
+

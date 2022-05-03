@@ -1,0 +1,36 @@
+Fraction = Template
+
+Fraction = slavers
+RelationDefault = war
+
+Fraction = strangers
+RelationDefault = war
+
+Fraction = cannibals
+RelationDefault = war
+
+Fraction = caravans
+RelationDefault = war
+
+Fraction = gangs
+RelationDefault = war
+
+Fraction = ghouls
+RelationDefault = war
+
+Fraction = raiders
+RelationDefault = war
+
+Fraction = primitives
+RelationDefault = war
+
+Fraction = animals
+RelationDefault = war
+RelationFaction_monsters = neutral
+
+Fraction = carnivores
+RelationDefault = war
+
+Fraction = monsters
+RelationDefault = war
+RelationFaction_animals = neutral

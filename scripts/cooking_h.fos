@@ -1,0 +1,9 @@
+#ifndef COOKING_H
+#define COOKING_H
+
+	#ifndef COOKING
+		const uint16[] CookItems = { PID_FIREBARREL, PID_FIREPLACE2, PID_CHOPPED_FIREWOOD, 2612, 2682, 2683, 2684, 2685, 3822, 3823, 3824, 3825 };
+		import void AskCooking( Critter& cr ) from "cooking";
+	#endif //COOKING
+
+#endif // COOKING_H

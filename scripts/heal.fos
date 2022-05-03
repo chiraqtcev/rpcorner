@@ -1,0 +1,1836 @@
+#ifndef HEAL
+#define HEAL
+
+#include "_utils.fos"
+#include "heal_h.fos"
+#include "food_h.fos"
+#include "waterworks_h.fos"
+#include "combat_h.fos"
+#include "drugs_h.fos"
+#include "critter_status_h.fos"
+#include "speed_h.fos"
+#include "radiation_h.fos"
+#include "poison_h.fos"
+
+void StartMenuDOC( Critter& healer, Critter& target )
+{
+	OpenMenu( healer, "DOC", MenuDOC( target ) );
+}	
+
+enum MenuDOC_stage
+{
+	tool = 1,
+	antiseptik = 2,
+	anestetik = 3,
+	processing = 4
+};
+
+enum MenuDOC_tool
+{
+	none = 0,
+	blade = 1,  
+	clips = 2,
+	multitool = 3,
+	needle = 4
+};
+
+enum MenuDOC_antiseptik
+{
+	none = 0,
+	booze = 1,
+	spirit = 2,
+	antiseptik = 3
+};
+
+enum MenuDOC_anestetik
+{
+	none = 0,
+	booze = 1,
+	spirit = 2,
+	anestetik = 3
+};
+
+enum MenuCripple_stage
+{
+	main = 0,
+	tool = 1
+};
+
+enum MenuCripple_tools
+{
+	none = 0,
+	splint = 1,
+	handmade
+};
+
+class MenuDOC: CenteredMenuHandler 
+{	
+	Critter@ cr;
+	Critter@ target;
+	iDialogBox@ menu;
+	
+	string state;
+	
+	MenuDOC( Critter& target )
+	{
+		@this.target = @target;
+	}
+
+	//TODO: Вынести общий функционал.
+	bool check( uint pid, string success, string failed )
+	{
+		if( hasItem( cr, pid ) ) {
+			if( menu.Button( success ) ) {
+				return true;
+			}
+		} else { 
+			menu.Button( failed );
+		}
+		return false;
+	}
+	
+	bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+		@this.cr = @cr;
+		@this.menu = @menu;
+	
+		state = target.Stat[ ST_CURRENT_HP ] > 0 ? "Пульс в норме" : "Пульс слабый";
+
+		if( damages.length() != damage_states.length() ) {
+			testInfo( cr, "damages.length("+damages.length()+") != damage_states.length("+damage_states.length()+")" );
+			return false;
+		}
+		
+		bool hasDamages = false;
+		for( uint i = 0, l = damages.length(); i < l; i++ ) {
+			if( target.DamageBase[damages[i]] != 0 ) {
+				state += ", " + damage_states[i]; 
+				hasDamages = true;
+			}
+		}
+		
+		if( cr.Stat[ST_POISONING_LEVEL] > 0 ) {
+			state += ", есть признаки отравления";
+			hasDamages = true;
+		}
+		
+		if( cr.Stat[ST_RADIATION_LEVEL] > 0 ) {
+			state += ", есть признаки облучения";
+			hasDamages = true;
+		}
+		
+		if( cr.Stat[ST_BLEED] > 0 ) {
+			state += ", кровотечение";
+			hasDamages = true;
+		}
+		
+		state += ".";
+		
+		bool knife = ( _CritCountItem( cr, PID_KNIFE ) > 0 || _CritCountItem( cr, PID_COMBAT_KNIFE ) > 0 );
+
+		if( FLAG( target.StatBase[ ST_CRSTATUS ], CR_STATUS_BULLET_OVER ) ) {
+			state += "\n" + "Пуля или осколок в ране, необходимо вынуть перед дальнейшими действиями.";
+			if ( menu.Button( "Извлечение" ) ) {
+				OpenMenu( cr, "BulletOver", MenuDOC_Bullet( target ) );
+				return false;
+			}
+			return true;
+		}
+
+		if( FLAG( target.StatBase[ ST_CRSTATUS ], CR_STATUS_HEAVY_DMG ) ) {
+			state += "\n" + "Сложная рана, необходимо закрыть ее.";
+			
+			if ( menu.Button( "Операция" ) ) {
+				OpenMenu( cr, "HeavyDamage", MenuDOC_Heavy( target ) );
+				return false;
+			}
+			return true;
+		}
+			
+		if( hasDamages && menu.Button( "Травмы" ) ) {
+			OpenMenu( cr, "Cripple", MenuDOC_Cripple( target ) );
+			return false;
+		}
+
+		state += "\n" + "Дальше может потребоваться только перевязка.";
+		return true;
+	}
+
+	string@ Description( Critter& cr ) 
+	{
+		return state;
+	}
+}
+
+class MenuDOC_Bullet: CenteredMenuHandler 
+{	
+	int stage;
+	
+	int tool;
+	int antiseptik;
+	int anestetik;
+	
+	Critter@ cr;
+	Critter@ target;
+	iDialogBox@ menu;
+	
+	MenuDOC_Bullet( Critter& target )
+	{
+		@this.target = @target;
+		
+		this.stage 		= MenuDOC_stage::tool;
+		
+		this.tool 		= MenuDOC_tool::none;
+		this.antiseptik = MenuDOC_antiseptik::none;
+		this.anestetik 	= MenuDOC_anestetik::none;
+	}
+
+	//TODO: Вынести общий функционал.
+	bool check( uint pid, string success, string failed )
+	{
+		if( hasItem( cr, pid ) ) {
+			if( menu.Button( success ) ) {
+				return true;
+			}
+		} else { menu.Button( failed );
+		}
+		
+		return false;
+	}
+	
+	bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+		@this.cr = @cr;
+		@this.menu = @menu;
+		
+		string info = "Test info:\n"
+					+ "Доктор #" + cr.Id 			+ "\n"
+					+ "Пациент #" + target.Id		+ "\n"
+					+ "stage #" + stage				+ "\n"
+					+ "antiseptik #" + antiseptik	+ "\n"
+					+ "anestetik #" + anestetik		+ "\n"
+
+				;
+					
+		testInfo( cr, info );
+		
+		switch( stage )
+		{
+			case(MenuDOC_stage::tool):
+			{
+				if( check( PID_MEDCLIP, "щипцами", "нет щипцов" ) ) {
+					tool  = MenuDOC_tool::clips;
+					stage = MenuDOC_stage::antiseptik;	
+				} if( check( PID_MULTI_TOOL, "мультитулом", "нет клещей" ) ) {
+					tool  = MenuDOC_tool::multitool;
+					stage = MenuDOC_stage::antiseptik;	
+				}
+
+				if( hasItems( cr, blades ) ) {
+					if( menu.Button( "выковырять" ) ) {
+						tool  = MenuDOC_tool::blade;
+						stage = MenuDOC_stage::antiseptik;	
+					}
+				} else { menu.Button( "нет лезвия" );
+				}
+				
+				if( menu.Button( "Медосмотр" ) ) {
+					OpenMenu( cr, "DOC", MenuDOC( target ) );
+					return false;
+				}
+			}
+			return true;
+			
+			case(MenuDOC_stage::antiseptik):
+			{
+				
+				if( check( PID_ROT_GUT_PRT, "исп. самогон", "нет самогона" ) ) {
+					antiseptik  = MenuDOC_antiseptik::booze;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( check( PID_SPIRIT_PRT, "исп. спирт", "нет спирта" ) ) {
+					antiseptik  = MenuDOC_antiseptik::spirit;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( check( PID_ANTISEPTIC, "исп. антисептик", "нет антисептика" ) ) {
+					antiseptik  = MenuDOC_antiseptik::antiseptik;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+
+				if( menu.Button( "без обеззараживания" ) ) {
+					antiseptik  = MenuDOC_antiseptik::none;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( menu.Button( "Назад" ) ) {
+					stage 		= MenuDOC_stage::tool;	
+				}
+			}
+			return true;
+			
+			case(MenuDOC_stage::anestetik):
+			{
+				if( check( PID_ROT_GUT_PRT, "исп. самогон", "нет самогона" ) ) {
+					anestetik   = MenuDOC_anestetik::booze;
+					stage 	    = MenuDOC_stage::processing;	
+				}
+				
+				if( check( PID_SPIRIT_PRT, "исп. спирт", "нет спирта" ) ) {
+					anestetik   = MenuDOC_anestetik::spirit;
+					stage 	    = MenuDOC_stage::processing;	
+				}
+				
+				if( check( PID_ANESTETIC, "исп. анестетик", "нет анестезии" ) ) {
+					anestetik   = MenuDOC_anestetik::anestetik;
+					stage 		= MenuDOC_stage::processing;	
+				}
+
+				if( menu.Button( "без обезболивающих" ) ) {
+					anestetik   = MenuDOC_anestetik::none;
+					stage 		= MenuDOC_stage::processing;	
+				}
+				
+				if( menu.Button( "Назад" ) ) {
+					stage 		= MenuDOC_stage::antiseptik;	
+				}
+			}
+			return true;
+			
+			case(MenuDOC_stage::processing):
+			{
+				if( menu.Button( "Приступить" ) ) {
+					if( cr.Timeout[ TO_SK_DOCTOR ] > 0 ) {
+						stage 		= MenuDOC_stage::tool;
+						
+						cr.Say( SAY_NETMSG, "Вы слишком устали, напряжение убьёт вас." );
+						return true;
+					}
+					
+					uint16 skill = cr.Skill[ SK_DOCTOR ];
+					string skill_info = "DOC base [" + skill + "] ";
+					
+					int damage = 0;
+					string damage_info = "Taken damage: ";
+					
+					switch( tool )
+					{
+						case(MenuDOC_tool::clips):
+						{
+							Item@ item_tool = getItem( cr, PID_MEDCLIP );
+							if( !valid( item_tool ) ) {
+								tool = MenuDOC_tool::none;
+							} else {
+								skill += 100;
+								skill_info += " + clips [100]";
+							}						
+						}
+						break;
+
+						case(MenuDOC_tool::multitool):
+						{
+							Item@ item_tool = getItem( cr, PID_MULTI_TOOL );
+							if( !valid( item_tool ) ) {
+								tool = MenuDOC_tool::none;
+							} else {
+								skill += 0;
+								skill_info += " + multitool [0]";
+
+								int rng = Random( 5, 15 );
+								damage += rng;
+								damage_info += " + multitool [" + rng + "]";
+							}						
+						}
+						break;
+
+						case(MenuDOC_tool::blade):
+						{
+							if( hasItems( cr, blades ) ) {
+								skill -= 100;
+								skill_info += " - blades [100]";
+								
+								int rng = Random( 15, 30 );
+								damage += rng;
+								damage_info += " + blades [" + rng + "]";
+							}						
+						}
+						break;
+					}
+					
+					switch( antiseptik )
+					{
+						case(MenuDOC_antiseptik::booze):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_ROT_GUT_PRT );
+							if( !valid( item_antiseptik ) ) {
+								antiseptik = MenuDOC_antiseptik::none;
+							} else {
+								SpillOut( item_antiseptik );
+								
+								skill += 0;
+								skill_info += " + booze [0]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::spirit):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_SPIRIT_PRT );
+							if( !valid( item_antiseptik ) ) {
+								antiseptik = MenuDOC_antiseptik::none;
+							} else {
+								SpillOut( item_antiseptik );
+								
+								skill += 15;
+								skill_info += " + spirit [15]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::antiseptik):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_ANTISEPTIC );
+							if( !valid( item_antiseptik ) ) {
+								antiseptik = MenuDOC_antiseptik::none;
+							} else {
+								skill += 30;
+								skill_info += " + antiseptik [30]";
+								
+								int rng = Random( 5, 10 );
+								damage -= rng;
+								damage_info += " - antiseptik [" + rng + "]";
+
+								_SubItem( item_antiseptik, 1 );
+								cr.AddItem( PID_PHIAL, 1 );
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::none):
+						{
+							skill -= 30;
+							skill_info += " - no antiseptik [30]";
+								
+							int rng = Random( 5, 10 );
+							damage += rng;
+							damage_info += " + no antiseptik [" + rng + "]";
+
+							//cr.ParamBase[ CR_DIRTINESS ] += Random( 5, 10 );
+						}
+						break;
+						
+					}
+					
+					switch( anestetik )
+					{
+						case(MenuDOC_anestetik::booze):
+						{
+							Item@ item_anestetik = getItem( cr, PID_ROT_GUT_PRT );
+							if( !valid( item_anestetik ) ) {
+								anestetik = MenuDOC_anestetik::none;
+							} else {
+								SpillOut( item_anestetik );
+								
+								skill += 15;
+								skill_info += " + booze [15]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::spirit):
+						{
+							Item@ item_anestetik = getItem( cr, PID_SPIRIT_PRT );
+							if( !valid( item_anestetik ) ) {
+								anestetik = MenuDOC_anestetik::none;
+							} else {
+								SpillOut( item_anestetik );
+								
+								skill += 30;
+								skill_info += " + spirit [30]";
+								
+								int rng = Random( 5, 20 );
+								damage -= rng;
+								damage_info += " - spirit [" + rng + "]";
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::anestetik):
+						{
+							Item@ item_anestetik = getItem( cr, PID_ANESTETIC );
+							if( !valid( item_anestetik ) ) {
+								anestetik = MenuDOC_anestetik::none;
+							} else {
+								skill += 60;
+								skill_info += " + anestetik [60]";
+								
+								int rng = Random( 15, 30 );
+								damage -= rng;
+								damage_info += " - anestetik [" + rng + "]";
+
+								_SubItem( item_anestetik, 1 );
+								cr.AddItem( PID_PHIAL, 1 );
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::none):
+						{
+							skill += 0;
+							skill_info += " + no anestetik [0]";
+								
+							damage += 0;
+						}
+						break;
+						
+					}
+
+					target.StatBase[ ST_CURRENT_HP ] -= damage;
+					
+					testInfo( cr, skill_info + " = " + skill + "." );
+					testInfo( cr, damage_info + " = " + damage + "." );
+
+					int luck = cr.Stat[ST_LUCK];
+					int chances = ( skill + rollLuck( luck ) * HEALING_LUCK_DEPENDENCY );
+					testInfo( cr,
+						"skill [" + skill + "]" +
+						" + rollLuck( luck[" + luck + "] )[" + rollLuck( luck ) + "]" + 
+						" * HEALING_LUCK_DEPENDENCY [" + HEALING_LUCK_DEPENDENCY + "]" +
+						"{" + chances + "}" +
+							" > " +
+						"Random( 0, 100 * HEALING_DIFFICULTY[" + HEALING_DIFFICULTY + "] )" +
+						"\n\nChances are: " + float( chances / HEALING_DIFFICULTY ) + "%." +
+						""
+					);
+					
+					if( HealingProcessSucceed( skill, cr.Stat[ST_LUCK] ) ) {
+						ChangeStatus( target, CR_STATUS_BULLET_OVER, 0, false );
+						cr.Say( SAY_NETMSG, "Вы вытащили пулю из раны." );
+					} else {
+						cr.Say( SAY_NETMSG, "У вас не вышло извлечь пулю." );
+					}
+					cr.TimeoutBase[ TO_SK_DOCTOR ] = DOCTOR_TIMEOUT( player );
+					
+					OpenMenu( cr, "DOC", MenuDOC( target ) );
+					return false;
+				}
+
+				if( menu.Button( "Назад" ) ) {
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+			}
+			return true;
+		}
+		
+		return true;
+	}
+
+	string@ Description( Critter& cr ) 
+	{
+		switch( stage )
+		{
+			case(MenuDOC_stage::tool):
+				return "Выберите инструмент:";
+				
+			case(MenuDOC_stage::antiseptik):
+				return "Применяем антисептик:"; 
+			
+			case(MenuDOC_stage::anestetik):
+				return "Применяем анестезию:"; 
+			
+			case(MenuDOC_stage::processing):
+				return "Вы готовы провести операцию по извлечению инородного тела из раны пациента."; 
+		}
+		
+		return "[UNKNOWN STATE #" + stage + "]";
+	}
+}
+
+class MenuDOC_Heavy: CenteredMenuHandler 
+{	
+	int stage;
+	
+	int tool;
+	int antiseptik;
+	int anestetik;
+	
+	Critter@ cr;
+	Critter@ target;
+	iDialogBox@ menu;
+	
+	MenuDOC_Heavy( Critter& target )
+	{
+		@this.target = @target;
+		
+		this.stage 		= MenuDOC_stage::tool;
+		
+		this.tool 		= MenuDOC_tool::none;
+		this.antiseptik = MenuDOC_antiseptik::none;
+		this.anestetik 	= MenuDOC_anestetik::none;
+	}
+
+	//TODO: Вынести общий функционал.
+	bool check( uint pid, string success, string failed )
+	{
+		if( hasItem( cr, pid ) )
+		{
+			if( menu.Button( success ) )
+				return true;
+		}
+		else menu.Button( failed );
+		
+		return false;
+	}
+	
+	bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+		@this.cr = @cr;
+		@this.menu = @menu;
+		
+		string info = "Test info:\n"
+					+ "Доктор #" + cr.Id 			+ "\n"
+					+ "Пациент #" + target.Id		+ "\n"
+					+ "stage #" + stage				+ "\n"
+					+ "antiseptik #" + antiseptik	+ "\n"
+					+ "anestetik #" + anestetik		+ "\n"
+
+				;
+					
+		testInfo( cr, info );
+		
+		switch( stage )
+		{
+			case(MenuDOC_stage::tool):
+			{
+				if( check( PID_MEDNEEDLE, "зашить", "нечем зашить" ) )
+				{
+					tool  = MenuDOC_tool::needle;
+					stage = MenuDOC_stage::antiseptik;	
+				}		
+
+				if( hasItems( cr, blades ) )
+				{
+					if( menu.Button( "прижечь" ) )
+					{
+						tool  = MenuDOC_tool::blade;
+						stage = MenuDOC_stage::antiseptik;	
+					}
+				}
+				else menu.Button( "нечем прижечь" );
+				
+				if( menu.Button( "Медосмотр" ) )
+				{
+					OpenMenu( cr, "DOC", MenuDOC( target ) );
+					return false;
+				}
+			}
+			return true;
+			
+			case(MenuDOC_stage::antiseptik):
+			{
+				if( check( PID_ROT_GUT_PRT, "исп. самогон", "нет самогона" ) )
+				{
+					antiseptik  = MenuDOC_antiseptik::booze;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( check( PID_SPIRIT_PRT, "исп. спирт", "нет спирта" ) )
+				{
+					antiseptik  = MenuDOC_antiseptik::spirit;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( check( PID_ANTISEPTIC, "исп. антисептик", "нет антисептика" ) )
+				{
+					antiseptik  = MenuDOC_antiseptik::antiseptik;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+
+				if( menu.Button( "без обеззараживания" ) ) 
+				{
+					antiseptik  = MenuDOC_antiseptik::none;
+					stage 		= MenuDOC_stage::anestetik;	
+				}
+				
+				if( menu.Button( "Назад" ) )
+					stage 		= MenuDOC_stage::tool;	
+				
+			}
+			return true;
+			
+			case(MenuDOC_stage::anestetik):
+			{
+				if( check( PID_ROT_GUT_PRT, "исп. самогон", "нет самогона" ) )
+				{
+					anestetik   = MenuDOC_anestetik::booze;
+					stage 	    = MenuDOC_stage::processing;	
+				}
+				
+				if( check( PID_SPIRIT_PRT, "исп. спирт", "нет спирта" ) )
+				{
+					anestetik   = MenuDOC_anestetik::spirit;
+					stage 	    = MenuDOC_stage::processing;	
+				}
+				
+				if( check( PID_ANESTETIC, "исп. анестетик", "нет анестезии" ) )
+				{
+					anestetik   = MenuDOC_anestetik::anestetik;
+					stage 		= MenuDOC_stage::processing;	
+				}
+
+				if( menu.Button( "без обезболивающих" ) ) 
+				{
+					anestetik   = MenuDOC_anestetik::none;
+					stage 		= MenuDOC_stage::processing;	
+				}
+				
+				if( menu.Button( "Назад" ) )
+					stage 		= MenuDOC_stage::antiseptik;	
+				
+			}
+			return true;
+			
+			case(MenuDOC_stage::processing):
+			{
+				if( menu.Button( "Приступить" ) )
+				{
+					if( cr.Timeout[ TO_SK_DOCTOR ] > 0 )
+					{
+						stage 		= MenuDOC_stage::tool;
+						
+						cr.Say( SAY_NETMSG, "Вы слишком устали, напряжение убьёт вас." );
+						return true;
+					}
+					
+					uint16 skill = cr.Skill[ SK_DOCTOR ];
+					string skill_info = "DOC base [" + skill + "] ";
+					
+					int damage = 0;
+					string damage_info = "Taken damage: ";
+					string action_info = "";
+					
+					switch( tool )
+					{
+						case(MenuDOC_tool::needle):
+						{
+							Item@ needle = getItem( cr, PID_MEDNEEDLE );
+							Item@ thread = getItem( cr, PID_MEDTHREAD );
+							if( !valid( needle ) || !valid( thread ) )
+							{
+								tool = MenuDOC_tool::none;
+								stage 		= MenuDOC_stage::tool;
+								
+								cr.Say( SAY_NETMSG, "Нет иглы и ниток." );
+								return true;
+							}
+							else
+							{
+								skill += 50;
+								skill_info += " + needle [50]";
+								
+								int rng = Random( 5, 10 );
+								damage += rng;
+								damage_info += " + needle [" + rng + "]";
+								
+								action_info = "зашили";
+
+								_SubItem( thread, 1 );
+							}						
+						}
+						break;
+
+						case(MenuDOC_tool::blade):
+						{
+							if( hasItems( cr, blades ) && hasItems( cr, heatsources ) )
+							{
+								skill -= 50;
+								skill_info += " - blades [50]";
+								
+								int rng = Random( 15, 30 );
+								damage += rng;
+								damage_info += " + blades [" + rng + "]";
+
+								action_info = "прижгли";
+							}
+							else
+							{
+								tool = MenuDOC_tool::none;
+								stage 		= MenuDOC_stage::tool;
+								
+								cr.Say( SAY_NETMSG, "Нет источника тепла, или нечем прижечь рану." );
+								return true;
+							}
+						}
+						break;
+					}
+					
+					switch( antiseptik )
+					{
+						case(MenuDOC_antiseptik::booze):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_ROT_GUT_PRT );
+							if( !valid( item_antiseptik ) )
+								antiseptik = MenuDOC_antiseptik::none;
+							else
+							{
+								SpillOut( item_antiseptik );
+								
+								skill += 0;
+								skill_info += " + booze [0]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::spirit):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_SPIRIT_PRT );
+							if( !valid( item_antiseptik ) )
+								antiseptik = MenuDOC_antiseptik::none;
+							else
+							{
+								SpillOut( item_antiseptik );
+								
+								skill += 15;
+								skill_info += " + spirit [15]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::antiseptik):
+						{
+							Item@ item_antiseptik = getItem( cr, PID_ANTISEPTIC );
+							if( !valid( item_antiseptik ) )
+								antiseptik = MenuDOC_antiseptik::none;
+							else
+							{
+								skill += 30;
+								skill_info += " + antiseptik [30]";
+								
+								int rng = Random( 5, 10 );
+								damage -= rng;
+								damage_info += " - antiseptik [" + rng + "]";
+
+								_SubItem( item_antiseptik, 1 );
+								cr.AddItem( PID_PHIAL, 1 );
+							}
+						}
+						break;
+						
+						case(MenuDOC_antiseptik::none):
+						{
+							skill -= 30;
+							skill_info += " - no antiseptik [30]";
+								
+							int rng = Random( 5, 10 );
+							damage += rng;
+							damage_info += " + no antiseptik [" + rng + "]";
+
+							//cr.ParamBase[ CR_DIRTINESS ] += Random( 5, 10 );
+						}
+						break;
+						
+					}
+					
+					switch( anestetik )
+					{
+						case(MenuDOC_anestetik::booze):
+						{
+							Item@ item_anestetik = getItem( cr, PID_ROT_GUT_PRT );
+							if( !valid( item_anestetik ) )
+								anestetik = MenuDOC_anestetik::none;
+							else
+							{
+								ApplyFoodEffects( target, item_anestetik );
+								
+								SpillOut( item_anestetik );
+								
+								skill += 15;
+								skill_info += " + booze [15]";
+								
+								damage += 0;
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::spirit):
+						{
+							Item@ item_anestetik = getItem( cr, PID_SPIRIT_PRT );
+							if( !valid( item_anestetik ) )
+								anestetik = MenuDOC_anestetik::none;
+							else
+							{
+								ApplyFoodEffects( target, item_anestetik );
+								
+								SpillOut( item_anestetik );
+								
+								skill += 30;
+								skill_info += " + spirit [30]";
+								
+								int rng = Random( 5, 20 );
+								damage -= rng;
+								damage_info += " - spirit [" + rng + "]";
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::anestetik):
+						{
+							Item@ item_anestetik = getItem( cr, PID_ANESTETIC );
+							if( !valid( item_anestetik ) )
+								anestetik = MenuDOC_anestetik::none;
+							else
+							{
+								skill += 60;
+								skill_info += " + anestetik [60]";
+								
+								int rng = Random( 15, 30 );
+								damage -= rng;
+								damage_info += " - anestetik [" + rng + "]";
+
+								_SubItem( item_anestetik, 1 );
+								cr.AddItem( PID_PHIAL, 1 );
+							}
+						}
+						break;
+						
+						case(MenuDOC_anestetik::none):
+						{
+							skill += 0;
+							skill_info += " + no anestetik [0]";
+								
+							damage += 0;
+						}
+						break;
+						
+					}
+
+					target.StatBase[ ST_CURRENT_HP ] -= damage;
+					
+					testInfo( cr, skill_info + " = " + skill + "." );
+					testInfo( cr, damage_info + " = " + damage + "." );
+
+					int luck = cr.Stat[ST_LUCK];
+					int chances = ( skill + rollLuck( luck ) * HEALING_LUCK_DEPENDENCY );
+					testInfo( cr,
+						"skill [" + skill + "]" +
+						" + rollLuck( luck[" + luck + "] )[" + rollLuck( luck ) + "]" + 
+						" * HEALING_LUCK_DEPENDENCY [" + HEALING_LUCK_DEPENDENCY + "]" +
+						"{" + chances + "}" +
+							" > " +
+						"Random( 0, 100 * HEALING_DIFFICULTY[" + HEALING_DIFFICULTY + "] )" +
+						"\n\nChances are: " + float( chances / HEALING_DIFFICULTY ) + "%." +
+						""
+					);
+					
+					if( HealingProcessSucceed( skill, cr.Stat[ST_LUCK] ) )
+					{
+						ChangeStatus( target, CR_STATUS_HEAVY_DMG, 0, false );
+						cr.Say( SAY_NETMSG, "Вы " + action_info + " рану." );
+					}
+					else 
+						cr.Say( SAY_NETMSG, "Операция не удалась." );
+
+					cr.TimeoutBase[ TO_SK_DOCTOR ] = DOCTOR_TIMEOUT( player );
+					
+					OpenMenu( cr, "DOC", MenuDOC( target ) );
+					return false;
+				}
+				
+				if( menu.Button( "Назад" ) )
+					stage 		= MenuDOC_stage::anestetik;	
+			}
+			return true;
+		}
+		
+		return true;
+	}
+
+	string@ Description( Critter& cr ) 
+	{
+		switch( stage )
+		{
+			case(MenuDOC_stage::tool):
+				return "Выберите инструмент:";
+				
+			case(MenuDOC_stage::antiseptik):
+				return "Применяем антисептик:"; 
+			
+			case(MenuDOC_stage::anestetik):
+				return "Применяем анестезию:"; 
+			
+			case(MenuDOC_stage::processing):
+				return "Вы готовы провести операцию на открытой ране пациента."; 
+		}
+		
+		return "[UNKNOWN STATE #" + stage + "]";
+	}
+}
+
+class MenuDOC_Cripple: CenteredMenuHandler 
+{	
+	Critter@ cr;
+	Critter@ target;
+	iDialogBox@ menu;
+	
+	int stage;
+	uint limb;
+	string description;
+	
+	MenuDOC_Cripple( Critter& target )
+	{
+		this.stage = MenuCripple_stage::main;
+		@this.target = @target;
+	}
+
+	//TODO: Вынести общий функционал.
+	bool check( uint pid, string success, string failed )
+	{
+		if( hasItem( cr, pid ) )
+		{
+			if( menu.Button( success ) )
+				return true;
+		}
+		else menu.Button( failed );
+		
+		return false;
+	}
+	
+	bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+		@this.cr = @cr;
+		@this.menu = @menu;
+		description = "";
+		
+		string info = "Test info:\n"
+					+ "Доктор #" + cr.Id 			+ "\n"
+					+ "Пациент #" + target.Id		+ "\n"
+				;
+					
+		testInfo( cr, info );
+		
+		switch( stage )
+		{
+			case( MenuCripple_stage::main ):
+			{
+				if( target.Stat[ ST_POISONING_LEVEL ] > 0 )
+				{
+					description += "Уровень отравления: " + target.Stat[ST_POISONING_LEVEL] + ".\n";
+					
+					if( hasItem( cr, PID_ANTIDOTE ) )
+					{
+						if( menu.Button( "Дать противоядие" ) )
+						{
+							Item@ antidote = getItem( cr, PID_ANTIDOTE );
+							if( !valid( antidote ) ) return true;
+							
+							_SubItem( antidote, 1 );
+							cr.AddItem( PID_BOTTLE_GLASS, 1 );
+							
+							target.StatBase[ ST_POISONING_LEVEL ] = CLAMP( target.StatBase[ ST_POISONING_LEVEL ] - 50, 0, 1000 );
+							
+							return true;
+						}
+					}
+					else
+					{
+						if( menu.Button( "Нет противоядия" ) )
+						{
+							cr.Say( SAY_NETMSG, "Вам нужно противоядие для того, что бы вывести яд из организма пациента. Сильное отравление может убить его ослабший организм!" );
+							return true;
+						}
+					}		
+				}
+				
+				for( uint i = 0, l = damages.length(); i < l; i++ )
+				{
+					if( target.DamageBase[damages[i]] != 0 && menu.Button(damage_states[i]) )
+					{
+						stage = MenuCripple_stage::tool;
+						limb = damages[i];
+						return true;
+					}
+				}
+
+				if( menu.Button("Назад") )
+				{
+					OpenMenu( cr, "DOC", MenuDOC( target ) );
+					return false;
+				}
+			}
+			return true;
+			
+			case(MenuCripple_stage::tool):
+			{
+				uint[] rates;
+				uint[] ids;
+				uint8 countTimes = target.GetTimeEvents( CTE_DOC, ids, null, rates );
+				for( uint8 i = 0; i < countTimes; i++ )
+				{
+					if( rates[i] == limb )
+					{
+						description += "Эта часть тела уже лечится.\n";
+						
+						if( menu.Button( "Снять " + ( limb == DAMAGE_EYE ? "бинт" : "шину" ) ) )
+						{
+							target.EraseTimeEvent( ids[i] );
+							
+							cr.Say( SAY_NETMSG, "Теперь прийдётся заного обработать: " + damage_states[damages.find(limb)] + "." );
+							
+							stage = MenuCripple_stage::main;
+							limb = 0;
+						}
+
+						if( menu.Button("Назад") )
+						{
+							stage = MenuCripple_stage::main;
+							limb = 0;
+						}
+
+						return true;
+					}
+				}
+				
+				if( target.DamageBase[ limb ] == 0 )
+				{
+					description += "Эта часть тела не нуждается в лечении.\n";
+					
+					if( menu.Button("Назад") )
+					{
+						stage = MenuCripple_stage::main;
+						limb = 0;
+					}
+					
+					return true;
+				}
+				
+				switch( limb )
+				{
+					case(DAMAGE_EYE):
+					{
+						if( check( PID_CRAFT_L_RAGS, "Замотать тряпкой", "Нет тряпки" ) )
+						{
+							Item@ bandage = getItem( cr, PID_CRAFT_L_RAGS );
+							if( !valid( bandage ) ) return true;
+							
+							_SubItem( bandage, 1 );
+
+							int docTime = MAX_LIMB_HEALING_TIME - cr.Skill[ SK_DOCTOR ] - target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY;
+							target.AddTimeEvent( "cte_Doc", REAL_MINUTE( CLAMP( docTime, 5, MAX_LIMB_HEALING_TIME ) ), CTE_DOC, limb );
+							cr.Say( SAY_NETMSG, "Вы наложили повязку на рану, потребуется немало времени на то что бы она зажила." );
+							
+							testInfo( cr, "Time: " + MAX_LIMB_HEALING_TIME + " - " + ( cr.Skill[ SK_DOCTOR ] ) + " - " + ( target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY ) + " = " + docTime	);
+							
+							stage = MenuCripple_stage::main;
+							limb = 0;
+							
+							return true;
+						}
+
+						if( check( PID_BANDAGE, "Наложить бинт", "Нет бинта" ) )
+						{
+							Item@ bandage = getItem( cr, PID_BANDAGE );
+							if( !valid( bandage ) ) return true;
+							
+							_SubItem( bandage, 1 );
+
+							int docTime = MAX_LIMB_HEALING_TIME - cr.Skill[ SK_DOCTOR ] * 2 - target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY;
+							target.AddTimeEvent( "cte_Doc", REAL_MINUTE( CLAMP( docTime, 5, MAX_LIMB_HEALING_TIME ) ), CTE_DOC, limb );
+							cr.Say( SAY_NETMSG, "Вы обработали и перебинтовали рану, потребуется время на то что бы она зажила." );
+
+							testInfo( cr, "Time: " + MAX_LIMB_HEALING_TIME + " - " + ( cr.Skill[ SK_DOCTOR ] * 2 ) + " - " + ( target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY ) + " = " + docTime	);
+							
+							stage = MenuCripple_stage::main;
+							limb = 0;
+
+							return true;
+						}
+						
+					}						
+					return true;
+					
+					case( DAMAGE_RIGHT_ARM ):
+					case( DAMAGE_LEFT_ARM ):
+					case( DAMAGE_RIGHT_LEG ):
+					case( DAMAGE_LEFT_LEG ):
+					{
+						
+						if( hasItem( cr, PID_ROPE ) && hasItems( cr, makeshift_splints ) )
+						{
+							if( menu.Button( "Самодельная шина" ) )
+							{
+								Item@ rope = getItem( cr, PID_ROPE );
+								if( !valid( rope ) ) return true;
+								
+								Item@[] splints = getItems( cr, makeshift_splints );
+								if( splints.length() == 0 )	return true;
+								
+								Item@ splint = splints[ Random( 0, splints.length() - 1 ) ];
+								if( !valid( splint ) ) return true;
+								
+								_SubItem( splint, 1 );
+								_SubItem( rope, 1 );								
+
+								int docTime = MAX_LIMB_HEALING_TIME - cr.Skill[ SK_DOCTOR ] - target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY;
+								target.AddTimeEvent( "cte_Doc", REAL_MINUTE( CLAMP( docTime, 5, MAX_LIMB_HEALING_TIME ) ), CTE_DOC, limb );
+								cr.Say( SAY_NETMSG, "Вы соорудили самодельную шину, потребуется немало времени на то что бы травма зажила." );
+								
+								testInfo( cr, "Time: " + MAX_LIMB_HEALING_TIME + " - " + ( cr.Skill[ SK_DOCTOR ] ) + " - " + ( target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY ) + " = " + docTime	);
+
+								stage = MenuCripple_stage::main;
+								limb = 0;
+								
+								return true;
+							}
+						}
+						else
+						{
+							if( menu.Button( "Нечем фиксировать" ) )
+							{
+								string list = "";
+								for( uint i = 0, l = makeshift_splints.length(); i < l; i++ )
+									list += " " + itemName( makeshift_splints[i] );
+								cr.Say( SAY_NETMSG, "Вам нужна верёвка или что-либо из списка: " + list );
+								
+								return true;
+							}
+						}
+
+						if( check( PID_MEDSPLINT, "Наложить шину", "Нет мед. шины" ) )
+						{
+							Item@ splint = getItem( cr, PID_MEDSPLINT );
+							if( !valid( splint ) ) return true;
+							
+							_SubItem( splint, 1 );
+
+							int docTime = MAX_LIMB_HEALING_TIME - cr.Skill[ SK_DOCTOR ] * 2 - target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY;
+							target.AddTimeEvent( "cte_Doc", REAL_MINUTE( CLAMP( docTime, 5, MAX_LIMB_HEALING_TIME ) ), CTE_DOC, limb );
+							cr.Say( SAY_NETMSG, "Вы наложили медицинскую шину, потребуется некоторое время на то что травма прошла." );
+
+							testInfo( cr, "Time: " + MAX_LIMB_HEALING_TIME + " - " + ( cr.Skill[ SK_DOCTOR ] * 2 ) + " - " + ( target.Stat[ ST_ENDURANCE ] * HEALING_ENDURANCE_DEPENDENCY ) + " = " + docTime	);
+							
+							stage = MenuCripple_stage::main;
+							limb = 0;
+
+							return true;
+						}
+						
+						if( menu.Button("Назад") )
+						{
+							stage = MenuCripple_stage::main;
+							limb = 0;
+
+							return true;
+						}
+					}				
+					return true;
+				}
+			}
+			return true;
+		}
+		return true;
+	}
+
+	string@ Description( Critter& cr ) 
+	{
+		switch( stage )
+		{
+			case(MenuCripple_stage::main):
+				return description + "Выберите действие:";
+				
+			case(MenuCripple_stage::tool):
+				return description + "Выберите способ лечения:"; 
+		}
+		
+		return "[UNKNOWN STATE #" + stage + "]";
+	}
+}
+	
+bool ProccessDoctorSkill( Critter& cr, Critter& targetCr, bool alreadyAllowed ) //exported
+{
+	targetCr.StatBase[ST_VAR0] = cr.Id;
+	cr.StatBase[ST_VAR0] = targetCr.Id;
+	
+	if(targetCr.Id != cr.Id && !targetCr.IsKnockout() && targetCr.Stat[ST_CURRENT_HP] > 0 && !alreadyAllowed && targetCr.IsPlayer ())
+	{
+		targetCr.ShowScreen( SCREEN_DIALOGBOX, 1, "answer_SelectAction" );
+		targetCr.Say( SAY_DIALOGBOX_TEXT, "Вас хотят осмотреть, согласиться?");
+		targetCr.Say( SAY_DIALOGBOX_BUTTON( 0 ), "Да" );
+		targetCr.Say( SAY_NETMSG, "Вас хотят осмотреть." );
+		cr.Say( SAY_NETMSG, "Вы ждёте согласия пациента." );
+	}
+	else
+	{
+		answer_SelectAction(targetCr, 0, "");
+	}
+	
+	return true;
+}
+
+void answer_SelectAction(Critter& targetCr, uint answerI, string& answerS)
+{
+	Critter@ cr = GetCritter( targetCr.StatBase[ST_VAR0] );
+	if( !valid( cr ) ) return;
+	
+	StartMenuDOC( cr, targetCr );
+}
+
+void Prolonged_Doc( Critter& targetCr, uint16 doctime, uint16 damage )   // Export
+{
+	doctime = CLAMP( doctime, 900, 3600 );   // 15-60 минут
+    if (damage >= 502 && damage <= 506 ) 
+		targetCr.AddTimeEvent( "cte_Doc", REAL_SECOND( doctime ), CTE_DOC, damage );
+}
+
+//~run heal test_cte_Doc limb 0 0
+void test_cte_Doc( Critter& cr, int limb, int, int )
+{
+	cr.AddTimeEvent( "cte_Doc", REAL_SECOND( 1 ), CTE_DOC, damages[CLAMP( uint( limb ), 0, damages.length() )] );
+}
+
+uint cte_Doc( Critter& cr, int identifier, uint& rate )
+{
+    cr.DamageBase[ rate ] = 0;
+	
+	string[] effects = {
+		"Ваше зрение проясняется, ваша голова пришла в норму.",
+		"Вашей правой руке уже значительно легче, вы снова можете ей двигать.",
+		"Вашей левой руке уже значительно легче, вы снова можете ей двигать.",
+		"Вашей правой ноге уже значительно легче, вы снова можете опираться на неё.",
+		"Вашей левой ноге уже значительно легче, вы снова можете опираться на неё."		
+	};
+	
+	cr.Say( SAY_NETMSG, effects[ rate - DAMAGE_EYE ] );
+	ChangeCritterSpeed(cr);
+	
+    return 0;
+}
+
+/*bool UseBandage( Critter& cr, Critter& targetCr, uint16 sk )
+{
+	uint rate = 0;
+	
+	Map@ map = cr.GetMap();
+	map.PlaySound( "bandage.ogg", cr.HexX, cr.HexY, 2 );
+	
+	rate = 1.0f + targetCr.Stat[ST_MAX_LIFE] * sk / 750.0f;
+    targetCr.AddTimeEvent( "cte_Heal", 0, CTE_HEAL, rate );
+
+    ChangeStatus( targetCr, CR_STATUS_BLEED, sk * 0.5, false );
+
+    if( targetCr.Id != cr.Id ) {
+		targetCr.Say( SAY_NETMSG, "Вам наложили повязки.");
+	}
+	
+	targetCr.ParamBase[ CR_DIRTINESS ] += targetCr.StatBase[ ST_BLEED ];
+	targetCr.StatBase[ ST_BLEED ] /= 8.0f;
+	
+	if ( valid (cr) ) {
+		if( cr.IsPlayer() ) {
+			cr.Say( SAY_NETMSG, "Вы наложили повязку." );	
+			cr.TimeoutBase[ TO_SK_FIRST_AID ] = FIRST_AID_TIMEOUT( cr );
+			cr.AddScore( SCORE_DOCTOR, 1 );
+		}
+	}
+    return true;
+}*/
+
+uint cte_Heal( Critter& cr, int identifier, uint& rate )
+{
+    int heal = cr.Stat[ST_HEALING_RATE];
+    if( heal < 1 ) heal = 3;
+    if( heal > int(rate) ) heal = rate;
+	if( heal <= 0 ) return 0;
+    
+	cr.StatBase[ST_CURRENT_HP] += heal;
+    
+	cr.Say( SAY_NETMSG, "Вы восстановили " + heal + " жизней." );
+
+	testInfo( cr, "Healed " + heal + " , rate = " + rate );
+	
+    int result = int(rate) - heal;
+	if( result < 0 || cr.Stat[ ST_CURRENT_HP ] >= cr.Stat[ ST_MAX_LIFE ] )
+	{
+		cr.Say( SAY_NETMSG, "Кажется, от повязки больше нет проку." );
+		return 0;
+    }
+		
+	rate = uint(result);
+
+    ChangeCritterSpeed( cr );
+	
+    return REAL_SECOND( 60 );
+}
+
+bool HealingProcessSucceed( Critter@ cr, int skill )
+{
+	if( !valid( cr ) ) { return false; }
+
+	return HealingProcessSucceed( skill, cr.Stat[ST_LUCK] );
+}
+
+bool HealingProcessSucceed( int skill, int luck )
+{
+	int bug_check_1 = skill + rollLuck( luck ) * HEALING_LUCK_DEPENDENCY; 
+	int bug_check_2 = Random( 0, 100 * HEALING_DIFFICULTY ); 
+
+	if( bug_check_1 > 15000 ) {
+		return false;
+	}
+
+	if ( bug_check_1 < 0 || bug_check_2 < 0 ) {
+		return false;
+	}
+
+	if( bug_check_1 > bug_check_2 ) {
+		return true;
+	}
+	return false;
+}
+
+class HealingItem
+{
+	uint16 id;
+	uint16 pid;
+	uint8 heal_per_tick;
+	uint8 ticks_count;
+	uint8 value_overdose;
+	uint8 current_tick;
+	uint msg;
+	bool ResurectItem;
+	string SoundName;
+	
+	HealingItem( uint16 pid, uint8 heal_per_tick, uint8 ticks_count, uint8 value_overdose, uint msg, bool ResurectItem, string SoundName )
+	{
+        this.pid = pid;
+		this.heal_per_tick = heal_per_tick;
+		this.ticks_count = ticks_count;
+		this.value_overdose = value_overdose;
+		this.msg = msg;
+		this.ResurectItem = ResurectItem;
+		this.SoundName = SoundName;
+		
+		current_tick = 0;
+		id = 0;
+	}
+	
+	bool tick( Critter& cr ) 
+	{
+		uint traitMul = 1;
+		uint traitDiv = 1;
+		
+		if( cr.Trait[TRAIT_CHEM_RELIANT] != 0 )
+		{
+			traitMul = 13;
+			traitDiv = 10;
+		}
+		
+		if( cr.Trait[TRAIT_CHEM_RESISTANT] != 0 )
+		{
+			traitMul = 7;
+			traitDiv = 10;
+		}
+
+		cr.StatBase[ ST_CURRENT_HP ] += heal_per_tick;
+		current_tick++;
+
+		uint max_tick = ticks_count * traitMul / traitDiv;
+		
+		return( current_tick < max_tick );
+	}
+}
+
+class HealingItemCollection
+{
+	HealingItem@[] healingItems;
+	HealingItemCollection()
+	{
+	}
+	
+	HealingItemCollection@ healingItem( uint16 pid, uint8 heal_per_tick, uint8 ticks_count, uint8 value_overdose, uint msg, bool ResurectItem, string SoundName ) 
+	{
+		this.healingItems.insertLast( HealingItem( pid, heal_per_tick, ticks_count, value_overdose, msg, ResurectItem, SoundName ) );
+		return this;
+	}
+	
+	HealingItem@ get_by_pid( uint16 pid ) 
+	{
+		for( uint i = 0, len = this.healingItems.length(); i < len; i++ )
+		{
+			if( this.healingItems[i].pid == pid )
+			{
+				return this.healingItems[i];
+			}
+		}
+		return null;
+	}
+}
+
+class ProcessingHealingItems
+{
+	HealingItem@[] list;
+	
+	uint add( HealingItem@ item ) {
+		if( !valid( item ) ) return 0;
+		
+		HealingItem@ newItem = HealingItem( item.pid, item.heal_per_tick, item.ticks_count, item.value_overdose, item.msg, item.ResurectItem, item.SoundName );
+		
+		bool replaced = false;
+		for( uint i = 0, len = list.length(); i < len; i++ )
+			if( !valid( list[i] ) )
+			{
+				@list[i] = newItem;
+				newItem.id = i;
+				replaced = true;
+				break;
+			}
+			
+		if( !replaced )
+		{
+			list.insertLast( newItem );
+			newItem.id = list.length();
+		}
+		
+		return newItem.id;
+	}
+	
+	bool process( Critter& cr, uint16 id ) 
+	{
+		bool result = false;
+		for( uint i = 0, len = list.length(); i < len; i++ )
+		{
+			if( valid( list[i] ) && list[i].id == id )
+			{
+				result = list[i].tick(cr);
+				if( !result )
+					@list[i] = null;
+				
+				break;
+			}
+		}
+		
+		return result;
+	}
+}
+ProcessingHealingItems@ processingHealingItems = ProcessingHealingItems();
+
+HealingItemCollection@ healingItems = HealingItemCollection()
+//					    Pid        heal_per_tick,		ticks_count,		value_overdose,	 			msg, 			 ResurectItem,			SoundName
+	.healingItem( PID_TRAUMATIN,        10,					30,					60,				STR_EMOTE_INJECT_STIM, 		true,	 		 "Stimpack.ogg" 	)
+	.healingItem( PID_SUPER_STIMPAK,    10,					10,					40,				STR_EMOTE_INJECT_SS, 		true,	 		 "Stimpack.ogg" 	)
+	.healingItem( PID_STIMPAK,           5,					10,					20,				STR_EMOTE_INJECT_STIM, 		true,			 "Stimpack.ogg" 	)
+	.healingItem( PID_HEALING_POWDER,    1,					10,					 5,				STR_EMOTE_APPLY_HP, 	   	false,	  		 "powder_use.mp3"	)
+	.healingItem( PID_PAINKILLERS2,      1,                200,                 50,             STR_EMOTE_INJECT_STIM,      false,           "Stimpack.ogg"     );
+HealingItem@ GetHealingItem( Item@ item ) 
+{
+    uint16 Pid = item.GetProtoId();
+    return healingItems.get_by_pid( Pid );
+}	
+
+void UseHealingItem( Critter& cr, Critter& targetCr, Item& item )
+{
+	if( valid( item ) )
+	{
+		HealingItem@ usedItem = GetHealingItem( item );
+		
+		if( valid( usedItem ) )
+		{
+			if( targetCr.IsDead() && usedItem.ResurectItem )
+			{
+				TryResurect( cr, targetCr );
+			}
+			else
+			{
+				cr.TimeoutBase[ TO_SK_FIRST_AID ] = FIRST_AID_TIMEOUT( cr );
+				proccessHealItem( targetCr, usedItem );
+			}
+		}
+		
+		if( usedItem.pid != PID_HEALING_POWDER )
+		{
+			cr.AddItem( PID_HYPODERMIC_NEEDLE, 1 );
+		}
+		uint lineNumber = cr.Id == targetCr.Id ? usedItem.msg : usedItem.msg + 1;
+		
+		cr.SayMsg( SAY_EMOTE, TEXTMSG_COMBAT, lineNumber );
+		
+		Map@ map = cr.GetMap();
+		if( valid( map ) )
+		{
+			PlayHealingSound( cr, map, usedItem.SoundName, 5 );
+		}
+		
+		_SubItem( item, 1 );
+	}
+}
+
+void proccessHealItem( Critter& cr, HealingItem& usedItem )
+{
+	uint traitMul = 1;
+	uint traitDiv = 1;
+	
+	if( cr.Trait[TRAIT_CHEM_RELIANT] != 0 )
+	{
+		traitMul = 13;
+		traitDiv = 10;
+	}
+	
+	if( cr.Trait[TRAIT_CHEM_RESISTANT] != 0 )
+	{
+		traitMul = 7;
+		traitDiv = 10;
+	}
+	
+	if( cr.ParamBase[ ST_GLOBAL_OVERDOSE ] < 100 )
+	{
+		uint id = processingHealingItems.add( usedItem );
+		cr.AddTimeEvent( "cte_quickheal", 0, CTE_QUICKHEAL, id );
+	}
+	
+	if( cr.Trait[TRAIT_FAST_METABOLISM] != 0 )
+	{
+		traitMul += 3;
+		traitDiv = 10;
+	}
+		
+	cr.ParamBase[ ST_GLOBAL_OVERDOSE ] += ( usedItem.value_overdose * traitMul / traitDiv );
+	
+	if( cr.ParamBase[ ST_GLOBAL_OVERDOSE ] > 100 && cr.IsPlayer() )
+	{
+		cr.ToKnockout( KNOCKOUT_ANIM2_DEFAULT( true ), 100, cr.HexX, cr.HexY );
+		applyOverdoseVomit( cr );
+		int poisonAmount = ( usedItem.value_overdose * ( 100 - cr.Stat[ ST_POISON_RESISTANCE ] ) ) / 100;
+		AffectPoison( cr, poisonAmount );
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_COMBAT, STR_HEALING_OVERDOSE );
+	}
+
+	if( cr.StatBase[ ST_GLOBAL_OVERDOSE ] > 0 && cr.GetTimeEvents( CTE_GLOBAL_OVERDOSE, null, null, null ) < 1 ) 
+	{
+		cr.AddTimeEvent( "gameplay@cte_Global_Overdose", REAL_SECOND( 0 ), CTE_GLOBAL_OVERDOSE, 0 );
+	}
+}
+
+void applyOverdoseVomit( Critter& cr )
+{
+	uint vomitTime = Random( 5, 15 );
+	cr.AddTimeEvent( "poison@cte_vomit", REAL_MINUTE( vomitTime ), CTE_VOMIT, 0 );
+	vomitTime --;
+	cr.AddTimeEvent( "poison@cte_vomit_warn", REAL_MINUTE( vomitTime ), CTE_VOMIT_WARN, 0 );
+}
+
+uint cte_quickheal( Critter& cr, int identifier, uint& rate ) 
+{
+	bool repeat = processingHealingItems.process( cr, rate );
+
+	ChangeCritterSpeed(cr);
+
+	return repeat ? REAL_SECOND( 1 ) : 0;
+}
+
+void TryResurect( Critter& cr, Critter& targetCr )
+{
+	if( targetCr.Stat[ST_MAX_LIFE] > 50 && targetCr.Anim2Dead <= ANIM2_DEAD_BACK)
+	{
+		Map@ map = targetCr.GetMap();
+		
+		if( targetCr.ParamBase[ CR_DEATH_STAGE ] >= 50 )
+		{
+			cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_WASTED_ITEM );
+			return;
+		}
+		
+		/*for( int dx = -1; dx < 1; dx++ )
+		{
+			for( int dy = -1; dy < 1; dy++ )
+			{
+				if( map.IsHexPassed( targetCr.HexX + dx, targetCr.HexY + dy ) )
+				{
+					targetCr.TransitToHex( targetCr.HexX + dx, targetCr.HexY + dy, targetCr.Dir );
+					break;
+				}
+			}
+		}*/
+
+		targetCr.ToLife();
+		targetCr.ToKnockout( KNOCKOUT_ANIM2_DEFAULT( true ), 1000, targetCr.HexX, targetCr.HexY );
+		targetCr.StatBase[ ST_CURRENT_HP ] = __DeadHitPoints + 1;
+		targetCr.StatBase[ST_MAX_LIFE] -= Random(20,40);
+		if( targetCr.IsPlayer() )
+		{
+			targetCr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_RESURECTION_SUCCESS );
+		}
+	}
+	else
+	{
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_ITEM_WONT_HELP );		
+	}
+}
+
+void PlayHealingSound( Critter& cr, Map& map, string& sound, int distance )
+{
+	Critter@[] players;
+	map.GetCrittersHex( cr.HexX, cr.HexY, distance, FIND_ALL | FIND_ONLY_PLAYERS, players );
+	int[] val = { distance };
+	for( uint i = 0; i < players.length(); i++ )
+	{
+		Critter@ player = players[i];
+		if( valid( player ) )
+		{
+			player.RunClientScript( "fofmod@__PlaySound", map.Id, cr.HexX, cr.HexY, sound, val );
+		}
+	}
+}
+
+class MenuFirstAid: CenteredMenuHandler
+{
+    uint map_id;
+	uint targetCr_id;
+	
+    MenuFirstAid( Map& map, Critter& targetCr )
+	{
+        map_id = map.Id;
+		targetCr_id = targetCr.Id;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+		Critter@ targetCr = GetCritter( targetCr_id );
+		
+        if( !valid( map ) || !valid( targetCr) )
+		{
+            return false;
+        }
+		
+		if( hasItem( cr, PID_HEALING_POWDER, -1 ) && menu.Button( "Целебный порошок" ) )
+		{
+			Item@ item = getItem( cr, PID_HEALING_POWDER, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			UseHealingItem( cr, targetCr, item );
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		
+		if( hasItem( cr, PID_STIMPAK, -1 ) && menu.Button( "Стимулятор" ) )
+		{
+			Item@ item = getItem( cr, PID_STIMPAK, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			UseHealingItem( cr, targetCr, item );
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		
+		if( hasItem( cr, PID_SUPER_STIMPAK, -1 ) && menu.Button( "Супер-стим" ) )
+		{
+			Item@ item = getItem( cr, PID_SUPER_STIMPAK, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			UseHealingItem( cr, targetCr, item );
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		
+		if( hasItem( cr, PID_TRAUMATIN, -1 ) && menu.Button( "Травматин" ) )
+		{
+			Item@ item = getItem( cr, PID_TRAUMATIN, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			UseHealingItem( cr, targetCr, item );
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		
+		if( hasItem( cr, PID_PAINKILLERS2, -1 ) && menu.Button( "Обезболивающее" ) )
+		{
+			Item@ item = getItem( cr, PID_PAINKILLERS2, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			UseHealingItem( cr, targetCr, item );
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		
+		if( hasItem( cr, PID_GLASS_BOTTLE_FULL, -1 ) && menu.Button( "Помыться (чистая)" ) )
+		{
+			Item@ item = getItem( cr, PID_GLASS_BOTTLE_FULL, -1 );
+			cr.Say( SAY_EMOTE_ON_HEAD, "моется чистой водой" );
+			cr.ParamBase[ CR_DIRTINESS ] -= 15;
+			cr.Animate( 0, ANIM2_USE, null, true, false );
+			_SubItem ( item, 1 );
+
+			if( cr.ParamBase[ CR_DIRTINESS ] < 0 )
+				cr.ParamBase[ CR_DIRTINESS ] = 0;
+
+			cr.AddItem( PID_BOTTLE_GLASS, 1 );
+			return false;
+		}		
+
+		if( hasItem( cr, PID_GLASS_BOTTLE_DIRTY_FULL, -1 ) && menu.Button( "Помыться (грязная)" ) )
+		{
+			Item@ item = getItem( cr, PID_GLASS_BOTTLE_DIRTY_FULL, -1 );
+			cr.Say( SAY_EMOTE_ON_HEAD, "моется грязной водой" );
+			cr.ParamBase[ CR_DIRTINESS ] -= 10;
+			cr.Animate( 0, ANIM2_USE, null, true, false );
+			_SubItem ( item, 1 );
+			AffectRadiation( cr, 5 );
+			if( cr.ParamBase[ CR_DIRTINESS ] < 0 )
+				cr.ParamBase[ CR_DIRTINESS ] = 0;
+			
+			cr.AddItem( PID_BOTTLE_GLASS, 1 );
+			return false;
+		}	
+
+		if( hasItem( cr, PID_ANTIDOTE, -1 ) && menu.Button( "Противоядие" ) )
+		{
+			Item@ item = getItem( cr, PID_ANTIDOTE, -1 );
+			cr.Action( ACTION_USE_ITEM, 2, item );
+			if( targetCr_id == cr.Id )
+			{
+				cr.Say( SAY_EMOTE, "употребляет " + _GetProtoName( item.GetProtoId() ) );
+				UseDrug( cr, item );
+			}
+			else
+			{
+				cr.Say( SAY_EMOTE, "применяет " + _GetProtoName( item.GetProtoId() ) + "на цель" );
+				UseDrugOn( cr, targetCr, item );
+			}
+			cr.ParamBase[ ST_CURRENT_AP ] -= 20 * 100;
+			return false;
+		}
+		return true;
+    }
+	
+	// UI менюхи
+    string@ Description( Critter& cr )
+	{
+		string info = "Выберите предмет для использования:";
+		return info;
+    }
+	
+    string@ ButtonCancel()
+	{
+        return ButtonDecorator( "Скрыть меню", null );
+    }
+}
+
+void StartMenuFirstAid( Critter& cr, Critter& targetCr )
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+	{
+        return;
+    }
+
+    iMenuHandler@ handler = MenuFirstAid( map, targetCr );
+    iDialogBox@ menu = OpenMenu( cr, "", handler );
+}
+
+
+#endif // HEAL

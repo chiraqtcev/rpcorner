@@ -1,0 +1,1691 @@
+#ifndef TERMINAL
+#define TERMINAL
+
+#include "_utils.fos"
+#include "terminal_h.fos"
+#include "gateway_h.fos"
+#include "_npc_pids.fos"
+#include "entire_h.fos"
+#include "autodoc_h.fos"
+#include "vending_h.fos"
+
+import void unsafe_sleep( Critter& player, int isBack, int isRemote, int param2, string@ param3, int[] @ param4 ) from "general_unsafe";
+
+const uint16[] TurretPids = { NPC_PID_LAS_TURRET, NPC_PID_LAS_TURRET2, NPC_PID_PLAS_TURRET, NPC_PID_MG_TURRET };
+
+Critter@[] getCritters(Map@ map, uint pid, uint find)
+{	
+	Critter@[] crs;
+	int countCr = map.GetCritters( pid, find, crs );
+	return crs;	
+}
+
+bool checkLaserFence( Item& terminal, Map& map )
+{
+	bool LaserOn;
+	uint entires = map.CountEntire( terminal.FENCE_GROUP );
+	uint16 hx = 0, hy = 0;
+	uint8 dir = 0;
+	map.GetEntireCoords( terminal.FENCE_GROUP, 0, hx, hy, dir );
+	Item@ deathHex = null;
+	@deathHex = map.GetItem( hx, hy, PID_DEATH_HEX );
+	return !valid( deathHex ) ? LaserOn = false : LaserOn = true;
+}
+
+void StartMenuTerminal( Critter& cr, Item& terminal )
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+	{
+        return;
+    }
+
+    iMenuHandler@ handler = MenuTerminal( terminal, map );
+    iDialogBox@ menu = OpenMenu( cr, "Терминал", handler );
+}
+
+class MenuTerminal: CenteredMenuHandler
+{
+
+    uint terminal_id;
+    uint map_id;
+	uint level;
+		
+	MenuTerminal( Item& terminal, Map& map )
+	{
+		terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 0;
+	}
+
+	bool MenuUpdate( Critter& cr, iDialogBox& menu ) 
+	{
+		Map@ map = GetMap(map_id);
+        Item@ terminal = GetItem( terminal_id );
+        
+		if( isGM( cr ) && menu.Button( "ГМ меню" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			MenuTerminalGM@ menu_terminalGM = MenuTerminalGM( terminal, map );
+			menu_terminalGM.level = level + 1;
+			return menu.OpenChild( "Уровень " + menu_terminalGM.level, menu_terminalGM );
+		}
+		bool LaserOn = checkLaserFence( terminal, map );
+		
+		if( terminal.TERMINAL_POWERED > 0 )
+		{
+			if( terminal.CONSOLE_PASSWORD == PASSWORD_DISABLED )
+			{
+				if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) )
+				{
+					if( terminal.FENCE_GROUP != 0 && map.CountEntire( terminal.FENCE_GROUP ) > 0 )
+					{
+						string info = ( !LaserOn ) ? "Включить" : "Выключить";						
+						if( menu.ButtonExt( "Лазер: ", info ) )
+						{
+							PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+							ToggleLaserFence( map, terminal.FENCE_GROUP );	
+							return true;
+						}
+					}
+				}
+				
+				if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS ) )
+				{
+					if( menu.Button( "Авторизация Турелей" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						MenuTurrets@ menu_turrets = MenuTurrets( terminal, map );
+						menu_turrets.level = level + 1;
+						return menu.OpenChild( "Уровень " + menu_turrets.level, menu_turrets );
+					}
+					
+					if( menu.Button( "Управение Турелями" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						MenuTurretsCtrl@ menu_turrets_ctrl = MenuTurretsCtrl( terminal, map );
+						menu_turrets_ctrl.level = level + 1;
+						return menu.OpenChild( "Уровень " + menu_turrets_ctrl.level, menu_turrets_ctrl );
+					}
+				}
+				
+				if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS ) )
+				{
+					if( menu.Button( "Открыть приемник" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						ShowContainer( cr, terminal, TRANSFER_HEX_CONT_UP );
+						map.PlaySound( "SCDOORSM.ACM", terminal.HexX, terminal.HexY, 5 );
+						cr.SayMsg( SAY_EMOTE_ON_HEAD, TEXTMSG_TEXT, STR_TERMINAL_OPEN );
+						return false;
+					}
+					Item@[] cardItm;
+					terminal.GetItems( uint( -1 ), cardItm );
+					if( cardItm.length() > 0 && menu.Button( "Выбрать карту" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						MenuSelectCard@ select_card = MenuSelectCard( terminal, map );
+						select_card.level = level + 1;
+						return menu.OpenChild( "Уровень " + select_card.level, select_card );
+					}
+				}
+				
+				if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_AUTODOC ) )
+				{
+					if( menu.Button( "Управение Автодоком" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						MenuAutodocCtrl@ menu_autodoc_ctrl = MenuAutodocCtrl( terminal, map );
+						menu_autodoc_ctrl.level = level + 1;
+						return menu.OpenChild( "Уровень " + menu_autodoc_ctrl.level, menu_autodoc_ctrl );
+					}
+
+					if( menu.Button( "Подкл. Автодока" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						MenuAutodoc@ menu_autodoc = MenuAutodoc( terminal, map );
+						menu_autodoc.level = level + 1;
+						return menu.OpenChild( "Уровень " + menu_autodoc.level, menu_autodoc );
+					}
+				}
+
+				if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION ) )
+				{
+					if( menu.Button( "Сброс пароля" ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						terminal.PASSWORD = 0;
+						string passwordInfo = "Установите пароль";
+						cr.RunClientScript( "client_screen_numberpad@ShowScreen", terminal.Id, 0, 0, passwordInfo, null );
+						return false;
+					}
+					
+					if( menu.Button( "Заблокировать" ) )
+					{
+						if( terminal.PASSWORD == 0 )
+						{
+							PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+							string passwordInfo = "Установите пароль";
+							cr.RunClientScript( "client_screen_numberpad@ShowScreen", terminal.Id, 0, 0, passwordInfo, null );
+							return false;
+						}
+						else
+						{
+							terminal.CONSOLE_PASSWORD = PASSWORD_ENABLED;
+							cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_TERMINAL_BLOCK );
+							return false;
+						}
+					}
+				}
+			}
+			else if( terminal.CONSOLE_PASSWORD == PASSWORD_ENABLED )
+			{
+				if( menu.Button( "Разблокировать" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					string passwordInfo;
+					if( terminal.PASSWORD != 0 )
+					{
+						passwordInfo = "Введите пароль!";
+					}
+					else
+					{
+						passwordInfo = "Установите пароль";
+					}
+					cr.RunClientScript( "client_screen_numberpad@ShowScreen", terminal.Id, 0, 0, passwordInfo, null );
+					return false;
+				}
+			}
+			
+			if( menu.Button( "Отключиться" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				return false;
+			}
+			
+		}
+		return true;
+	}
+
+	string@ Description( Critter& cr ) 
+	{
+		Map@ map = GetMap( map_id );
+		Item@ terminal = GetItem( terminal_id );
+		string info = "Терминал № ";
+		info += "|0xFFFF00 " + terminal.Id + "\n";
+
+		if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS ) && terminal.ACCESS_CARD != 0 )
+		{
+			string card = _GetProtoName( terminal.ACCESS_CARD );
+			info += "|0x3CF800 Установленный тип пропуска: \n[ ";
+			info += "|0xFFFF00 " + card;
+			info += "|0x3CF800  ]\n";
+		}
+		
+		if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS ) && ( FindTurrets( map ) ) )
+		{ 
+			uint amount = 0;
+			info += "|0x3CF800 Подключено турелей: ";
+			Critter@[] turrets;
+			
+			for( uint j = 0; j < TurretPids.length(); j ++ ) 
+			{
+				uint16 turretPid = TurretPids[j];
+				map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+			}
+			
+			for( uint i = 0; i < turrets.length(); i ++ )
+			{
+				Critter@ turret = turrets[i];
+				if( valid( turret ) && ( turret.PARENT_TERMINAL == int( terminal.Id ) ) )
+				{
+					amount ++;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			info += "|0x3CF800 [ ";
+			info += "|0xFFFF00 " + amount;
+			info += "|0x3CF800  ] \n";
+		}
+		
+		if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) && terminal.FENCE_GROUP != 0 )
+		{
+			info += "|0x3CF800 Подконтрольный лазный барьер № \n[ ";
+			info += "|0xFFFF00 " + terminal.FENCE_GROUP;
+			info += "|0x3CF800  ] Статус забора: ";
+			string fenceState;
+			bool LaserOn = checkLaserFence( terminal, map );
+			fenceState = ( !LaserOn ) ? "Отключен" : "Включен";
+			info += "|0xFFFF00 " + fenceState;
+			info += "|0x3CF800 .\n";
+		}
+		
+		if( terminal.CONSOLE_PASSWORD == PASSWORD_ENABLED )
+		{
+			info = "|0xFFFF00 Терминал заблокирован, введите пароль для разблокировки";
+		}
+		
+		if( terminal.TERMINAL_POWERED == 0 )
+		{
+			info = "|0xFFFF00 Терминал обесточен \n";
+		}
+		
+		if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION ) && terminal.PASSWORD == 0 )
+		{
+			info += "|0xFFFF00 Внимание, пароль не задан! \n";
+		}
+		
+		return info;
+	}
+	
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+bool TransferToTerminal( Critter& cr, Item& targetItem, Item& cont )
+{
+	if( !valid( cont ) )
+	{
+		Log( "Потеря указателя на контейнер!" );
+		return false; 
+	}
+	
+	Map@ map = cr.GetMap();
+	uint transferAmount = cr.ItemTransferCount();
+	uint16 targetItemPid = targetItem.GetProtoId();
+	
+	if( TerminalKeyCards.find( targetItemPid ) != -1 )
+	{
+		MoveItem( targetItem, transferAmount, cont, 0 );
+	}
+	else
+	{
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_TERMINAL_WRONG_ITEM ); 
+	}
+	ShowContainer( cr, cont, TRANSFER_HEX_CONT_UP );
+	return true;
+}
+
+bool TransferFromTerminal( Critter& cr, Item& targetItem, Item& cont )
+{
+	if( !valid( cont ) )
+	{
+		Log( "Потеря указателя на контейнер!" );
+		return false; 
+	}
+	uint transferAmount = cr.ItemTransferCount();
+	MoveItem( targetItem, transferAmount, cr );
+	return true;
+}
+
+//Child menu for card selection
+class MenuSelectCard: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	int selectorPos;
+	uint arrayPos;
+	
+    MenuSelectCard( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 1;
+		selectorPos = 0;
+		arrayPos = 0;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+			
+		Item@[] cardItm;
+		terminal.GetItems( uint( -1 ), cardItm );
+		
+		if( cardItm.length() != 0 )
+		{
+			if( menu.Button( "Предыдущая" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos--;
+				if( arrayPos == 0 )
+				{
+					arrayPos = cardItm.length() - 1;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				Item@ selectedcard = cardItm[arrayPos];
+				terminal.ACCESS_CARD = selectedcard.GetProtoId();
+				return true;
+			}
+			
+			if( menu.Button( "Следующая" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos++;
+				if( arrayPos == cardItm.length() -1 )
+				{
+					arrayPos = 0;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				Item@ selectedcard = cardItm[arrayPos];
+				terminal.ACCESS_CARD = selectedcard.GetProtoId();
+				return true;
+			}
+			
+			if( menu.Button( "Подтвердить" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				cr.SayMsg( SAY_EMOTE_ON_HEAD, TEXTMSG_TEXT, STR_TERMINAL_SELECT_CARD );
+				
+				Critter@[] crs;
+				for( uint j = 0; j < TurretPids.length(); j ++ ) 
+				{
+					uint16 turretPid = TurretPids[j];
+					map.GetCritters( turretPid, FIND_LIFE_AND_KO, crs );
+				}
+				
+				for( uint i = 0, countCr = crs.length(); i < countCr; i++ )
+				{
+					Critter@ turret = crs[i];
+					if( turret.PARENT_TERMINAL == int( terminal.Id ) )
+					{
+						turret.SECURITY_ACCESS_CARD = terminal.ACCESS_CARD;
+						turret.LASER_FENCE_GRID = terminal.FENCE_GROUP;
+						turret.SetScript( "ai_turrets@_TurretInit" );
+					}
+					else
+					{
+						continue;
+					}
+				}
+				return false;
+			}
+			
+			if( menu.Button( "Отключить пропуски" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				cr.Say( SAY_EMOTE_ON_HEAD, "отключает пропуски" );
+				
+				Critter@[] crs;
+				for( uint j = 0; j < TurretPids.length(); j ++ ) 
+				{
+					uint16 turretPid = TurretPids[j];
+					map.GetCritters( turretPid, FIND_LIFE_AND_KO, crs );
+				}
+				
+				for( uint i = 0, countCr = crs.length(); i < countCr; i++ )
+				{
+					Critter@ turret = crs[i];
+					if( turret.PARENT_TERMINAL == int( terminal.Id ) )
+					{
+						turret.SECURITY_ACCESS_CARD = 0;
+						turret.LASER_FENCE_GRID = 0;
+						turret.SetScript( "ai_turrets@_TurretInit" );
+					}
+					else
+					{
+						continue;
+					}
+				}
+				return false;
+			}
+			
+			if( menu.Button( "Возврат" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				level = 0;
+				return false;
+			}
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		string info = "Терминал № ";
+		info += "|0xFFFF00 " + terminal.Id + "\n";
+		Item@[] cardItm;
+		terminal.GetItems( uint( -1 ), cardItm );
+		if( cardItm.length() > 0 && terminal.ACCESS_CARD != 0 )
+		{
+			string card = _GetProtoName( terminal.ACCESS_CARD );
+			info += "|0x3CF800 Тип пропуска: \n[ ";
+			info += "|0xFFFF00 " + card;
+			info += "|0x3CF800   ]\nВыберите нужную позицию и нажмите";
+			info += "|0xFFFF00  Подтвердить";
+			info += "|0x3CF800  для завершения настройки.";
+		}
+		return info;
+	}	
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "Скрыть меню", null );
+    }
+}
+
+//Child menu for turret control assigment
+class MenuTurrets: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuTurrets( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 1;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		if( FindTurrets( map ) )
+		{
+			Critter@[] turrets;
+			for( uint j = 0; j < TurretPids.length(); j ++ ) 
+			{
+				uint16 turretPid = TurretPids[j];
+				map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+			}
+			
+			for( uint i = 0; i < turrets.length(); i ++ )
+			{
+				Critter@ turret = turrets[i];
+				if( valid( turret ) && ( turret.PARENT_TERMINAL == 0 || turret.StatBase[ ST_VAR1 ] == int( terminal.Id ) ) )
+				{
+					string state = turret.PARENT_TERMINAL == 0 ? "Контроль: " : "Отключить: ";
+					string turretId = turret.Id;
+					if( menu.ButtonExt( state, turretId ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						turret.PARENT_TERMINAL == 0 ? turret.PARENT_TERMINAL = int( terminal.Id ) : turret.PARENT_TERMINAL = 0;
+						return true;
+					}
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 0;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		cr.RunClientScript( "client_screen_test@ShowScreen", 0, 0, 0, "", null );
+		string info;
+		if( FindTurrets( map ) )
+		{
+			info += "|0x3CF800 Обнаружены совместимые турели: \n";
+			Critter@[] turrets;
+			for( uint j = 0; j < TurretPids.length(); j ++ ) 
+			{
+				uint16 turretPid = TurretPids[j];
+				map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+			}
+			
+			for( uint i = 0; i < turrets.length(); i ++ )
+			{
+				Critter@ turret = turrets[i];
+				if( valid( turret ) )
+				{
+					info += "|0x3CF800 № ";
+					info += "|0xFFFF00 " + turret.Id;
+					info += "|0x3CF800  - ";
+					string state = turret.StatBase[ ST_VAR1 ] == 0 ? "не авторизована" : ( turret.StatBase[ ST_VAR1 ] == int( terminal.Id ) ? "авторизована" : "занята" );
+					info += "|0xFFFF00 " + state + " \n";
+				}
+				else
+				{
+					continue;
+				}
+			}
+			turrets.resize( 0 );
+		}		
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+bool FindTurrets( Map& map )
+{
+	Critter@[] turrets;
+	for( uint j = 0; j < TurretPids.length(); j ++ ) 
+	{
+		uint16 turretPid = TurretPids[j];
+		map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+	}
+	
+	bool turretsPresent = turrets.length() > 0;
+	return turretsPresent;
+}
+
+//Child menu for turret control
+class MenuTurretsCtrl: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuTurretsCtrl( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 2;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		if( FindTurrets( map ) )
+		{
+			Critter@[] turrets;
+			for( uint j = 0; j < TurretPids.length(); j ++ ) 
+			{
+				uint16 turretPid = TurretPids[j];
+				map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+			}
+			
+			for( uint i = 0; i < turrets.length(); i ++ )
+			{
+				Critter@ turret = turrets[i];
+				if( valid( turret ) && ( turret.StatBase[ ST_VAR1 ] == int( terminal.Id ) ) )
+				{
+					string state = turret.IsKnockout() ? " Вкл турель: " : "Откл турель: ";
+					string turretId = turret.Id;
+					if( menu.ButtonExt( state, turretId ) )
+					{
+						PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+						int action = turret.IsKnockout() ? 0 : 1;
+						unsafe_sleep( turret, 0, 1, action, null, null );
+						if( action == 0 )
+						{
+							turret.SetEvent( CRITTER_EVENT_ATTACKED, "mob@_Attacked" );
+						}
+						return true;
+					}
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 1;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		string info;
+		if( FindTurrets( map ) )
+		{
+			info += "|0x3CF800 Подключенные турели: \n";
+			Critter@[] turrets;
+			for( uint j = 0; j < TurretPids.length(); j ++ ) 
+			{
+				uint16 turretPid = TurretPids[j];
+				map.GetCritters( turretPid, FIND_LIFE_AND_KO, turrets );
+			}
+			
+			for( uint i = 0; i < turrets.length(); i ++ )
+			{
+				Critter@ turret = turrets[i];
+				if( valid( turret ) && ( turret.PARENT_TERMINAL == int( terminal.Id ) ) )
+				{
+					info += "|0x3CF800 № ";
+					info += "|0xFFFF00 " + turret.Id;
+					int status = turret.Stat[ ST_CURRENT_HP ] * 100.0f / turret.Stat[ ST_MAX_LIFE ];
+					info += "|0x3CF800  статус: " ;
+					info += "|0xFFFF00 " + status;
+					info += "|0x3CF800  % - " ;
+					string state = turret.IsKnockout() ? "отключена" : "активна";
+					info += "|0xFFFF00 " + state + " \n";
+					if( turret.SECURITY_ACCESS_CARD != 0 )
+					{
+						string accessCard = _GetProtoName( turret.SECURITY_ACCESS_CARD );
+						info += "|0x3CF800 Доступ по: " ;
+						info += "|0xFFFF00 " + accessCard + "\n";
+					}
+					else
+					{
+						continue;
+					}
+				}
+				else
+				{
+					continue;
+				}
+			}
+			turrets.resize( 0 );
+		}		
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+//Child menu for GM Level commands
+class MenuTerminalGM: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuTerminalGM( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 1;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		string statusPowered = terminal.TERMINAL_POWERED == 1 ? "да" : "нет";  
+		if( menu.ButtonExt( "Питание: ", statusPowered ) )
+		{
+			terminal.TERMINAL_POWERED == 0 ? terminal.TERMINAL_POWERED = 1 : terminal.TERMINAL_POWERED = 0;
+		}
+		
+		string statusFence = FLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) ? "да" : "нет"; 
+		if( menu.ButtonExt( "Контроль забора: ", statusFence ) )
+		{
+			statusFence = FLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) ? UNSETFLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) : SETFLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE );
+		}
+		
+		if( FLAG( terminal.TERMINAL_FLAG, TERMINAL_LASER_FENCE ) && menu.Button( "Назначить забор") )
+		{
+			MenuSelectFence@ select_fence = MenuSelectFence( terminal, map );
+			select_fence.level = level + 1;
+			return menu.OpenChild( "Уровень " + select_fence.level, select_fence );
+		}
+		
+		string statusTurets = FLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS ) ? "да" : "нет"; 
+		if( menu.ButtonExt( "Контроль турелей: ", statusTurets ) )
+		{
+			statusTurets = FLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS ) ? UNSETFLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS ) : SETFLAG( terminal.TERMINAL_FLAG, TERMINAL_TURRETS );
+		}
+		
+		string statusCards = FLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS ) ? "да" : "нет"; 
+		if( menu.ButtonExt( "Карты доступа: ", statusCards ) )
+		{
+			statusCards = FLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS ) ? UNSETFLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS ) : SETFLAG( terminal.TERMINAL_FLAG, TERMINAL_ACCESS_CARDS );
+		}
+		
+		string statusDoc = FLAG( terminal.TERMINAL_FLAG, TERMINAL_AUTODOC ) ? "да" : "нет"; 
+		if( menu.ButtonExt( "Упр автодоком: ", statusDoc ) )
+		{
+			statusDoc = FLAG( terminal.TERMINAL_FLAG, TERMINAL_AUTODOC ) ? UNSETFLAG( terminal.TERMINAL_FLAG, TERMINAL_AUTODOC ) : SETFLAG( terminal.TERMINAL_FLAG, TERMINAL_AUTODOC );
+		}
+		
+		string statusPass = FLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION ) ? "да" : "нет"; 
+		if( menu.ButtonExt( "Пароль: ", statusPass ) )
+		{
+			statusPass = FLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION ) ? UNSETFLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION ) : SETFLAG( terminal.TERMINAL_FLAG, TERMINAL_PASSWORD_PROTECTION );
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 0;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		string info = "ГМ меню управления терминалом";
+
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "Скрыть меню", null );
+    }
+}
+
+//Child menu for fence
+class MenuSelectFence: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	int selectorPos;
+	uint arrayPos;
+	
+    MenuSelectFence( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 1;
+		selectorPos = 0;
+		arrayPos = 0;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		uint[] FenceEntires;	
+		for( int i = ENTIRE_LASER_FENCE_BEGIN; i < ENTIRE_LASER_FENCE_END; i++ )
+		{
+			int entireId = i;
+			int entires = map.CountEntire( entireId );
+			if( entires != 0 )
+			{
+				FenceEntires.insertLast( entireId );
+			}
+			else
+			{
+				continue;
+			}
+		}
+		
+		if( FenceEntires.length() != 0 )
+		{
+			if( menu.Button( "Предыдущий" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos--;
+				if( arrayPos == 0 )
+				{
+					arrayPos = FenceEntires.length() - 1;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				terminal.FENCE_GROUP = FenceEntires[ arrayPos ];
+				return true;
+			}
+			
+			if( menu.Button( "Следующий" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos++;
+				if( arrayPos == FenceEntires.length() -1 )
+				{
+					arrayPos = 0;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				terminal.FENCE_GROUP = FenceEntires[ arrayPos ];
+				return true;
+			}
+			
+			if( menu.Button( "Возврат" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				level = 1;
+				return false;
+			}
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		
+		uint[] FenceEntires;	
+		for( uint i = ENTIRE_LASER_FENCE_BEGIN; i < ENTIRE_LASER_FENCE_END; i++ )
+		{
+			int entireId = i;
+			int entires = map.CountEntire( entireId );
+			if( entires != 0 )
+			{
+				FenceEntires.insertLast( entireId );
+			}
+			else
+			{
+				continue;
+			}
+		}
+		
+		string info;
+		if( FenceEntires.length() != 0 )
+		{
+			info = "|0x3CF800 Обнаружены эмиттеры: \n";
+			for( uint j = 0; j < FenceEntires.length() ; j ++ )
+			{
+				string entire = FenceEntires[j];
+				info += "|0xFFFF00 " + entire;
+				info += "|0x3CF800 ; " ;
+			}
+			info[ info.length() - 2 ] = ' ';
+			info[ info.length() - 2 ] = '.';
+			
+			if( terminal.FENCE_GROUP != 0 )
+			{
+				info += "|0x3CF800 \nВыбранная группа: [ ";
+				info += "|0xFFFF00 " + terminal.FENCE_GROUP;
+				info += "|0x3CF800  ]";
+			}
+		}
+		else
+		{ 
+			info = "|0xFFFF00 Эмиттеров не обнаружено!";
+		}		
+		return info;
+	}	
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "Скрыть меню", null );
+    }
+}
+
+//Child menu for autodoc assigment
+class MenuAutodoc: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	int selectorPos;
+	uint arrayPos;
+	
+    MenuAutodoc( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 1;
+		selectorPos = 0;
+		arrayPos = 0;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		Item@[] Autodocs;
+		map.GetItems( PID_OBJECT_AUTODOC, Autodocs );
+		Item@ autodoc = null;
+		
+		if( Autodocs.length() != 0 )
+		{
+			if( menu.Button( "Предыдущий" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos--;
+				if( arrayPos == 0 )
+				{
+					arrayPos = Autodocs.length() - 1;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				@autodoc = Autodocs[arrayPos];
+				terminal.ACTIVE_AUTODOC = autodoc.Id;
+				return true;
+			}
+			
+			if( menu.Button( "Следующий" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos++;
+				if( arrayPos == Autodocs.length() -1 )
+				{
+					arrayPos = 0;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				@autodoc = Autodocs[arrayPos];
+				terminal.ACTIVE_AUTODOC = autodoc.Id;
+				return true;
+			}
+			
+			@autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+			if( valid( autodoc ) )
+			{
+				if( menu.Button( "Подключиться" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					int len = Autodocs.length();
+					if( len > 1 )
+					{
+						for( int j = 0; j < len; j ++ )
+						{
+							Item@ doc = Autodocs[j];
+							if( doc.AUTODOC_TERMINAL == int( terminal.Id ) )
+							{
+								doc.AUTODOC_TERMINAL = 0;
+							}
+						}
+					}
+					autodoc.AUTODOC_TERMINAL = terminal.Id;
+				}
+				
+				if( autodoc.AUTODOC_TERMINAL != 0 && menu.Button( "Сброс" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					autodoc.AUTODOC_TERMINAL = 0;
+					terminal.ACTIVE_AUTODOC = 0;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 0;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		cr.RunClientScript( "client_screen_test@ShowScreen", 0, 0, 0, "", null );
+		string info = " ";
+		if( terminal.ACTIVE_AUTODOC != 0 )
+		{
+			Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+			if( valid( autodoc ) )
+			{ 
+				if( autodoc.AUTODOC_TERMINAL == int( terminal.Id ) )
+				{
+					info += "Подключен автодок № " + "|0xFFFF00 " + autodoc.Id;
+				}
+				else
+				{
+					info += "Выбран автодок № " + "|0xFFFF00 " + autodoc.Id;
+				}
+			}
+		}
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+//Child menu for autodoc control
+class MenuAutodocCtrl: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuAutodocCtrl( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 2;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( !valid( autodoc ) )
+		{
+			 return false;
+		}
+		
+		AutodocScan( map, terminal, autodoc );
+		
+		if( autodoc.AUTODOC_PATIENT == int( cr.Id ) )
+		{ 
+			return false; 
+		}
+		
+		if( autodoc.AUTODOC_ERROR == 0 && autodoc.AUTODOC_PATIENT != 0 && autodoc.AUTODOC_EVENT == 0 )
+		{
+			
+			Critter@ patient = GetCritter( autodoc.AUTODOC_PATIENT );
+			
+			if( valid( patient) )
+			{
+				string statusPatient = autodoc.AUTODOC_DOOR_BLOCK == 0 ? "свободен" : "зафиксирован"; 
+				if( menu.ButtonExt( "Пациент: ", statusPatient ) )
+				{
+					if( autodoc.AUTODOC_DOOR_BLOCK == 0 )
+					{
+						autodoc.AUTODOC_DOOR_BLOCK = 1;
+						patient.Say( SAY_NETMSG, "|0xFFFF00 Вас подхватили манипуляторы, надежно фиксируя ноги." );
+					}
+					else
+					{
+						autodoc.AUTODOC_DOOR_BLOCK = 0;
+						patient.Say( SAY_NETMSG, "|0xFFFF00 Манипуляторы отключились, Вы вновь можете ходить." );
+					}
+					ToggleDocBlockers( map, autodoc );
+					return true;
+				}
+				
+				if( menu.Button( "Лечение" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_HEAL_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_HEAL );
+					return true;
+				}
+				
+				if( menu.Button( "Обработать рану" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_WOUND_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_WOUND );
+					return true;
+				}
+		
+				if( menu.Button( "Извлечение" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_BULLET_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_BULLET );
+					return true;
+				}
+				
+				if( menu.Button( "Переливание крови" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_BLOOD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_BLOOD );
+					return true;
+				}
+				
+				if( menu.Button( "Реабилитация" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_REABILITATE_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_REABILITATE );
+					return true;
+				}
+				
+				if( menu.Button( "Травма" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					MenuAutodocMend@ menu_autodoc_mend = MenuAutodocMend( terminal, map );
+					menu_autodoc_mend.level = level + 1;
+					return menu.OpenChild( "Уровень " + menu_autodoc_mend.level, menu_autodoc_mend );
+				}
+				
+				if( menu.Button( "Реанимация" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( patient.ParamBase[ CR_DEATH_STAGE ] == 100 || autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_REANIMATE_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_REANIMATE );
+					return true;
+				}
+				
+				if( menu.Button( "Модификации" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					MenuAutodocModd@ menu_autodoc_modd = MenuAutodocModd( terminal, map );
+					menu_autodoc_modd.level = level + 1;
+					return menu.OpenChild( "Уровень " + menu_autodoc_modd.level, menu_autodoc_modd );
+				}
+				
+				if( menu.Button( "Эвтаназия" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_KILL_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_KILL );
+					return true;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 1;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		string info = ">";
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( valid( autodoc ) )
+		{
+			info = "|0x3CF800 Автодок №" + "|0xFFFF00  " + autodoc.Id;
+			info += "|0x3CF800   Биогель:" +  "|0xFFFF00  " + autodoc.AUTODOC_BIOGEL_LEVEL + "|0x3CF800 %\n";
+			if( autodoc.AUTODOC_BIOGEL_LEVEL == 0 )
+			{
+				info += "|0xFFFF00 Внимание! Отсутствует биогель! \n";
+			}
+			info += AutodocScan( map, terminal, autodoc );
+		}
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+class MenuAutodocMend: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuAutodocMend( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 3;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( !valid( autodoc ) )
+		{
+			 return false;
+		}
+
+		if( autodoc.AUTODOC_PATIENT == int( cr.Id ) )
+		{ 
+			return false; 
+		}
+
+		if( autodoc.AUTODOC_ERROR == 0 && autodoc.AUTODOC_PATIENT != 0 && autodoc.AUTODOC_EVENT == 0 )
+		{
+			
+			Critter@ patient = GetCritter( autodoc.AUTODOC_PATIENT );
+			if( valid( patient) )
+			{
+				if( menu.Button( "Глаза" ) ) {
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MEND2_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MEND_EYE );
+					return true;
+				}
+				
+				if( menu.Button( "Нога Правая" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MEND1_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MEND_RLEG );
+					return true;
+				}
+				
+				if( menu.Button( "Нога Левая"  ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MEND1_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MEND_LLEG );
+					return true;
+				}
+				
+				if( menu.Button( "Рука Правая" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MEND1_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MEND_RARM );
+					return true;
+				}
+				
+				if( menu.Button( "Рука Левая" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MEND1_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MEND_LARM );
+					return true;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 2;
+			return false;
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		string info = ">";
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( valid( autodoc ) )
+		{
+			info = "|0x3CF800 Автодок №" + "|0xFFFF00  " + autodoc.Id;
+			info += "|0x3CF800   Биогель:" +  "|0xFFFF00  " + autodoc.AUTODOC_BIOGEL_LEVEL + "|0x3CF800 %\n";
+			if( autodoc.AUTODOC_BIOGEL_LEVEL == 0 )
+			{
+				info += "|0xFFFF00 Внимание! Отсутствует биогель! \n";
+			}
+			info += AutodocScan( map, terminal, autodoc );
+		}
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+class MenuAutodocModd: CenteredMenuHandler
+{
+    uint terminal_id;
+    uint map_id;
+	uint level;
+	
+    MenuAutodocModd( Item& terminal, Map& map )
+	{
+        terminal_id = terminal.Id;
+        map_id = map.Id;
+		level = 3;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ terminal = GetItem( terminal_id );
+		
+        if( map is null || terminal is null )
+		{
+            return false;
+        }
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( !valid( autodoc ) )
+		{
+			 return false;
+		}
+
+		if( autodoc.AUTODOC_PATIENT == int( cr.Id ) )
+		{ 
+			return false; 
+		}
+
+		if( autodoc.AUTODOC_ERROR == 0 && autodoc.AUTODOC_PATIENT != 0 && autodoc.AUTODOC_EVENT == 0 )
+		{
+			
+			Critter@ patient = GetCritter( autodoc.AUTODOC_PATIENT );
+			
+			if( valid( patient) )
+			{
+				if( menu.Button( "Сила +" ) ) {
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_STR_UP );
+					return true;
+				}
+				
+				if( menu.Button( "Сила -" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_STR_DN );
+					return true;
+				}
+				
+				if( menu.Button( "Восприятие +"  ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_PER_UP );
+					return true;
+				}
+				
+				if( menu.Button( "Восприятие -" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_PER_DN );
+					return true;
+				}
+				
+				if( menu.Button( "Выносливость +" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_END_UP );
+					return true;
+				}
+				
+				if( menu.Button( "Выносливость -" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_END_DN );
+					return true;
+				}
+				
+				if( menu.Button( "Украсить" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_CHA_UP );
+					return true;
+				}
+				
+				if( menu.Button( "Изуродовать" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_CHA_DN );
+					return true;
+				}
+				
+				if( menu.Button( "Ловкость +" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_AGI_UP );
+					return true;
+				}
+				
+				if( menu.Button( "Ловкость -" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_AGI_DN );
+					return true;
+				}
+				
+				if( patient.Stat[ ST_BODY_TYPE ] != BT_CHILDREN && menu.Button( "Интимная пластика" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_ORGAN );
+					return true;
+				}
+				
+				if( patient.Stat[ ST_BODY_TYPE ] != BT_CHILDREN && menu.Button( "Смена пола" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					if( autodoc.AUTODOC_BIOGEL_LEVEL < AUTODOC_MODD_BIOGEL )
+					{
+						PlayVendSound( cr, map, "LOOSER.mp3", 5 );
+						return true;
+					}
+					AutodocChecks( autodoc, patient, AUTODOC_PROCEDURE_MODD_GENDER );
+					return true;
+				}
+			}
+		}
+		
+		if( menu.Button( "Возврат" ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			level = 2;
+			return false;
+		}
+		return true;
+    }
+
+	string@ Description( Critter& cr )
+	{	
+		Item@ terminal = GetItem( terminal_id );
+		Map@ map = GetMap( map_id );
+		string info = ">";
+		
+		Item@ autodoc = GetItem( terminal.ACTIVE_AUTODOC );
+		if( valid( autodoc ) )
+		{
+			info = "|0x3CF800 Автодок №" + "|0xFFFF00  " + autodoc.Id;
+			info += "|0x3CF800   Биогель:" +  "|0xFFFF00  " + autodoc.AUTODOC_BIOGEL_LEVEL + "|0x3CF800 %\n";
+			if( autodoc.AUTODOC_BIOGEL_LEVEL == 0 )
+			{
+				info += "|0xFFFF00 Внимание! Отсутствует биогель! \n";
+			}
+			info += AutodocScan( map, terminal, autodoc );
+		}
+		return info;
+	}
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+#endif //TERMINAL

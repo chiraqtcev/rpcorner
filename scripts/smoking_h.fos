@@ -1,0 +1,34 @@
+#ifndef SMOKING_H
+#define SMOKING_H
+
+#define SMOKES_REMAINING 		Val0 // количество затяжек
+#define TOXIC_LEVEL		 		Val1 // степень отравленности (unused)
+
+#define MALE_SFX 				( 0 )
+#define FEMALE_SFX 				( 1 )
+
+/* Первым звуком обязательно должно быть прикуривание, а остальные
+уже производятся рандомно. Можете добавить хоть 1000 штук, всё предусмотрено */
+const string[][] SmokingSFX = 
+{
+	{
+		"smoking_male_ignite.ogg",
+		"smoking_male_1.ogg",
+		"smoking_male_2.ogg",
+		"smoking_male_3.ogg"
+	},
+	{
+		"smoking_female_ignite.ogg",
+		"smoking_female_1.ogg",
+		"smoking_female_2.ogg",
+		"smoking_female_3.ogg"
+	}
+};
+
+	#ifndef SMOKING
+		import bool SmokeCigarette( Critter & cr, Item & item ) from "smoking";
+		import bool IgniteCigarette( Critter & cr, Item & item ) from "smoking";
+		import bool CanSmoke( Critter & cr ) from "smoking";
+	#endif
+
+#endif

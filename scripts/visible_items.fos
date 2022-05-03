@@ -1,0 +1,177 @@
+/*********Менеджер видимых предметов**************/
+#define __VISIBLE_ITEMS
+
+#include "_utils.fos"
+
+shared class ItemData : iItemData
+{
+	uint _id;
+	uint _map;
+	int _x;
+	int _y;
+	
+	ItemData( uint id, int x, int y )
+	{
+		_map = __mapID;
+		_id = id;
+		_x = x;
+		_y = y;
+	}	
+	
+	uint id() { return _id; }
+	uint map() { return _map; }
+	int x()	{ return _x; }
+	int y()	{ return _y; }
+}
+
+iItemDataList@ iList() { return _iList; }
+
+ItemDataList _iList;
+shared class ItemDataList : iItemDataList
+{
+	ItemData[] list;
+	uint[] ids;
+	
+	uint[][] groups;//TODO
+	
+	uint size;
+	uint holes;
+	uint map;
+	
+	bool _updated;
+	
+	ItemDataList()
+	{
+		size = 0;
+		holes = 0;
+		_updated = true;
+		map = __mapID;
+		list.resize(0);
+		ids.resize(0);
+	}
+	
+	int index( uint id ) { return ids.find( id ); }
+	bool updated() { return _updated; }
+	
+	//TODO: Обновлять этот список при изменении списка видимых итемов.
+	//TODO: Хранить кроме айдишника ещё и ПИД итемов, что бы зря не грузить сервер запросами.
+	uint[][] getIDs() 
+	{ 
+		_updated = false;
+		
+		uint l = list.length();
+		
+		uint[][] result;
+		result.resize( l );		
+		
+		for( uint i = 0; i < l; i++ )
+		{
+			result[i].insertLast( list[i].id() );
+			
+			for( uint j = i + 1; j < l; j++ )
+				if( ids[i] != 0 && list[i].x() == list[j].x() && list[i].y() == list[j].y() )
+					result[i].insertLast( list[j].id() );
+		}
+
+		return result; 
+	}
+
+	iItemDataList@ swap( ItemCl@ item )
+	{
+		if( !valid( item ) )
+			return this;
+		
+		if( exists( item.Id ) )
+			return remove( item.Id );
+		
+		return add( item );
+	}
+	
+	iItemDataList@ change( ItemCl& after, ItemCl& before )
+	{
+		remove( before );//even if there were no such item - we must continue
+		return add( after );
+	}
+	
+	bool exists( iItemData@ item ) { return exists( item.id() ); }
+	bool exists( uint id ) { return index( id ) != -1; }
+	//TODO: bool exists( int x, int y ) { return false; }
+	
+	iItemDataList@ add( ItemCl@ item ) 
+	{
+		if( valid( item ) && !exists( item.Id ) )
+			return add( item.Id, item.HexX, item.HexY );
+		
+		return this;
+	}
+	iItemDataList@ add( iItemData@ item ) { return valid( item ) ? add( item.id(), item.x(), item.y() ) : this; }
+	iItemDataList@ add( uint id, int x, int y )
+	{
+		list.insertLast( ItemData( id, x, y ) );
+		ids.insertLast( id );
+		
+		size++;
+		_updated = true;
+		
+		return this;
+	}
+	
+	iItemDataList@ remove( ItemCl@ item ) 
+	{
+		if( valid( item ) && exists( item.Id ) )
+			return remove( item.Id );
+		
+		return this;
+	}
+	iItemDataList@ remove( iItemData@ item ) { return valid( item ) ? remove( item.id() ) : this; }
+	iItemDataList@ remove( uint id )
+	{
+		if( id == 0 ) return this;
+		
+		int i = index( id );
+		if( i == -1 ) return this;
+		
+		ids[i] = 0;
+		
+		holes++;
+		if( size > 64 && holes > size / 2 )
+			cleanup();
+		
+		_updated = true;
+		return this;
+	}
+	
+	int checkMap()
+	{
+		if( map == __mapID )
+			return size;
+		
+		map = __mapID;
+		
+		return cleanup();
+	}
+	
+	int cleanup()
+	{
+		uint[] _ids;
+		ItemData[] _list;
+		
+		size = 0;
+		holes = 0;
+		
+		for( uint i = 0, l = list.length(); i < l; i++ )
+		{
+			if( ids[i] != 0 && list[i].map() == map )
+			{
+				_list.insertLast( list[i] );
+				_ids.insertLast( ids[i] );
+				size++;
+			}
+		}
+		
+		list = _list;
+		ids = _ids;
+		
+		return size;
+	}
+}

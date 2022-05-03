@@ -1,0 +1,1075 @@
+#ifndef __MSG_STR__
+#define __MSG_STR__
+
+// ***************************************************************************************
+// ***  FOTEXT.MSG  **********************************************************************
+// ***************************************************************************************
+
+//Generic stuff
+#define STR_MAGIC_BALL_YES                   ( 510 )
+#define STR_MAGIC_BALL_NO                    ( 511 )
+#define STR_COSMETIC_USE                     ( 520 )
+#define STR_CIGARETTES_SMOKE                 ( 530 )
+
+// General interactive machines
+#define STR_INSERT_MONEY					 ( 1000 )
+#define STR_MACHINE_LOCKED					 ( 1001 )
+#define STR_OPENS_MACHINE					 ( 1002 )
+
+// One-hand Bandit
+#define STR_NO_MONEY_LEFT					 ( 2001 )
+#define STR_NOT_ENOUGH_TO_COVER_BET			 ( 2002 )
+#define STR_JACKPOT							 ( 2003 )
+#define STR_YOU_WIN							 ( 2004 )
+#define STR_YOU_LOOSE						 ( 2005 )
+#define STR_YOU_HAVE_NO_MONEY				 ( 2006 )
+#define STR_MAKE_BET						 ( 2007 )
+
+// Coinflip
+#define STR_COIN_BERMIN						 ( 2050 )
+#define STR_COIN_BUCK						 ( 2051 )
+
+// Dice use
+#define STR_DICE_ROLL						 ( 2053 )
+
+// Cards
+#define STR_CARDS_DECK_EMPTY				 ( 2054 )
+#define STR_CARDS_NO_CARDS					 ( 2055 )
+#define STR_CARDS_DRAWS						 ( 2056 )
+#define STR_CARDS_DEALS						 ( 2057 )
+#define STR_CARDS_YOU_GOT_CARD				 ( 2058 )
+#define STR_CARDS_SHUFFLES					 ( 2059 )
+#define STR_CARDS_COLLETS					 ( 2060 )
+#define STR_CARDS_WRONG_ITEM				 ( 2061 )
+#define STR_CARDS_SHOWS						 ( 2062 )
+#define STR_CARDS_CHECK_HAND				 ( 2063 )
+
+// Vending Machines
+#define STR_COLLECT_GOODS					 ( 2100 )
+#define STR_COLLECTS_CHANGE					 ( 2101 )
+#define STR_SELECTS_ITEM					 ( 2102 )
+
+// Jukebox
+#define STR_TRACK_ERROR						 ( 2150 )
+#define STR_NO_CHANGE						 ( 2151 )
+
+// Terminal
+#define STR_TERMINAL_BLOCK					 ( 2200 )
+#define STR_TERMINAL_OPEN					 ( 2201 )
+#define STR_TERMINAL_WRONG_ITEM				 ( 2202 )
+#define STR_TERMINAL_SELECT_CARD			 ( 2203 )
+#define STR_TERMINAL_DISABLE_CARD			 ( 2204 )
+
+// Combat
+#define STR_COMBAT_SPIN_BARRELS			 	 ( 2300 )
+#define STR_COMBAT_ENTANGLED_MALE		 	 ( 2301 )
+#define STR_COMBAT_ENTANGLED_FEMALE		 	 ( 2302 )
+#define STR_COMBAT_ENTANGLED_IT			 	 ( 2303 )
+#define STR_COMBAT_WEAPON_MISSFIRE		 	 ( 2304 )
+
+// Taste
+#define STR_HOMEBREW_TASTE 					 ( 6487 )
+#define STR_HOMEBREW_TASTE_BEGIN			 ( 6488 )
+#define STR_HOMEBREW_TASTE_END				 ( 6498 )
+#define STR_SMELL_CANTEEN					 ( 6499 )
+
+//Russian roulette
+#define STR_RUSS_ROULL_LOSE_M				 ( 9000 )
+#define STR_RUSS_ROULL_WIN_M				 ( 9001 )
+#define STR_RUSS_ROULL_LOSE_F				 ( 9002 )
+#define STR_RUSS_ROULL_WIN_F				 ( 9003 )
+
+//Resource gathering lines
+#define STR_EMOTE_PICK_PLANT				 ( 9004 )
+#define STR_NOTHING_USEFULL 				 ( 9005 )
+#define STR_YOU_GATHERED	 				 ( 9006 )
+#define STR_UNITS							 ( 9007 )
+#define STR_WRONG_PLANT_STAGE				 ( 9008 )
+#define STR_TOO_TIRED 						 ( 9009 )
+#define STR_EQUIP_TOOL 						 ( 9010 )
+#define STR_INJURED_CANT_WORK				 ( 9011 )
+#define STR_NO_DRILL_CHARGE					 ( 9012 )
+#define STR_DRILL_DAMAGED					 ( 9013 )
+#define STR_KILL_PREY						 ( 9014 )
+#define STR_CANT_SKIN						 ( 9015 )
+#define STR_NOTHING_TO_SKIN					 ( 9016 )
+#define STR_DAMAGED_SKIN					 ( 9017 )
+#define STR_WRONG_INSTRUMENT				 ( 9018 )
+#define STR_USE_SHOWEL						 ( 9019 )
+
+//Raise skill
+#define STR_SEX_EXPERT						 ( 9496 )
+#define STR_FAILED_TO_RAISE_SKILL			 ( 9497 )
+#define STR_SKILL_RAISED					 ( 9498 )
+#define STR_SKILL_RAISED_BY					 ( 9499 )
+
+//Accidental injuries
+#define STR_AVOID_INJURY					 ( 9500 )
+#define STR_BRUISED							 ( 9501 )
+#define STR_SMALL_CUT						 ( 9502 )
+#define STR_DEEP_CUT						 ( 9503 )
+#define STR_HEAVY_INJURY					 ( 9504 )
+#define STR_EYE_INJURY						 ( 9505 )
+
+//Blood loss
+#define STR_HEAVY_BLOOD_LOSS				 ( 9510 )
+#define STR_MASSIVE_BLOOD_LOSS				 ( 9511 )
+
+//Vomiting
+#define STR_FEEL_SICK						 ( 9512 )
+#define STR_EMOTE_VOMITS					 ( 9513 )
+#define STR_ABOUT_TO_VOMIT					 ( 9514 ) 
+
+//Resuracting
+#define STR_WASTED_ITEM						 ( 9520 )
+#define STR_RESURECTION_SUCCESS				 ( 9521 )
+#define STR_ITEM_WONT_HELP 					 ( 9522 ) 
+
+//Food / drink
+#define STR_EMOTE_WAMBLES					 ( 9523 )
+#define STR_EMOTE_LICKS_LIPS				 ( 9524 )
+#define STR_EMOTE_STAGGERS					 ( 9525 )
+#define STR_ABOUT_TO_DIE					 ( 9526 )
+#define STR_SUFFER_HUNGER					 ( 9527 )
+#define STR_SUFFER_THIRST					 ( 9528 )
+#define STR_TOO_DRUNK						 ( 9529 )
+#define STR_AP_LOSS_THIRST					 ( 9530 )
+#define STR_AP_LOSS_HUNGER					 ( 9531 )
+#define STR_AP_RESTORED						 ( 9532 )
+
+//Dragging
+#define STR_YOU_CANT_DO_THAT				 ( 9540 )
+#define STR_BODY_MUST_LIE					 ( 9541 )
+#define STR_BODY_TOO_FAR					 ( 9542 )
+#define STR_BODDY_BEING_DRAGGED				 ( 9543 )
+#define STR_DRAG_ONLY_ONE					 ( 9544 )
+#define STR_START_DRAGGING					 ( 9545 )
+#define STR_STOPED_DRAGGING					 ( 9546 )
+
+//Dirt
+#define STR_YOU_DIRTY						 ( 9550 )
+#define STR_YOU_WASHED						 ( 9551 )
+
+//Various Items
+#define STR_EMOTE_MAKES_PICTURE				 ( 9800 )
+#define STR_EMOTE_REMOVE_ASH				 ( 9801 )
+#define STR_EMOTE_REMOVE_REMAINS			 ( 9802 )
+#define STR_EMOTE_WIPE_BLOOD				 ( 9803 )
+
+//Ropes and shackles
+#define STR_TARGET_DEAD						 ( 9841 )
+#define STR_YOU_ARE_ANIMAL					 ( 9842 )
+#define STR_WRONG_CREATURE					 ( 9843 )
+#define STR_YOU_CUFFED_SELF					 ( 9844 )
+#define STR_YOU_TIED_SELF					 ( 9845 )
+#define STR_YOU_ALREADY_CUFFED				 ( 9846 )
+#define STR_YOU_ALREADY_TIED				 ( 9847 )
+#define STR_TARGET_ALREADY_CUFFED			 ( 9848 )
+#define STR_TARGET_ALREADY_TIED				 ( 9849 )
+#define STR_THIS_NOT_EASY					 ( 9850 )
+#define STR_YOU_CANT_UNGAG_CUFFED			 ( 9851 )
+#define STR_YOU_CANT_UNGAG_TIED				 ( 9852 )
+#define STR_YOU_CANT_UNGAG					 ( 9853 )
+#define STR_EMOTE_CUFFS_RELEASED			 ( 9854 )
+#define STR_YOU_RELEASED					 ( 9855 )
+#define STR_KEY_NOT_FIT						 ( 9856 )
+#define STR_YOU_BREAK_FREE					 ( 9857 )
+#define STR_BOTH_NOT_CUFFED					 ( 9858 )
+#define STR_EMOTE_CUFFED_VICTIM				 ( 9859 )
+#define STR_EMOTE_TIED_VICTIM				 ( 9860 )
+#define STR_CUFFED_YOU						 ( 9861 )
+#define STR_TIED_YOU						 ( 9862 )
+#define STR_REMOVED_ROPES					 ( 9863 )
+#define STR_FAIL_FREE_SELF					 ( 9864 )
+#define STR_PRISONER_FREE					 ( 9865 )
+#define STR_TAKE_THE_GAG_OUT				 ( 9866 )
+#define STR_IMPOSSIBLE						 ( 9867 )
+#define STR_TARGET_ALREADY_ENSLAVED			 ( 9868 )
+#define STR_TARGET_ALREADY_GAGED			 ( 9869 )
+#define STR_EMOTE_GAG						 ( 9870 )
+#define STR_SELF_GAGED						 ( 9871 )
+#define STR_TARGET_GAGED					 ( 9872 )
+#define STR_GAGED							 ( 9873 )
+#define STR_COLLAR_ON_YOU					 ( 9874 )
+#define STR_MENU_AGREE						 ( 9875 )
+#define STR_TARGET_HAS_COLLAR				 ( 9876 )
+#define STR_EMOTE_COLLAR_SLAVE				 ( 9877 )
+#define STR_PUT_COLLAR_SELF					 ( 9878 )
+#define STR_PUT_COLLAR_SLAVE				 ( 9879 )
+#define STR_YOU_GOT_COLLAR					 ( 9880 )
+#define STR_PUNUSH_SLAVE					 ( 9881 )
+#define STR_COLLAR_PAIN						 ( 9882 )
+#define STR_EMOTE_AGONY						 ( 9883 )
+#define STR_COLLAR_HARM						 ( 9884 )
+#define STR_COLLAR_INJURE					 ( 9885 )
+#define STR_EXECUTE_SLAVE					 ( 9886 )
+#define STR_COLLAR_DEATH					 ( 9887 )
+#define STR_SLAVE_FREED						 ( 9888 )
+#define STR_SLAVE_RELEASED					 ( 9889 )
+#define STR_TRY_TAKE_OFF					 ( 9890 )
+#define STR_EMOTE_PRESS_BUTTON				 ( 9891 )
+#define STR_SHACKLES_DONT_REPAIR			 ( 9892 )
+#define STR_SHACKLES_NEED_DETAIL			 ( 9893 )
+#define STR_SHACKLES_REPAIRED				 ( 9894 )
+#define STR_SHACKLES_TAKE_OFF				 ( 9895 )
+#define STR_EMOTE_REMOVE_SHACKLES			 ( 9896 )
+#define STR_SHACKLES_YOU_FREE				 ( 9897 )
+#define STR_SHACKLES_FREE_YOURSELF			 ( 9898 )
+
+//Forgot to activate character
+#define STR_EMOTE_NO_ACTIVATION				 ( 9899 )
+
+//General autoemotes
+#define STR_EMOTE_PANTING					 ( 9900 )
+#define STR_EMOTE_RUBS_BRUISE				 ( 9901 )
+#define STR_EMOTE_SHOUTS_IN_PAIN 			 ( 9902 )
+#define STR_EMOTE_GRABS_WOUND				 ( 9903 )
+#define STR_EMOTE_SCREAMS_PAIN				 ( 9904 )
+#define STR_EMOTE_SCREAMS_AGONY				 ( 9905 )
+
+//Suicide
+#define STR_EMOTE_SUICIDE_HARAKIRI			 ( 9978 )
+#define STR_EMOTE_SUICIDE_TRY_CHOKE			 ( 9979 )
+#define STR_EMOTE_SUICIDE_TRY_REVOLVER		 ( 9980 )
+#define STR_EMOTE_SUICIDE_TRY_GUN			 ( 9981 )
+#define STR_EMOTE_SUICIDE_TRY_LASER			 ( 9982 )
+#define STR_EMOTE_SUICIDE_TRY_GRENADE		 ( 9983 )
+#define STR_EMOTE_SUICIDE_TRY_BURN			 ( 9984 )
+#define STR_EMOTE_SUICIDE_TRY_KNIFE			 ( 9985 )
+#define STR_EMOTE_SUICIDE_TRY_CHEM			 ( 9986 )
+#define STR_SUICIDE_NOTHING					 ( 9987 )
+#define STR_EMOTE_SUICIDE_GUN				 ( 9988 )
+#define STR_EMOTE_SUICIDE_SHOTGUN			 ( 9989 )
+#define STR_EMOTE_SUICIDE_LASER				 ( 9991 )
+#define STR_EMOTE_SUICIDE_PLASMA			 ( 9992 )
+#define STR_EMOTE_SUICIDE_ELECTRO			 ( 9993 )
+#define STR_SUICIDE_WRONG_TOOL				 ( 9994 )
+#define STR_EMOTE_SUICIDE_GRENADE			 ( 9995 )
+#define STR_EMOTE_SUICIDE_GRENADE_FAIL		 ( 9996 )
+#define STR_EMOTE_SUICIDE_CHEM				 ( 9997 )
+#define STR_EMOTE_SUICIDE_BURN				 ( 9998 )
+
+//Toilets
+#define STR_EMOTE_FLUSH_TOILET				 ( 9999 )
+
+//StartMap
+#define STR_START_ERROR 					 ( 10000 )
+#define STR_START_NOT_NEW					 ( 10001 )
+#define STR_START_WRONG_MAP					 ( 10002 )
+#define STR_START_TRY_AGAIN					 ( 10003 )
+#define STR_START_SURVIVAL					 ( 10004 )
+#define STR_START_AREA_INVALID				 ( 10005 )
+#define STR_START_MAP_INVALID				 ( 10006 )
+#define STR_START_GREETING					 ( 10007 )
+#define STR_START_ANNIHILATION				 ( 10008 )
+#define STR_START_INAPPROPRIATE				 ( 10009 )
+
+#define MSG_ONLY_LOCAL_MAP					 ( 15000 )
+
+#define FOTEXT_LIFT    # (__FOTEXT_LIFT_group, __FOTEXT_LIFT_floor)   ( 20000 + ( __FOTEXT_LIFT_group )*100 + ( __FOTEXT_LIFT_floor ) )
+
+// ***************************************************************************************
+// ***  FOGAME.MSG  **********************************************************************
+// ***************************************************************************************
+
+#define STR_VERSION_INFO                     ( 1 )
+
+// Months, days
+#define STR_MONTH( m )            ( 20 + ( m ) )
+#define STR_DAY_OF_WEEK( dow )    ( 32 + ( dow ) )
+
+// Misc
+#define STR_DOT                              ( 50 )
+#define STR_COMMA                            ( 52 )
+#define STR_SLASH                            ( 53 )
+#define STR_AND                              ( 54 )
+#define STR_OR                               ( 55 )
+
+// Music/Video
+#define STR_MUSIC_MAIN_THEME                 ( 80 )
+#define STR_VIDEO_INTRO_BEGIN                ( 90 )
+#define STR_VIDEO_INTRO_END                  ( 99 )
+
+// Chat
+#define STR_CRNORM                           ( 100 )
+#define STR_CRSHOUT                          ( 102 )
+#define STR_CREMOTE                          ( 104 )
+#define STR_CRWHISP                          ( 106 )
+#define STR_CRSOCIAL                         ( 108 )
+#define STR_MBNORM                           ( 120 )
+#define STR_MBSHOUT                          ( 122 )
+#define STR_MBEMOTE                          ( 124 )
+#define STR_MBWHISP                          ( 126 )
+#define STR_MBSOCIAL                         ( 128 )
+#define STR_MBRADIO                          ( 130 )
+#define STR_MBNET                            ( 132 )
+
+// FixBoy
+#define STR_FIX_PARAMS                       ( 200 )
+#define STR_FIX_TOOLS                        ( 201 )
+#define STR_FIX_ITEMS                        ( 202 )
+#define STR_FIX_PIECES                       ( 205 )
+#define STR_FIX_YOUHAVE                      ( 206 )
+#define STR_FIX_SUCCESS                      ( 210 )
+#define STR_FIX_FAIL                         ( 211 )
+#define STR_FIX_TIMEOUT                      ( 212 )
+
+// Interface
+#define STR_OPTIONS_NOT_AVIABLE              ( 250 )
+#define STR_SCREENSHOT_SAVED                 ( 251 )
+#define STR_SCREENSHOT_NOT_SAVED             ( 252 )
+#define STR_LOG_SAVED                        ( 253 )
+#define STR_LOG_NOT_SAVED                    ( 254 )
+#define STR_ZOOM                             ( 260 )
+#define STR_GAME_PAUSED                      ( 265 )
+#define STR_DIALOG_BARTER                    ( 275 )
+#define STR_DIALOG_SAY                       ( 276 )
+#define STR_DIALOG_LOG                       ( 277 )
+#define STR_BARTER_OFFER                     ( 280 )
+#define STR_BARTER_TALK                      ( 281 )
+#define STR_BARTER_END                       ( 282 )
+#define STR_MENUOPT_SAVEGAME                 ( 290 )
+#define STR_MENUOPT_LOADGAME                 ( 291 )
+#define STR_MENUOPT_OPTIONS                  ( 292 )
+#define STR_MENUOPT_EXIT                     ( 293 )
+#define STR_MENUOPT_RESUME                   ( 294 )
+#define STR_LOGIN_NEWGAME                    ( 300 )
+#define STR_LOGIN_LOADGAME                   ( 301 )
+#define STR_LOGIN_PLAY                       ( 302 )
+#define STR_LOGIN_REGISTRATION               ( 303 )
+#define STR_LOGIN_OPTIONS                    ( 304 )
+#define STR_LOGIN_CREDITS                    ( 305 )
+#define STR_LOGIN_EXIT                       ( 306 )
+#define STR_DIALOGBOX_CANCEL                 ( 310 )
+#define STR_DIALOGBOX_OK                     ( 311 )
+#define STR_DIALOGBOX_FOLLOW                 ( 312 )
+#define STR_DIALOGBOX_BARTER_OPEN            ( 313 )
+#define STR_DIALOGBOX_BARTER_HIDE            ( 314 )
+#define STR_DIALOGBOX_ENCOUNTER_RT           ( 315 )
+#define STR_DIALOGBOX_ENCOUNTER_TB           ( 316 )
+#define STR_CHA_NAME_NAME                    ( 320 )
+#define STR_CHA_NAME_PASS                    ( 321 )
+#define STR_CHA_OK                           ( 325 )
+#define STR_CHA_CANCEL                       ( 326 )
+#define STR_CHA_PRINT                        ( 327 )
+#define STR_CHA_SKILLS                       ( 328 )
+#define STR_CHA_UNSPENT_SP                   ( 329 )
+#define STR_REG_UNSPENT_TAGS                 ( 335 )
+#define STR_REG_SPECIAL_SUM                  ( 336 )
+#define STR_PERK_TAKE                        ( 340 )
+#define STR_PERK_CANCEL                      ( 341 )
+#define STR_GMAP_LOCKED                      ( 350 )
+#define STR_GMAP_CUR_INFO                    ( 351 )
+#define STR_GMAP_CUR_LOC_INFO                ( 352 )
+#define STR_GMAP_LOC_INFO                    ( 353 )
+#define STR_FINDPATH_AIMBLOCK                ( 360 )
+#define STR_SPLIT_TITLE                      ( 365 )
+#define STR_SPLIT_ALL                        ( 366 )
+#define STR_TIMER_TITLE                      ( 370 )
+#define STR_SAY_OK                           ( 375 )
+#define STR_SAY_CANCEL                       ( 376 )
+#define STR_SAY_TITLE                        ( 377 )
+#define STR_INPUT_BOX_WRITE                  ( 380 )
+#define STR_INPUT_BOX_BACK                   ( 381 )
+#define STR_TOWN_VIEW_BACK                   ( 385 )
+#define STR_TOWN_VIEW_ENTER                  ( 386 )
+#define STR_TOWN_VIEW_CONTOURS               ( 387 )
+#define STR_SAVE_LOAD_SAVE                   ( 390 )
+#define STR_SAVE_LOAD_LOAD                   ( 391 )
+#define STR_SAVE_LOAD_DONE                   ( 392 )
+#define STR_SAVE_LOAD_BACK                   ( 393 )
+#define STR_SAVE_LOAD_NEW_RECORD             ( 394 )
+#define STR_SAVE_LOAD_TYPE_RECORD_NAME       ( 395 )
+
+// Inventory
+#define STR_INV_SHORT_SPECIAL                # (num)    ( 400 + ( num ) )
+#define STR_INV_HP                           ( 407 )
+#define STR_INV_AC                           ( 408 )
+#define STR_INV_NORMAL                       ( 409 )
+#define STR_INV_LASER                        ( 410 )
+#define STR_INV_FIRE                         ( 411 )
+#define STR_INV_PLASMA                       ( 412 )
+#define STR_INV_EXPLODE                      ( 413 )
+#define STR_INV_NO_ITEM                      ( 414 )
+#define STR_INV_DMG                          ( 415 )
+#define STR_INV_DIST                         ( 416 )
+#define STR_INV_AMMO                         ( 417 )
+#define STR_INV_TOTAL_WEIGHT                 ( 420 )
+#define STR_INV_UNARMED_DMG                  ( 424 )
+#define STR_OVERWEIGHT                       ( 425 )
+#define STR_OVERVOLUME                       ( 426 )
+
+#define STR_ORG_DMG_TITLE                    ( 427 ) // Повреждение органов
+#define STR_INV_APREGEN						 ( 428 )
+//#define LOCKED						     ( 429 ) {429}{}{За удачное...}
+//#define LOCKED						     ( 430 ) {430}{}{Вес}
+#define STR_INV_VOLUME                 		 ( 431 )
+#define STR_INV_HAS_SHOTS                    ( 434 )
+#define STR_ITEM_WEIGHT_GRAMM                ( 435 )
+#define STR_ITEM_WEIGHT_FUNT                 ( 436 )
+#define STR_ITEM_COST                        ( 437 )
+#define STR_ITEM_TRADER_COST                 ( 438 )
+#define STR_RELOAD_TITLE                     ( 439 )
+#define STR_OVERWEIGHT_TITLE                 ( 440 )
+#define STR_HIDEMODE_TITLE                   ( 441 )
+#define STR_LEVELUP_TITLE                    ( 442 )
+#define STR_POISONED_TITLE                   ( 443 )
+#define STR_RADIATED_TITLE                   ( 444 )
+#define STR_INJURED_TITLE                    ( 445 )
+#define STR_ADDICTED_TITLE                   ( 446 )
+#define STR_TIMEOUT_TITLE                    ( 447 )
+#define STR_OVERVOLUME_TITLE                 ( 448 )
+#define STR_YOU_TURN_TITLE                   ( 449 )
+#define STR_TURN_BASED_TITLE                 ( 450 )
+
+//451 - 454
+
+// Radio
+#define STR_RADIO_MAIN                       ( 455 )
+#define STR_RADIO_CHANNEL                    ( 456 )
+#define STR_RADIO_REFRESH                    ( 457 )
+#define STR_RADIO_BROADCAST_SEND             ( 458 )
+#define STR_RADIO_BROADCAST_RECV             ( 459 )
+#define STR_RADIO_BROADCAST1                 ( 460 )
+#define STR_RADIO_BROADCAST2                 ( 461 )
+#define STR_RADIO_BROADCAST3                 ( 462 )
+#define STR_RADIO_BROADCAST4                 ( 463 )
+#define STR_RADIO_BROADCAST5                 ( 464 )
+#define STR_RADIO_BROADCAST_SEND_BEGIN       ( 465 )
+#define STR_RADIO_BROADCAST_SEND_END         ( 466 )
+#define STR_RADIO_BROADCAST_SEND_CHANGE      ( 467 )
+#define STR_RADIO_BROADCAST_RECV_BEGIN       ( 468 )
+#define STR_RADIO_BROADCAST_RECV_END         ( 469 )
+#define STR_RADIO_BROADCAST_RECV_CHANGE      ( 470 )
+#define STR_RADIO_CHANNEL_CHANGED            ( 471 )
+#define STR_RADIO_CANT_SHIFT_CHANNEL         ( 474 )
+#define STR_RADIO_CANT_SHIFT_SEND            ( 475 )
+#define STR_RADIO_CANT_SHIFT_RECV            ( 476 )
+#define STR_RADIO_CANT_SHIFT_BC_SEND         ( 477 )
+#define STR_RADIO_CANT_SHIFT_BC_RECV         ( 478 )
+#define STR_RADIO_CANT_SEND                  ( 479 ) // Hardcoded
+
+// Barter
+#define STR_BARTER_GOOD_OFFER                ( 480 )
+#define STR_BARTER_BAD_OFFER                 ( 481 )
+#define STR_BARTER_OVERWEIGHT                ( 482 )
+#define STR_BARTER_OVERSIZE                  ( 483 )
+#define STR_BARTER_SALE_ITEM_NOT_FOUND       ( 484 )
+#define STR_BARTER_BUY_ITEM_NOT_FOUND        ( 485 )
+#define STR_BARTER_NO_BARTER_NOW             ( 486 )
+#define STR_BARTER_NO_BARTER_MODE            ( 487 )
+#define STR_BARTER_DIALOGBOX                 ( 490 )
+#define STR_BARTER_OPEN_MODE                 ( 491 )
+#define STR_BARTER_HIDE_MODE                 ( 492 )
+#define STR_BARTER_BEGIN_FAIL                ( 493 )
+#define STR_BARTER_BEGIN                     ( 495 )
+#define STR_BARTER_READY_OFFER               ( 496 )
+#define STR_BARTER_ONLY_CASH                 ( 497 )
+
+// Items info
+// Deterioration
+#define STR_DETERIORATION_PROCENT            ( 500 )
+#define STR_DETERIORATION_SERVICE            ( 501 )
+#define STR_DETERIORATION_SERVICE_EXT        ( 502 )
+#define STR_DETERIORATION_BROKEN_LOW         ( 503 )
+#define STR_DETERIORATION_BROKEN_NORM        ( 504 )
+#define STR_DETERIORATION_BROKEN_HIGH        ( 505 )
+#define STR_DETERIORATION_NO_RESC            ( 506 )
+#define STR_DETERIORATION_BROKEN_COUNT       ( 507 )
+#define STR_DETERIORATION_SERVICE_ALREADY    ( 510 )
+#define STR_DETERIORATION_SERVICE_SUCC       ( 511 )
+#define STR_DETERIORATION_SERVICE_FAIL       ( 512 )
+#define STR_DETERIORATION_REPAIR_SUCC        ( 515 )
+#define STR_DETERIORATION_REPAIR_FAIL        ( 516 )
+#define STR_DETERIORATION_ARMOR_BROKEN       ( 520 )
+#define STR_DETERIORATION_WEAPON_BROKEN      ( 521 )
+
+// Key
+#define STR_INV_KEY_NUMBER                   ( 550 )
+
+// Car
+#define STR_INV_CAR_NUMBER                   ( 560 )
+#define STR_INV_CAR_FUEL                     ( 561 )
+#define STR_INV_CAR_DETERIORATION            ( 562 )
+
+// FORP Additional Enduser Info
+#define STR_INV_STR_REQ   	      		     ( 563 )
+#define STR_INV_WAIT_TIME   	             ( 564 )
+#define STR_INV_AP_COST   	      		     ( 565 )
+#define STR_INV_ITEM_COLOR	     		     ( 566 )
+#define STR_INV_ELECTRO                      ( 567 )
+#define STR_INV_RELOAD_TIME                  ( 568 )
+#define STR_INV_RELOAD_COST			         ( 569 )
+#define STR_INV_PERKS					     ( 570 )
+#define STR_INV_CALIBER_MSG                  ( 571 )
+#define STR_INV_BLEED_MSG                    ( 572 )
+#define STR_INV_BURN_MSG                     ( 573 )
+#define STR_INV_PLASMA_MSG                   ( 574 )
+#define STR_INV_RADIUS_MSG                   ( 575 )
+#define STR_INV_ARMOR_AC                     ( 576 )
+
+// Ammo stats 600 <-> 619
+#define STR_INV_AMMO_POWER			 		 ( 600 )
+#define STR_INV_AMMO_MULT 			 		 ( 601 )
+#define STR_INV_AMMO_DRMOD			 		 ( 602 )
+#define STR_INV_AMMO_DTMOD			 		 ( 603 )
+#define STR_INV_AMMO_DMGTYPE		 		 ( 604 )
+
+// PipBoy
+#define STR_PIP_STATUS                       ( 700 )
+#define STR_PIP_REPLICATION_MONEY            ( 701 )
+#define STR_PIP_REPLICATION_MONEY_VAL        ( 702 )
+#define STR_PIP_REPLICATION_COST             ( 703 )
+#define STR_PIP_REPLICATION_COST_VAL         ( 704 )
+#define STR_PIP_REPLICATION_COUNT            ( 705 )
+#define STR_PIP_REPLICATION_COUNT_VAL        ( 706 )
+#define STR_PIP_QUESTS                       ( 720 )
+#define STR_PIP_SCORES                       ( 723 )
+#define STR_PIP_MAPS                         ( 725 )
+#define STR_PIP_INFO                         ( 730 )
+
+// Timeouts
+#define STR_PIP_TIMEOUTS                     ( 740 )
+#define STR_TIMEOUT_SECONDS                  ( 741 )
+#define STR_TIMEOUT_MINUTES                  ( 742 )
+#define STR_TIMEOUT_TRANSFER_WAIT            ( 790 )
+#define STR_TIMEOUT_BATTLE_WAIT              ( 791 )
+#define STR_TIMEOUT_SNEAK_WAIT               ( 792 )
+
+// Automaps
+#define STR_AUTOMAP_LOADING                  ( 795 )
+#define STR_AUTOMAP_LOADING_ERROR            ( 796 )
+
+// Dialog
+#define STR_DIALOG_CANT_TALK_WITH_MOB        ( 800 )
+#define STR_DIALOG_NPC_NOT_LIFE              ( 801 )
+#define STR_DIALOG_NPC_BUSY                  ( 802 )
+#define STR_DIALOG_DIST_TOO_LONG             ( 803 )
+#define STR_DIALOG_NO_DIALOGS                ( 804 )
+#define STR_DIALOG_MANY_TALKERS              ( 805 )
+#define STR_DIALOG_PRE_INST_FAIL             ( 806 )
+#define STR_DIALOG_FROM_LINK_NOT_FOUND       ( 807 )
+#define STR_DIALOG_COMPILE_FAIL              ( 808 )
+#define STR_DIALOG_NPC_NOT_FOUND             ( 809 )
+#define STR_DIALOG_ANSWER_NULLPTR            ( 810 )
+
+// Global
+#define STR_GLOBAL_LOCATION_NOT_FOUND        ( 900 )
+#define STR_GLOBAL_LOCATION_REMOVED          ( 901 )
+#define STR_GLOBAL_PLACE_NOT_FOUND           ( 902 )
+#define STR_GLOBAL_CAR_PLACE_NOT_FOUND       ( 903 )
+#define STR_LOCATION_FULL		       		 ( 904 )
+#define STR_CANT_MAKE_TRANSFER       		 ( 905 )
+#define STR_TOO_FAR_FROM_GRID       		 ( 906 )
+#define STR_FORBIDDEN_LOCATION   	 		 ( 907 )
+#define STR_USE_SECRET_PATH		       		 ( 908 )
+#define STR_CANT_TRESPASS_TERAIN       		 ( 909 )
+#define STR_NO_FREE_HEX			     		 ( 910 )
+#define STR_SOMETHING_WENT_WRONG     		 ( 911 )
+#define STR_FEEL_DANGER			     		 ( 912 )
+#define STR_AGREE_MAKE_TRANSFER     		 ( 913 )
+#define STR_GET_RESPIRATOR		    		 ( 914 )
+#define STR_MAP_UNAVAILABLE			   		 ( 915 )
+#define STR_MAP_WASTELAND			   		 ( 916 )
+
+#define STR_FOLLOW_PREP                      ( 950 )
+#define STR_FOLLOW_FORCE                     ( 952 )
+#define STR_FOLLOW_UNKNOWN_CRNAME            ( 970 )
+#define STR_FOLLOW_GMNAME                    ( 972 )
+
+// Net
+#define STR_NET_WRONG_LOGIN                  ( 1001 )
+#define STR_NET_WRONG_PASS                   ( 1002 )
+#define STR_NET_ACCOUNT_ALREADY              ( 1003 )
+#define STR_NET_PLAYER_IN_GAME               ( 1004 )
+#define STR_NET_WRONG_SPECIAL                ( 1005 )
+#define STR_NET_REG_SUCCESS                  ( 1006 )
+#define STR_NET_CONNECTION                   ( 1007 )
+#define STR_NET_CONN_ERROR                   ( 1008 )
+#define STR_NET_LOGINPASS_WRONG              ( 1009 )
+#define STR_NET_CONN_SUCCESS                 ( 1010 )
+#define STR_NET_HEXES_BUSY                   ( 1012 )
+#define STR_NET_DISCONN_BY_DEMAND            ( 1013 )
+#define STR_NET_WRONG_NAME                   ( 1014 )
+#define STR_NET_WRONG_CASES                  ( 1015 )
+#define STR_NET_WRONG_GENDER                 ( 1016 )
+#define STR_NET_WRONG_AGE                    ( 1017 )
+#define STR_NET_CONN_FAIL                    ( 1018 )
+#define STR_NET_WRONG_DATA                   ( 1019 )
+#define STR_NET_STARTLOC_FAIL                ( 1020 )
+#define STR_NET_STARTMAP_FAIL                ( 1021 )
+#define STR_NET_STARTCOORD_FAIL              ( 1022 )
+#define STR_NET_BD_ERROR                     ( 1023 )
+#define STR_NET_WRONG_NETPROTO               ( 1024 )
+#define STR_NET_DATATRANS_ERR                ( 1025 )
+#define STR_NET_NETMSG_ERR                   ( 1026 )
+#define STR_NET_SETPROTO_ERR                 ( 1027 )
+#define STR_NET_LOGINOK                      ( 1028 )
+#define STR_NET_WRONG_TAGSKILL               ( 1029 )
+#define STR_NET_DIFFERENT_LANG               ( 1030 )
+#define STR_NET_MANY_SYMBOLS                 ( 1031 )
+#define STR_NET_BEGIN_END_SPACES             ( 1032 )
+#define STR_NET_TWO_SPACE                    ( 1033 )
+#define STR_NET_BANNED                       ( 1034 )
+#define STR_NET_NAME_WRONG_CHARS             ( 1035 )
+#define STR_NET_PASS_WRONG_CHARS             ( 1036 )
+#define STR_NET_FAIL_TO_LOAD_IFACE           ( 1037 )
+#define STR_NET_FAIL_RUN_START_SCRIPT        ( 1038 )
+#define STR_NET_LANGUAGE_NOT_SUPPORTED       ( 1039 )
+#define STR_INVALID_RESOLUTION               ( 1040 )
+#define STR_NET_KNOCK_KNOCK                  ( 1041 )
+#define STR_NET_REGISTRATION_IP_WAIT         ( 1042 )
+#define STR_NET_BANNED_IP                    ( 1043 )
+#define STR_NET_UID_FAIL                     ( 1044 )
+#define STR_NET_TIME_LEFT                    ( 1045 )
+#define STR_NET_BAN                          ( 1046 )
+#define STR_NET_BAN_REASON                   ( 1047 )
+#define STR_NET_LOGIN_SCRIPT_FAIL            ( 1048 )
+#define STR_NET_PERMANENT_DEATH              ( 1049 )
+#define STR_WRONG_TRAIT_COMBO				 ( 1050 )
+
+// Client info chat messages 1059 <-> 1069
+#define STR_INFO_SLOT_1            			 ( 1059 )
+#define STR_INFO_SLOT_2            			 ( 1060 )
+#define STR_INFO_WELCOME_INFO            	 ( 1061 )
+#define STR_INFO_WELCOME_LEGACY		         ( 1062 )
+#define STR_INFO_WELCOME_NEW	             ( 1063 )
+#define STR_INFO_WELCOME_ERROR	             ( 1064 )
+
+#define STR_SP_SAVE_SUCCESS                  ( 1070 )
+#define STR_SP_SAVE_FAIL                     ( 1071 )
+#define STR_SP_LOAD_SUCCESS                  ( 1072 )
+#define STR_SP_LOAD_FAIL                     ( 1073 )
+#define STR_SP_NEW_GAME_SUCCESS              ( 1074 )
+#define STR_SP_NEW_GAME_FAIL                 ( 1075 )
+
+// Parameters
+#define STR_PARAM_NAME                       # (index)         ( 100000 + ( index ) * 10 + 1 )
+#define STR_PARAM_DESC                       # (index)         ( 100000 + ( index ) * 10 + 2 )
+#define STR_PARAM_NAME_SHORT                 # (index)   ( 100000 + ( index ) * 10 + 3 )
+
+#define STR_STAT_LEVEL                       # (val)           ( ( val ) > 10 ? ( 2310 ) : ( ( val ) < 1 ? ( 2301 ) : 2300 + ( val ) ) )
+#define STR_STAT_LEVEL_ABB                   # (val)       ( ( val ) > 10 ? ( 2320 ) : ( ( val ) < 1 ? ( 2311 ) : 2310 + ( val ) ) )
+
+#define STR_NEXT_LEVEL_NAME                  ( 4001 )
+#define STR_UNSPENT_SKILL_POINTS_NAME        ( 4002 )
+#define STR_LEVEL_NAME                       ( 4003 )
+#define STR_EXPERIENCE_NAME                  ( 4004 )
+#define STR_REPUTATION_NAME                  ( 4005 )
+#define STR_KARMA_NAME                       ( 4006 )
+#define STR_PERKS_NAME                       ( 4007 )
+#define STR_KILLS_NAME                       ( 4008 )
+#define STR_TRAITS_NAME                      ( 4011 )
+#define STR_MALE_NAME                        ( 4107 )
+#define STR_FEMALE_NAME                      ( 4108 )
+#define STR_NEXT_LEVEL_DESC                  ( 4051 )
+#define STR_UNSPENT_SKILL_POINTS_DESC        ( 4052 )
+#define STR_LEVEL_DESC                       ( 4053 )
+#define STR_EXPERIENCE_DESC                  ( 4054 )
+#define STR_REPUTATION_DESC                  ( 4055 )
+#define STR_KARMA_DESC                       ( 4056 )
+#define STR_PERKS_DESC                       ( 4057 )
+#define STR_KILLS_DESC                       ( 4058 )
+#define STR_TRAITS_DESC                      ( 4061 )
+
+#define STR_GAIN_LEVELUP                     ( 4090 )
+#define STR_GAIN_EXPERIENCE                  ( 4091 )
+
+#define STR_SWITCH_PERKS_NAME                ( 4109 )
+#define STR_SWITCH_KARMA_NAME                ( 4110 )
+#define STR_SWITCH_KILLS_NAME                ( 4111 )
+
+// Skills
+#define STR_SKILL_NORESSURECT                ( 3400 )
+#define STR_SKILL_WEARINESS                  ( 3401 )
+#define STR_SKILL_NONEED_FIRSTAID            ( 3402 )
+#define STR_SKILL_NONEED_DOCTOR              ( 3403 )
+#define STR_SKILL_NOFIRSTAID_NEEDDOCTOR      ( 3404 )
+#define STR_SKILL_NODOCTOR_NEEDFIRSTAID      ( 3405 )
+#define STR_SKILL_HEAL_DMG                   # (dmg)       ( 3410 + ( dmg ) )
+#define STR_SKILL_NOHEAL_DMG                 # (dmg)     ( 3420 + ( dmg ) )
+#define STR_SKILL_STEAL_TRIED_GET            ( 3430 )
+#define STR_SKILL_STEAL_TRIED_PUT            ( 3431 )
+#define STR_SKILL_LOCKPICK_FAIL              ( 3440 )
+#define STR_SKILL_TRAPS_SET_FAIL             ( 3441 )
+#define STR_SKILL_TRAPS_SET_SUCC             ( 3442 )
+#define STR_SKILL_TRAPS_FAIL                 ( 3443 )
+#define STR_SKILL_TRAPS_SUCC                 ( 3444 )
+#define STR_SKILL_SNEAK_VISIBLE              ( 3445 )
+
+// Skilldex
+#define STR_SKILLDEX_NAME                    ( 3340 )
+#define STR_SKILLDEX_CANCEL                  ( 3341 )
+
+// Character
+#define STR_CHA_LEVEL                        ( 4113 )
+#define STR_CHA_EXPERIENCE                   ( 4114 )
+#define STR_CHA_NEXT_LEVEL                   ( 4115 )
+
+// Damage
+#define STR_DMG_LIFE                         ( 4250 )
+
+// Karma, reputation
+#define STR_KARMA_GEN_GEN_NAME               ( 6000 )
+#define STR_KARMA_GEN_GEN_NAME2              ( 6001 )
+#define STR_KARMA_GEN_GEN_DESC               ( 6002 )
+#define STR_KARMA_GEN_COUNT                  ( 6099 )
+#define STR_KARMA_GEN_VAL                    # (num)        ( 6100 + ( num ) * 3 )
+#define STR_KARMA_GEN_NAME                   # (num)       ( 6100 + ( num ) * 3 + 1 )
+#define STR_KARMA_GEN_SKILLDEX               # (num)   ( 6100 + ( num ) * 3 + 2 )
+
+#define STR_ADDICT_TITLE_NAME                ( 6900 )
+#define STR_ADDICT_TITLE_DESC                ( 6901 )
+
+// Chosen tabs
+#define STR_HEAVY_DMG_TITLE                  ( 7000 )
+#define STR_BULLET_OVER_TITLE                ( 7001 )
+#define STR_BLEED_TITLE                      ( 7002 )
+#define STR_BLOOD_TOXIC_TITLE                ( 7003 )
+#define STR_DIRTINESS_TITLE					 ( 7004 )
+#define STR_BLOOD_LOSS_TITLE				 ( 7005 )
+#define STR_POISONED_TITLE					 ( 7006 )
+#define STR_RADIATED_TITLE					 ( 7007 )
+#define STR_SUFFOCATED_TITLE				 ( 7008 )
+#define STR_HUNGER_TITLE					 ( 7009 )
+#define STR_THIRST_TITLE					 ( 7010 )
+#define STR_DRUNK_TITLE						 ( 7011 )
+#define STR_PARALYSIS_TITLE					 ( 7012 )
+#define STR_COOLDOWN_TITLE					 ( 7013 )
+#define STR_AIM_TITLE						 ( 7014 )
+#define STR_WEIGHT_TITLE					 ( 7015 )
+#define STR_VOLUME_TITLE					 ( 7016 )
+#define STR_COMBAT_TITLE					 ( 7017 )
+#define STR_TIREDNESS_TITLE					 ( 7018 )
+#define STR_TRANSFER_TITLE				 	 ( 7019 )
+#define STR_ACTION_TITLE					 ( 7020 )
+#define STR_LOCKPICK_TITLE					 ( 7021 )
+#define STR_FIRST_AID_TITLE					 ( 7022 )
+#define STR_DOCTOR_TITLE					 ( 7023 )
+#define STR_REPAIR_TITLE					 ( 7024 )
+#define STR_SCIENCE_TITLE					 ( 7025 )
+#define STR_OVERDOSE_TITLE                   ( 7026 )
+
+// Autoaim title
+#define STR_AIM_EYES						 ( 7500 )
+#define STR_AIM_HEAD						 ( 7501 )
+#define STR_AIM_LEFT_ARM					 ( 7502 )
+#define STR_AIM_TORSO						 ( 7503 )
+#define STR_AIM_RIGHT_ARM					 ( 7504 )
+#define STR_AIM_LEFT_LEG					 ( 7505 )
+#define STR_AIM_GROIN						 ( 7506 )
+#define STR_AIM_RIGHT_LEG					 ( 7507 )
+
+// Client_main inventory info
+#define STR_ITM_LEX_WARN					 ( 7510 )
+#define STR_SYMBOLS							 ( 7511 )
+#define STR_COMMAND_NOT_FOUND				 ( 7512 )
+#define STR_DEAD_CANT_TALK					 ( 7513 )
+#define STR_YOU_HAVE						 ( 7514 )
+#define STR_BURST							 ( 7515 )
+#define STR_BLAST_RADIUS				 	 ( 7516 )
+#define STR_RECHARGABLE_AMMO			 	 ( 7517 )
+#define STR_INV_TOTAL_VOLUME                 ( 7518 )
+#define STR_INV_KG			                 ( 7519 )
+#define STR_INV_EXTRA_SLOTS	                 ( 7520 )
+#define STR_INV_SLOT_HEAD_EMPTY	             ( 7521 )
+#define STR_INV_SLOT_BACK_EMPTY              ( 7522 )
+#define STR_INV_SLOT_MISC_EMPTY              ( 7523 )
+
+// Kills
+#define STR_KILL_NAME                        # (num)            ( 8000 + ( num ) )
+#define STR_KILL_DESC                        # (num)            ( 8100 + ( num ) )
+
+// Items
+#define STR_ITEM_LOOK                        ( 10000 )
+#define STR_ITEM_LOOK_INFO                   ( 10001 )
+#define STR_ITEM_LOOK_NOTHING                ( 10010 )
+#define STR_ITEM_NOT_FOUND                   ( 10020 )
+#define STR_ITEM_LOCKER_NEED_KEY             ( 10100 )
+#define STR_USE_NOTHING                      ( 10202 )
+#define STR_SOLAR_SCORCHER_NO_LIGHT          ( 10240 )
+#define STR_CAR_FUEL_TANK_FILL               ( 10250 )
+#define STR_CAR_FUEL_TANK_FULL               ( 10251 )
+#define STR_CAR_REPAIR_SUCCESS               ( 10252 )
+#define STR_CAR_REPAIR_NO_NEED               ( 10253 )
+#define STR_CAR_FUEL_NOT_SUPPORTED           ( 10254 )
+#define STR_CAR_FUEL_EMPTY                   ( 10255 )
+#define STR_CAR_BROKEN                       ( 10256 )
+#define STR_CAR_CRIT_OVERLOAD                ( 10257 )
+#define STR_CRIT_BAD_CHARISMA                ( 10258 )
+#define STR_CANT_KICK_ON_WATER               ( 10259 )
+
+// Item Subtypes
+#define STR_ITEM_SUBTYPE                     # (subtype) (14500 + subtype)
+// Drugs
+#define STR_DRUG_STAT_GAIN                   ( 10300 )
+#define STR_DRUG_STAT_LOSE                   ( 10301 )
+#define STR_DRUG_ADDICTION_END               ( 10302 )
+#define STR_DRUG_DEAD                        ( 10303 )
+#define STR_DRUG_NOTHING_HAPPENS             ( 10304 )
+#define STR_DRUG_PARISH                      ( 10305 )
+#define STR_DRUG_USE_ON_SUCC                 ( 10306 )
+#define STR_DRUG_USE_ON_FAIL                 ( 10307 )
+
+// Books
+#define STR_BOOK_READ_SUCCESS                ( 10450 )
+#define STR_BOOK_READ_FAIL                   ( 10451 )
+#define STR_BOOK_READ_SCIENCE                ( 10452 )
+#define STR_BOOK_READ_REPAIR                 ( 10453 )
+#define STR_BOOK_READ_FISRT_AID              ( 10454 )
+#define STR_BOOK_READ_SMALL_GUNS             ( 10455 )
+#define STR_BOOK_READ_ENERGY_WEAPONS         ( 10456 )
+#define STR_BOOK_READ_OUTDOORSMAN            ( 10457 )
+// Grave
+#define STR_GRAVE_UNCOVERED                  ( 10550 )
+#define STR_GRAVE_COVERED                    ( 10551 )
+
+// Caliber
+#define STR_CALIBER                          # (num)              ( 10900 + ( num ) )
+
+// Critters
+#define STR_YOU_SEE							 ( 11000 )
+#define STR_CRIT_LOOK_LIFE                   ( 11010 )
+#define STR_CRIT_LOOK_KO                     ( 11011 )
+#define STR_CRIT_LOOK_DEAD                   ( 11012 )
+#define STR_CRIT_LOOK_CRITICAL_DEAD          ( 11013 )
+#define STR_CRIT_LOOK_NOTHING                ( 11014 )
+#define STR_CRIT_LOOK_AGE                    # ( gen, age )( 11100 + ( ( age ) > 99 ? 90 : ( age ) ) + ( gen ) * 1000 )
+
+//FoRP critter desc
+#define STR_DESC_HIDDEN_HOOD    			 ( 12200 )
+#define STR_DESC_HIDDEN_APP     			 ( 12201 )
+#define STR_DESC_HIDDEN_ARMOR				 ( 12202 )
+#define STR_DESC_LOOKS						 ( 12203 )
+
+//Maniac trait
+#define STR_DESC_LOOKS_ANGIRLY				 ( 12205 )
+#define STR_DESC_MUMBLES_NEG				 ( 12206 )
+#define STR_DESC_LOOKS_HATRED				 ( 12207 )
+#define STR_DESC_MOCKS						 ( 12208 )
+#define STR_DESC_LOOKS_CONTEM				 ( 12209 )
+#define STR_DESC_LOOKS_UGLY					 ( 12210 )
+#define STR_DESC_SQUINTS					 ( 12211 )
+#define STR_DESC_LOOKS_HOSTILE				 ( 12212 )
+#define STR_DESC_GRINNING					 ( 12213 )
+#define STR_DESC_WHISPERS_DIE				 ( 12214 )
+
+#define STR_DESC_F_IRRESISTIBLE				 ( 12215 )
+#define STR_DESC_M_IRRESISTIBLE				 ( 12216 )
+#define STR_DESC_F_MBEAUTIFUL				 ( 12217 )
+#define STR_DESC_M_MBEAUTIFUL				 ( 12218 )
+#define STR_DESC_F_BEAUTIFUL				 ( 12219 )
+#define STR_DESC_M_BEAUTIFUL				 ( 12220 )
+#define STR_DESC_F_ATTRACTIVE				 ( 12221 )
+#define STR_DESC_M_ATTRACTIVE				 ( 12222 )
+#define STR_DESC_F_SICKENING				 ( 12223 )
+#define STR_DESC_M_SICKENING				 ( 12224 )
+#define STR_DESC_F_DISGUSTING				 ( 12225 )
+#define STR_DESC_M_DISGUSTING				 ( 12226 )
+#define STR_DESC_F_UNPLEASANT				 ( 12227 )
+#define STR_DESC_M_UNPLEASANT				 ( 12228 )
+#define STR_DESC_F_VSTRONG					 ( 12229 )
+#define STR_DESC_M_VSTRONG					 ( 12230 )
+#define STR_DESC_F_STRONG					 ( 12231 )
+#define STR_DESC_M_STRONG					 ( 12232 )
+#define STR_DESC_F_QWEAK					 ( 12233 )
+#define STR_DESC_M_QWEAK					 ( 12234 )
+#define STR_DESC_F_WEAK         			 ( 12235 )
+#define STR_DESC_M_WEAK         			 ( 12236 )
+#define STR_DESC_F_TOUGH        			 ( 12237 )
+#define STR_DESC_M_TOUGH					 ( 12238 )
+#define STR_DESC_F_WBUILT					 ( 12239 )
+#define STR_DESC_M_WBUILT					 ( 12240 )
+#define STR_DESC_F_DELICATE					 ( 12241 )
+#define STR_DESC_M_DELICATE					 ( 12242 )
+#define STR_DESC_F_SLIM						 ( 12243 )
+#define STR_DESC_M_SLIM						 ( 12244 )
+#define STR_DESC_F_AGILE					 ( 12245 )
+#define STR_DESC_M_AGILE					 ( 12246 )
+#define STR_DESC_F_NIMBLE					 ( 12247 )
+#define STR_DESC_M_NIMBLE					 ( 12248 )
+#define STR_DESC_F_CLUMSY					 ( 12249 )
+#define STR_DESC_M_CLUMSY					 ( 12250 )
+#define STR_DESC_F_GRACELESS				 ( 12251 )
+#define STR_DESC_M_GRACELESS				 ( 12252 )
+#define STR_DESC_F_USUAL					 ( 12253 )
+#define STR_DESC_M_USUAL					 ( 12254 )
+#define STR_DESC_USUAL						 ( 12255 )
+
+// Gender endings
+#define STR_GENDER_MALE_ENDING				 ( 12256 )
+#define STR_GENDER_FEMALE_ENDING			 ( 12257 )
+#define STR_GENDER_IT_ENDING				 ( 12258 )
+
+// Fallout system
+#define STR_CRIT_LOOK_WHO                    # (gender)             ( 12500 + ( gender ) )
+#define STR_CRIT_LOOK_STATE                  # (num)              ( 12510 + ( num ) )
+#define STR_CRIT_LOOK_LIMBS                  # ( gender, unhurt )( 12520 + ( gender ) * 2 + ( unhurt ? 1 : 0 ) )
+
+#define STR_CRIT_HAND1_1H                    ( 12538 )
+#define STR_CRIT_HAND1_2H                    ( 12539 )
+#define STR_CRIT_ARMAMENT                    ( 12540 )
+#define STR_CRIT_HOLDS_IN_MOUTH              ( 12541 )
+#define STR_CRIT_LOOK_MISC                   ( 12542 )
+#define STR_CRIT_HOLDS_IN_CHAPS              ( 12543 )
+#define STR_CRIT_HOLDS_IN_MANDIBLES          ( 12544 )
+#define STR_CRIT_HOLDS_IN_PINCERS         	 ( 12545 )
+#define STR_CRIT_HOLDS_IN_PINCER        	 ( 12546 )
+#define STR_CRIT_HOLDS_IN_TENTACLES        	 ( 12547 )
+#define STR_CRIT_HOLDS_IN_TENTACLE        	 ( 12548 )
+#define STR_CRIT_HOLDS_IN_MANIPULATORS     	 ( 12549 )
+#define STR_CRIT_HOLDS_IN_MANIPULATOR      	 ( 12550 )
+#define STR_CRIT_HOLDS_IN_CLAWS		    	 ( 12551 )
+#define STR_CRIT_HOLDS_IN_CLAW		      	 ( 12552 )
+
+#define STR_CRIT_FEMALE_ARMOR				 ( 12570 )
+#define STR_CRIT_MALE_ARMOR					 ( 12571 )
+#define STR_CRIT_SHE_HEAD					 ( 12572 )
+#define STR_CRIT_HE_HEAD					 ( 12573 )
+#define STR_CRIT_BACKPACK					 ( 12574 )
+#define STR_CRIT_BACKPACK_SHE_ENDLINE		 ( 12575 )
+#define STR_CRIT_BACKPACK_HE_ENDLINE		 ( 12576 )
+
+#define STR_ITEM_USES_LEFT			      	 ( 12599 )
+
+#define STR_CRITTER_CANT_MOVE                ( 12600 )
+
+// Scores
+#define STR_SCORES_TITLE                     # (score)       ( 13000 + ( score ) * 10 )
+#define STR_SCORES_NAME                      # (score)        ( 13000 + ( score ) * 10 + 1 )
+
+// 3d attributes
+#define STR_BODY_TYPE                        # (type)         ( 150100 + ( type ) )
+#define STR_SKIN_COLOR                       # (color)        ( 151000 + ( color ) )
+#define STR_HAIR_COLOR                       # (color)        ( 151200 + ( color ) )
+#define STR_HAIR_MALE                        # (type)         ( 152000 + ( type ) * 10 )
+#define STR_HAIR_FEMALE                      # (type)         ( 152200 + ( type ) * 10 )
+#define STR_MUSTACHE                         # (type)         ( 153000 + ( type ) * 10 )
+#define STR_PONYTAIL                         # (type)         ( 154000 + ( type ) * 10 )
+#define STR_BEARD                            # (type)         ( 155000 + ( type ) * 10 )
+
+// Intellect words
+#define STR_INTELLECT_WORDS                  ( 1999000000 )
+#define STR_INTELLECT_SYMBOLS                ( 1999000001 )
+
+// Help
+#define STR_GAME_HELP                        ( 2000000000 )
+
+// Credits
+#define STR_GAME_CREDITS_SPEED               ( 2000001000 )
+#define STR_GAME_CREDITS                     ( 2000001010 )
+#define STR_GAME_CREDITS_EXT                 ( 2000001020 )
+
+// ***************************************************************************************
+// ***  FOOBJ.MSG  ***********************************************************************
+// ***************************************************************************************
+
+//#define STR_ITEM_INFO                        # (item)           ( item.GetProtoId() * 100 + item.Info )
+#define STR_ITEM_INFO                        # (item)           ( item.Info == 0 ? item.GetProtoId() * 100 : item.Val9 * 100 )
+
+// ***************************************************************************************
+// ***  FOGM.MSG  ************************************************************************
+// ***************************************************************************************
+
+// Local map info
+#define STR_MAP_NAME                         # (pid)             ( ( ( pid ) + 1 ) * 10 + 0 )
+#define STR_MAP_MUSIC                        # (pid)            ( ( ( pid ) + 1 ) * 10 + 5 )
+#define STR_MAP_AMBIENT                      # (pid)          ( ( ( pid ) + 1 ) * 10 + 6 )
+
+// Global map info
+#define STR_GM_NAME                          # (pid)              ( ( ( pid ) + 100 ) * 1000 + 0 )
+#define STR_GM_INFO                          # (pid)              ( ( ( pid ) + 100 ) * 1000 + 5 )
+#define STR_GM_PIC                           # (pid)               ( ( ( pid ) + 100 ) * 1000 + 20 )
+#define STR_GM_LABELPIC                      # (pid)          ( ( ( pid ) + 100 ) * 1000 + 30 )
+
+#define STR_GM_ENTRANCE_COUNT                # (pid)    ( ( ( pid ) + 100 ) * 1000 + 90 )
+#define STR_GM_ENTRANCE_NAME                 # ( pid, en )( ( ( pid ) + 100 ) * 1000 + 100 + ( ( en ) * 10 + 1 ) )
+#define STR_GM_ENTRANCE_PICX                 # ( pid, en )( ( ( pid ) + 100 ) * 1000 + 100 + ( ( en ) * 10 + 2 ) )
+#define STR_GM_ENTRANCE_PICY                 # ( pid, en )( ( ( pid ) + 100 ) * 1000 + 100 + ( ( en ) * 10 + 3 ) )
+
+// ***************************************************************************************
+// ***  FODLG.MSG  ***********************************************************************
+// ***************************************************************************************
+
+#define STR_NPC_PROTO_NAME                   # (pid)     ( ( pid ) * 10 )
+#define STR_NPC_PROTO_DESC                   # (pid)     ( ( pid ) * 10 + 1 )
+#define STR_NPC_NAME                         # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 100 : STR_NPC_PROTO_NAME( pid ) )
+#define STR_NPC_NAME_DLG                     # (dlg)     ( 100000 + ( dlg ) * 1000 + 100 )
+#define STR_NPC_AVATAR                       # (dlg)     ( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 110 : 0 )
+#define STR_NPC_INFO_LIFE                    # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 200 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_FULL_INFO_LIFE               # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 210 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_INFO_KO                      # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 220 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_FULL_INFO_KO                 # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 230 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_INFO_DEAD                    # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 240 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_FULL_INFO_DEAD               # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 250 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_INFO_CRITICAL_DEAD           # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 260 : STR_NPC_PROTO_DESC( pid ) )
+#define STR_NPC_FULL_INFO_CRITICAL_DEAD      # ( dlg, pid )( ( dlg ) != 0 ? 100000 + ( dlg ) * 1000 + 270 : STR_NPC_PROTO_DESC( pid ) )
+
+// ***************************************************************************************
+// ***  FOQUEST.MSG  *********************************************************************
+// ***************************************************************************************
+
+#define STR_QUEST_NUMBER                     ( 4 )
+#define STR_QUEST_PROCESS                    ( 5 )
+#define STR_QUEST_MAP                        # (num)            ( ( num ) * 1000 + 101 )
+#define STR_QUEST_INFO                       # (num)           ( ( num ) * 1000 + 102 )
+
+// ***************************************************************************************
+// ***  FOHOLO.MSG, FOUSERHOLO.MSG  ******************************************************
+// ***************************************************************************************
+
+#define STR_HOLO_READ_SUCC                   ( 1 )
+#define STR_HOLO_READ_FAIL                   ( 2 )
+#define STR_HOLO_READ_ALREADY                ( 3 )
+#define STR_HOLO_READ_MEMORY_FULL            ( 4 )
+#define STR_HOLO_ERASE_SUCC                  ( 5 )
+#define STR_HOLO_ERASE_FAIL                  ( 6 )
+#define STR_HOLO_WRITE_SUCC                  ( 7 )
+#define STR_HOLO_WRITE_FAIL                  ( 8 )
+#define STR_HOLO_INFO_NAME                   # (num)       ( ( num ) * 10 )
+#define STR_HOLO_INFO_DESC                   # (num)       ( ( num ) * 10 + 1 )
+
+// ***************************************************************************************
+// ***  FOCOMBAT.MSG  ********************************************************************
+// ***************************************************************************************
+
+#define STR_COMBAT_NEED_AP                   ( 100 )
+#define STR_COMBAT_NEED_OUT_OF_AMMO          ( 101 )
+#define STR_COMBAT_NEED_OUT_OF_RANGE         ( 102 )
+#define STR_COMBAT_NEED_CANNOT_END           ( 103 )
+#define STR_COMBAT_NEED_AIM_BLOCKED          ( 104 )
+#define STR_COMBAT_NEED_DMG_TWO_ARMS         ( 105 )
+#define STR_COMBAT_NEED_DMG_ARM              ( 106 )
+#define STR_COMBAT_NEED_LOW_STRENGTH         ( 107 )
+
+// Turrets
+#define STR_15_SECONDS_TO_COMPLY 			 ( 700000 )
+#define STR_5_SECONDS		 	 			 ( 700100 )
+#define STR_PERIMETER_DEFENCE_RESUMED 		 ( 700200 )
+#define STR_MARKED_FOR_TERMINATION 			 ( 700300 )
+#define STR_INTRUDER_ALERT					 ( 700400 )
+#define STR_TERMINATION_PROTOCOL 			 ( 700500 )
+
+// 80000 First Aid
+#define STR_EMOTE_INJECT_STIM				 ( 800010 )
+#define STR_EMOTE_APPLY_HP					 ( 800020 )
+#define STR_EMOTE_INJECT_SS					 ( 800030 )
+#define STR_EMOTE_INJECT_TRAUMATIN			 ( 800040 )
+#define STR_HEALING_OVERDOSE				 ( 800050 )
+
+// ***************************************************************************************
+// ***  FOINTERNAL.MSG  ******************************************************************
+// ***************************************************************************************
+
+#define STR_INTERNAL_SCRIPT_MODULES          ( 100 )
+#define STR_INTERNAL_SCRIPT_DLLS             ( 50000 )
+#define STR_INTERNAL_SCRIPT_PRAGMAS          ( 90000 )
+#define STR_INTERNAL_SCRIPT_VERSION          ( 99998 )
+#define STR_INTERNAL_SCRIPT_CONFIG           ( 99999 )
+#define STR_INTERNAL_CRTYPE                  # (num)      ( 100000 + ( num ) )
+
+// ***************************************************************************************
+// ***************************************************************************************
+// ***************************************************************************************
+
+#endif // __MSG_STR__

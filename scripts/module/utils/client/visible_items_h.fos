@@ -1,0 +1,46 @@
+#ifndef __VISIBLE_ITEMS_H
+	#define __VISIBLE_ITEMS_H
+
+	shared interface iItemDataList 
+	{		
+		int index( uint id );
+		
+		bool updated();
+		
+		uint[][] getIDs();
+		
+		iItemDataList@ swap( ItemCl@ item );
+		iItemDataList@ change( ItemCl& after, ItemCl& before );
+		
+		bool exists( iItemData@ item );
+		bool exists( uint id );
+		
+		iItemDataList@ add( ItemCl@ item );
+		iItemDataList@ add( iItemData@ item );
+		iItemDataList@ add( uint id, int x, int y );
+		
+		iItemDataList@ remove( ItemCl@ item );
+		iItemDataList@ remove( iItemData@ item );
+		iItemDataList@ remove( uint id );
+		
+		int checkMap();
+		
+		int cleanup();
+	}
+	
+	shared interface iItemData 
+	{
+		uint id();
+		uint map();
+		
+		int x();
+		int y();
+	}
+
+	#ifndef __VISIBLE_ITEMS
+		#define __VISIBLE_ITEMS
+		
+		import iItemDataList@ iList() from "visible_items";
+	#endif
+
+#endif

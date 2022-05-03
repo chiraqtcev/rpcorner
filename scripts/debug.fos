@@ -1,0 +1,29 @@
+#define DEBUG_MODULE
+#include "_utils.fos"
+
+//Обработка/переключение режимов дебага.
+#include "debug_mode.fos"
+#include "npc_planes_h.fos"
+#include "radiation_h.fos"
+#include "effects_h.fos"
+#include "combat_h.fos"
+#include "gm_h.fos"
+
+import void _MobInit( Critter& npc, bool firstTime ) from "mob";
+import void GM_MobInit( Critter& npc ) from "mob";
+import void GM_GuardsInit( Critter& npc ) from "ai_guards";
+
+import void _TraderInit( Critter& trader, bool firstTime ) from "trader";
+
+import void ShowInputBoxScreen( Critter& cr, string funcName, uint16 textLength, uint8 flags ) from "main";
+
+import void DropWild() from "globalmap_group";
+
+import uint GetTile( Map& map, uint16 hexX, uint16 hexY, uint8 layer ) from "qmap";
+
+
+//Вынес все ГМ-команды в отдельный файл. Нужно будет реструктуризировать и сделать отдельный модуль.
+#include "gm_commands.fos"
+
+//Вынес все старые дебаг-тесты в отдельный файл. Нужно будет реструктуризировать, прочистить, или просто выкинуть нафиг за ненадобностью.
+#include "debug_tests.fos"

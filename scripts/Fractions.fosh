@@ -1,0 +1,376 @@
+// FOS Server
+// Autor: TabaK
+// Co-autor: SacredCracker
+
+#define FR_POPULATION               (0)
+
+#define FR_DATA_SIZE                (1) // Размер блока данных для фракций.
+
+#define Relation_War ( 0 ) // Война
+#define Relation_Dislike ( 1 ) // Негатив
+#define Relation_Neutral ( 2 ) // Нейтральное
+#define Relation_Like ( 3 ) // Позитив
+#define Relation_Ally ( 4 ) // Союз
+
+shared interface IVariableCallback
+{
+	void ChangeVariable( Critter @critter, int variable, int value );
+}
+
+shared interface IRelations
+{
+	string get_Name();
+	int get_Value();
+}
+
+shared class Fraction
+{
+	string Name;
+	private uint[] @Players;
+	private dictionary @GameVariable;
+	private dictionary @Relations;
+	uint[] @Stats;
+	
+	bool InitProccess;
+	
+	uint get_Id( ){ return GetStrHash( Name ); }
+	Fraction(string& name)
+	{
+		InitProccess = true;
+		Name = name;
+		
+		@Players = uint[](0);
+		@GameVariable = dictionary();
+		@Relations = dictionary();
+		@Stats = uint[](FR_DATA_SIZE,0);
+	}
+	
+	IRelations@ GetRelation( Fraction@ other )
+	{			
+		IRelations@ relation = null;
+		if( @other !is null && Relations.exists( "RelationFaction_" + other.Name ) )
+			Relations.get( "RelationFaction_" + other.Name, @relation );
+		else Relations.get( "RelationDefault", @relation );
+		return relation; 
+	}
+	
+	IRelations@ GetRelation( string@ name, bool isDef = true )
+	{
+		if( !Relations.exists( name ) )
+		{
+			if( isDef ) return GetRelation( "RelationDefault", false );
+			else return null;
+		}
+		
+		IRelations@ relation = null;
+		Relations.get( name, @relation );
+		return relation;
+	}
+	
+	void SetRelation( string@ key, IRelations@ relation )
+	{
+		Relations.set( key, @relation );
+	}
+
+	void PlayerOnline( Critter& player )
+	{
+		Critter@ critter = null;
+		string name = ::GetPlayerName( player.Id );
+		for( uint n = 0, nMax = Players.length(); n < nMax; n++ )
+		{
+			@critter = ::GetCritter( Players[n] );
+			if( critter is null || critter is player )
+				continue;
+			if( critter.Stat[ ST_FR_LEADERSHIP ] > 0 )
+				critter.SayMsg( SAY_NETMSG, TEXTMSG_GAME, 14104, "$name" + name );
+		}
+	}
+	
+	Critter@ GetPlayer( uint index )
+	{
+		if( index < Players.length() )
+			return ::GetCritter( Players[index] );
+		return null;
+	}
+	
+	bool CheckCritter( uint id )
+	{
+		Critter@ critter = ::GetCritter( id );
+		if( critter !is null )
+			return CheckCritter( critter );
+		
+		return false;
+	}
+	
+	bool CheckCritter( ::Critter@ critter )
+	{
+		return ( uint( critter.Stat[ST_FACTION] ) == Id && ( critter.IsNpc() || Players.find( critter.Id ) != -1 ) );
+	}
+	
+	const uint[]@ GetPlayers( )
+	{
+		return Players;
+	}
+	
+	Critter@ get_Leader()
+	{
+		return GetPlayer( 0 );
+	}
+	
+	int SetLeader( Critter@ critter )
+	{
+		if( critter !is null && uint( critter.Stat[ST_FACTION] ) == Id )
+		{
+			int index = Players.find( critter.Id );
+			if( index != -1 )
+			{
+				uint oldLeader = Players[0];
+				Players[0] = critter.Id;
+				Players[index] = oldLeader;
+				return 0;
+			}
+			return -2;
+		}
+		return -1;
+	}
+	
+	void _SetVariable( uint id, int variableNum, int value, IVariableCallback @callback = null )
+	{
+		if( @callback !is null )
+			callback.ChangeVariable( ::GetCritter(id), variableNum, value );
+	}
+	
+	void SetVariable( int variableNum, int value, IVariableCallback @callback = null )
+	{
+		GameVariable.set( "GameVariable_" + variableNum, value );
+		if( InitProccess )
+			return;
+		
+		GameVar @quest = null;
+		uint id = 0;
+		for( uint n = 0, nMax = Players.length(); n < nMax; n++ )
+		{
+			id = Players[n];
+			@quest = ::GetLocalVar(variableNum, id);
+			quest = value;
+			_SetVariable( id, variableNum, value, callback );
+		}
+	}
+	
+	void InitVariable( string@ variableNumStr, int value )
+	{
+		if( InitProccess )
+			GameVariable.set( variableNumStr, value );
+	}
+	
+	const int get_Variable( int variableNum )
+	{
+		int result = 0;
+		GameVariable.get( "GameVariable_" + variableNum, result );
+		return result;
+	}
+	
+	int8 ChangePlayerRank(string& name, Critter& boss, uint8 newRank) //-1 - ошибка, 0-игрок не найден, 1-удачная смена ранга.
+	{
+		Critter@ player=::GetPlayer(name);
+		if( player is null )
+			return 0;
+		int leadership = player.Stat[ST_FR_LEADERSHIP];
+		uint id = player.Id;
+		
+		if( leadership >= boss.Stat[ST_FR_LEADERSHIP] ) return -1;
+		for(uint n=0, nMax=Players.length();n<nMax;n++)
+		{
+			if(Players[n]==id)
+			{
+				player.StatBase[ST_FR_LEADERSHIP]=newRank;
+				return 1;
+			}
+		}
+		return -1;
+	}
+	
+	int8 DismissPlayer(string name, Critter@ boss) // -1 - недостаточно прав; 0 - игрок не найден; 1 - игрок уволен.
+	{
+		Critter@ player=::GetPlayer(name);
+		int access = 0;
+		uint id = 0;
+		
+		if(player is null) 
+			return 0;		
+		else
+		{
+			access = player.Stat[ST_FR_LEADERSHIP];
+			id = player.Id;
+		}
+		
+		if( boss !is null && access >= boss.Stat[ST_FR_LEADERSHIP]) 
+			return -1;
+		
+		if( access == 2 )
+		{
+			CreateTimeEvent(__FullSecond+1, "factions@e_DeleteFraction", Id, true);
+			return 1;
+		}
+		
+		for(uint n=0, nMax=Players.length(); n<nMax; n++)
+		{
+			if(Players[n]==id)
+			{
+				if( boss !is null )
+					FractionLog( player, this, "Увольнение боссом " + GetPlayerName( boss.Id ) );
+				this.Dismiss(Players[n]);
+				Players.removeAt(n);
+				Stats[FR_POPULATION]--;
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	string@[] GetPlayerList(uint8 access) //0-Все, 1-Только солдаты, 2-Только офицеры
+	{
+		string@[] retVal;
+		int leadership = 0;
+		for(uint n=0, nMax=Players.length(); n<nMax; n++)
+		{
+			Critter@ cr=GetCritter(Players[n]);
+			
+			if(@cr is null)
+			{
+				Log("Error! Player from fraction "+Name+" not found! Id="+Players[n]);
+				continue;
+			}
+			else leadership = cr.Stat[ST_FR_LEADERSHIP];
+			
+			if(access==0 || access==leadership+1) retVal.insertLast(GetPlayerName(Players[n]));
+		}
+		return retVal;
+	}
+	
+	void Delete( )
+	{
+		uint n = 0, nMax = Players.length();
+		for( n = 0; n < nMax; n++ ) Dismiss( Players[n] );
+	}
+	
+	bool AddPlayer(uint critterId)
+	{
+		if( Players.find( critterId ) != -1 )
+			return false;
+			
+		if( InitProccess )
+		{
+			Players.insertLast(critterId);
+			return true;
+		}
+	
+		Critter@ critter=GetCritter(critterId);
+		if(critter !is null)
+		{
+			critter.StatBase[ST_FACTION]=Id;
+			return true;
+		}
+		return false;
+	}
+	
+	string Serialize()
+	{
+		string result = "Fraction = " + Name + "\n";
+		result += "Players =";
+
+		uint n = 0, nEnd = Players.length();
+		for( ; n < nEnd; n++)
+			result += " " + Players[n];
+		result += "\nStats =";
+		
+		for( n = 0; n < FR_DATA_SIZE; n++ )
+			result += " " + Stats[n];
+		result += "\n";
+		
+		string@[] keys;
+		nEnd = GameVariable.keys( keys );
+		int temp = 0;
+		string@ str = null;
+		for( n = 0; n < nEnd; n++ )
+		{
+			@str = keys[n];
+			GameVariable.get( str, temp );
+			result += str + "=" + temp + "\n";
+		}
+		keys.resize(0);
+		
+		nEnd = Relations.keys( keys );
+		@str = null;
+		IRelations@ relation;
+		for( n = 0; n < nEnd; n++ )
+		{
+			@relation = null;
+			@str = keys[n];
+			Relations.get( str, @relation );
+			if( @relation !is null )
+				result += str + " = " + relation.Name + "\n";
+		}
+		return result;
+	}
+	
+	void SetKnownLoc(uint playerId, uint locId)
+	{
+		Critter@ player=GetCritter(playerId);
+		if( player !is null )
+		{
+			if(!player.IsKnownLoc(true, locId)) player.SetKnownLoc(true, locId);
+		}
+	}
+
+	void UnsetKnownLoc(uint playerId, uint locId)
+	{
+		Critter@ player=GetCritter(playerId);
+		if(player !is null)
+		{
+			if(player.IsKnownLoc(true, locId)) player.UnsetKnownLoc(true, locId);
+		}
+	}
+
+	bool Dismiss(uint id)
+	{
+		
+		Critter@ player=GetCritter(id);
+		if( player !is null )
+		{
+			FractionLog( player, this, "Уволен." );
+			player.StatBase[ST_FACTION] = 0;
+			player.StatBase[ST_FR_LEADERSHIP] = 0;
+			return true;
+		}
+		return false;
+	}
+	
+}
+
+shared void FractionLog( Critter& critter, Fraction @fraction, string& str )
+{
+	if( critter.Stat[ST_FACTION] != 0 && critter.IsPlayer() )
+		Log( "--- FRACTION LOGGING --- ( player : " + GetPlayerName( critter.Id ) + " ) --- fraction : " + ( fraction is null ? "null --- " : ( fraction.Name + " --- " ) ) + str );
+}
+
+#ifdef __MODULE_Fractions__
+void SetKnownLoc(uint playerId, uint locId)	{ NullFraction.SetKnownLoc( playerId, locId ); }
+void UnsetKnownLoc(uint playerId, uint locId){ NullFraction.UnsetKnownLoc( playerId, locId ); }
+void Dismiss(uint id)							{ NullFraction.Dismiss( id ); }
+
+Fraction _NullFraction( );
+Fraction @get_NullFraction( ){ return _NullFraction; }
+
+#endif // __MODULE_Fractions__
+#ifndef __MODULE_Fractions__
+import void SetKnownLoc( uint playerId, uint locId ) from "factions";
+import void UnsetKnownLoc( uint playerId, uint locId ) from "factions";
+import void Dismiss( uint id ) from "factions";
+import Fraction @get_NullFraction( ) from "factions";
+import Fraction@ GetFraction( Critter& critter ) from "factions";
+import Fraction@ GetFraction(uint id) from "factions";
+import Fraction@ GetFraction(string& name) from "factions";
+import void CreateFraction( string& name ) from "factions";
+import IRelations@ GetFractionRelation( Fraction @fraction, Critter@ other ) from "factions";
+#endif // !__MODULE_Fractions__

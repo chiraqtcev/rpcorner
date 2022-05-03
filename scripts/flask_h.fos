@@ -1,0 +1,19 @@
+#ifndef FLASK_H
+#define FLASK_H
+
+	#define REMAINING_USES 				Val0
+	#define DRINK_DNA					Val1
+	#define EXTRA_WEIGHT				Val2
+	#define TOXIN_LEVEL					Val5 	// Уровень токсичности
+	#define FLASK_POISON				Val7
+	#define TASTE						Val8
+	#define SPIRIT_LEVEL				Val9 	// Градус спирта
+
+		#ifndef FLASK
+			import bool FlaskCheck( Critter& cr, Item@ drink, Item@ flask ) from "flask";
+			import bool DrinkFlask( Critter& cr, Item& flask ) from "flask";
+			import bool PourFlask( Critter& cr, Item& flask ) from "flask";
+			import void ChangeProto( Item& item ) from "flask";
+		#endif //FLASK
+	
+#endif //FLASK_H

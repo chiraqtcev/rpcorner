@@ -1,0 +1,28 @@
+﻿#include "_client_defines.fos"
+#include "_utils.fos"
+ 
+void __HearWhisper( int x, int y, int, string@ text, int[] @ )
+{
+	string@[] @ valuesStr = splitEx( text, "@" );
+    if( valuesStr.length() != 2 )
+		return;
+		
+    MapMessage( ".." + valuesStr[1] + "..", x, y, __DamageHitDelay, 0x0000FFFF, true, 0, 0 );
+    Message( valuesStr[0] + ": |0x0000FFFF .." + valuesStr[1] + ".." );
+}
+ 
+void __Inform( int x, int y, int color, string@ text, int[]@ )
+{
+    string str = valid( text ) ? text : "!";
+    MapMessage( str, x, y, __DamageHitDelay, color, true, Random( -5, 5 ), 0 );
+}
+
+void __HearSound( int x, int y, int info, string@ text, int[] @ param4 )
+{
+    MapMessage( text, x, y, __DamageHitDelay, 0xFF646464, true, 0, 0 );
+}
+
+void __seeTyping( int x, int y, int info, string@ text, int[]@ )
+{
+    MapMessage( text, x, y, __DamageHitDelay, 0xFF646464, true, 0, 0 );
+}

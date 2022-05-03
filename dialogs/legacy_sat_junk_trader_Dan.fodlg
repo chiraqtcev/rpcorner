@@ -1,0 +1,252 @@
+[comment]
+
+
+[data]
+lang=russ
+
+[dialog]
+&
+1 1000 None 1 #
+2 1010 D _var p name_mem_npc_player = 0 D _var p forp_public_replica > 0 R _var p forp_public_replica = 0 #
+3 1020 D _var p name_mem_npc_player = 1 D _var p forp_public_replica > 0 R _var p forp_public_replica = 0 #
+5 1030 D _script dialog@d_you_are_pretty 0  D _script dialog@d_are_you_dumb 0  R _var p forp_public_replica = 1 #
+6 1040 D _script dialog@d_you_not_pretty 0  D _script dialog@d_are_you_dumb 0  R _var p forp_public_replica = 1 #
+7 1050 D _script dialog@you_are_supermutant 0  R _var p forp_public_replica = 1 #
+8 1060 D _script dialog@you_are_ghoul 0  R _var p forp_public_replica = 1 #
+9 1070 D _script dialog@d_you_are_pretty 0  D _script dialog@you_are_human 0  R _var p forp_public_replica = 1 @
+2 2000 None 0 @
+3 3000 None 0 @
+5 4000 None 1 #
+0 4010 R _script dialog@r_reaction_leave_me_alone 0  #
+0 4020 R _script dialog@r_reaction_leave_me_alone 0  #
+0 4030 @
+6 5000 None 1 @
+7 6000 None 1 #
+10 6010 D _var p name_mem_npc_player = 0 R _var p name_mem_npc_player = 1 #
+12 6020 #
+15 6030 #
+13 6040 #
+0 6050 @
+8 7000 None 1 #
+10 7010 D _var p name_mem_npc_player = 0 R _var p name_mem_npc_player = 1 #
+12 7020 #
+15 7030 #
+13 7040 #
+0 7050 @
+9 8000 None 1 #
+10 8010 D _var p name_mem_npc_player = 0 R _var p name_mem_npc_player = 1 #
+12 8020 #
+15 8030 #
+13 8040 D _var n loyality = 6 #
+0 8050 @
+10 9000 None 1 #
+11 9010 #
+7 9020 D _script dialog@you_are_supermutant 0  #
+8 9030 D _script dialog@you_are_ghoul 0  #
+9 9040 D _script dialog@you_are_human 0  #
+0 9050 @
+11 10000 None 1 #
+7 10010 D _script dialog@you_are_supermutant 0  #
+8 10020 D _script dialog@you_are_ghoul 0  #
+9 10030 D _script dialog@you_are_human 0  #
+0 10040 @
+12 11000 None 1 #
+13 11010 R _var n loyality = 6 #
+15 11020 #
+0 11030 @
+13 12000 None 1 #
+7 12010 D _script dialog@you_are_supermutant 0  #
+8 12020 D _script dialog@you_are_ghoul 0  #
+9 12030 D _script dialog@you_are_human 0  #
+14 12040 #
+13 12050 D _item p PID_CRAFT_M_JUNK > 0 D _item n PID_BOTTLE_CAPS > 16 R _item p PID_CRAFT_M_JUNK - 1 R _item n PID_CRAFT_M_JUNK + 1 R _item n PID_BOTTLE_CAPS - 16 R _item p PID_BOTTLE_CAPS + 16 R _param p ST_EXPERIENCE + 32 #
+13 12060 D _item p PID_METAL_LIST_MEH > 0 D _item n PID_BOTTLE_CAPS > 6 R _item p PID_METAL_LIST_MEH - 1 R _item n PID_METAL_LIST_MEH + 1 R _item n PID_BOTTLE_CAPS - 6 R _item p PID_BOTTLE_CAPS + 6 R _param p ST_EXPERIENCE + 12 #
+13 12070 D _item p PID_CHAIN > 0 D _item n PID_BOTTLE_CAPS > 42 R _item p PID_CHAIN - 1 R _item n PID_CHAIN + 1 R _item n PID_BOTTLE_CAPS - 42 R _item p PID_BOTTLE_CAPS + 42 R _param p ST_EXPERIENCE + 84 #
+13 12080 D _item p PID_TUBE > 0 D _item n PID_BOTTLE_CAPS > 32 R _item p PID_TUBE - 1 R _item n PID_TUBE + 1 R _item n PID_BOTTLE_CAPS - 32 R _item p PID_BOTTLE_CAPS + 32 R _param p ST_EXPERIENCE + 64 #
+13 12090 D _item p PID_IRON_PROD > 0 D _item n PID_BOTTLE_CAPS > 9 R _item p PID_IRON_PROD - 1 R _item n PID_IRON_PROD + 1 R _item n PID_BOTTLE_CAPS - 9 R _item p PID_BOTTLE_CAPS + 9 R _param p ST_EXPERIENCE + 18 #
+13 12100 D _item p PID_CRAFT_M_BARS > 0 D _item n PID_BOTTLE_CAPS > 8 R _item p PID_CRAFT_M_BARS - 1 R _item n PID_CRAFT_M_BARS + 1 R _item n PID_BOTTLE_CAPS - 8 R _item p PID_BOTTLE_CAPS + 8 R _param p ST_EXPERIENCE + 16 #
+13 12110 D _item p PID_ROPE > 0 D _item n PID_BOTTLE_CAPS > 72 R _item p PID_ROPE - 1 R _item n PID_ROPE + 1 R _item n PID_BOTTLE_CAPS - 72 R _item p PID_BOTTLE_CAPS + 72 R _param p ST_EXPERIENCE + 14 #
+13 12120 D _item p PID_WOOD_PART > 0 D _item n PID_BOTTLE_CAPS > 7 R _item p PID_WOOD_PART - 1 R _item n PID_WOOD_PART + 1 R _item n PID_BOTTLE_CAPS - 7 R _item p PID_BOTTLE_CAPS + 7 R _param p ST_EXPERIENCE + 14 #
+13 12130 D _item p PID_HLAM_MEH > 0 D _item n PID_BOTTLE_CAPS > 6 R _item p PID_HLAM_MEH - 1 R _item n PID_HLAM_MEH + 1 R _item n PID_BOTTLE_CAPS - 6 R _item p PID_BOTTLE_CAPS + 6 R _param p ST_EXPERIENCE + 12 #
+13 12140 D _item p PID_SPIKE_MEH > 0 D _item n PID_BOTTLE_CAPS > 4 R _item p PID_SPIKE_MEH - 1 R _item n PID_SPIKE_MEH + 1 R _item n PID_BOTTLE_CAPS - 4 R _item p PID_BOTTLE_CAPS + 4 R _param p ST_EXPERIENCE + 8 #
+13 12150 D _item p PID_BANKA_MEH > 0 D _item n PID_BOTTLE_CAPS > 6 R _item p PID_BANKA_MEH - 1 R _item n PID_BANKA_MEH + 1 R _item n PID_BOTTLE_CAPS - 6 R _item p PID_BOTTLE_CAPS + 6 R _param p ST_EXPERIENCE + 12 #
+13 12160 D _item p PID_WATER_TUBE > 0 D _item n PID_BOTTLE_CAPS > 12 R _item p PID_WATER_TUBE - 1 R _item n PID_WATER_TUBE + 1 R _item n PID_BOTTLE_CAPS - 12 R _item p PID_BOTTLE_CAPS + 12 R _param p ST_EXPERIENCE + 24 #
+13 12170 D _item p PID_SHORT_TUBE > 0 D _item n PID_BOTTLE_CAPS > 16 R _item p PID_SHORT_TUBE - 1 R _item n PID_SHORT_TUBE + 1 R _item n PID_BOTTLE_CAPS - 16 R _item p PID_BOTTLE_CAPS + 16 R _param p ST_EXPERIENCE + 32 #
+13 12180 D _item p PID_MPARTS > 0 D _item n PID_BOTTLE_CAPS > 22 R _item p PID_MPARTS - 1 R _item n PID_MPARTS + 1 R _item n PID_BOTTLE_CAPS - 22 R _item p PID_BOTTLE_CAPS + 22 R _param p ST_EXPERIENCE + 22 #
+13 12190 D _item p PID_BOLT > 0 D _item n PID_BOTTLE_CAPS > 12 R _item p PID_BOLT - 1 R _item n PID_BOLT + 1 R _item n PID_BOTTLE_CAPS - 12 R _item p PID_BOTTLE_CAPS + 12 R _param p ST_EXPERIENCE + 24 #
+13 12200 D _item p PID_BRACING > 0 D _item n PID_BOTTLE_CAPS > 5 R _item p PID_BRACING - 1 R _item n PID_BRACING + 1 R _item n PID_BOTTLE_CAPS - 5 R _item p PID_BOTTLE_CAPS + 5 R _param p ST_EXPERIENCE + 10 #
+13 12210 D _item p PID_NAILS > 10 D _item n PID_BOTTLE_CAPS > 20 R _item p PID_NAILS - 10 R _item n PID_NAILS + 10 R _item n PID_BOTTLE_CAPS - 20 R _item p PID_BOTTLE_CAPS + 20 R _param p ST_EXPERIENCE + 40 #
+13 12220 D _item p PID_MSPIRAL > 0 D _item n PID_BOTTLE_CAPS > 21 R _item p PID_MSPIRAL - 1 R _item n PID_MSPIRAL + 1 R _item n PID_BOTTLE_CAPS - 21 R _item p PID_BOTTLE_CAPS + 21 R _param p ST_EXPERIENCE + 22 #
+13 12230 D _item p PID_SANDBAG_EMPTY > 0 D _item n PID_BOTTLE_CAPS > 26 R _item p PID_SANDBAG_EMPTY - 1 R _item n PID_SANDBAG_EMPTY + 1 R _item n PID_BOTTLE_CAPS - 26 R _item p PID_BOTTLE_CAPS + 26 R _param p ST_EXPERIENCE + 52 #
+13 12240 D _item n PID_BOTTLE_CAPS > 10 D _item p PID_CRAFT_L_LINT } 10 R _item p PID_CRAFT_L_LINT - 10 R _item n PID_CRAFT_L_LINT + 10 R _item n PID_BOTTLE_CAPS - 10 R _item p PID_BOTTLE_CAPS + 10 R _param p ST_EXPERIENCE + 20 #
+13 12250 D _item p PID_CRAFT_L_RAGS > 0 D _item n PID_BOTTLE_CAPS > 4 R _item p PID_CRAFT_L_RAGS - 1 R _item n PID_CRAFT_L_RAGS + 1 R _item n PID_BOTTLE_CAPS - 4 R _item p PID_BOTTLE_CAPS + 4 R _param p ST_EXPERIENCE + 8 #
+13 12260 D _item p PID_BOTTLE_GLASS > 0 D _item n PID_BOTTLE_CAPS > 4 R _item p PID_BOTTLE_GLASS - 1 R _item n PID_BOTTLE_GLASS + 1 R _item n PID_BOTTLE_CAPS - 4 R _item p PID_BOTTLE_CAPS + 4 R _param p ST_EXPERIENCE + 8 #
+0 12270 D _item n PID_BOTTLE_CAPS < 4 #
+0 12280 @
+14 13000 None 1 #
+7 13010 D _script dialog@you_are_supermutant 0  #
+8 13020 D _script dialog@you_are_ghoul 0  #
+9 13030 D _script dialog@you_are_human 0  #
+13 13040 #
+14 13050 #
+14 13060 #
+14 13070 #
+14 13080 #
+14 13090 #
+14 13100 #
+14 13110 #
+14 13120 #
+14 13130 #
+14 13140 #
+14 13150 #
+14 13160 #
+14 13170 #
+14 13180 #
+14 13190 #
+14 13200 #
+14 13210 #
+14 13220 #
+14 13230 #
+14 13240 #
+14 13250 #
+14 13260 @
+15 14000 None 1 #
+12 14010 #
+65506 14020 #
+14 14030 #
+0 14040 &
+
+[russ]
+{100}{}{Эндрю Мэллон}
+{200}{}{Эндрю Мэллон.}
+{210}{}{Эндрю Мэллон, местный хламовщик.}
+{1000}{}{Преддиалоговые установки}
+{1010}{}{Игрок не общался с НПС, публичная реплика}
+{1020}{}{Игрок общался с НПС, публичная реплика}
+{1030}{}{Вы слишком тупы чтобы вести торговлю, но не урод.}
+{1040}{}{Вы не только урод, но и слишком тупой.}
+{1050}{}{Вы супермутант}
+{1060}{}{Вы гуль}
+{1070}{}{Вы достойный покупатель}
+{2000}{}{О, еще один клиент, замечательно!**Потирает руки**@@**Мельком поднял взгляд** А ты еще кто? Не видел тебя здесь раньше...@@**Оценивающе оглядел**@@Давай подходи смелее!@@Можем стоять и говорить о погоде, а можем вместо этого становиться богаче. Что предпочитаешь?@@Если ты пришел торговать, то оказался чертовски везучим, именно сегодня я этим и занимаюсь **Ухмыльнулся**@@У тебя стальные яйца, раз ты тут вот так разгуливаешь!}
+{3000}{}{**Неспешно разглядывает вас, чуть прищурившись** А-а, а я тебя помню! Ну, подходи, будем дела вести.@@Саттер опасное место, рад что ты еще на ногах.@@**оценивающе осматривает вас**}
+{4000}{}{[Торгаш внимательно смотрит на вас.]
+
+ - Приветствую, чем могу помочь, позволь предложить тебе эти изысканные товары... Еще у меня есть работа...}
+{4010}{}{Гэыыы?!}
+{4020}{}{УЭЭЭРРРРРРССССЩЩЩЩЩЩХХХХ!}
+{4030}{}{error}
+{5000}{}{Не-не-не-не-не! Такое чмо мы не обслуживаем, проваливай пока цел!@@Так, где-то у меня был калибр побольше...**Проверяет оружие**@@**Делает вид будто бы вас не существует**@@Тупых уродов не обслуживаем!@@Пшел вон, придурок!}
+{6000}{}{[Вы видите неопрятного мужика. На нем потертая кепка, а в его армейском жилете куча всякого мелкого мусора, который гремит при любом движении. При вашем приближении он отвлекается от своих дел и с удивлением смотрит на вас]
+
+- Мутант! Большая редкость для этих краев. Ты по делу?}
+{6010}{}{[Спросить кто он]}
+{6020}{}{[Спросить про работу]}
+{6030}{}{[Предложить бартер]}
+{6040}{}{Я по делу...}
+{6050}{}{[Молча уйти]}
+{7000}{}{[Вы видите неопрятного мужика. На нем потертая кепка, а в его армейском жилете куча всякого мелкого мусора, который гремит при любом движении]
+
+- Здарова... Гулей редко увидишь в этих краях, удивительно, что тебя еще не пристрелили.}
+{7010}{}{[Спросить кто он]}
+{7020}{}{[Спросить про работу]}
+{7030}{}{[Предложить бартер]}
+{7040}{}{Я по делу...}
+{7050}{}{[Молча уйти]}
+{8000}{}{[Вы видите неопрятного мужика. На нем потертая кепка, а в его армейском жилете куча всякого мелкого мусора, который гремит при любом движении]
+
+- Здарова, как видишь, я занят, ты по делу или как?}
+{8010}{}{[Спросить кто он]}
+{8020}{}{[Спросить про работу]}
+{8030}{}{[Предложить бартер]}
+{8040}{}{Я по делу...}
+{8050}{}{[Молча уйти]}
+{9000}{}{[Мужчина в кепке неспешно сортирует какой-то мусор, гремя железками]
+
+ - Меня зовут Мусорный Дэн. Я обожаю копаться в мусоре, у меня на этом построен бизнес, ибо детали нужны всем.}
+{9010}{}{[Слушать дальше]}
+{9020}{}{Я хочу еще спросить кое о чем.}
+{9030}{}{Я хочу еще спросить кое о чем.}
+{9040}{}{Я хочу еще спросить кое о чем.}
+{9050}{}{[Попрощаться и уйти]}
+{10000}{}{[Эндрю отвернулся и принялся переставлять коробки.]
+
+ - Хыть! **ставит ящик на стол** Ты принес мне хлам? Отлично, ведь я его скупаю!}
+{10010}{}{Окей, тогда еще спрошу.}
+{10020}{}{Окей, тогда еще спрошу.}
+{10030}{}{Окей, тогда еще спрошу.}
+{10040}{}{[Конец диалога]}
+{11000}{}{[Эндрю смотрит на вас с интересом.]
+
+ - Работу ищешь? Это хорошо, потому что мне всегда нужен товар. Сам я за ними выйти не могу - для таких дел я уже староват, поэтому просто скупаю его у путешественников и торговцев вроде тебя.}
+{11010}{}{[Перейти к делу]}
+{11020}{}{[Предложить бартер]}
+{11030}{}{[Попрощаться и уйти]}
+{12000}{}{[Он отрывается от своих "дел" и вопросительно глядит на вас.]
+
+ - Давай посмотрим что у тебя есть.}
+{12010}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{12020}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{12030}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{12040}{}{[Глянуть прайслист]}
+{12050}{}{Мусор (1 шт.) за 16 монет.}
+{12060}{}{Ржавый лист (1 шт.) за 6 монет.}
+{12070}{}{Стальная цепь (1 шт) за 42 монеты.}
+{12080}{}{Труба (1 шт.) за 32 монеты.}
+{12090}{}{Арматура (1 шт.) за 9 монет.}
+{12100}{}{Железяки (1 шт.) за 8 монет.}
+{12110}{}{Веревка (1 шт.) за 72 монеты.}
+{12120}{}{Гладкая доска (1 шт.) за 7 монет.}
+{12130}{}{Металлический хлам (1 шт.) за 6 монет.}
+{12140}{}{Металлический шип (1 шт.) за 4 монеты.}
+{12150}{}{Металлическая банка (1 шт.) за 6 монет.}
+{12160}{}{Кусок трубы (1 шт.) за 12 монет.}
+{12170}{}{Короткая труба (1 шт.) за 16 монет.}
+{12180}{}{Электронный мусор (1 шт.) за 22 монеты.}
+{12190}{}{Болт (1 шт.) за 12 монет.}
+{12200}{}{Болтовой узел (1 шт.) за 5 монет.}
+{12210}{}{Гвозди (10 шт.) за 20 монет.}
+{12220}{}{Пружина (1 шт.) за 21 монету.}
+{12230}{}{Пустой мешок (1 шт.) за 26 монет.}
+{12240}{}{Карманный мусор (10 шт.) за 10 монет.}
+{12250}{}{Кусок ткани (1 шт.) за 4 монеты.}
+{12260}{}{Стеклянная бутылка (10 шт.) за 4 монеты.}
+{12270}{}{[Похоже у торговца закончились деньги. Стоит заглянуть в другой раз.]}
+{12280}{}{[Попрощаться и уйти]}
+{13000}{}{[Торговец демонстрирует вам доску с расчерченной таблицей товаров и цен.]
+
+ - Ну смотри, выбирай.}
+{13010}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{13020}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{13030}{}{Я передума@sex@|л||ла|, хочу еще кое о чем спросить тебя.}
+{13040}{}{Мусор (1 шт.) за 16 монет.}
+{13050}{}{Ржавый лист (1 шт.) за 6 монет.}
+{13060}{}{Стальная цепь (1 шт) за 42 монеты.}
+{13070}{}{Труба (1 шт.) за 32 монеты.}
+{13080}{}{Арматура (1 шт.) за 9 монет.}
+{13090}{}{Железяки (1 шт.) за 8 монет.}
+{13100}{}{Веревка (1 шт.) за 72 монеты.}
+{13110}{}{Гладкая доска (1 шт.) за 7 монет.}
+{13120}{}{Металлический хлам (1 шт.) за 6 монет.}
+{13130}{}{Металлический шип (1 шт.) за 4 монеты.}
+{13140}{}{Металлическая банка (1 шт.) за 6 монет.}
+{13150}{}{Кусок трубы (1 шт.) за 12 монет.}
+{13160}{}{Короткая труба (1 шт.) за 16 монет.}
+{13170}{}{Электронный мусор (1 шт.) за 22 монеты.}
+{13180}{}{Болт (1 шт.) за 12 монет.}
+{13190}{}{Болтовой узел (1 шт.) за 5 монет.}
+{13200}{}{Гвозди (10 шт.) за 20 монет.}
+{13210}{}{Пружина (1 шт.) за 21 монету.}
+{13220}{}{Пустой мешок (1 шт.) за 26 монет.}
+{13230}{}{Карманный мусор (10 шт.) за 10 монет.}
+{13240}{}{Кусок ткани (1 шт.) за 4 монеты.}
+{13250}{}{Стеклянная бутылка (10 шт.) за 4 монеты.}
+{13260}{}{Я кароче пойду, ага, пока.}
+{14000}{}{[Мужик недовольно хмурится и качает головой]
+
+ - Здесь тебе не базар, я принимаю конкретные товары! Либо приносишь вещи из списка - либо ничего. У меня нет времени торговаться за безделушки...}
+{14010}{}{Ладно-ладно, о чем там мы говорили?}
+{14020}{}{[Предложить бартер снова]}
+{14030}{}{Покажи еще раз прайслист?}
+{14040}{}{[Попрощаться и уйти]}
+

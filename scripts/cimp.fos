@@ -1,0 +1,1566 @@
+// #include "_global_events.fos"
+
+#define MAX_LO_COUNT           ( 10 ) //Максимум кучек на одну карту.
+//#define MAX_RECH_LEVEL         ( 100 )
+
+#define GROUP_LENGTH           ( 10 )
+#define GROUP_ANIMAL_CORPSE    ( 0 )
+#define GROUP_SMALL_TRASH      ( 1 )
+#define GROUP_TRASH            ( 2 )
+#define GROUP_SLEEPER          ( 3 )
+#define GROUP_BOX              ( 4 )
+#define GROUP_METAL_TRASH      ( 5 )
+#define GROUP_NEWSP_MACHINE    ( 6 )
+#define GROUP_BOTTLE_BOX       ( 7 )
+#define GROUP_CORPSE           ( 8 )
+#define GROUP_STONES           ( 9 )
+
+#define TILE_PATH              ( "art/tiles/" )
+#define TILE_FRM               ( ".frm" )
+#define TILE_PNG               ( ".png" )
+
+// use it TileGroup
+#define TILE_GROUP_ROAD        ( 1 ) // 0x00000001
+#define TILE_GROUP_SAND        ( 2 ) // 0x00000002
+#define TILE_GROUP_SIDEWALK    ( 3 ) // 0x00000004
+#define TILE_GROUP_BRICK       ( 4 ) // 0x00000008
+#define TILE_GROUP_CAVE        ( 5 ) // 0x00000010
+#define TILE_GROUP_GROUND      ( 6 ) // 0x00000020
+#define TILE_GROUP_GRID        ( 7 ) // 0x00000040
+#define TILE_GROUP_COUNT       ( 8 )
+#define TILE_GROUP_EVERYWHERE  ( TILE_GROUP_COUNT )
+
+import string item_generic_description( Item@ item ) from "test";
+
+class CIMP
+{
+    bool   Destroible;
+
+    uint16 TileGroup;
+
+    uint16 HexX;
+    uint16 HexY;
+    uint   Hash;
+
+    Item@  Object;
+	Critter@ Body;
+
+    CIMP()
+    {
+        @Object = null;
+		@Body = null;
+
+        HexX = 0;
+        HexY = 0;
+        Hash = 0;
+
+        Destroible = false;
+    }
+
+    CIMP( uint hash, Item & item, bool destroible )
+    {
+		Log( "Меня вызвали! " + item_generic_description( item ) + " hash " + hash );
+		
+        Hash = hash;
+        @Object = item;
+
+        Destroible = destroible;
+
+        if( SetPic() )
+        {
+            HexX = Object.HexX;
+            HexY = Object.HexY;
+        }
+    }
+
+    CIMP( uint hash, Map & map )
+    {
+        Spawn( map );
+        SetPic( hash );
+    }
+
+    bool Spawn( Map& map ) { return Spawn( map, false ); }
+    bool Spawn( Map& map, bool body )
+    {
+        uint16 hexX = 0, hexY = 0, tempX = 0, tempY = 0;
+        uint   hash = 0;
+
+        map.GetEntireCoords( MAP_EDGE_ENTIRE, 0, hexX, hexY );
+
+        tempX = hexX;
+        tempY = hexY;
+
+        uint count = 0;
+        bool condition = false;
+
+        if( !tileInited )
+        {
+            InitTiles();
+        }
+
+		bool nearWall = false;
+		int limit = 0;
+
+		uint sizeMod = 1;
+		
+        do
+        {
+			
+			hexX = Random( tempX + 1, tempX + REGULAR_MAP_SIZE * sizeMod - 1 );
+			hexY = Random( tempY + 1, tempY + REGULAR_MAP_SIZE * sizeMod - 1 );
+
+			hash = map.GetTile( THX( hexX ), THX( hexY ) ); 
+
+            if( TileGroup != TILE_GROUP_EVERYWHERE )
+				for( uint i = 1; i <= 32; ++i )
+					if( FLAG( TileGroup, pow( 2, i ) ) )
+						if( IsTileAvalible( hash, i ) ) break;
+
+			uint16 x = hexX, y = hexY;
+			
+			uint[] spawn_everywhere = { GROUP_CORPSE, GROUP_ANIMAL_CORPSE, GROUP_STONES };
+			if( spawn_everywhere.find(TileGroup) == -1 )
+			{
+				for( uint dir = 0; dir < 6; dir++ )
+				{
+					map.MoveHexByDir( x, y, dir, 1 );
+					if( !map.IsHexPassed( x, y ) && ( Random( 1, 2 ) == 1 || !map.IsHexRaked( x, y ) ) )
+					{
+						nearWall = true;
+						break;
+					}
+				}
+			}
+			limit++;
+        }
+        while( limit < 1000 && !nearWall && !map.IsHexPassed( hexX, hexY ) );
+
+        if( !body )
+			@Object = map.AddItem( hexX, hexY, PID_LO_CONTAINER, 1 );
+		/*
+		else
+		{
+			uint[][] npc_pids = 
+			{
+				{ 1630, 1640, 100 }, //Дикари
+				{ 1660, 1689, 101 }, //Каннибалы
+				{ 1690, 1703, 102 }, //Шпана
+				{ 1720, 1739, 103 } //Рейдеры
+			};
+			
+			uint map_pid = map.GetProtoId(),
+				 pid_group = 999;
+
+
+			if( mapIs( map_pid, MAP_TRIBES ) ) 
+				pid_group = 0;//Дикари
+
+
+			if( pid_group != 999 )
+			{
+				uint pid = Random( npc_pids[pid_group][0], npc_pids[pid_group][1] );
+				int[] values = { map.Id, pid, hexX, hexY, 0, npc_pids[pid_group][2] };
+					
+				CreateTimeEvent( AFTER( REAL_SECOND( Random( 1, 5 ) ) ), "e_delayed_spawn_mob", values, true );
+			}
+
+			else if( mapIs( map_pid, GLOBAL_MAP ) )   pid_group = Random( 0, 1 ); //Дикари или Каннибалы.
+			//else if( mapIs( map_pid, merge( mPIDs( SATTER_AREA ), mPIDs( CITY_SATTER ) ) ) ) pid_group = 3; //Рейдеры
+			
+			uint pid = Random( npc_pids[pid_group][0], npc_pids[pid_group][1] );			
+
+			bool Alive = Random( 1, 5 ) >= 3 && !mapIs( map_pid, MODOC_CHILL_ZONES );
+			if( Alive )
+			{
+				int[] values = { map.Id, pid, hexX, hexY, 0, npc_pids[pid_group][2] };
+				CreateTimeEvent( AFTER( REAL_SECOND( Random( 1, 5 ) ) ), "e_delayed_spawn_mob", values, true );
+			}
+			else
+			{
+				@Body = map.AddNpc( pid, hexX, hexY, Random( 0, 5 ), null, null, null );
+
+				if( valid( Body ) )
+				{
+					bool Violent = Random( 1, 5 ) >= 3;
+					uint deathType = !Violent ? Random( ANIM2_DEAD_FRONT, ANIM2_DEAD_BACK ) : Random( ANIM2_DEAD_BLOODY_SINGLE, ANIM2_DEAD_BURN_RUN );
+					Body.ToDead( deathType, null ); 
+					Body.AddTimeEvent( "mob@cte_rotten", 0, CTE_ROTTEN, 0 );
+
+					if( Violent )
+						Body.ParamBase[ CR_DEATH_STAGE ] = 100;
+				}				
+			}
+		}
+		*/
+		
+        HexX = hexX;
+        HexY = hexY;
+
+        return ( !(Object is null) );
+    }
+
+    private bool SetMapPic( uint hash )
+    {
+        if( Object is null )
+            return false;
+
+        Object.PicInv = hash;
+		Object.PicMap = hash;
+        Object.Update();
+        return true;
+    }
+
+    bool SetPic()
+    {
+        return SetMapPic( Hash );
+    }
+
+    bool SetPic( uint hash )
+    {
+        return SetMapPic( hash );
+
+    }
+
+    Item@ GetObject()
+    {
+        return @ Object;
+    }
+
+}
+
+import string@ GetName(uint id) from "factions";
+
+uint factionId( uint type )
+{
+	string factionName = "template";
+	switch( type ) {
+		case(0): factionName = "primitives"; break;
+		case(1): factionName = "cannibals"; break;
+		case(2): factionName = "gangs"; break;
+		case(3): factionName = "raiders"; break;
+		case(4): factionName = "slavers"; break;
+		case(5): factionName = "caravans"; break;
+		case(6): factionName = "strangers"; break;
+		case(7): factionName = "ghouls"; break;
+	}
+	int number = GetStrHash( factionName );
+	if( GetName( number ) == "" )
+	{
+		Log( "Фракции #" + type + ": " + factionName + " не существует." );
+		return 0;
+	}
+
+	return number;
+}
+
+uint e_delayed_spawn_mob( int[]@ values )
+{
+	Map@ map = GetMap( values[0] );	
+
+	if( values[4] == 0 )
+	{
+		values[4]++;
+		map.SetText( values[2], values[3], COLOR_LGRAY, ":шорох:" );
+		return REAL_SECOND( Random( 1, 5 ) );
+	}
+	
+	if( values[4] > 1 )
+	{
+		Critter@ npc = GetCritter( values[4] );
+		
+		if( valid( npc ) )
+			npc.ParamBase[ CR_IS_AGGRESSIVE ] = 1;
+		
+		return 0;
+	}
+	
+	Critter@ npc = map.AddNpc( values[1], values[2], values[3], Random( 0, 5 ), null, null, "mob@_MobInit" );
+	
+	if( !valid( npc ) ) return 0;
+	
+	npc.SetHomePos( npc.HexX, npc.HexY, npc.Dir );
+	npc.StatBase[ ST_AI_ID ] = CheckNpcAi( npc.CrType );
+	npc.StatBase[ ST_TEAM_ID ] = values[5];
+	npc.ParamBase[ ST_FACTION ] = factionId( values[5] - 100 );
+	
+	npc.ModeBase[ MODE_NO_LOOT ] = 0;
+	npc.ModeBase[ MODE_NO_STEAL ] = 0;
+	npc.ModeBase[ MODE_NO_BARTER ] = 0;
+	
+	values[4] = npc.Id;
+	
+	return REAL_HOUR(6);
+}
+
+class CLO : CIMP
+{
+
+    int                 RechLevel;
+    uint16              GroupType;
+
+    RespawnedItemGroup@ Group;
+
+    CLO()
+    {
+        Destroible = true;
+        RechLevel = 0;
+        GroupType = uint16( -1 );
+        @Group = null;
+    }
+
+    CLO( uint16 groupType, int rechLvl, bool destroible )
+    {
+        Destroible = false;
+        RechLevel = rechLvl;
+        GroupType = groupType;
+
+        @Group = GetItemGroup( GroupType );
+        if( Group is null )
+            Log( "Didn't found GroupType[" + GroupType + "] for " + rechLvl + "." );
+		else
+		{
+			TileGroup = Group.TileGroup;
+			Destroible = destroible;
+		}
+    }
+
+    bool SpawnInto()
+    {
+        if( Group is null || ( !valid( Object ) && !valid( Body ) ) )
+        {
+            //Log( "Not valid Group, Body or Object." );
+            return false;
+        }
+		
+        Map@ map = valid( Body ) ? Body.GetMap() : GetMap( Object.MapId );
+        if( !valid( map ) )
+        {
+            return false;
+        }
+        else
+        {
+            if( Group.MapProtos.find( map.GetProtoId() ) == -1 )
+            {
+                Log( "Карта не подходит " + map.GetProtoId() );
+				
+                if( valid( Body ) )
+					DeleteNpc( Body );
+				else
+					DeleteItem( Object );
+				
+                return false;
+            }
+        }
+
+		for( uint16 index = 0, l = Group.Length(); index < l; index++ )
+		{
+            if( Group.RespItems[ index ].Chance < Random( 0, 95 ) )
+                continue;
+
+            uint8  count = 0;
+            uint16 pid = 0;
+
+            Group.GetItem( index, pid, count );
+
+			if( !valid( Object ) )
+				Body.AddItem( pid, count );
+			else
+				Object.AddItem( pid, count, 0 );
+		}
+
+        return true;
+    }
+
+    bool SpawnMap( Map& map )
+    {
+        return Spawn( map );
+
+    }
+
+    bool Add( Map& map )
+    {
+        return Spawn( map, GroupType == GROUP_CORPSE && Random( 1, 6 ) == 1 ) && SetPic( GetLOHash( GroupType ) ) && SpawnInto();
+    }
+}
+
+class RespawnedItem
+{
+    uint16 Pid;
+    uint8  Chance;
+    uint8  Count;
+
+    RespawnedItem()
+    {
+        Pid = 0;
+        Chance = 0;
+        Count = 0;
+    }
+
+    RespawnedItem( uint16 pid, uint8 chance, uint8 count )
+    {
+        Pid = pid;
+        Chance = chance;
+        Count = count;
+    }
+}
+
+class RespawnedItemGroup
+{
+    RespawnedItem[] RespItems;
+    uint[] MapProtos;
+    uint TileGroup;
+	
+	uint spawn_weight;
+
+    RespawnedItemGroup()
+    {
+        RespItems.resize( 0 );
+    }
+
+    uint16 Length()
+    {
+        return RespItems.length();
+    }
+
+    bool GetItem( uint16 index, uint16& pid, uint8& count )
+    {
+        if( index >= RespItems.length() )
+            return false;
+
+        pid = RespItems[ index ].Pid;
+        count = RespItems[ index ].Count;
+
+        return true;
+    }
+}
+
+class GroupAnimalCorpse : RespawnedItemGroup
+{
+    GroupAnimalCorpse()
+    {
+		spawn_weight = 3;
+
+        RespItems.insertLast( RespawnedItem( PID_RAD_MEAT, 100, Random( 1, 5 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_BRAHMIN_SKIN, 5, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_MAGGOT, 100, Random( 1, 5 ) ) );
+		
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupSmallTrash   : RespawnedItemGroup
+{
+    GroupSmallTrash()
+    {
+
+		spawn_weight = 3;
+
+        RespItems.insertLast( RespawnedItem( PID_REAL_BOTTLE_CAPS, 40, Random( 1, 20 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_L_LINT, 100, Random( 1, 10 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_M_JUNK, 100, Random( 1, 3 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_BOTTLE_GLASS, 10, Random( 1, 2 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_ROSETTE, 30, Random( 1, 5 ) ) );		
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_L_RAGS, 30, Random( 1, 3 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_PART_OF_ROPE, 20, 1 ) );
+        
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+
+    }
+}
+
+class GroupTrash        : RespawnedItemGroup
+{
+    GroupTrash()
+    {
+		spawn_weight = 2;
+
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_M_JUNK, 100, Random( 2, 4 ) ) );
+
+		RespItems.insertLast( RespawnedItem( PID_CRAFT_L_LINT, 100, Random( 3, 6 ) ) );
+		
+		RespItems.insertLast( RespawnedItem( PID_SPIKE_MEH, 50, Random( 1, 4 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_NAILS, 30, Random( 2, 10 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_BOLT, 30, Random( 1, 6 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_MPARTS, 20, Random( 1, 2 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_MSPIRAL, 10, 1 ) );
+		
+		RespItems.insertLast( RespawnedItem( PID_HLAM_MEH, 50, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_HLAM2_MEH, 50, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_METAL_LIST_MEH, 30, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_SHORT_TUBE, 30, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_CRAFT_M_BARS, 30, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_WATER_TUBE, 10, 1 ) );
+		
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+		TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupSleeper      : RespawnedItemGroup
+{
+    GroupSleeper()
+    {
+		spawn_weight = 3;
+
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_L_LINT, 100, Random( 1, 10 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_L_RAGS, 50, Random( 1, 10 ) ) );
+
+        RespItems.insertLast( RespawnedItem( PID_BLUE_CONDOM, 10, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_GREEN_CONDOM, 10, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_RED_CONDOM, 10, 1 ) );
+
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupBox  : RespawnedItemGroup
+{
+    GroupBox()
+    {
+		spawn_weight = 1;
+	
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_M_JUNK, 100, Random( 1, 4 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_L_LINT, 100, Random( 1, 10 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_WOOD_PLANK, 100, Random( 1, 4 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_NAILS, 30, Random( 2, 8 ) ) );
+		
+		switch( Random( 1, 12 ) )
+		{
+			case(1): { //Ящики с едой.
+				RespItems.insertLast( RespawnedItem( PID_MAGGOT, 100, Random( 1, 10 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_ROACH, 100, Random( 1, 5 ) ) );
+
+				switch( Random( 1, 10 ) )
+				{
+					case(1): {
+						RespItems.insertLast( RespawnedItem( PID_BANKA_MEH, 100, Random( 1, 5 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_DinkiDa, 50, Random( 1, 5 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_Bankes, 100, Random( 1, 2 ) ) );						
+						break;
+					}
+					case(2): {
+						RespItems.insertLast( RespawnedItem( PID_BANKA_MEH, 100, Random( 2, 8 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_lavshtin, 50, Random( 1, 2 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_Bankes, 100, Random( 1, 3 ) ) );						
+						break;
+					}
+					case(3): {
+						RespItems.insertLast( RespawnedItem( PID_BANKA_MEH, 100, Random( 2, 8 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_LagerBow, 50, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_IRP, 1, 1 ) );
+						break;
+					}
+					case(4): {
+						RespItems.insertLast( RespawnedItem( PID_SANDBAG_EMPTY, 100, Random( 1, 3 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_Breaking_batch_AFR, 100, Random( 1, 9 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_batch_AFR, 10, 1 ) );							
+						break;
+					}
+					case(5): {
+						RespItems.insertLast( RespawnedItem( PID_BOX_OF_NOODLES, 50, Random( 1, 10 ) ) );
+						break;
+					}
+					case(6): {
+						RespItems.insertLast( RespawnedItem( PID_CHEEZY_POOFS, 50, Random( 1, 5 ) ) );
+						break;
+					}
+					case(7): {
+						RespItems.insertLast( RespawnedItem( PID_FROZEN_DINNER, 50, Random( 1, 2 ) ) );
+						break;
+					}
+					case(8): {
+						RespItems.insertLast( RespawnedItem( PID_COFFEE, 10, 1 ) );
+						break;
+					}
+					case(9): {
+						RespItems.insertLast( RespawnedItem( PID_FPSHL9, 50, 1 ) );
+						break;
+					}
+					case(10): {
+						RespItems.insertLast( RespawnedItem( PID_sugar, 50, 1 ) );
+						break;
+					}
+				}
+				break;
+			}
+			case(2): { //Краски.
+				RespItems.insertLast( RespawnedItem( PID_BANKA_MEH, 100, Random( 1, 5 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_empty_paint_can, 100, Random( 1, 3 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_blue_paint_can, 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_red_paint_can, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_yellow_paint_can, 10, 1 ) );
+				
+				RespItems.insertLast( RespawnedItem( PID_PID_PAINTINGSET, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_COLORS, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FUZZY_PAINTING, 1, 1 ) );
+				break;
+			}
+			case(3): { //Набор "вырасти сам".
+				RespItems.insertLast( RespawnedItem( PID_SAND, 100, Random( 1, 5 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_SANDBAG_EMPTY, 50, Random( 1, 3 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_SINGLE_SANDBAG, 50, Random( 1, 2 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_Bseeds, 50, 1 ) );
+				
+				RespItems.insertLast( RespawnedItem( PID_COAL, 50, Random( 1, 2 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_ROCK, 50, Random( 2, 6 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_FLINT, 50, 1 ) );
+
+				RespItems.insertLast( RespawnedItem( PID_UDOBRENI, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_MINERAL, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ZOLA, 10, 1 ) );
+				
+				RespItems.insertLast( RespawnedItem( PID_CHEMICALS, 1, 1 ) );
+
+				switch( Random( 1, 9 ) ) {
+					case(1): {
+						RespItems.insertLast( RespawnedItem( PID_RADCVET_SEED, 50, 1 ) );
+						break;
+					}
+					case(2): {
+						RespItems.insertLast( RespawnedItem( PID_CABBAGE_SEED, 50, 1 ) );
+						break;
+					}
+					case(3): {
+						RespItems.insertLast( RespawnedItem( PID_CORN_SEED, 50, 1 ) );
+						break;
+					}
+					case(4): {
+						RespItems.insertLast( RespawnedItem( PID_DAISIES, 10, 1 ) );						
+						break;
+					}
+					case(5): {
+						RespItems.insertLast( RespawnedItem( PID_MURAVNIKTAR, 10, 1 ) );						
+						break;
+					}
+					case(6): {
+						RespItems.insertLast( RespawnedItem( PID_BLACK_MUSHROOMS, 10, 1 ) );						
+						break;
+					}
+					case(7): {
+						RespItems.insertLast( RespawnedItem( PID_PALE_MUSHROOM, 10, 1 ) );						
+						break;
+					}
+					case(8): {
+						RespItems.insertLast( RespawnedItem( PID_MUTMUSH, 10, 1 ) );						
+						break;
+					}
+					case(9): {
+						RespItems.insertLast( RespawnedItem( PID_TONGUE_GECKO, 10, 1 ) );						
+						break;
+					}
+				}
+				break;
+			}
+			case(4): { //Курево.
+				if( Random( 1, 100 ) <= 85 )
+				{
+					RespItems.insertLast( RespawnedItem( PID_CIGARETTE, 100, Random( 1, 5 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_CIGARETTES, 30, 1 ) );
+				} 
+				else
+				{
+					RespItems.insertLast( RespawnedItem( PID_PREWAR_CIGAR1, 10, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_PREWAR_CIGAR2, 10, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_PorpSigr, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BOX_OF_CIGARS, 1, 1 ) );
+				}
+
+				RespItems.insertLast( RespawnedItem( PID_mpipe, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_MpipeOff, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SavageSmokingPipe, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_PrewarSmokingPipe, 1, 1 ) );
+				break;
+			}
+			case(5): { //Набор меломана - музыкальные инструменты и пластинки.
+				if( Random( 1, 100 ) <= 60 )
+				{
+					RespItems.insertLast( RespawnedItem( PID_FLUTE, 10, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_TRUBA, 10, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_Harmonica, 10, 1 ) );
+				}
+				else
+				{
+					RespItems.insertLast( RespawnedItem( PID_KILLING_STRING, 50, Random( 1, 2 ) ) );
+					
+					RespItems.insertLast( RespawnedItem( PID_BASS1, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BASS2, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BASS3, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BASS4, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BASS5, 1, 1 ) );
+				}
+
+				RespItems.insertLast( RespawnedItem( Random( 1900, 1998 ), 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( Random( 1900, 1998 ), 50, 1 ) );
+				break;
+			}
+			case(6): { //Бытовая химия и прочее..
+				RespItems.insertLast( RespawnedItem( PID_DANTOS, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FPSHL6, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ITSOAP01, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FERMENT, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FSHMPN, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_bugspray, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SHAMP, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_CASH_TAPE, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_TOWEL, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_OLD_TOWEL, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_itmatchs, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SWAB, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_EMPTY_BUCKET, 10, 1 ) );
+				break;
+			}
+			case(7): { //Домашняя аптечка:
+				RespItems.insertLast( RespawnedItem( PID_EMPTY_JET, 100, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_HYPODERMIC_NEEDLE, 50, Random( 1, 2 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_SYRINGE2, 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ASPIRIN, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_PILLEN, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ALCOHOL_TINCTURE, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_DESINFHN0, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_HEART_PILLS, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_VOKAS, 10, 1 ) );
+								
+				RespItems.insertLast( RespawnedItem( PID_HEALING_POWDER, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_BANDAGE, 5, 1 ) );
+
+				RespItems.insertLast( RespawnedItem( PID_ASPIRIN, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ANTISEPTIC, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_STIMPAK, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_RAD_X, 1, 1 ) );				
+				break;
+			}
+			case(8): { //Детали и домашняя мелочевка:
+				RespItems.insertLast( RespawnedItem( PID_INSULATING_TAPE, 100, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_CABEL, 5, 1 ) );
+
+				RespItems.insertLast( RespawnedItem( PID_CARSLR, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_CARTNT, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_COMPUTER, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_plkpipe1, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_VTA, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_VTC, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_VTD, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_itbarrei, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SERVOMOTOR, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_part5, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_VIC_RADIO, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_radio3, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_radio2, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_Radio5NW, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_Radio21NE, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_MPARTS3, 1, 1 ) );
+				
+				RespItems.insertLast( RespawnedItem( PID_itmoney, 5, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_RUSTY_LOCK, 2, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_IRON_LOCK, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_strbox, 1, 1 ) );
+
+				RespItems.insertLast( RespawnedItem( PID_URN, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SMALL_STATUETTE, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_KOTW_STATUE, 1, 1 ) );	
+				break;
+			}
+			case(9): { //Домашняя утварь для кухни:
+					RespItems.insertLast( RespawnedItem( PID_itplate2, 50, Random( 1, 3 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_itplate3, 50, Random( 1, 3 ) ) );
+
+					RespItems.insertLast( RespawnedItem( PID_FORK, 50, Random( 2, 5 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_tablespoon, 50, Random( 2, 5 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_teaspoon, 50, Random( 2, 5 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_SHOTGLASS, 50, Random( 1, 2 ) ) );
+					
+					RespItems.insertLast( RespawnedItem( PID_knfkuhn2, 15, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_SKVORODA, 15, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_KAZAN, 15, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_CASSEROLE, 15, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_STEAMCOOKER, 15, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_LagerBow, 15, 1 ) );
+
+					RespItems.insertLast( RespawnedItem( PID_WATER_FLASK, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_FLASKB, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_PRIMITIVE_FLASK, 5, 1 ) );
+					
+					RespItems.insertLast( RespawnedItem( PID_MACHETE, 1, 1 ) );
+					break;
+			}
+			case(10): { //Инструменты, "набор мужика":
+					RespItems.insertLast( RespawnedItem( PID_REVFIST1, 50, Random( 1, 2 ) ) );
+					RespItems.insertLast( RespawnedItem( PID_REVKNIFE1, 25, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_LIGHTER, 10, 1 ) );
+
+					RespItems.insertLast( RespawnedItem( PID_SHOVEL, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_AXE, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_HAMMER, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_KNIFE, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_SHIV, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_SCISSORS, 5, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_CUTTHROAT, 5, 1 ) );
+
+					RespItems.insertLast( RespawnedItem( PID_MULTI_TOOL, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_AXE2, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_itnitki1, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_mstool, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_FSCALPL, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_hndshtpr, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_itballs2, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_itcomb01, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_ittool02, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_plkclef1, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_plkclef2, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_tross, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_chain21, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_FLASHLIGHT_OFF, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_flash21, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_OIL_LAMP, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_compas1, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_FLARE, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_CROWBAR, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_WRENCH, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_SWITCHBLADE, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_sickle, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_TESAK, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_RAZOR, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_PRUTOK, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_SCALPEL, 1, 1 ) );
+					RespItems.insertLast( RespawnedItem( PID_BIKER_KNIFE, 1, 1 ) );
+				break;
+			}
+			case(11): { //Магазинные коробки:
+				switch( Random( 1, 6 ) ) {
+					case(1): { //Обувной магазин:
+						RespItems.insertLast( RespawnedItem( PID_LEATHER_SHOES, 100, Random( 2, 5 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_SANDALS_TIRES, 50, Random( 1, 2 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_RUBBER_BOOTS, 25, 1 ) );
+						break;
+					}
+					case(2): { //Аксессуары:
+						RespItems.insertLast( RespawnedItem( PID_FeralDog2, 30, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_FeralDog, 30, 1 ) );
+
+						RespItems.insertLast( RespawnedItem( PID_RPSTUFF1, 20, 1 ) );
+
+						RespItems.insertLast( RespawnedItem( PID_GOLDEN_JEWELRY, 10, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_ClericsCross, 5, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Crucifix, 5, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_SOLDER_TAG, 5, 1 ) );
+
+						switch( Random( 1, 3 ) )
+						{
+							case(1): {
+								RespItems.insertLast( RespawnedItem( PID_CORNELIUS_GOLD_WATCH, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_ANNA_GOLD_LOCKET, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_GOLD_LOCKET, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_NECKLACE, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_CLOCK, 1, 1 ) );
+								break;
+							}
+							case(2): {
+								RespItems.insertLast( RespawnedItem( PID_OZHER_BULLET, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_AMULET_SAVAGE, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_TALISMAN, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_MTOUTH, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_gear, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_MANYVOR, 1, 1 ) );
+								break;
+							}
+							case(3): {
+								RespItems.insertLast( RespawnedItem( PID_GLASSBIT, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_SPECTACLES, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_STYLE_GLASSES, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_MIRROR_DARK_SHADES, 1, 1 ) );
+								RespItems.insertLast( RespawnedItem( PID_GLASSM, 1, 1 ) );
+								break;
+							}
+						}						
+						break;
+					}
+					case(3): { //Магазин перчаток:
+						RespItems.insertLast( RespawnedItem( PID_GOLDEN_JEWELRY, 10, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_PECHATKA, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_itgloves, 100, Random( 1, 3 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_RUBBER_GLOVES, 50, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_COSMETIC_CASE, 10, 1 ) );
+						break;
+					}
+					case(4): { //Магазин строительной тематики (каски, респираторы):
+						RespItems.insertLast( RespawnedItem( PID_Builder_helmet, 100, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_raspir, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_gasmask, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_RESPIRATOR, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Civil_gas_mask, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_raspir2, 1, 1 ) );
+						break;
+					}
+					case(5): { //Шляпный магазин:
+						RespItems.insertLast( RespawnedItem( PID_CRAFT_L_RAGS, 100, Random( 1, 5 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_RED_BANDANA, 50, Random( 1, 2 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_BALACLAV, 50, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_poshta_hat, 5, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Newsboy_cap, 5, 1 ) );
+						
+						RespItems.insertLast( RespawnedItem( PID_red_beret, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_red_beret, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Military_cap, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_younga, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Western_hat1, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Western_hat2, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Western_hat3, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_ranger_hat, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Fedora_Black, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Fedora_White, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_Felt_Hat_White, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_brown_cap, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_red_cap, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_blue_cap, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_GECKO_HAT, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BOWLER_HAT, 1, 1 ) );
+						break;
+					}
+					case(6): { //Магазин сумок:
+						RespItems.insertLast( RespawnedItem( PID_SANDBAG_EMPTY, 100, Random( 1, 3 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_BAGC, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_PORTMONE, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_cashbag, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_FIRST_AID_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BLOODY_FIRST_AID_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_CHEMTEC_CASE, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_TRAVEL_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_METAL_CASE, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_STUFF_SUPPLIES, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_DOCTORS_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_FIRST_AID_KIT, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_FIELD_MEDIC_KIT, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_PARAMEDICS_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_MEDICAL_SUPPLIES, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BRIEFCASE, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BACKPACK, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BROWN_BAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_KEY_BUNCH, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_AMMO_BELT, 1, 1 ) );
+
+						RespItems.insertLast( RespawnedItem( PID_repkit1i, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_repkit2i, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_repkit3i, 1, 1 ) );
+						//RespItems.insertLast( RespawnedItem( , 1, 1 ) );
+						break;
+					}
+				}
+				break;
+			}
+			case(12): { //Игрушки:
+			
+				RespItems.insertLast( RespawnedItem( PID_DECK_OF_TRAGIC_CARDS, 100, Random( 1, 4 ) ) );
+				
+				switch( Random( 1, 3 ) ) {
+					case(1): { //Задроты:
+							RespItems.insertLast( RespawnedItem( PID_DICE, 75, Random( 1, 4 ) ) );
+				
+							RespItems.insertLast( RespawnedItem( PID_LOADED_DICE, 50, 1 ) );
+							RespItems.insertLast( RespawnedItem( PID_CARDS_DECK, 50, 1 ) );
+
+							RespItems.insertLast( RespawnedItem( PID_CARDS_DECK, 5, 1 ) );
+							for( uint pid = PID_CARDS_CLUBS_02; pid < PID_CARDS_JOKER_02; pid++ )
+								RespItems.insertLast( RespawnedItem( pid, 20, 1 ) );
+						break;
+					}
+					case(2): { //Дети:
+						RespItems.insertLast( RespawnedItem( PID_DARTS, 10, Random( 3, 9 ) ) );
+						
+						RespItems.insertLast( RespawnedItem( PID_FNKEYBT, 10, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_MR_NIXON_DOLL, 10, 1 ) );
+						break;
+					}
+					case(3): { //Взрослые игрушки: 
+						RespItems.insertLast( RespawnedItem( PID_POPPED_BLOW_UP_DOLL, 10, Random( 1, 2 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_BLOW_UP_DOLL, 1, 1 ) );
+						
+						RespItems.insertLast( RespawnedItem( PID_BLUE_CONDOM, 10, Random( 1, 3 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_GREEN_CONDOM, 10, Random( 1, 3 ) ) );
+						RespItems.insertLast( RespawnedItem( PID_RED_CONDOM, 10, Random( 1, 3 ) ) );
+						
+						RespItems.insertLast( RespawnedItem( PID_HANDCUFFS, 2, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_BALL_GAG, 1, 1 ) );
+						RespItems.insertLast( RespawnedItem( PID_LASH, 1, 1 ) );
+						break;
+					}
+				}
+			}
+		}
+
+		uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupMetalTrash   : RespawnedItemGroup
+{
+    GroupMetalTrash()
+    {
+		spawn_weight = 2;
+		
+        RespItems.insertLast( RespawnedItem( PID_CRAFT_M_JUNK, 100, Random( 1, 2 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_IRON_ROD, 100, Random( 1, 2 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_IRON_PROD, 100, 1 ) );
+		
+		RespItems.insertLast( RespawnedItem( PID_SPIKE_MEH, 50, Random( 1, 4 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_NAILS, 30, Random( 2, 10 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_BOLT, 30, Random( 1, 6 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_MPARTS, 20, Random( 1, 2 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_MSPIRAL, 10, 1 ) );
+		
+        RespItems.insertLast( RespawnedItem( PID_BANKA_MEH, 50, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_HLAM_MEH, 50, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_HLAM2_MEH, 50, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_METAL_LIST_MEH, 30, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_SHORT_TUBE, 30, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_CRAFT_M_BARS, 30, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_WATER_TUBE, 10, 1 ) );
+
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupNewspMachine : RespawnedItemGroup
+{
+    GroupNewspMachine()
+    {
+		spawn_weight = 1;
+
+        RespItems.insertLast( RespawnedItem( PID_BOTTLE_CAPS, 100, Random( 1, 50 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_mgzn01, 100, Random( 1, 5 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_PAPERS_JAMMED, 100, Random( 1, 3 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_POSTMAN_LETTER, 50, 1 ) );	
+		RespItems.insertLast( RespawnedItem( PID_FLIST08, 50, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_LETTER, 50, 1 ) );	
+		RespItems.insertLast( RespawnedItem( PID_MapSolt, 10, 1 ) );		
+		
+        switch( Random( 1, 3 ) )
+		{
+			case(1):
+			{
+				RespItems.insertLast( RespawnedItem( PID_fishkaB, 50, Random( 1, 5 ) ) );
+				RespItems.insertLast( RespawnedItem( PID_fishkaC, 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_fishkaD, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_fishkaE, 2, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_fishkaA, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_GOLDEN_COIN, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_acoin, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_bcoin, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_COINS_WITH_BRAHMIN, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_COINS_WITH_SCORPION, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_MORNING_STAR_MINE, 1, 1 ) ); 
+				RespItems.insertLast( RespawnedItem( PID_KOKOWEEF_MINE_SCRIP, 1, 1 ) ); 
+				break;
+			}
+			case(2):
+			{
+				RespItems.insertLast( RespawnedItem( PID_RPSTUFF2, 20, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_PASSPORT, 20, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_HANDWRITINGS, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_MAG_LENTA, 5, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_fotoBnd, 5, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_PICTURE, 5, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_GAME, 5, 1 ) );
+				break;
+			}
+			case(3):
+			{
+				RespItems.insertLast( RespawnedItem( PID_RPSTUFF1, 20, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FeralDog, 30, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_FeralDog2, 30, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_GOLDEN_JEWELRY, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ClericsCross, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_Crucifix, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_compas1, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_RosaryBeads, 1, 1 ) );			
+				break;
+			}
+		}
+		
+        RespItems.insertLast( RespawnedItem( PID_DISK80, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_DISK90, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_SAMURAI_MAG, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_SCIENCE_MAG, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_porno, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_COMICS, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_CAT, 1, 1 ) );
+        RespItems.insertLast( RespawnedItem( PID_DlznsChk, 1, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_blucat, 1, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_bookeli, 1, 1 ) );		
+		RespItems.insertLast( RespawnedItem( PID_TIPSBOOK, 1, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_ANCIENT_BOOK, 1, 1 ) );		
+		RespItems.insertLast( RespawnedItem( PID_wavelgic, 1, 1 ) );			
+		RespItems.insertLast( RespawnedItem( PID_HolyBible, 1, 1 ) );					
+		
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+    }
+}
+
+class GroupBottleBox    : RespawnedItemGroup
+{
+    GroupBottleBox()
+    {
+		spawn_weight = 1;
+
+        RespItems.insertLast( RespawnedItem( PID_BOTTLE_GLASS, 100, Random( 1, 5 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_ROSETTE, 100, Random( 2, 10 ) ) );
+
+        RespItems.insertLast( RespawnedItem( PID_GLASS_BOTTLE_DIRTY_FULL, 50, Random( 1, 3 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_RAD_COLA, 50, Random( 1, 2 ) ) );
+        RespItems.insertLast( RespawnedItem( PID_GLASS_BOTTLE_FULL, 50, 1 ) );
+
+		switch( Random( 1, 3 ) )
+		{
+			case(1): {
+				RespItems.insertLast( RespawnedItem( PID_ATOM_COLA_CRAFT, 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_SUPER_ENERGY_DRINK, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_NUKA_COLA, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ATOM_COLA, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_TURBO_COLA, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_ATOM_COLA_CHERRY, 10, 1 ) );			
+				RespItems.insertLast( RespawnedItem( PID_ATOM_COLA_SEA, 1, 1 ) );				
+				break;
+			}
+			case(2): {
+				RespItems.insertLast( RespawnedItem( PID_ROT_GUT, 25, 1 ) );				
+				RespItems.insertLast( RespawnedItem( PID_SPIRIT, 10, 1 ) );				
+				
+				RespItems.insertLast( RespawnedItem( PID_ROENTGEN_RUM, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_WHISKEY, 4, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_WHISKEY_PREWAR, 2, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_LIQUER, 1, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_GROG, 1, 1 ) );
+				break;
+			}
+			case(3): {
+				RespItems.insertLast( RespawnedItem( PID_ROOTBEER, 50, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_BEER, 25, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_BEER_LIGHT, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_BEER_DARK, 10, 1 ) );
+				RespItems.insertLast( RespawnedItem( PID_GAMMA_GULP_BEER, 10, 1 ) );
+				break;
+			}
+		}
+
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+
+    }
+}
+
+class GroupCorpse       : RespawnedItemGroup
+{
+    GroupCorpse()
+    {
+		spawn_weight = 1;
+		
+		RespItems.insertLast( RespawnedItem( PID_RAD_MEAT, 100, Random( 2, 10 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_humnmeat, 100, Random( 1, 5 ) ) );
+		RespItems.insertLast( RespawnedItem( PID_MAGGOT, 100, Random( 5, 10 ) ) );
+		
+		RespItems.insertLast( RespawnedItem( PID_skull, 10, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_PLAYERS_EAR, 10, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_HUMAN_EYE, 10, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_FINGER, 10, 1 ) );
+		RespItems.insertLast( RespawnedItem( PID_HUMAN_BRAIN, 1, 1 ) );		
+		
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+
+    }
+}
+
+class GroupStones      : RespawnedItemGroup
+{
+    GroupStones()
+    {
+		spawn_weight = 8;
+		
+		RespItems.insertLast( RespawnedItem( PID_ROCK, 100, Random( 2, 10 ) ) );
+
+        uint[] tempPids = mPIDs( MAP_LOOT_ZONES );
+        MapProtos = tempPids;
+
+        TileGroup = TILE_GROUP_EVERYWHERE;
+
+    }
+}
+
+uint GetLOHash( uint16 groupType )
+{
+    string temp = "art\\scenery\\";
+    string[] tempAdd;
+    switch( groupType )
+    {
+    case GROUP_CORPSE:
+        tempAdd.insertLast( "dead01.frm" );
+        tempAdd.insertLast( "dead02.frm" );
+        tempAdd.insertLast( "dead03.frm" );
+        tempAdd.insertLast( "dead04.frm" );
+        tempAdd.insertLast( "v13bones.frm" );
+        tempAdd.insertLast( "bone01.frm" );
+        tempAdd.insertLast( "bone03.frm" );
+        break;
+
+    case GROUP_BOTTLE_BOX:
+        tempAdd.insertLast( "crate01.frm" );
+        tempAdd.insertLast( "crate02.frm" );
+        tempAdd.insertLast( "crate03.frm" );
+        break;
+
+    case GROUP_NEWSP_MACHINE:
+        tempAdd.insertLast( "mailbx.frm" );
+        tempAdd.insertLast( "newsp1.frm" );
+        tempAdd.insertLast( "newsp2.frm" );
+        tempAdd.insertLast( "newsp3.frm" );
+        tempAdd.insertLast( "newsp4.frm" );
+        tempAdd.insertLast( "newsp5.frm" );
+        tempAdd.insertLast( "newsp6.frm" );
+        tempAdd.insertLast( "novbud1.frm" );
+        tempAdd.insertLast( "novbud2.frm" );
+        break;
+
+    case GROUP_METAL_TRASH:
+        tempAdd.insertLast( "junk1.frm" );
+        tempAdd.insertLast( "junk2.frm" );
+        tempAdd.insertLast( "junk3.frm" );
+        tempAdd.insertLast( "junk4.frm" );
+        tempAdd.insertLast( "junk5.frm" );
+        break;
+
+    case GROUP_BOX:
+        tempAdd.insertLast( "boxes1.frm" );
+        tempAdd.insertLast( "boxes2.frm" );
+        tempAdd.insertLast( "boxes3.frm" );
+        tempAdd.insertLast( "boxes4.frm" );
+        tempAdd.insertLast( "njunk5.frm" );
+        tempAdd.insertLast( "njunk6.frm" );
+        tempAdd.insertLast( "boxes02.frm" );
+        tempAdd.insertLast( "boxes03.frm" );
+        tempAdd.insertLast( "boxes04.frm" );
+        break;
+
+    case GROUP_SLEEPER:
+        tempAdd.insertLast( "bed1.frm" );
+        tempAdd.insertLast( "bed2.frm" );
+        tempAdd.insertLast( "bed3.frm" );
+        tempAdd.insertLast( "bed4.frm" );
+        break;
+
+    case GROUP_TRASH:
+        tempAdd.insertLast( "trashcn.frm" );
+        tempAdd.insertLast( "kont1.frm" );
+        tempAdd.insertLast( "kontsmet.frm" );
+        tempAdd.insertLast( "weed05.frm" );
+        break;
+
+    case GROUP_SMALL_TRASH:
+        tempAdd.insertLast( "weed06.frm" );
+        tempAdd.insertLast( "weed07.frm" );
+        tempAdd.insertLast( "weed08.frm" );
+        tempAdd.insertLast( "weed09.frm" );
+        tempAdd.insertLast( "weed15.frm" );
+        tempAdd.insertLast( "weed16.frm" );
+        tempAdd.insertLast( "weed17.frm" );
+        tempAdd.insertLast( "trash1.frm" );
+        tempAdd.insertLast( "trash2.frm" );
+        tempAdd.insertLast( "trash3.frm" );
+        break;
+
+    case GROUP_ANIMAL_CORPSE:
+        tempAdd.insertLast( "bone05.frm" );
+        tempAdd.insertLast( "bone04.frm" );
+        tempAdd.insertLast( "bone02.frm" );
+        break;
+		
+	case GROUP_STONES:
+		tempAdd.insertLast( "rockmb03.frm" );
+		tempAdd.insertLast( "rock01.frm" );
+		tempAdd.insertLast( "rock02.frm" );
+		tempAdd.insertLast( "rock04.frm" );
+		tempAdd.insertLast( "rock05.frm" );
+		tempAdd.insertLast( "roks.frm" );
+		tempAdd.insertLast( "roks2.frm" );
+		tempAdd.insertLast( "roks3.frm" );
+		tempAdd.insertLast( "drock8.frm" );
+		tempAdd.insertLast( "drock7.frm" );
+		tempAdd.insertLast( "drock6.frm" );
+		break;
+
+    default:
+        break;
+    }
+
+    temp += tempAdd[ Random( 0, tempAdd.length() - 1 ) ];
+
+    // Log("hash "+temp);
+    return GetStrHash( temp );
+}
+
+//import uint[] getAvailableGroups( Map@ map ) from "local_population";
+uint[][] getAvailableGroups( Map@ map )
+{
+	uint[][] result;
+	
+	if( !valid( map ) )
+		return result;
+	
+	uint PID = map.GetProtoId();
+
+	RespawnedItemGroup@ Group;
+	for( uint i = 0; i < GROUP_LENGTH; i++ )
+	{
+		@Group = GetItemGroup( i, false );
+		if( valid( Group ) && Group.MapProtos.find( PID ) != -1 )
+		{
+			uint[] data = { i, Group.spawn_weight };
+			result.insertLast( data );
+		}
+	}
+	
+	return result;
+}
+
+RespawnedItemGroup@ GetItemGroup( uint16 groupType, bool Logging = true )
+{
+    RespawnedItemGroup@ temp;
+    switch( groupType )
+    {
+    case GROUP_CORPSE:        @temp = GroupCorpse();       break;
+  //  case GROUP_BOTTLE_BOX: 	  @temp = GroupBottleBox();    break;
+   // case GROUP_NEWSP_MACHINE: @temp = GroupNewspMachine(); break;
+  //  case GROUP_METAL_TRASH:   @temp = GroupMetalTrash();   break;
+  //  case GROUP_BOX:           @temp = GroupBox();          break;
+  //  case GROUP_SLEEPER:       @temp = GroupSleeper();      break;
+  //  case GROUP_TRASH:         @temp = GroupTrash();        break;
+  //  case GROUP_SMALL_TRASH:   @temp = GroupSmallTrash();   break;
+    case GROUP_ANIMAL_CORPSE: @temp = GroupAnimalCorpse(); break;
+	case GROUP_STONES: 		  @temp = GroupStones();	   break;
+    default:                  @temp = null;                break;
+    }
+
+    if( Logging && !valid( temp ) )
+        Log( "!valid groupType[" + groupType + "]" );
+
+    return @temp;
+}
+
+bool tileInited = false;
+
+uint[][] tileGroups( TILE_GROUP_COUNT );
+
+void InitTiles()
+{
+    uint[] @ data = tileGroups[ TILE_GROUP_ROAD ];
+
+    data.resize( 0 );
+
+    for( uint8 i = 1; i <= 9; ++i )
+    {
+        string temp = TILE_PATH + "road0" + i + TILE_FRM;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 10; i <= 43; ++i )             // i=10?
+    {
+        string temp = TILE_PATH + "road" + i + TILE_FRM;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    @data = tileGroups[ TILE_GROUP_SIDEWALK ];           // тротуар
+    data.resize( 0 );
+
+    for( uint8 i = 1; i <= 9; ++i )
+    {
+        string temp = TILE_PATH + "curb0" + i + TILE_FRM;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 1; i <= 5; ++i )
+    {
+        string temp = TILE_PATH + "road0" + i + TILE_FRM;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    @data = tileGroups[ TILE_GROUP_SAND ];
+    data.resize( 0 );
+
+    for( uint8 i = 0; i <= 3; ++i )
+    {
+        string temp = TILE_PATH + "edg100" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 3; ++i )
+    {
+        string temp = TILE_PATH + "edg200" + i + TILE_FRM;              // edg2**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 1; ++i )
+    {
+        string temp = TILE_PATH + "edg300" + i + TILE_FRM;              // edg3**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 8; ++i )
+    {
+        string temp = TILE_PATH + "edg400" + i + TILE_FRM;              // edg4**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 8; ++i )
+    {
+        string temp = TILE_PATH + "edg500" + i + TILE_FRM;              // edg5**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 9; ++i )
+    {
+        string temp = TILE_PATH + "edg600" + i + TILE_FRM;              // edg6**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 1; ++i )
+    {
+        string temp = TILE_PATH + "edg601" + i + TILE_FRM;              // edg6** continue
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 3; ++i )
+    {
+        string temp = TILE_PATH + "edg700" + i + TILE_FRM;              // edg7**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 4; ++i )
+    {
+        string temp = TILE_PATH + "eds00" + i + TILE_FRM;               // eds
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    @data = tileGroups[ TILE_GROUP_GROUND ];
+    data.resize( 0 );
+
+    data.insertLast( GetStrHash( TILE_PATH + "cav4008" + TILE_FRM ) );
+    data.insertLast( GetStrHash( TILE_PATH + "cav4009" + TILE_FRM ) );
+    data.insertLast( GetStrHash( TILE_PATH + "cav4010" + TILE_FRM ) );
+    data.insertLast( GetStrHash( TILE_PATH + "cav4011" + TILE_FRM ) );
+
+    @data = tileGroups[ TILE_GROUP_GRID ];
+    data.resize( 0 );
+
+    for( uint8 i = 1; i <= 6; ++i )
+    {
+        for( uint8 j = 1; j <= 7; ++j )
+        {
+            string temp = TILE_PATH + "bld_floor_" + i + "_" + j + TILE_PNG;                    // eds
+            data.insertLast( GetStrHash( temp ) );
+        }
+    }
+
+    for( uint8 i = 1; i <= 5; ++i )
+    {
+        string temp = TILE_PATH + "bld_floor_7_" + i + TILE_PNG;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 3; i <= 5; ++i )
+    {
+        string temp = TILE_PATH + "bld_floor_8_" + i + TILE_PNG;
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    @data = tileGroups[ TILE_GROUP_CAVE ];
+    data.resize( 0 );
+
+    for( uint8 i = 0; i <= 9; ++i )
+    {
+        string temp = TILE_PATH + "cav100" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 3; ++i )
+    {
+        string temp = TILE_PATH + "cav200" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 5; ++i )
+    {
+        string temp = TILE_PATH + "cav300" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 0; i <= 7; ++i )
+    {
+        string temp = TILE_PATH + "cav400" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    @data = tileGroups[ TILE_GROUP_BRICK ];
+    data.resize( 0 );
+
+    for( uint8 i = 1; i <= 9; ++i )
+    {
+        string temp = TILE_PATH + "brick0" + i + TILE_FRM;              // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    for( uint8 i = 10; i <= 13; ++i )
+    {
+        string temp = TILE_PATH + "brick" + i + TILE_FRM;               // edg1**
+        data.insertLast( GetStrHash( temp ) );
+    }
+
+    tileInited = true;
+}
+
+bool IsTileAvalible( uint hash, uint8 group )
+{
+    if( group >= tileGroups.length() )
+		return false;
+	
+	uint[] @data = tileGroups[ group ];
+    // Log("tileGroups "+group+" len "+data.length());
+    for( uint16 i = 0, j = data.length(); i < j; ++i )
+    {
+
+        if( data[ i ] == hash )
+        {
+            //Log( "hash " + data[ i ] + ":" + hash );
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool IsTileGround( uint hash )
+{
+    return IsTileAvalible( hash, TILE_GROUP_GROUND );
+}

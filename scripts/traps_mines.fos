@@ -1,0 +1,965 @@
+// Mines and stuff by Jonathan Joestar for FO4RP
+
+#include "_macros.fos"
+#include "_colors.fos"
+#include "scripting_object.fos"
+
+import Lookup@ getClassesLookup() from "scripting_objects_lookup";
+
+import void InjureCritter( Critter& cr, uint dmg, uint dmgType, uint8 dir, int attackerId ) from "combat";
+
+void registerMines()
+{
+	getClassesLookup().appendScriptingObjects(ImpovisedExplosive());
+	getClassesLookup().appendScriptingObjects(ActiveImpovisedExplosive());
+	
+	getClassesLookup().appendScriptingObjects(ImpovisedPlasmaExplosive());
+	getClassesLookup().appendScriptingObjects(ActiveImpovisedPlasmaExplosive());
+	
+	getClassesLookup().appendScriptingObjects(ImpovisedPulseExplosive());
+	getClassesLookup().appendScriptingObjects(ActiveImpovisedPulseExplosive());
+	
+	getClassesLookup().appendScriptingObjects(Mine());
+	getClassesLookup().appendScriptingObjects(ActiveMine());
+	
+	getClassesLookup().appendScriptingObjects(PlasmaMine());
+	getClassesLookup().appendScriptingObjects(ActivePlasmaMine());
+	
+	getClassesLookup().appendScriptingObjects(PulseMine());
+	getClassesLookup().appendScriptingObjects(ActivePulseMine());
+}
+
+/**
+	*	Растяжки
+*/
+class ImpovisedExplosive : DisabledExplosiveTrap
+{
+	ImpovisedExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 70;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить растяжку здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает растяжку.";
+	}
+}
+
+class ActiveImpovisedExplosive : ActiveExplosiveTrap
+{
+	ActiveImpovisedExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 70;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	bool itemSkillUse(Item& item, Critter& crit, int skill) override
+	{
+		if( skill == SK_REPAIR )
+		{
+			switchState( item );
+			return true;
+		}
+		else
+		{
+			return ActiveExplosiveTrap::itemSkillUse(item, crit, skill);
+		}
+	}
+	
+	void switchState( Item@ trap )
+	{
+		uint vertical = GetStrHash("art/items/traps/tripwire_active_ns_itm.png");
+		uint horizontal = GetStrHash("art/items/traps/tripwire_active_we_itm.png");
+		
+		if( trap.PicMap != vertical )
+		{
+			trap.PicMap = vertical;
+		}
+		else
+		{
+			trap.PicMap = horizontal;
+		}
+		
+		trap.Update();
+	}
+	
+	bool disarmCheck(Item@ trap, Critter@ crit)
+	{
+		return Random(0, 100 ) < crit.Skill[ getSkillNumber() ];
+	}
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить растяжку.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось обезвредить растяжку.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на растяжку, но вовремя заметили её";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на растяжку";
+	}
+}
+
+/**
+	*	Плазма Растяжки
+*/
+
+class ImpovisedPlasmaExplosive : DisabledExplosiveTrap
+{
+	ImpovisedPlasmaExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP_PLASMA;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_PLASMA_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 90;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить растяжку здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает растяжку.";
+	}
+}
+
+class ActiveImpovisedPlasmaExplosive : ActiveExplosiveTrap
+{
+	ActiveImpovisedPlasmaExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP_PLASMA;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_PLASMA_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 90;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	  int getDamageType()
+    {
+        return DAMAGE_PLASMA;
+    }
+	
+	  int getExplodeEffectPid()
+    {
+        return PID_EXPLODE_PLASMA;
+    }
+	
+	  string getExplodeSoundName()
+    {
+        return "WAK1XXX2.ACM";
+    }
+		
+	bool itemSkillUse(Item& item, Critter& crit, int skill) override
+	{
+		if( skill == SK_REPAIR )
+		{
+			switchState( item );
+			return true;
+		}
+		else
+		{
+			return ActiveExplosiveTrap::itemSkillUse(item, crit, skill);
+		}
+	}
+	
+	void switchState( Item@ trap )
+	{
+		uint vertical = GetStrHash("art/items/traps/tripwire_plasma_active_ns_itm.png");
+		uint horizontal = GetStrHash("art/items/traps/tripwire_plasma_active_we_itm.png");
+		
+		if( trap.PicMap != vertical )
+		{
+			trap.PicMap = vertical;
+		}
+		else
+		{
+			trap.PicMap = horizontal;
+		}
+		
+		trap.Update();
+	}
+	
+	bool disarmCheck(Item@ trap, Critter@ crit)
+	{
+		return Random(0, 100 ) < crit.Skill[ getSkillNumber() ];
+	}
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить растяжку.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось обезвредить растяжку.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на растяжку, но вовремя заметили её";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на растяжку";
+	}
+}
+
+/**
+	*	Пульс Растяжки
+*/
+
+class ImpovisedPulseExplosive : DisabledExplosiveTrap
+{
+	ImpovisedPulseExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP_PULSE;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_PULSE_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 110;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить растяжку здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает растяжку.";
+	}
+}
+
+class ActiveImpovisedPulseExplosive : ActiveExplosiveTrap
+{
+	ActiveImpovisedPulseExplosive()
+	{
+		DISABLED_TRAP_PID = PID_IMPOVISED_TRAP_PULSE;
+		ACTIVE_TRAP_PID = PID_IMPOVISED_TRAP_PULSE_ACTIVE;
+		EXPLODE_BASE_DAMAGE = 110;
+		EXPLODE_RADIUS = 3;
+	}
+	
+	  int getDamageType()
+    {
+        return DAMAGE_ELECTR;
+    }
+	
+	  int getExplodeEffectPid()
+    {
+        return PID_EXPLODE_EMP;
+    }
+	
+	  string getExplodeSoundName()
+    {
+        return "MASRATBH.ACM";
+    }
+		
+	bool itemSkillUse(Item& item, Critter& crit, int skill) override
+	{
+		if( skill == SK_REPAIR )
+		{
+			switchState( item );
+			return true;
+		}
+		else
+		{
+			return ActiveExplosiveTrap::itemSkillUse(item, crit, skill);
+		}
+	}
+	
+	void switchState( Item@ trap )
+	{
+		uint vertical = GetStrHash("art/items/traps/tripwire_pulse_active_ns_itm.png");
+		uint horizontal = GetStrHash("art/items/traps/tripwire_pulse_active_we_itm.png");
+		
+		if( trap.PicMap != vertical )
+		{
+			trap.PicMap = vertical;
+		}
+		else
+		{
+			trap.PicMap = horizontal;
+		}
+		
+		trap.Update();
+	}
+	
+	bool disarmCheck(Item@ trap, Critter@ crit)
+	{
+		return Random(0, 100 ) < crit.Skill[ getSkillNumber() ];
+	}
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить растяжку.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось обезвредить растяжку.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на растяжку, но вовремя заметили её";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на растяжку";
+	}
+}
+
+/**
+	*	Обычные мины
+*/
+class Mine : DisabledExplosiveTrap
+{
+	Mine()
+	{
+		DISABLED_TRAP_PID = PID_MINE;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE;
+		EXPLODE_BASE_DAMAGE = 105;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	Item@ createTrap(Map@ map, Critter& cr) override
+	{
+		uint16 hexX = cr.HexX, hexY = cr.HexY;
+		map.MoveHexByDir( hexX, hexY, cr.Dir, 1 ); //Ставит мину перед собой.
+		if( !checkTrapInstallPlace( map, hexX, hexY ) || !map.IsHexPassed( hexX, hexY ) ) {
+			return null;
+		}
+		return map.AddItem(hexX, hexY, ACTIVE_TRAP_PID, 1);
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить мину здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает мину.";
+	}
+}
+
+class ActiveMine : ActiveExplosiveTrap
+{
+	ActiveMine()
+	{
+		DISABLED_TRAP_PID = PID_MINE;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE;
+		EXPLODE_BASE_DAMAGE = 105;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить мину.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось разминировать мину.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на мину, но вовремя заметили её.";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на мину";
+	}
+	
+	//Наш небольшой хак для CatFish:
+	void itemWalk(Item& item, Critter& crit, bool entered, uint8 dir) override
+	{
+		if(entered)
+		{
+			crit.Wait(1);
+			
+			int hardness = item.Val0;
+			int skill = item.Val1;
+			
+			if(perceptionCheck(item, crit))
+			{
+				crit.Say(SAY_NETMSG, getAlmostStepMessage()); //Не наступил, заметил.
+				crit.ParamBase[CR_VAL7] = 1;
+			}
+			else
+			{
+				crit.ParamBase[CR_VAL7] = 0; //Не заметил.
+			}
+		}
+		else
+		{
+			if( crit.ParamBase[CR_VAL7] == 1 ) //Заметил.
+			{
+				crit.ParamBase[CR_VAL7] = 0; //Забыл, взрыва не может быть, как ты и протестил (хотел).
+			}
+			else
+			{ //Последний шанс:
+				if(perceptionCheck(item, crit))
+				{
+					crit.Say(SAY_NETMSG, "Вы осторожно убрали ногу с чуть было не активированной мины.");
+				}
+				else //Кабум!
+				{
+					crit.Say(SAY_EMOTE, "Активирует мину, убрав ногу" );
+					detonate( item );			
+				}
+			}
+		}
+	}
+}
+
+/**
+	*	Плазменые мины
+*/
+class PlasmaMine : Mine
+{
+	PlasmaMine()
+	{
+		DISABLED_TRAP_PID = PID_MINE_PLASMA;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE_PLASMA;
+		EXPLODE_BASE_DAMAGE = 135;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить плазменную мину здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает плазменную мину.";
+	}
+}
+
+class ActivePlasmaMine : ActiveMine
+{
+	ActivePlasmaMine()
+	{
+		DISABLED_TRAP_PID = PID_MINE_PLASMA;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE_PLASMA;
+		EXPLODE_BASE_DAMAGE = 135;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	  int getDamageType()
+    {
+        return DAMAGE_PLASMA;
+    }
+	
+	  int getExplodeEffectPid()
+    {
+        return PID_EXPLODE_PLASMA_MINE;
+    }
+	
+	  string getExplodeSoundName()
+    {
+        return "WAK1XXX2.ACM";
+    }	
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить плазменную мину.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось разминировать плазменную мину.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на плазменную мину, но вовремя заметили её.";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на плазменную мину";
+	}
+}
+
+/**
+	*	Импульсные мины
+*/
+class PulseMine : Mine
+{
+	PulseMine()
+	{
+		DISABLED_TRAP_PID = PID_MINE_PULSE;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE_PULSE;
+		EXPLODE_BASE_DAMAGE = 165;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	string getInvalidPlacingMessage() override
+	{
+		return "Нельзя установить мину здесь.";
+	}
+	
+	string getInstallEmoteMessage() override
+	{
+		return "Устанавливает мину.";
+	}
+}
+
+class ActivePulseMine : ActiveMine
+{
+	ActivePulseMine()
+	{
+		DISABLED_TRAP_PID = PID_MINE_PULSE;
+		ACTIVE_TRAP_PID = PID_ACTIVE_MINE_PULSE;
+		EXPLODE_BASE_DAMAGE = 165;
+		EXPLODE_RADIUS = 4;
+	}
+	
+	  int getDamageType()
+    {
+        return DAMAGE_ELECTR;
+    }
+	
+	  int getExplodeEffectPid()
+    {
+        return PID_EXPLODE_EMP;
+    }
+	
+	  string getExplodeSoundName()
+    {
+        return "MASRATBH.ACM";
+    }
+	
+	string getSuccessfulDisarmMessage() override
+	{
+		return "Вам удалось обезвредить импульсную мину.";
+	}
+	
+	string getUnsuccessfulDisarmMessage() override
+	{
+		return "Вам не удалось разминировать импульсную мину.";
+	}
+	
+	string getAlmostStepMessage() override
+	{
+		return "Вы чуть было не наступили на импульсную мину, но вовремя заметили её.";
+	}
+	
+	string getStepIntoEmoteMessage() override
+	{
+		return "Наступает на мину";
+	}
+
+}
+
+/**
+	* Далее базовые классы взрывающихся ловушек 
+	* Реализация должна наследоваться от DisabledExplosiveTrap и ActiveExplosiveTrap
+*/
+
+class ExplosiveTrap : GenericObject
+{
+	int DISABLED_TRAP_PID;
+	
+	int ACTIVE_TRAP_PID;
+		
+	int EXPLODE_BASE_DAMAGE;
+	
+	int EXPLODE_RADIUS;
+	
+	void detonate(Item@ trap)
+	{
+		uint16 hexX = 0, hexY = 0;
+		Map@ map = trap.GetMapPosition(hexX, hexY);
+		
+		if( @map == null )
+		{
+			return;
+		}
+		
+		if(!checkTrapMalfunction( trap ))
+		{
+			Critter@[] @targets = findTargets( map, hexX, hexY);
+			applyDamage( trap, targets, hexX, hexY );
+			playEffect( map, hexX, hexY );
+		} 
+		else
+		{
+			trapMalfunction(map, hexX, hexY );
+		}
+		
+		deleteTrap( trap );
+	}
+	
+	private void trapMalfunction(Map@ map, uint16 hexX, uint16 hexY)
+	{
+		map.SetText( hexX, hexY, COLOR_LGRAY, getTrapMalfunctionText());
+		map.AddItem( hexX, hexY, DISABLED_TRAP_PID, 1);
+	}
+	
+	private bool checkTrapMalfunction(Item@ trap)
+	{
+		return trap.Val0 == 0;
+	}
+	
+	private Critter@[] findTargets(Map@ map, uint16 hexX, uint16 hexY)
+	{
+		Critter@[] targets;
+		map.GetCrittersHex( hexX, hexY, EXPLODE_RADIUS, FIND_LIFE_AND_KO, targets );
+		
+		return targets;
+	}
+	
+	private void applyDamage(Item@ trap, Critter@[] targets, uint16 hexX, uint16 hexY)
+	{
+		int ownerId = getTrapOwnerId( trap );
+		
+		for(uint i = 0; i < targets.length(); i++)
+		{
+			Critter@ cr = targets[ i ];
+			uint     dist = ::GetDistantion( hexX, hexY, cr.HexX, cr.HexY );
+			int      dir = ( dist == 0 ? ( cr.Dir + 3 ) % 6 : GetDirection( hexX, hexY, cr.HexX, cr.HexY ) );
+			int damage = EXPLODE_BASE_DAMAGE - ( dist * getDamageDropRate() );
+			
+			InjureCritter( cr, damage, getDamageType(), dir, -trap.GetProtoId() );
+			if( ownerId != 0 )
+				cr.AddEnemyInStack( ownerId );
+		}
+	}
+	
+	private void playEffect(Map@ map, uint16 hexX, uint16 hexY)
+	{
+		map.RunEffect( getExplodeEffectPid(), hexX, hexY, 0 );
+		map.PlaySound( getExplodeSoundName() );
+	}
+	
+	void deleteTrap(Item@ item)
+	{
+		DeleteItem( item );
+	}
+	
+	int getTrapOwnerId(Item@ trap)
+	{
+		return trap.Val2;
+	}
+	
+	void setTrapOwnerId(Item@ trap, int id)
+	{
+		trap.Val2 = id;
+	}
+	
+	string getTrapMalfunctionText()
+	{
+		return "::кряк::";
+	}
+	
+	int getSkillNumber()
+	{
+		return SK_TRAPS;
+	}
+	
+	int getCriticalFailureStatNumber()
+	{
+		return ST_LUCK;
+	}
+	
+	int getExplodeEffectPid()
+	{
+		return PID_EXPLODE_MINE;
+	}
+	
+	string getExplodeSoundName()
+	{
+		return "WWHNXXX2.ACM";
+	}
+	
+	int getDamageType()
+	{
+		return DAMAGE_EXPLODE;
+	}
+	
+	int getDamageDropRate()
+	{
+		return 10;
+	}
+}
+
+/**
+	* Базовый класс для любых ловушек взрывающихся при наступании на них
+	* DisabledExplosiveTrap для предмета в инвентаре
+*/
+
+class DisabledExplosiveTrap : ExplosiveTrap
+{
+	string getInvalidAccessoryMessage()
+	{
+		return "Чтобы установить ловушку она должна быть у вас в руках.";
+	}
+	
+	string getInvalidPlacingMessage()
+	{
+		return "Нельзя установить ловушку здесь.";
+	}
+	
+	string getInstallEmoteMessage()
+	{
+		return "Устанавливает ловушку.";
+	}
+	
+	string getInstallMegaFailMessage()
+	{
+		return "Вы что-то сделали не так и ловушка взорвалась у вас в руках";
+	}
+	
+	string getInstallFailMessage()
+	{
+		return "Вы что-то сделали не так но вам повезло избежать незапланированного подрыва.";
+	}
+	
+	// Установка ловушки
+	bool itemUse(Item& item, Critter& crit, Critter@ onCritter, Item@ onItem, Scenery@ onScenery) override
+	{
+		Map@ map = crit.GetMap();
+
+		if(!valid(map)) //Прекращаем обработку если ловушка используется на глобале
+		{
+			return false;
+		}
+	
+		if(!checkItemInHands(item)) //Проверка на то что ловушка в руках
+		{
+			crit.Say(SAY_NETMSG, getInvalidAccessoryMessage());
+			return true;
+		}
+		
+		if(!checkTrapInstallPlace(map, crit.HexX, crit.HexY)) // Проверка есть ли на этом месте уже установленная ловушка
+		{
+			crit.Say(SAY_NETMSG, getInvalidPlacingMessage());
+			return true;
+		}
+		
+
+		int hardness;
+		if( installSkillCheck( crit ) )
+		{
+			hardness = crit.Skill[getSkillNumber()];
+		}
+		else if( criticalFailCheck( crit ) )
+		{
+			criticalFail( item, crit );
+			return true;
+		}
+		else
+		{
+			crit.Say(SAY_NETMSG, getInstallFailMessage());
+			return true;
+		}
+		
+		Item@ trap = createTrap(map, crit);
+		if (null is trap) {
+			crit.Say(SAY_NETMSG, getInvalidPlacingMessage());
+			return true;
+		}
+
+		setTrapDisarmHardness(trap, hardness );
+		SETFLAG( trap.Flags, ITEM_TRAP );
+		trap.TrapValue = hardness;
+		setTrapOwnerId( trap, crit.Id );
+		crit.StatBase[ ST_CURRENT_AP ] -= 7000;
+		
+		crit.Say(SAY_EMOTE, getInstallEmoteMessage());
+		
+		
+			if( item.IsStackable() )
+			{
+				if( item.GetCount()>1 )
+					item.SetCount( item.GetCount()-1 );
+				else
+					DeleteItem(item);
+			}
+			item.Update();
+		
+		return true;
+	}
+
+	array<int> getProtoIds() override
+	{
+		array<int> protoIds = {DISABLED_TRAP_PID};
+		return protoIds;
+	}
+	
+	void criticalFail( Item@ trap, Critter@ critter )
+	{
+		critter.Say(SAY_NETMSG, getInstallMegaFailMessage());
+		setTrapDisarmHardness( trap, 100 );
+		detonate( trap );
+	}
+	
+	bool installSkillCheck(Critter@ critter)
+	{
+		return Random(0, 100) < critter.Skill[getSkillNumber()];
+	}
+	
+	bool criticalFailCheck(Critter@ critter)
+	{
+		return Random(0, 100) > critter.Stat[getCriticalFailureStatNumber()] * 2;
+	}
+	
+	Item@ createTrap(Map@ map, Critter& cr) //overridable
+	{
+		uint16 hexX = cr.HexX, hexY = cr.HexY;
+		return map.AddItem(hexX, hexY, ACTIVE_TRAP_PID, 1);
+	}
+	
+	void setTrapDisarmHardness(Item@ mine, int hardness)
+	{
+		mine.Val0 = CLAMP(hardness, 0, 300);
+	}
+	
+	bool checkTrapInstallPlace(Map@ map, uint16 hexX, uint16 hexY)
+	{
+		return !valid(map.GetItem(hexX, hexY, ACTIVE_TRAP_PID));
+	}
+	
+	bool checkItemInHands(Item@ item)
+	{
+		return item.Accessory == ACCESSORY_CRITTER && item.CritSlot == SLOT_HAND1;
+	}
+}
+
+
+class ActiveExplosiveTrap : ExplosiveTrap
+{
+	string getSuccessfulDisarmMessage()
+	{
+		return "Вы успешно деактивировали ловушку";
+	}
+	
+	string getUnsuccessfulDisarmMessage()
+	{
+		return "Вам не удалось деактивировать ловушку.";
+	}
+	
+	string getAlmostStepMessage()
+	{
+		return "Вы чуть было не наступили в ловушку, но вовремя заметили её";
+	}
+	
+	string getStepIntoEmoteMessage()
+	{
+		return "Наступает в ловушку";
+	}
+
+
+	bool itemSkillUse(Item& item, Critter& crit, int skill) override
+	{
+		if( skill == SK_TRAPS )
+		{
+			crit.StatBase[ ST_CURRENT_AP ] -= 7000;
+			tryDisarm( item, crit );
+		}
+		else if( skill == SKILL_PICK_ON_GROUND )
+		{
+			detonate( item );		
+		}
+
+		return true;
+	}
+	
+	void tryDisarm(Item& item, Critter& crit)
+	{
+		if( disarmCheck(item, crit) )
+		{
+			Map@ map = crit.GetMap();
+			createDisarmedTrap( map, item.HexX, item.HexY );
+			crit.Say(SAY_NETMSG, getSuccessfulDisarmMessage() );
+			deleteTrap( item );
+		}
+		else if(!disarmCriticalFailCheck(crit))
+		{
+			crit.Say(SAY_NETMSG, getUnsuccessfulDisarmMessage() );
+		}
+		else
+		{
+			detonate( item );
+		}
+	}
+	
+	void itemWalk(Item& item, Critter& crit, bool entered, uint8 dir) override
+	{
+		if(entered)
+		{
+			crit.Wait(0);
+			
+			int hardness = item.Val0;
+			int skill = item.Val1;
+			
+			if(perceptionCheck(item, crit))
+			{
+				crit.Say(SAY_NETMSG, getAlmostStepMessage());
+			}
+			else
+			{
+				crit.Say(SAY_EMOTE, getStepIntoEmoteMessage());
+				detonate( item );			
+			}
+		}	
+	}
+	
+	array<int> getProtoIds() override
+	{
+		array<int> protoIds = {ACTIVE_TRAP_PID};
+		return protoIds;
+	}
+	
+	bool perceptionCheck(Item@ trap, Critter@ crit)
+	{
+		return Random(0, 100) + (crit.Param[ST_PERCEPTION] * 10) > Random(50, 150) + ( getTrapDisarmHardness(trap) / 3);
+	}
+	
+	void createDisarmedTrap(Map@ map, uint16 hexX, uint16 hexY)
+	{
+		map.AddItem(hexX, hexY, DISABLED_TRAP_PID, 1);
+	}
+	
+	bool disarmCheck(Item@ trap, Critter@ crit)
+	{
+		return Random(0, 100 ) + getTrapDisarmHardness( trap ) / 3 < Random( 0, 100 ) + crit.Skill[ getSkillNumber() ] / 3;
+	}
+	
+	bool disarmCriticalFailCheck(Critter@ crit)
+	{
+		return Random(0, 10) > crit.Stat[ getCriticalFailureStatNumber() ];
+	}
+	
+	int getTrapDisarmHardness(Item@ trap)
+	{
+		return trap.Val0;
+	}
+}

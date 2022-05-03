@@ -1,0 +1,54 @@
+#ifndef C_ITERATIONS_H
+#define C_ITERATIONS_H
+
+	// Уровни диалога
+	#define DEEP_MAIN					( 0 )
+	#define DEEP_ANIMATIONS				( 20 )
+
+	string[][] CustomAnimations = 
+	{
+	    { "anim_description", "anim_name" },
+	  	{ "[1] Лечь на живот", "" + ANIM2_IDLE_PRONE_BACK },
+	  	{ "[2] Лечь на спину", "" + ANIM2_IDLE_PRONE_FRONT },
+	  	{ "[3] Лечь на землю", "" + ANIM2_LYING },
+	  	{ "[4] Лечь на землю", "" + ANIM2_LYING_FRONT_2 },	  	
+
+	  	{ "[1] Сесть на землю", "" + ANIM2_GROUND_SIT_1 },
+	  	{ "[2] Сесть на землю", "" + ANIM2_GROUND_SIT_2 },
+
+	  	{ "[1] Стойка", "" + ANIM2_STAND_1 },
+	  	{ "[2] Стойка", "" + ANIM2_STAND_2 },
+	  	{ "[3] Стойка", "" + ANIM2_STAND_3 },
+	  	{ "[4] Стойка", "" + ANIM2_STAND_4 },
+	  	{ "[5] Стойка", "" + ANIM2_STAND_5 },
+	  	{ "[6] Стойка", "" + ANIM2_STAND_6 },
+
+	  	{ "[1] Жим лежа", "" + ANIM2_FRONT_PRESS_1 },
+	  	{ "[2] Жим лежа", "" + ANIM2_FRONT_PRESS_2 },
+	  	{ "[3] Жим лежа", "" + ANIM2_FRONT_PRESS_3 },
+	  	{ "[ЦИКЛ] Жим лежа", "" + ANIM2_FRONT_PRESS_CYCLED },
+
+	  	{ "[1] Облокотиться", "" + ANIM2_LEAN_1 },
+	  	{ "[2] Облокотиться", "" + ANIM2_LEAN_2 },
+	  	{ "[ЦИКЛ] Копошиться", "" + ANIM2_LEAN_CYCLED },
+
+	  	{ "[1] На колено", "" + ANIM2_KSTAND_1 },
+	  	{ "[2] На колено", "" + ANIM2_KSTAND_2 },
+	  	{ "[3] На колено", "" + ANIM2_KSTAND_3 },
+	  	{ "[4] На колено", "" + ANIM2_KSTAND_4 },
+	  	{ "[5] На колено", "" + ANIM2_KSTAND_5 },
+	  	{ "[ЦИКЛ] На колено", "" + ANIM2_KSTAND_CYCLED },
+
+	  	{ "[1] Безделье", "" + ANIM2_IDLE_1 },
+	  	{ "[2] Безделье", "" + ANIM2_IDLE_2 },
+	  	{ "[3] Безделье", "" + ANIM2_IDLE_3 },
+	  	{ "[ЦИКЛ] Безделье", "" + ANIM2_IDLE_CYCLED },
+	  	{ "[ЦИКЛ] Курить", "" + ANIM2_SMOKE_CYCLED }
+	};
+
+	
+	#ifndef C_ITERATIONS
+		import void StartPlayerMenu( Critter& cr, int p1 ) from "client_iterations";
+	#endif 
+
+#endif //C_ITERATIONS_H

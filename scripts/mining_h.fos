@@ -1,0 +1,47 @@
+#ifndef MINING_H
+#define MINING_H
+
+const uint16[] ToolsMining_Main =
+{ 
+	PID_PRIMITIVE_SLEDGE, PID_SHOVEL, PID_SLEDGEHAMMER, PID_SUPER_SLEDGE, PID_PICKAXE, PID_DRILL, PID_SLEDGEHAMMER2, PID_SM_HAMMER
+};
+
+
+const uint16[] ToolsMining_Damage =
+{ 
+	10, 15, 30, 40, 80, 20, 40, 40 
+};
+
+
+const uint16[][] OreMassive = 
+{ 
+	{ PID_ORE_DEPOSIT_S, PID_ORE_DEPOSIT_S2, PID_BOULDER, PID_ORE_DEPOSIT_M, PID_ORE_DEPOSIT_L }, 	//Entire #1000 
+	{ PID_CUPPER_ORE_S, PID_CUPPER_ORE_M, PID_CUPPER_ORE_L },										//Entire #1001
+	{ PID_LED_ORE_S, PID_LED_ORE_M, PID_LED_ORE_L },												//Entire #1002
+	{ PID_MINERALS_S, PID_MINERALS_M, PID_MINERALS_M },												//Entire #1003
+	{ PID_COAL_S, PID_COAL_M, PID_COAL_M },															//Entire #1004
+	{ PID_GOLD_ORE_S, PID_GOLD_ORE_M, PID_GOLD_ORE_M },												//Entire #1005
+	{ PID_IRON_ORE_S, PID_IRON_ORE_M, PID_IRON_ORE_L },												//Entire #1006
+	{ PID_URANIUM_ORE_S, PID_URANIUM_ORE_M, PID_URANIUM_ORE_L }										//Entire #1007
+};
+
+#define ORE_TYPE					Val0		// тип руды, 0 - камень, 1 - медь, 2 - свинец, 3 - минералы, 4 - уголь, 5 - золото, 6 - железо, 7 - уран
+#define	ORE_HP						Val1 		// ХП, стандарт - 100
+#define	ORE_RESOURCE				Val2 		// Выхлоп PID
+#define ORE_EVENT					Val3 		// валка для записи тайм-ивента 
+#define	ORE_OUT						Val4 		// Выхлоп (обычно 10)
+#define	ORE_STATUS					Val5 		// Состояние
+
+#define STATUS_NONE		( 0 )
+#define STATUS_OK		( 1 )
+#define STATUS_USED		( 2 )
+#define STATUS_EMPTY	( 3 )
+#define STATUS_FALL		( 4 )
+
+#define	DEEP_MAIN		( 0 )
+
+	#ifndef MINING1
+		import bool CheckMining( Critter& cr, Item@ tool, Item@ target ) from "mining2";
+	#endif
+
+#endif

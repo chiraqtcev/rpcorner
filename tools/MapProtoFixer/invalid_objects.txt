@@ -1,0 +1,88 @@
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\broken.fomap"
+{"proto_id":8062,"map_x":244,"map_y":218,"relations":{"container_uid":99},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":7850,"map_x":244,"map_y":223,"relations":{"container_uid":100},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8065,"map_x":235,"map_y":220,"relations":{"container_uid":104},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","4"]]}},"ty_str":"2"}
+{"proto_id":8064,"map_x":234,"map_y":189,"relations":{"container_uid":105},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8065,"map_x":234,"map_y":189,"relations":{"container_uid":105},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":7012,"map_x":236,"map_y":160,"relations":{"container_uid":88},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","328"]]}},"ty_str":"2"}
+{"proto_id":8034,"map_x":118,"map_y":194,"relations":{"container_uid":159},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\cavecity.fomap"
+{"proto_id":2004,"map_x":292,"map_y":376,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\cavecity2.fomap"
+{"proto_id":2004,"map_x":292,"map_y":376,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\cavecity3.fomap"
+{"proto_id":2004,"map_x":292,"map_y":376,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\cavecity4.fomap"
+{"proto_id":2004,"map_x":292,"map_y":376,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\den.fomap"
+{"proto_id":8064,"map_x":474,"map_y":217,"relations":{"container_uid":446},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8065,"map_x":474,"map_y":217,"relations":{"container_uid":446},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8064,"map_x":440,"map_y":217,"relations":{"container_uid":454},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8054,"map_x":440,"map_y":217,"relations":{"container_uid":454},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8054,"map_x":288,"map_y":115,"relations":{"container_uid":467},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8064,"map_x":288,"map_y":115,"relations":{"container_uid":467},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","5"]]}},"ty_str":"2"}
+{"proto_id":8037,"map_x":287,"map_y":122,"relations":{"container_uid":468},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8076,"map_x":281,"map_y":142,"relations":{"container_uid":477},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8043,"map_x":281,"map_y":142,"relations":{"container_uid":477},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8043,"map_x":353,"map_y":222,"relations":{"container_uid":62},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8054,"map_x":350,"map_y":273,"relations":{"container_uid":497},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8065,"map_x":350,"map_y":273,"relations":{"container_uid":497},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8065,"map_x":256,"map_y":231,"relations":{"container_uid":504},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8064,"map_x":256,"map_y":231,"relations":{"container_uid":504},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8054,"map_x":224,"map_y":283,"relations":{"container_uid":516},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8036,"map_x":199,"map_y":315,"relations":{"container_uid":523},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","6"]]}},"ty_str":"2"}
+{"proto_id":8037,"map_x":199,"map_y":315,"relations":{"container_uid":523},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","2"]]}},"ty_str":"2"}
+{"proto_id":8040,"map_x":199,"map_y":315,"relations":{"container_uid":523},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+{"proto_id":8054,"map_x":213,"map_y":324,"relations":{"container_uid":525},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Count","3"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\Event1_road3.fomap"
+{"proto_id":2404,"map_x":168,"map_y":139,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_CanUse","1"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\fort_riverdale2.fomap"
+{"proto_id":15293,"map_x":420,"map_y":357,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+{"proto_id":15293,"map_x":420,"map_y":361,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+{"proto_id":15293,"map_x":420,"map_y":365,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\modoc.fomap"
+{"proto_id":184,"map_x":63,"map_y":178,"light":{"color":11796480,"distance":179},"user_data":[11796480,11730944,11730944,11796480,11927552,11730944,11796480,12320768,11796480,11796480],"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetY","188"],["AnimWait","185"],["Scenery_TriggerNum","11993088"],["Scenery_Param0","11927552"],["Scenery_Param1","11796480"],["Scenery_Param2","11927552"],["Scenery_Param3","11730944"],["Scenery_Param4","11796480"],["Scenery_ToEntire","11927552"]]}},"ty_str":"1"}
+{"proto_id":7907,"map_x":161,"map_y":85,"light":{"distance":6},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Val1","13"],["Item_Val3","14"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\modoc_bar_lvl2.fomap"
+{"proto_id":184,"map_x":63,"map_y":178,"light":{"color":11796480,"distance":179},"user_data":[11796480,11730944,11730944,11796480,11927552,11730944,11796480,12320768,11796480,11796480],"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetY","188"],["AnimWait","185"],["Scenery_TriggerNum","11993088"],["Scenery_Param0","11927552"],["Scenery_Param1","11796480"],["Scenery_Param2","11927552"],["Scenery_Param3","11730944"],["Scenery_Param4","11796480"],["Scenery_ToEntire","11927552"]]}},"ty_str":"1"}
+{"proto_id":7907,"map_x":161,"map_y":85,"light":{"distance":6},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Val1","13"],["Item_Val3","14"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\modoc_bar_lvl3.fomap"
+{"proto_id":184,"map_x":63,"map_y":178,"light":{"color":11796480,"distance":179},"user_data":[11796480,11730944,11730944,11796480,11927552,11730944,11796480,12320768,11796480,11796480],"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetY","188"],["AnimWait","185"],["Scenery_TriggerNum","11993088"],["Scenery_Param0","11927552"],["Scenery_Param1","11796480"],["Scenery_Param2","11927552"],["Scenery_Param3","11730944"],["Scenery_Param4","11796480"],["Scenery_ToEntire","11927552"]]}},"ty_str":"1"}
+{"proto_id":7907,"map_x":161,"map_y":85,"light":{"distance":6},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Val1","13"],["Item_Val3","14"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\riverdale7_1.fomap"
+{"proto_id":15293,"map_x":195,"map_y":211,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\sandbox2_3dn.fomap"
+{"proto_id":2004,"map_x":295,"map_y":377,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+{"proto_id":15278,"map_x":240,"map_y":353,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetX","8"],["Scenery_SpriteCut","1"]]}},"ty_str":"1"}
+{"proto_id":15278,"map_x":240,"map_y":356,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetX","8"],["Scenery_SpriteCut","1"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\sandbox4_4.fomap"
+{"proto_id":15293,"map_x":231,"map_y":189,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\sandbox4_4dn.fomap"
+{"proto_id":15293,"map_x":193,"map_y":161,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\start.fomap"
+{"proto_id":7907,"map_x":161,"map_y":85,"light":{"distance":6},"kind":{"Any":{"ty":"MAP_OBJECT_SCENERY","fields":[["Item_Val1","13"],["Item_Val3","14"]]}},"ty_str":"2"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\stop2_frisco1_2.fomap"
+{"proto_id":15292,"map_x":194,"map_y":199,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","1"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\stop2_frisco2_2.fomap"
+{"proto_id":15293,"map_x":208,"map_y":189,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+
+File: "\\\\?\\C:\\Github\\FO4RP-fork\\maps\\stop2_frisco2_3.fomap"
+{"proto_id":15293,"map_x":134,"map_y":145,"kind":{"Any":{"ty":"MAP_OBJECT_ITEM","fields":[["OffsetX","6"],["Scenery_SpriteCut","2"]]}},"ty_str":"1"}
+

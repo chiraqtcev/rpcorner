@@ -1,0 +1,472 @@
+#ifndef ENERGYF
+#define ENERGYF
+
+/* Вы всегда знаете кого материть.
+С любовью, chiraqtcev! */
+
+#include "_utils.fos"
+#include "energy_h.fos"
+
+
+// точка входа из main.fos при юзе рукой
+void StartEnergyMenu( Critter& cr, Item& computer, int p1, int p2) // exported
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+        return;
+
+    iMenuHandler@ handler = EnergyMenu(computer, map, p1, p2 );
+    iDialogBox@ menu = OpenMenu( cr, "ПУ", handler );
+}
+
+class EnergyMenu: CenteredMenuHandler {
+
+    int computer_id;
+    int map_id;
+    int machine_id;
+    int deep;
+
+    EnergyMenu(Item& computer, Map& map, int p1, int p2) 
+    {
+        computer_id = computer.Id;
+        map_id = map.Id;
+        deep = p1;
+        machine_id = p2;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu ) 
+    {
+        Map@ map = GetMap( map_id );
+        Item@ computer = GetItem( computer_id );
+        Item@ machine = null;
+
+      	if( computer.CONNECT != 0 )   	
+        	@machine = GetItem( computer.CONNECT );
+
+		if( map is null || computer is null )
+            return false;
+
+        switch( deep )
+        {
+        	case DEEP_MAIN:
+        	{
+     			if( computer.BROKE == 1 || !valid( machine ) )
+     				break;
+
+		        if( machine.STATE == 0 )
+		        {
+			        if( menu.Button( "включить" ) )
+			        {
+			        	TurnEngine( machine );
+			        	return true;          
+			        }        
+		        }
+
+		        if( machine.STATE == 1 )
+		        {
+			        if( menu.Button( "выключить" ) )
+			        {
+			        	ShutEngine( machine );
+			            return true;          
+			        }        
+		        }   
+
+	        	if( menu.ButtonSay("Установить лимит", "Введите число") )
+		        {	
+		        	int limit = 0;
+
+		        	StrToInt( menu.GetSayValue(), limit );
+					if( limit < 0 )
+						return true;
+
+					machine.LIMIT = limit;
+					return true;
+			    }       
+
+
+		        string connected;
+		        int machine_val = 0;
+		        // Лапше-код starts here (не нашел варианта лучше)
+				connected = "1: Свободно";
+		        if( machine.CONNECTED1 != 0 && valid( GetItem( machine.CONNECTED1 ) ) )
+		        {
+		           	connected = "1: " + _GetProtoName( GetItem( machine.CONNECTED1 ).GetProtoId() ); 
+			        if( menu.Button( connected ) )
+			        {	
+			        	deep = DEEP_CONNECTED;
+			        	machine_id = machine.CONNECTED1;   
+			        	return true;  		    
+				    }  
+		        }
+		        else
+		        {
+		        	if( menu.ButtonSay(connected, "Введите номер объекта (ID)") )
+			        {	
+			        	StrToInt( menu.GetSayValue(), machine_val );
+						if( machine_val == 0 )
+						{
+							machine.CONNECTED1 = 0;
+							return true;
+						}
+
+						if( !valid( GetItem( machine_val ) ) || GetItem( machine_val ).GetProtoId() != PID_OBJECT_WATERPUMP ) // ДОКОНЧИТЬ
+							return true;    
+
+						machine.CONNECTED1 = machine_val;
+						return true;
+				    }  
+		        }
+
+				connected = "2: Свободно";
+		        if( machine.CONNECTED2 != 0 && valid( GetItem( machine.CONNECTED2 ) ) )
+		        {
+		           	connected = "2: " + _GetProtoName( GetItem( machine.CONNECTED2 ).GetProtoId() ); 
+			        if( menu.Button( connected ) )
+			        {	
+			        	deep = DEEP_CONNECTED;
+			        	machine_id = machine.CONNECTED2;   
+			        	return true;  		    
+				    }  
+		        }
+		        else
+		        {
+		        	if( menu.ButtonSay(connected, "Введите номер объекта (ID)") )
+			        {	
+			        	StrToInt( menu.GetSayValue(), machine_val );
+						if( machine_val == 0 )
+						{
+							machine.CONNECTED2 = 0;
+							return true;
+						}
+
+						if( !valid( GetItem( machine_val ) ) || GetItem( machine_val ).GetProtoId() != PID_OBJECT_WATERPUMP ) // ДОКОНЧИТЬ
+							return true;    
+
+						machine.CONNECTED2 = machine_val;
+						return true;
+				    }  
+		        }
+
+				connected = "3: Свободно";
+		        if( machine.CONNECTED3 != 0 && valid( GetItem( machine.CONNECTED3 ) ) )
+		        {
+		           	connected = "3: " + _GetProtoName( GetItem( machine.CONNECTED3 ).GetProtoId() ); 
+			        if( menu.Button( connected ) )
+			        {	
+			        	deep = DEEP_CONNECTED;
+			        	machine_id = machine.CONNECTED3;   
+			        	return true;  		    
+				    }  
+		        }
+		        else
+		        {
+		        	if( menu.ButtonSay(connected, "Введите номер объекта (ID)") )
+			        {	
+			        	StrToInt( menu.GetSayValue(), machine_val );
+						if( machine_val == 0 )
+						{
+							machine.CONNECTED3 = 0;
+							return true;
+						}
+
+						if( !valid( GetItem( machine_val ) ) || GetItem( machine_val ).GetProtoId() != PID_OBJECT_WATERPUMP ) // ДОКОНЧИТЬ
+							return true;    
+
+						machine.CONNECTED3 = machine_val;
+						return true;
+				    }  
+		        }		     
+	
+		        break;
+        	}
+
+        	case DEEP_CONNECTED:
+        	{
+		        if( menu.Button( "Отсоединить" ) )
+		        {
+		        	if( machine.CONNECTED1 == machine_id )
+		        		machine.CONNECTED1 = 0;
+
+		        	if( machine.CONNECTED2 == machine_id )
+		        		machine.CONNECTED2 = 0;
+		        	
+		        	if( machine.CONNECTED3 == machine_id )
+		        		machine.CONNECTED3 = 0;
+   
+		        	deep = DEEP_MAIN;
+		        	machine_id = 0;
+		        }  
+
+		        if( menu.Button( "Назад" ) )
+		        {
+		        	deep = DEEP_MAIN;
+		        	machine_id = 0;      
+		        }       
+		        break;    		
+        	}
+        }
+
+        if( menu.Button( "Закрыть меню") )
+			return false;         
+       
+	    return true;
+    }
+	
+	// UI менюхи
+    string@ Description( Critter& cr ) 
+    {
+    	string status,
+    		   info;
+
+    	Item@ computer = GetItem( computer_id );
+    	Item@ machine = null;
+
+    	if( computer.CONNECT != 0 )
+    		@machine = GetItem( computer.CONNECT );
+
+   		if( computer.BROKE == 1 )
+   			info += "|0xFF0000 Компьютер не работает |0x3CF800 \n";
+
+    	if( valid( machine ) )
+    	{
+	        switch( deep )
+	        {
+	        	case DEEP_MAIN:
+	        	{
+		    		int loss = 0; 
+
+		    		if( machine.CONNECTED1 != 0 )
+		    			loss += GetItem( machine.CONNECTED1 ).Val9;
+
+		    		if( machine.CONNECTED2 != 0 )
+		    			loss += GetItem( machine.CONNECTED2 ).Val9;
+
+		    		if( machine.CONNECTED3 != 0 )
+		    			loss += GetItem( machine.CONNECTED3 ).Val9;
+
+			    	if( machine.STATE == 0 )
+			    		status = "|0xFFFF00 выключено|0x3CF800 ";
+
+			    	if( machine.STATE == 1 )
+			    		status = "включено";
+			   		
+			   		if( machine.STATE == 2 )
+			   			status = "|0xFF0000 сломано|0x3CF800 ";
+
+			   		info += "Состояние: " + status + "\n";
+			   		info += "Энергия: |0xFFFF00 " + machine.ENERGY + "/" + machine.MAX_ENERGY + " ед.|0x3CF800 \n";
+			   		info += "Трата за цикл: |0xFFFF00 " + loss + " ед.|0x3CF800 \n";
+			   		info += "Лимит: |0xFFFF00 " + machine.LIMIT + " ед.|0x3CF800";
+			   		break;
+			   	}
+
+			   	case DEEP_CONNECTED:
+			   	{
+			   		if( machine.CONNECTED1 == machine_id )
+			   		{
+			   			if( GetItem( machine.CONNECTED1 ).Val0 == 1 )
+			   				status = "работает";
+			   			else
+			   				status = "не работает";
+
+			   			info += "> |0xFFFF00 " + _GetProtoName( GetItem( machine.CONNECTED1 ).GetProtoId() ) + "|0x3CF800 \n";
+			   			info += "ID: |0xFFFF00 #" + machine.CONNECTED1 + "|0x3CF800 \n\n";
+			   			
+			   			info += "Состояние: |0xFFFF00 " + status + "|0x3CF800 \n";
+			   			info += "Энергия: |0xFFFF00 " + GetItem( machine.CONNECTED1 ).Val8 + " ед.|0x3CF800 \n";
+			   			info += "Требует энергии: |0xFFFF00 " + GetItem( machine.CONNECTED1 ).Val9 + " ед.";
+			   		}
+
+			   		if( machine.CONNECTED2 == machine_id )
+			   		{
+			   			if( GetItem( machine.CONNECTED2 ).Val0 == 1 )
+			   				status = "работает";
+			   			else
+			   				status = "не работает";
+
+			   			info += "> |0xFFFF00 " + _GetProtoName( GetItem( machine.CONNECTED2 ).GetProtoId() ) + "|0x3CF800 \n";
+			   			info += "Состояние: |0xFFFF00 " + status + "|0x3CF800 \n";
+			   			info += "Энергия: |0xFFFF00 " + GetItem( machine.CONNECTED2 ).Val8 + " ед.|0x3CF800 \n";
+			   			info += "Требует энергии: |0xFFFF00 " + GetItem( machine.CONNECTED2 ).Val9 + " ед.";
+			   		}	
+
+			   		if( machine.CONNECTED3 == machine_id )
+			   		{
+			   			if( GetItem( machine.CONNECTED3 ).Val0 == 1 )
+			   				status = "работает";
+			   			else
+			   				status = "не работает";
+
+			   			info += "> |0xFFFF00 " + _GetProtoName( GetItem( machine.CONNECTED3 ).GetProtoId() ) + "|0x3CF800 \n";
+			   			info += "Состояние: |0xFFFF00 " + status + "|0x3CF800 \n";
+			   			info += "Энергия: |0xFFFF00 " + GetItem( machine.CONNECTED3 ).Val8 + " ед.|0x3CF800 \n";
+			   			info += "Требует энергии: |0xFFFF00 " + GetItem( machine.CONNECTED3 ).Val9 + " ед.";
+			   		}			   		
+					break;
+			   	}
+			}
+	   	}
+	   	else
+	   		info += "|0xFF0000 Подключение отсутствует";
+        
+        return info;
+    }
+	
+    string@ ButtonCancel()
+    {
+        return ButtonDecorator( " ", null );
+    }
+    
+    bool ShouldRedraw( Critter& cr )
+    {
+		return true;
+    }
+}
+
+void TurnEngine( Item& engine ) // exported
+{
+	engine.STATE = 1;
+	uint[] values = {engine.Id};
+	engine.EVENT = CreateTimeEvent( AFTER( REAL_SECOND( 1 ) ), "e_Engine", values, true );
+	engine.TRANSFER_EVENT = CreateTimeEvent( ENERGY_TRANSFER, "e_Transfer", values, true );
+	return;
+}
+
+void ShutEngine( Item& engine ) // exported
+{
+	EraseTimeEvent( engine.EVENT );
+	engine.EVENT = 0;
+	EraseTimeEvent( engine.TRANSFER_EVENT );
+	engine.TRANSFER_EVENT = 0;	
+	engine.STATE = 0;
+	return;
+}
+
+
+uint e_Engine( uint[]@ values )
+{
+	Item@ engine = GetItem( values[0] );
+
+	if( !valid( engine ) )
+		return 0;
+
+	if( engine.STATE != 1 || engine.GetType() != ITEM_TYPE_CONTAINER )
+	{
+		EraseTimeEvent( engine.EVENT );
+		engine.EVENT = 0;
+		return 0;
+	}
+	
+	Item@[] resources;
+	int count = engine.GetItems( uint ( -1 ) , resources );
+
+	if( count > 0 ) // горение хуйни
+	{
+		int n = Random( 0, count - 1 ),
+			buff = 0;
+
+		Item@ item = resources[n];
+		uint16 itemPID = resources[n].GetProtoId();
+
+		if( engine.FUEL_TYPE == FUEL_TYPE_TES )
+		{
+			switch( itemPID )
+			{
+				case ( PID_COAL ):
+				{
+					buff = 5;
+					break;
+				}
+
+				case ( PID_CHOPPED_FIREWOOD ):
+				{
+					buff = 2;
+					break;
+				}
+
+				case ( PID_FIREWOOD ):
+				{
+					buff = 1;
+					break;
+				}
+			} 
+		}
+
+		if( buff != 0 )
+		{
+			_SubItem( resources[n], 1 );
+			engine.ENERGY += buff;
+
+			if( engine.ENERGY > engine.MAX_ENERGY )
+				engine.ENERGY = engine.MAX_ENERGY;
+		}
+	}
+	return ENERGY_BURNING;
+}
+
+uint e_Transfer( uint[]@ values )
+{
+	Item@ engine = GetItem( values[0] );
+
+	if( !valid( engine ) )
+	{
+		return 0;		
+	}
+
+	if( engine.CONNECTED1 != 0 && ( GetItem( engine.CONNECTED1 ).Val9 > GetItem( engine.CONNECTED1 ).Val8 ) && GetItem( engine.CONNECTED1 ).Val0 == 1 )
+		TransferEnergy( engine, engine.CONNECTED1 );
+
+	if( engine.CONNECTED2 != 0 && ( GetItem( engine.CONNECTED2 ).Val9 > GetItem( engine.CONNECTED2 ).Val8 ) && GetItem( engine.CONNECTED2 ).Val0 == 1 )
+		TransferEnergy( engine, engine.CONNECTED2 );
+
+	if( engine.CONNECTED3 != 0 && ( GetItem( engine.CONNECTED3 ).Val9 > GetItem( engine.CONNECTED3 ).Val8 ) && GetItem( engine.CONNECTED3 ).Val0 == 1 )
+		TransferEnergy( engine, engine.CONNECTED3 );
+
+	if( engine.STATE != 1 )
+	{
+		EraseTimeEvent( engine.TRANSFER_EVENT );
+		engine.TRANSFER_EVENT = 0;	
+		return 0;
+	}	
+
+	return ENERGY_TRANSFER;
+}
+
+void TransferEnergy( Item& engine, int machine_id ) // exported
+{
+	Item@ machine = GetItem( machine_id ); // ОБЯЗАТЕЛЬНО добавить проверку на протоид объекта!!!!
+	int transfer = 0;
+
+	if( machine.Val9 > engine.ENERGY )
+		transfer = engine.ENERGY;
+	else
+		transfer = machine.Val9;
+
+	if( transfer > engine.LIMIT && engine.LIMIT != 0 )
+		transfer = engine.LIMIT;
+
+	machine.Val8 += transfer;
+	engine.ENERGY -= transfer;
+
+	if( machine.Val8 > machine.Val9 )
+		machine.Val8 = machine.Val9;
+	
+	return;	
+}
+
+void ConnectEngine( Critter& player, uint answerI, string& answerS )
+{
+    Item@ item = GetItem( player.StatBase[ ST_VAR0 ] );
+    if( item is null ) return;
+	
+	int number = 0;
+	if( answerS.length() < 1 || !StrToInt( answerS, number ) )
+		return;
+	
+	item.Info = 1;
+	item.Val9 = number;
+	item.Update();
+	player.Say( SAY_NETMSG, "Теперь этот объет имеет описание №" + item.Val9 + "." );
+}
+	  
+#endif //ENERGYF

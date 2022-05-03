@@ -1,0 +1,53 @@
+#include "_macros.fos"
+import bool isGM( Critter& player ) from "gm";
+void _initPeter( Critter& cr, bool firstTime )
+{
+    cr.SetEvent( CRITTER_EVENT_ATTACKED, "_stopIt" );
+    cr.SetEvent( CRITTER_EVENT_TALK, "_notYet" );
+}
+
+bool _stopIt( Critter& cr, Critter& attacker )
+{
+    cr.SayMsg( SAY_NORM_ON_HEAD, TEXTMSG_TEXT, Random( 6500, 6505 ) );
+    return true;
+}
+
+bool _notYet( Critter& cr, Critter& player, bool attach, uint talkCount )
+{
+	GameVar@ canPray = GetGlobalVar( GVAR_Pray_Battleground );
+	if( canPray.GetValue() == 0 ) {
+		cr.SayMsg( SAY_NORM_ON_HEAD, TEXTMSG_TEXT, Random( 6506, 6510 ) );
+		player.ToKnockout( KNOCKOUT_ANIM2_DEFAULT( ( Random( 0, 1 ) == 1 ? true : false ) ), 100 * Random( 5, 10 ), player.HexX, player.HexY );
+		return false;
+	}
+
+	setFree( player );
+	cr.Say( SAY_NORM_ON_HEAD, "В добрый путь, дитя моё." );
+    return false;
+}
+
+void free( Critter& cr, int, int, int )
+{
+	setFree( cr );
+}
+
+//~run speter safeRegenLoc 0 0 0
+void safeRegenLoc( Critter& cr, int, int, int )
+{
+	Map@ map = cr.GetMap(); 
+	if( !valid( map ) ) return;
+	
+	Location@ loc = map.GetLocation();
+	if( !valid( loc ) ) return;
+
+	loc.Reload();
+}
+
+void setFree( Critter& cr )
+{
+	Location@ loc = GetLocationByPid( LOCATION_HELL, 0 );
+	if( !valid( loc ) ) return;
+	Map @map = loc.GetMapByIndex( 0 );
+	if( !valid( map ) ) return;
+    cr.TransitToMap( map.Id, Random( 105, 253 ), Random( 110, 258 ), Random( 0, 5 ) );
+}

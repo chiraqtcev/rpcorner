@@ -1,0 +1,302 @@
+#include "_utils.fos"
+
+import bool CheckGard( Map& map, uint16 hexX, uint16 hexY ) from "farm";
+
+//~run rotting go 0 0 0
+void go( Critter& player, int repeat, int, int )
+{
+	uint count = ( repeat < 0 ? 256 : repeat );
+	
+	Map@ map = player.GetMap();
+	if( !valid( map ) ) return;
+	
+	for( uint i = 0; i <= count; i++ )
+		RottenFood( map );
+}
+
+//~run rotting test 0 0 0
+void test( Critter& player, int, int, int )
+{
+	RottenFood( player );
+}
+
+//~run rotting setRottenCycle value 0 0
+void setRottenCycle( Critter& player, int value, int, int )
+{
+	GameVar@ cycle = GetGlobalVar( GVAR_rotten_cycle );
+	if(valid(cycle)) 
+	{
+		if( value == 0 )
+		{
+			if( cycle.GetValue() < 999 ) cycle.opAddAssign( 1 );
+			else cycle.opAssign( 0 );
+		}
+		else
+			cycle.opAssign( value );
+		player.Say( SAY_NETMSG, "Rotten cycle = " + cycle.GetValue() + "." );
+	}
+}
+
+uint[][] food_pids_conversion = {
+	{ PID_HEAD, PID_skull },
+	{ PID_SHIT_SMALL, 0 },
+	{ PID_SHIT_BIG, PID_SHIT_SMALL },
+	{ PID_RAD_MEAT, PID_SHIT_BIG },
+	{ PID_humnmeat, PID_SHIT_BIG },
+	{ PID_RAT_MEAT, PID_SHIT_BIG },
+	{ PID_COOKED_FISH, PID_SHIT_SMALL },
+	{ PID_COOKED_RAT_MEAT, PID_SHIT_SMALL },
+	{ PID_COOKED_MOLERAT_STOMATCH, PID_SHIT_BIG },
+	{ PID_RAGOUT, PID_SHIT_SMALL },
+	{ PID_GECKO_MEAT, PID_RAD_MEAT },
+	{ PID_COOKED_MEAT, PID_RAD_MEAT },
+	{ PID_COOKED_GECKO_MEAT, PID_RAD_MEAT },
+	{ PID_IGUANA_ON_A_STICK, PID_RAD_MEAT },
+	{ PID_MEAT_ON_A_STICK, PID_RAD_MEAT },
+	{ PID_MEAT, PID_RAD_MEAT },
+	{ PID_DEAD_RADCVET, PID_SHIT_SMALL },
+	{ PID_RADCVET_SMALL, PID_SHIT_SMALL },
+	{ PID_DEAD_CABBAGE, PID_SHIT_SMALL },
+	{ PID_DEAD_CORN, PID_SHIT_SMALL },
+	{ PID_CORN_SMALL, PID_SHIT_SMALL },
+	{ PID_ASHES_1, 0 },
+	{ PID_ASHES_2, 0 },
+	{ PID_ASHES_3, 0 },
+	{ PID_SALAD, PID_SHIT_SMALL },
+	{ PID_humnmeat, PID_RAD_MEAT },
+	{ PID_MANTIS_MEAT, PID_SHIT_SMALL },
+	{ PID_HERBAL_SOUP, PID_SHIT_SMALL },
+	{ PID_BURGER, PID_SHIT_BIG },
+	{ PID_PIZZA, PID_SHIT_BIG },
+	{ PID_POTROHA_SPICED, PID_SHIT_BIG },
+	{ PID_BURRITO, PID_SHIT_BIG },
+	{ PID_PIROG, PID_SHIT_BIG },
+	{ PID_MOLERAT_STOMATCH, PID_SHIT_BIG }/*,
+	{ PID_FISH_SMALLEST, PID_SHIT_SMALL },
+	{ PID_FISH_SMALL, PID_SHIT_SMALL },
+	{ PID_FISH, PID_SHIT_BIG },
+	{ PID_FISH_BIG, PID_SHIT_BIG },
+	{ PID_FISH_BIGGEST, PID_SHIT_HUGE }*/
+
+};
+
+uint[] proper_vendfridge_pids = {
+    PID_VENDING_FRIDGE1,
+    PID_VENDING_FRIDGE2
+};
+
+uint[] proper_container_pids = {
+	PID_FRIDGE,
+	PID_ICE_CHEST_LEFT,
+	PID_ICE_CHEST_RIGHT,
+	PID_OLD_FRIDGE,
+	PID_FREEZER,
+	PID_PORTABLE_REFRIGERATOR,
+	PID_VENDING_FRIDGE1,
+	PID_VENDING_FRIDGE2
+};
+
+uint[] shit_pit_pids = {
+	PID_SHIT_BAREL_EMPTY,
+	PID_SHIT_BAREL_FULL,
+	PID_SHIT_BATH_X_EMPTY,
+	PID_SHIT_BATH1_X_FULL,
+	PID_SHIT_BATH2_Y_EMPTY,
+	PID_SHIT_BATH2_Y_FULL
+};
+
+uint[] special_pids = { //Вещи, не являющиеся едой по GetType()
+	PID_NUKA_COLA, PID_BEER, PID_ROT_GUT, 
+	PID_SHIT_BIG, PID_SHIT_SMALL, 
+	PID_DEAD_RADCVET, PID_RADCVET_SMALL, PID_DEAD_CABBAGE, PID_DEAD_CORN, PID_CORN_SMALL,
+	PID_ASHES_1, PID_ASHES_2, PID_ASHES_3
+}; 
+
+uint[] plants = { PID_CORN_SMALL, PID_RADCVET_SMALL }; //Костыльная защита от сгнивания растущих растений на грядках.
+
+//import void RottenFood( Critter& cr ) from "rotting";
+void RottenFood( Critter& cr ) //exported
+{
+	if( isGM( cr ) && cr.Param[ QST_GAMEMODE ] != GAME_TEST )
+		return;
+	
+	Map@ map = cr.GetMap();
+	if(!valid(map)) return;
+	
+	GameVar@ cycle = GetGlobalVar( GVAR_rotten_cycle );
+	if(!valid(cycle)) return;
+	
+	int delta = cycle.GetValue() - cr.ParamBase[ CR_LAST_ROTTEN_CYCLE ];
+	if( delta > 50 ) delta = 50;
+	
+	cr.ParamBase[ CR_LAST_ROTTEN_CYCLE ] = cycle.GetValue();
+	
+	Item@[] containers, stuff, food;
+	food.resize(0);
+	cr.GetItems( -1, stuff );
+	
+	for( uint i = 0; i < stuff.length(); i++ )
+	{
+		uint pid = stuff[i].GetProtoId();
+		if( stuff[i].GetType() == ITEM_TYPE_FOOD || special_pids.find( pid ) != -1  )
+			food.insertLast( stuff[i] ); //Вещи, не являющиеся едой по GetType()
+		
+		if( stuff[i].GetType() == ITEM_TYPE_CONTAINER )
+		{
+			if( proper_container_pids.find( pid ) != -1 )
+				continue; //Скипаем переносные холодосы.
+			
+			bool isShitPit = shit_pit_pids.find( pid ) != -1;
+			
+			Item@[] substuff;
+			stuff[i].GetItems( uint( -1 ), substuff );
+			for( uint j = 0; j < substuff.length(); j++ )
+				if( substuff[j].GetType() == ITEM_TYPE_FOOD || special_pids.find( substuff[j].GetProtoId() ) != -1 )
+					if( isShitPit && ( pid == PID_SHIT_SMALL || pid == PID_SHIT_BIG ) )
+						continue;//Скипаем говно в компостных контейнерах;
+					else
+						food.insertLast( substuff[j] );
+		}
+	}
+
+	bool badSmell = false;
+	Item@ target;
+	
+	for( int d = 0; d < delta; d++ )
+	{
+		for( uint i = 0; i < food.length(); i++ ) 
+		{
+			if( !valid(food) ) continue;
+			@target = food[i];
+			for( uint j = 0; j < food_pids_conversion.length(); j++ )
+				if( Random( 1, 100 ) < int( 2 * target.GetCount() ) && food_pids_conversion[j][0] == target.GetProtoId() )
+				{
+					int count = target.GetCount();
+					int delta = 1;
+					if( count > 50 )
+						delta = count / 50;
+					
+					uint pid = food_pids_conversion[j][1];
+					if( pid != 0 )
+					{
+						if( target.Accessory == ACCESSORY_CONTAINER )
+						{
+							Item@ container = GetItem( target.ContainerId );
+							if( valid( container ) ) {
+								container.AddItem( pid, delta, 0 );
+								if( pid == PID_SHIT_SMALL || pid == PID_SHIT_BIG )
+									map.SetText( cr.HexX, cr.HexY, COLOR_SAND, "|0xFF828a96 :запашок:" );
+							}
+						}
+						
+						if( target.Accessory == ACCESSORY_CRITTER )
+						{
+							cr.AddItem( pid, delta );
+							if( pid == PID_SHIT_SMALL || pid == PID_SHIT_BIG )
+								badSmell = true;
+						}
+					}
+				
+					if( count - delta > 0 )
+						target.SetCount( count - delta );
+					else 
+					{
+						DeleteItem( target );
+						break;
+					}
+				}
+		}
+	}
+	
+	cr.ParamBase[ CR_DIRTINESS ] += Random( 0, 3 + ( cr.ParamBase[ST_BLEED] / 2 ) );
+	
+	if( badSmell ) {
+		cr.Say( SAY_EMOTE, "воняет" );
+		cr.Say( SAY_NETMSG, "Кажется, у вас сгнила какая-то еда в инвентаре!" );
+		cr.ParamBase[ CR_DIRTINESS ] += Random( 0, 5 );
+	}
+}
+
+//import void RottenFood( Map@ map ) from "rotting";
+void RottenFood( Map@ map ) //exported
+{
+	Item@[] containers, stuff, food;
+	food.resize(0);
+	
+	for( uint i = 0; i < special_pids.length(); i++ )
+		map.GetItems( special_pids[i], food );
+	
+    map.GetItemsByType( ITEM_TYPE_CONTAINER, containers );
+    if( valid( containers ) )
+    {
+        for( uint i = 0; i < containers.length(); i++ )
+        {
+			if( ( proper_container_pids.find( containers[i].GetProtoId() ) != -1 && !FLAG( containers[i].LockerCondition, LOCKER_ISOPEN ) )  ||  ( proper_vendfridge_pids.find(containers[i].GetProtoId() ) != -1 ) )
+				continue; //Скипаем закрытые холодильники.
+			
+			bool isShitPit = shit_pit_pids.find( containers[i].GetProtoId() ) != -1;
+
+			stuff.resize( 0 );
+			containers[ i ].GetItems( uint( -1 ), stuff );
+			for( uint j = 0; j < stuff.length(); j++ )
+			{
+				uint pid = stuff[j].GetProtoId();
+				if( stuff[j].GetType() == ITEM_TYPE_FOOD || special_pids.find( pid ) != -1 )
+					if( isShitPit && ( pid == PID_SHIT_SMALL || pid == PID_SHIT_BIG ) )
+						continue;//Скипаем говно в компостных контейнерах;
+					else
+						food.insertLast( stuff[j] );
+			}
+        }
+    }
+	
+	Item@ target;
+    map.GetItemsByType( ITEM_TYPE_FOOD, food );
+	
+	uint count;
+	for( uint i = 0; i < food.length(); i++ ) 
+	{
+		if( !valid( food[i]) ) continue;
+		@target = food[i];
+		for( uint j = 0; j < food_pids_conversion.length(); j++ )
+		{
+			if( Random( 1, 100 ) < int( 10 * target.GetCount() ) && food_pids_conversion[j][0] == target.GetProtoId() )
+			{
+				if( plants.find( target.GetProtoId() ) != -1 && CheckGard( map, target.HexX, target.HexY ) )
+					continue;
+				
+				count = target.GetCount();
+				uint delta = 1;
+				if( count > 10 )
+					delta = count / 10;
+				
+				uint pid = food_pids_conversion[j][1];
+				if( pid != 0 )
+				{
+					if( target.Accessory == ACCESSORY_CONTAINER )
+					{
+						Item@ container = GetItem( target.ContainerId );
+						if( valid( container ) ) {
+							container.AddItem( pid, delta, 0 );
+							map.SetText( container.HexX, container.HexY, COLOR_SAND, "|0xFF828a96 :запашок:" );
+						}
+					}
+					
+					if( target.Accessory == ACCESSORY_HEX )
+					{
+						map.AddItem( target.HexX, target.HexY, pid, delta );
+						map.SetText( target.HexX, target.HexY, COLOR_SAND, "|0xFF828a96 :запашок:" );
+					}
+				}
+			
+				if( count - delta > 0 )
+					target.SetCount( count - delta );
+				else 
+				{
+					DeleteItem( target );
+					break;
+				}
+			}
+		}
+	}
+}

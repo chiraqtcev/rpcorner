@@ -1,0 +1,339 @@
+**************************************************************************************
+***  DIALOGS  *********  COUNT: 00000000  ********************************************
+**************************************************************************************
+$	10	all_default
+$	20	all_alco
+$	21	all_alco_w
+$	22	all_merchant
+$	25	all_narcoman
+$	26	all_narcoman_w
+$	27	all_turret
+$	35	all_poor_man
+$	36	all_poor_man_w
+$	40	all_child
+$	41	all_child_w
+$	42	all_slave
+$	43	all_slaver
+$	44	all_trapper
+$	45	all_narcodialer
+$	50	all_bootlegger
+$	55	all_robber
+$	56	all_bandit
+$	57	all_cannibal
+$	60	all_guard
+$	61	all_guard_w
+$	62	all_homesteader
+$	63	all_raider
+$	64	all_enclave_patrol
+$	65	all_casino_player
+$	66	all_casino_player_w
+$	67	all_mercenary
+$	68	all_elronologist
+$	69	all_press_gang
+$	80	all_unity
+$	81	all_mafia
+$	82	all_traveller
+$	83	all_ranger
+$	84	all_marauder
+$	85	all_bounty_hunter
+$	86	all_outcast
+$	87	all_holy_people
+$	88	all_nomad
+$	89	all_hunter
+$   90  speter
+$   91  replicator
+$   92  replicator_energy
+
+$	95	Ched
+
+$	99 _test_dialog_dynamics
+
+$	100	lake_bar
+$	101	lake_fish
+$	102	lake_general
+$   103 lake_trader_andrewfish
+
+$	200 mod_trader_vendor
+$	206	Bulletin_board
+$	207	manufact_crusher3000
+
+$	211	all_roulette
+
+$	302	mod_citizen
+
+$	330	mod_enter_guard
+
+$	350 mod_comm_man
+$	351 mod_comm_woman
+$	352	mod_comm_guard
+$	353 mod_comm_child
+$	354 mod_comm_prisoner
+$	355 mod_comm_thug
+$	356 mod_comm_caravanneer
+$	357	mod_comm_whore
+$	358	mod_comm_trapper
+$   359 mod_trader_anvil
+
+$	369	mod_trader_maintenance
+$	370	mod_trader_guns
+$	373	mod_trader_bar
+$	376	mod_trader_junk
+$	377	mod_trader_tools
+$   378 jun_trader_bud
+
+$	379	jun_Harvi_Trader
+$	380	jun_junker
+$	382	jun_Mutdoc
+$	383	jun_raider2
+$	384	jun_Tein
+
+$	385	sat_doc
+$	386	sat_narcodiller
+$	388	sat_weaponguy
+
+$	389	1_under_Klaid
+$	390	1_stranger
+$	391	1_Rouch
+$	392	1_u_ghoul_guard
+$	393	1_u_ghoul_guard2
+$	394	1_u_guard1
+$	395	1_u_guard2
+$	396	1_u_human
+$	397	1_u_human1
+$	398	1_u_human2
+$	399	1_innkeeper
+
+$	401	  black_junk
+
+$	402	1_u_guard3g
+$	403	1_u_kid1
+$	404	1_u_child_boy
+$	405	1_u_child_girl
+$	406	2_ROB_1
+
+$	409 mod_tradder_port
+
+$	772		ncr_master_mercs
+
+$	4700	start_caravan
+$	4701	start_drover
+$	4702	start_female
+$	4703	start_guard
+$	4704	start_kid
+$	4705	start_male
+
+$	1002	ncr_trader_guns
+$	1003	ncr_guard_other
+$	1004	ncr_barmen
+$	1005	ncr_drunk
+$	1006	ncr_bum
+$	1014	ncr_guard_m
+$	1015	ncr_guard_f
+$	1016	ncr_guard_elite
+
+$	1042	ncr_bad_guy
+$	1043	ncr_bad_guy_guard
+
+$	1048	ncr_trader_small
+
+$	1071	ncr_narco
+$	1072	ncr_worker
+
+$	2507	ncr_guard_trader
+$	2508	ncr_repairman
+
+$   4900    ball
+$	5000	mob_norm_rat
+$	5001	mob_pig_rat
+$	5002	mob_mole_rat
+$	5003	mob_int_mole_rat
+$	5010	mob_small_scorp
+$	5011	mob_large_scorp
+$	5012	mob_mantis
+$	5013	mob_giant_ant
+$	5020	mob_silver_gecko
+$	5021	mob_golden_gecko
+$	5022	mob_fire_gecko
+$	5030	mob_baby_deathclaw
+$	5031	mob_adult_deathclaw
+$	5032	mob_int_deathclaw
+$	5033	mob_deathclaw_egg
+$	5040	mob_robobrain
+$	5041	mob_fly_eyeball
+$	5042	mob_sentry_bot
+$	5043	mob_mr_handy
+$	5044	mob_floor_turret
+$	5045	mob_plasma_turret
+$	5050	mob_floater
+$	5051	mob_centaur
+$	5052	mob_wanamingo
+$	5053	mob_spore_plant
+$	5054	mob_dog
+$	5055	mob_brahmin
+$	5056	mob_alien
+$	5057	mob_tribal
+$	5058	mob_bandit
+$	5059	mob_mutant
+$	5060	mob_egg_wan
+$	5061	mob_ill_brahmin
+$	5062	sat_consolle
+$	5064	sandbox_rent
+$	5065 1_familyray
+$	5066 1_Ray_Kosorez
+$	5067 1_Aiden_Kosorez
+$	5068 1_Arni_Kosorez
+$	5069 1_Udjin_Kosorez
+$	5070 1_Spotikun_Kosorez
+$	5071 1_Maida_Kosorez
+$	5072 1_FatJo_Kosorez
+$	5073 1_Silvia_Kosorez
+$	5074 1_Taylor_Bradd
+$   5075 1_Privratnik_Kosorez
+$   5076 1_squatter_KaravanBoss
+$   5077 1_squatter_KaravanGuardMan
+$   5078 1_squatter_KaravanGuardWoman
+$   5079 1_squatter_Privratnik
+$   5080 1_squatter_guard
+$   5081 1_squatter_Sheila
+$   5082 1_squatter_ben
+$   5083 1_squatter_goris
+$   5084 1_squatter_elin
+$   5085 1_squatter_man
+$   5086 1_squatter_woman
+$   5087 1_squatter_child
+
+
+
+**********************************************************
+***  FORP_DIALOGS  ***************************************
+**********************************************************
+
+															**	Пид прототипа NPC
+
+$	5100	forp_1_poseidon_immortal_john					**	PID 2000	
+$	5101	forp_2_poseidon_cook							**	PID 2001	
+$	5102	forp_3_poseidon_ships_doctor					**	PID 2002	
+$	5103	forp_4_poseidon_boatswain						**	PID 2003	
+$	5104	forp_5_poseidon_quartermaster					**	PID 2004	
+$	5105	forp_6_poseidon_bartender_ghoul					**	PID 2005	
+$	5106	forp_7_poseidon_butcher							**	PID 2006	
+$	5107	forp_8_poseidon_stall_caretaker					**	PID 2007	
+$	5108	forp_9_poseidon_stall_caretaker_assistant		**	PID 2008	
+$	5109	forp_10_poseidon_atom_preacher					**	PID 2009	
+$	5110	forp_11_poseidon_chief_reactor_engineer			**	PID 2010	
+$	5111	forp_12_poseidon_slaver_auctioneer				**	PID 2011	
+$	5112	forp_13_poseidon_jail_warden					**	PID 2012	
+$	5113	forp_14_poseidon_mafias_authority				**	PID 2013	
+$	5114	forp_15_poseidon_casino_bartender				**	PID 2014	
+$	5115	forp_16_poseidon_den_bartender					**	PID 2015	
+$	5116	forp_17_poseidon_sss_private_1					**	PID 2016	
+$	5117	forp_18_poseidon_sss_private_2					**	PID 2017	
+$	5118	forp_19_poseidon_sss_private_3					**	PID 2018	
+$	5119	forp_20_poseidon_boat_steering					**	PID 2019	
+$	5120	forp_21_poseidon_steering						**	PID 2020	
+$	5121	forp_22_poseidon_turret							**	PID 2021	
+$	5122	forp_23_poseidon_croupier						**	PID 2022	
+$	5123	forp_24_poseidon_bookseller						**	PID 2023	
+$	5124	forp_25_poseidon_gunsmith_1						**	PID 2024	
+$	5125	forp_26_poseidon_gunsmith_2						**	PID 2025	
+$	5126	forp_27_poseidon_gunsmith_3						**	PID 2026	
+$	5127	forp_28_poseidon_junkman						**	PID 2027	
+$	5128	forp_29_poseidon_burglar						**	PID 2028	
+$	5129	forp_30_poseidon_grocer							**	PID 2029	
+$	5130	forp_31_poseidon_meat_trader					**	PID 2030	
+$	5131	forp_32_poseidon_food_trader					**	PID 2031	
+$	5132	forp_33_poseidon_snack_vendor					**	PID 2032	
+$	5133	forp_34_poseidon_blacksmith						**	PID 2033	
+$	5134	forp_35_poseidon_drug_dealer					**	PID 2034
+$	5135	forp_36_poseidon_guard_female					**	PID 2100	
+$	5136	forp_37_poseidon_guard_male						**	PID 2101
+$	5137	forp_38_lars_gang_dublom						**	PID 2130
+$	5138	forp_39_lars_gang_black_dog						**	PID 2131
+$	5139	forp_40_lars_gang_joh							**	PID 2132
+$	5140	forp_41_lars_gang_israil_hanks					**	PID 2133
+$	5141	forp_42_lars_gang_karnath						**	PID 2134
+$	5142	forp_43_kastor_clergy_tomas_manson				**	PID 2140
+$	5143	forp_44_kastor_clergy_marta_swift				**	PID 2141
+$	5144	forp_45_kastor_clergy_garold_shipman			**	PID 2142
+$	5145	forp_46_kastor_clergy_atom_zealot_male			**	PID 2143
+$	5146	forp_47_kastor_clergy_atom_zealot_female		**	PID 2144
+$	5147	forp_48_poseidon_mister_show					**	PID 2035
+
+
+**********************************************************
+***  FORP_SANDBOX_DIALOGS  *******************************
+**********************************************************
+
+$	5148	sandbox_junk_trader_AndrewMallon				**	PID 954
+$	5149	sandbox_metallurgist_trader_Vekselberg			**	PID 958
+$	5150	sandbox_technic_trader_RaymondThayer			**	PID 955
+$	5152	sandbox_tools_trader_DubridgeLeeErwin           **	PID 950
+$	5153	sandbox_chemist_trader_SamuelSachs              **	PID 957
+$	5154	sandbox_barman_trader_StephenBarr               **	PID 952
+$	5155	sandbox_jeweller_trader_MarcusGoldman           **	PID 951
+$	5156	sandbox_melee_trader_Chester                    **	PID 959
+$	5157	sandbox_ammo_trader_KarlRuger                   **	PID 956
+$	5158	sandbox_elis									**	PID	965
+$	5159	sandbox_cheiz									**	PID	966
+$	5160	sandbox_caravanman								**	PID	967
+$	5161	sandbox_sara									**	PID	968
+$	5162	sandbox_gamer									**	PID	969
+$	5163	sandbox_lana									**	PID	970
+$	5164	sf_vendor_rojer									**	PID 971
+$	5165	sf_vendor_mei									**	PID 972
+$	5166	sf_vendor_djesika								**	PID 973
+
+
+**********************************************************
+***  FORP_RIVERDALE_DIALOGS  *****************************
+**********************************************************
+
+$	5167	forp_riverdale_1_suzie							**	PID 974
+$	5168	forp_riverdale_2_ticketTerminal					**	PID 975
+$	5169	forp_riverdale_3_seth_the_trapper				**	PID 976
+$	5170	forp_riverdale_4_seths_dog_varg					**	PID 977
+$	5171	forp_riverdale_5_seths_dog_gery					**	PID 978
+$	5172	forp_riverdale_6_seths_dog_freky				**	PID 979
+$	5173	forp_riverdale_7_doc_ray_swonson				**	PID 980
+$	5174	forp_riverdale_8_drug_dealers_door				**	
+$	5175	forp_riverdale_9_drug_dealer					**	PID 981
+
+$	5177	forp_riverdale_11_croupier						**	PID 983
+$	5178	forp_riverdale_12_guard_male					**	PID 984
+$	5179	forp_riverdale_13_drug_junkie					**	PID 985
+$	5180	forp_riverdale_14_junkie_in_queue				**	
+$	5181	forp_riverdale_15_whore							**  PID 986
+$	5182	forp_riverdale_16_Gandi_inviter					**	PID 987
+$	5183	forp_riverdale_17_Trevor_inviter				**	PID 988
+$	5184	forp_riverdale_18_Celestia_inviter				**	PID 989
+$	5185	forp_riverdale_19_Cooking_Bigman				**	PID 990
+$	5186	forp_riverdale_20_Courier_Bazil					**	PID 991
+$	5187	forp_riverdale_21_Courier_Liuis					**	PID 992
+$	5188	forp_riverdale_22_Courier_Garfild				**	PID 993
+$	5189	forp_riverdale_23_Courier_Sally					**	PID 994
+$	5190	forp_riverdale_24_Romuls_Scumbag				**	PID 995
+$	5191	forp_riverdale_25_Romuls_Bandit					**	PID 996
+$	5192	forp_riverdale_26_Romuls_Thug					**	PID 997
+$	5193	forp_riverdale_27_Saul_Rifleman					**	PID 998
+$	5194	forp_riverdale_28_Saul_Watcher					**	PID 999
+$	5195	forp_riverdale_29_Saul_Sniper					**	PID 800
+$	5196	forp_riverdale_30_Morgan_Merc_Male				**	PID 801
+$	5197	forp_riverdale_31_Morgan_Merc_Female			**	PID 802
+$	5198	forp_riverdale_32_Sebastian						**	PID	816
+$	5199	forp_riverdale_33_Radgi							**	PID	817
+$	5200	forp_riverdale_34_Jan							**	PID	818
+$	5201	forp_riverdale_35_Oswald						**	PID 819
+$	5202	forp_riverdale_36_Sharry						**	PID 820
+
+**********************************************************
+***  FO_LEGO_DIALOGS  ************************************
+**********************************************************
+
+$	5203	legacy_modoc_1_jamal_moneychanger				**	PID 821
+$   5204    legacy_mod_trader_Rose
+$   5205    legacy_sat_junk_trader_Dan
+$   5206    legacy_sat_trader_taylor
+$   5207    legacy_modoc_church_man                         **  PID 3041
+$   5208    legacy_modoc_church_woman                       **  PID 3042
+$   5209    legacy_modoc_church_kid                         **  PID 3043
+$   5210    legacy_modoc_hobo	                            **  

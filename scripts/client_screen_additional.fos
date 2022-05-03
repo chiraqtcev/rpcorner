@@ -1,0 +1,354 @@
+// additional for hardcoded client screens
+
+#include "client_gui_h.fos"
+#include "_client_defines.fos"
+#include "_macros.fos"
+#include "_colors.fos"
+
+#define STR_ANIM_INDEX     ( 322 )
+#define STR_CRTYPE         ( 323 )
+
+#define BUTTON_DONE        ( 0 )
+#define BUTTON_UP          ( 1 )
+#define BUTTON_DN          ( 2 )
+
+#define STR_UPDATE_INFO    ( 1500000 )
+
+string animIndexHive;
+uint16 realLocX;
+uint16 realLocY;
+uint16[] crTypes;
+string[] animIndex;
+IGUIElementOpt@[] hiveBtnsOpt;
+// ////////////////////////////////////////
+
+void InitScreenAddiotional()
+{
+    // character skin select button, register screens
+    CharacterSkinSelectButtonShow chaSelBtn();
+	
+	// RegChaSelMainX RegChaSelMainY
+	
+    GUI_AddScreenElementIni( CLIENT_MAIN_SCREEN_REGISTRATION, "RegChaSelUp", 300, 0 )
+		.CallbackInit( chaSelBtn )
+		.CallbackMouseClick( chaSelBtn )
+		.Position("RegChaSel")
+		.DownPic( GetIfaceIniStr( "RegChaSelDn" ) );
+		
+    // character select window
+    CharacterSkinSelectWindow chaSelWindow();
+    GUI_CreateScreenIni( CLIENT_SCREEN_CHA_SKIN, "RegChaSel" )
+		.CallbackHide( chaSelWindow )
+		.CallbackShow( chaSelWindow )
+		.CloseOnMiss( true )
+		.CanMove( false )
+		.AutoCursor( true, CURSOR_DEFAULT );
+
+    CharacterSkinSelectButton chaSelBtnDone( chaSelWindow, 0 );
+    GUI_AddScreenElementIni( CLIENT_SCREEN_CHA_SKIN, "RegChaSelBtnDoneUp", 30, 130 )
+		.CallbackInit( chaSelBtnDone )
+		.CallbackMouseClick( chaSelBtnDone )
+		.Position("RegChaSelBtnDone")
+		.DownPic( GetIfaceIniStr( "RegChaSelBtnDoneDn" ) );
+
+    CharacterSkinSelectButton chaSelBtnUp( chaSelWindow, 1 );
+    GUI_AddScreenElementIni( CLIENT_SCREEN_CHA_SKIN, "RegChaSelBtnUpPic1", 95, 30 )
+		.CallbackInit( chaSelBtnUp )
+		.CallbackMouseClick( chaSelBtnUp )
+		.Position("RegChaSelBtnUp")
+    .DownPic( GetIfaceIniStr( "RegChaSelBtnUpPic2" ) );
+
+    CharacterSkinSelectButton chaSelBtnDn( chaSelWindow, 2 );
+    GUI_AddScreenElementIni( CLIENT_SCREEN_CHA_SKIN, "RegChaSelBtnDnPic1", 95, 70 )
+		.CallbackInit( chaSelBtnDn )
+		.CallbackMouseClick( chaSelBtnDn )
+		.Position("RegChaSelBtnDn")
+		.DownPic( GetIfaceIniStr( "RegChaSelBtnDnPic2" ) );
+
+    CharacterSkinSelectorImage chaSelImage( chaSelWindow );
+    GUI_AddScreenElementIni( CLIENT_SCREEN_CHA_SKIN, "", 30, 25 )
+		.Position( 30, 25, 30, 90 )
+		.Position("RegChaSelImage")
+		.CallbackMouseClick( chaSelImage )
+		.CallbackDraw( chaSelImage )
+		.CallbackInit( chaSelImage );
+		
+	AddInventoryCollectionButton( 0, "None", 120, 240, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 1, "Weapon", 120, 255, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 2, "Ammo", 120, 270, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 3, "Armor", 120, 285, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 4, "Drug", 120, 300, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 5, "Misc", 120, 315, "PRFSLDOF.FRM" );
+	AddInventoryCollectionButton( 6, "Key", 120, 330, "PRFSLDOF.FRM" );
+
+}
+
+void AddInventoryCollectionButton( uint index, string@ ini, int defX, int defY, string@ defSpr )
+{
+	@ini = "InvCollection" + ini;
+	string@ sprDown = GetIfaceIniStr( ini + "Down" );
+	if( @sprDown is null || sprDown == "" )
+		@sprDown = "PRFSLDON.FRM";
+	
+	InventoryCollectionButton invCollButt( index );
+	GUI_AddScreenElementIni( CLIENT_SCREEN_INVENTORY, ini, defX, defY, defSpr )
+		.CallbackMouseClick( invCollButt )
+		.CallbackInit( invCollButt )
+		.DownPic( sprDown );
+}
+
+class LoginUpdateInfo : IGUIElementCallbackInit
+{
+    IGUIElementOpt@ Options;
+
+    LoginUpdateInfo() {}
+
+    void OnInit()
+    {
+        @Options = GUI_GetElementOptions();
+        string text = GetMsgStr( TEXTMSG_GAME, STR_UPDATE_INFO );      // "Добавлен пневмопих.";
+
+        string@[] @ temp_lines = split( text, "@" );
+        text = "";
+        for( uint16 i = 0, j = temp_lines.length(); i < j; ++i )
+        {
+            string@[] @ temp_tabs = split( temp_lines[ i ], "#" );
+            for( uint16 ii = 0, jj = temp_tabs.length(); ii < jj; ++ii )
+            {
+                // Message(""+temp_tabs[i]);
+                text += temp_tabs[ ii ] + "\t";
+            }
+            text += "\n";
+
+
+        }
+
+        Options.Text( text, FONT_FALLOUT, COLOR_GREEN, COLOR_GREEN, 0 );
+    }
+}
+
+// ///////////////////
+
+class InventoryCollectionButton : IGUIElementCallbackMouseClick, IGUIElementCallbackInit
+{
+    uint8 Type;
+
+    InventoryCollectionButton( uint8 type )
+    {
+        Type = type;
+    }
+    void OnMouseClick( int click )
+    {
+        __inventoryCollection = Type;
+        RefreshItemsCollection( ITEMS_INVENTORY );
+    }
+
+    void OnInit()
+    {
+        // Message("test butt init "+Type);
+    }
+}
+
+class CharacterSkinSelectButtonShow : IGUIElementCallbackInit, IGUIElementCallbackMouseClick // , IGUIElementCallbackDraw
+{
+
+    // ScreenMain@ Instance;
+    // InputCode @ Code;
+
+    // uint8 ButtonClass;
+    // uint8 ButtonNumber;
+/*
+        NumberButton(ScreenMain& instance)
+        {
+                @Instance=instance;
+                @Instance.Button=this;
+        }
+ */
+    void OnInit()
+    {}
+
+    void OnMouseClick( int click )
+    {
+        ::ShowScreen( CLIENT_SCREEN_CHA_SKIN, 0, 0, 0 );
+    }
+}
+
+class CharacterSkinSelectWindow : IGUIScreenCallbackShow, IGUIScreenCallbackHide
+{
+    CharacterSkinSelectorImage@ SkinImage;
+    // IGUIElementOpt@ SkinImage;
+    int8                        Count;
+
+    void OnShow( int p0, int p1, int p2 )
+    {
+        LoadAnimationIndex();
+        Count = __baseCrType;
+        SetSkinImage( Count );
+        /*
+           CritterCl @ choo = GetChosen();
+           Message(""+choo.StatBase[0]);*/
+    }
+
+    void OnHide( int p0, int p1, int p2 )
+    {
+        __baseCrType = crTypes[ Count ];
+        crTypes.resize( 0 );
+        animIndex.resize( 0 );
+        // Message(""+__baseCrType);
+    }
+
+    void SetSkinImage( uint8 index )
+    {
+        SkinImage.SetPic( index );
+    }
+}
+
+class CharacterSkinSelectorImage : IGUIElementCallbackInit, IGUIElementCallbackDraw, IGUIElementCallbackMouseClick
+{
+    CharacterSkinSelectWindow@ Instance;
+    IGUIElementOpt@            Options;
+	
+	int	crType;
+	int 	dir;
+
+    CharacterSkinSelectorImage( CharacterSkinSelectWindow& instance )
+    {
+        @Instance = instance;
+        @Instance.SkinImage = this;
+		
+		crType = 0;
+		dir = 3;
+    }
+	
+	void OnMouseClick( int click ) override
+	{
+		if( click == MOUSE_CLICK_LEFT )
+		{
+			dir++;
+			if( dir == 6 )
+				dir = 0;
+		}
+		else if( click == MOUSE_CLICK_RIGHT )
+		{
+			if( dir == 0 )
+				dir = 5;
+			else dir--;
+		}
+	}
+	
+	void OnDraw( int posX, int posY, int w, int h  ) override
+	{
+		if( w == 0 )
+			w = 30;
+		if( h == 0 )
+			h = 90;
+		
+		int	anim1 = ANIM1_UNARMED, //  Первый индекс анимации (см. ANIM1_* в _animation.fos).  
+				anim2 = ANIM2_IDLE, 			//  Второй индекс анимации (см. ANIM2_2D_* в _animation.fos).
+				// Границы региона для отрисовки.  
+				left = posX,
+				top = posY,
+				right = posX + w,
+				bottom = posY + h;
+		bool	scratch = false, //  Растягивать ли картинку.  
+				center = true;  //  Центрировать ли картинку.
+		uint	color = 0; // Оттенок спрайта (при нуле берется значение по-умолчанию).  
+
+		DrawCritter2d( crType, anim1, anim2, dir, left, top, right, bottom, scratch, center, color );
+	}
+
+    void OnInit()
+    {
+        @Options = GUI_GetElementOptions();
+    }
+	
+	// 
+
+    void SetPic( uint8 index )
+    {
+	
+		crType = crTypes[ index ];
+        // Options.Pic( "" + animIndex[ index ] + "AA.frm", PT_ART_CRITTERS );
+    }
+}
+
+class CharacterSkinSelectButton : IGUIElementCallbackInit, IGUIElementCallbackMouseClick // , IGUIElementCallbackDraw
+{
+
+    CharacterSkinSelectWindow@ Instance;
+    // InputCode @ Code;
+
+    uint8 ButtonClass;
+    // uint8 ButtonNumber;
+
+    CharacterSkinSelectButton( CharacterSkinSelectWindow & instance, uint8 btnClass )
+    {
+        @Instance = instance;
+        ButtonClass = btnClass;
+    }
+
+    void OnInit()
+    {}
+
+    void OnMouseClick( int click )
+    {
+        switch( ButtonClass )
+        {
+        case BUTTON_DONE:
+            ::HideScreen( 0, 2, 2, 2 );
+            break;
+        case BUTTON_UP:
+            uint( Instance.Count ) >= animIndex.length() - 1 ? Instance.Count = 0 : Instance.Count++;
+            Instance.SetSkinImage( Instance.Count );
+            __baseCrType = crTypes[ Instance.Count ];
+            break;
+
+        case BUTTON_DN:
+            Instance.Count <= 0 ? Instance.Count = animIndex.length() - 1 : Instance.Count--;
+            Instance.SetSkinImage( Instance.Count );
+            __baseCrType = crTypes[ Instance.Count ];
+            break;
+        }
+        // Message(""+Instance.Count+" "+__baseCrType+" "+crTypes[Instance.Count]);
+    }
+}
+
+void SetCrtype( int[]& params )
+{
+    params[ ST_BASE_CRTYPE ] = __baseCrType;
+    params[ ST_BODY_TYPE ] = __baseCrType;
+}
+
+void LoadAnimationIndex()
+{
+    string@[] @ temp_anim = split( GetMsgStr( TEXTMSG_GAME, STR_ANIM_INDEX ), " " );
+    string@[] @ temp_crtype = split( GetMsgStr( TEXTMSG_GAME, STR_CRTYPE ), " " );
+
+    uint8 len_anim = temp_anim.length();
+
+    if( len_anim != temp_crtype.length() )
+    {
+        Message( "Length of critter types not equel, Send this message to developers" );
+        return;
+    }
+
+    crTypes.resize( 0 );
+    animIndex.resize( 0 );
+
+    int temp = 0;
+    for( uint8 i = 0; i < len_anim; i++ )
+    {
+        animIndex.insertLast( temp_anim[ i ] );
+        StrToInt( temp_crtype[ i ], temp );
+        crTypes.insertLast( temp );
+
+        // Message(""+crTypes[i]+" "+temp_crtype[i]);
+        // Message(""+crTypes[i]);
+    }
+}
+
+void testcoll( int p0, int p1, int p2, string@ p3, int[] @ p4 )
+{
+    // CritterCl@ cr = GetChosen();
+    RefreshItemsCollection( ITEMS_USE );
+}

@@ -1,0 +1,584 @@
+#ifndef VENDING
+#define VENDING
+
+#include "_utils.fos"
+#include "vending_h.fos"
+#include "speed_h.fos"
+
+void TransferItemToContainer( Item& item, Item& vendMach )
+{
+    uint16 pid = item.GetProtoId();
+    _SubItem( item, 1 );
+    vendMach.AddItem( pid, 1, 0 );
+}
+
+void TransferItemToContainer( Item& item, Item& vendMach, uint count )
+{
+    uint16 pid = item.GetProtoId();
+    _SubItem( item, count );
+    vendMach.AddItem( pid, count, 0 );
+}
+
+class MenuVendingMachine: CenteredMenuHandler
+{
+    uint vendMach_id;
+    uint map_id;
+	uint level;
+	
+    MenuVendingMachine( Item& vendMach, Map& map )
+	{
+        vendMach_id = vendMach.Id;
+        map_id = map.Id;
+		level = 0;
+		
+		if( !FLAG( vendMach.VENDING_MODE, IS_SELLING ) && !FLAG( vendMach.VENDING_MODE, IS_BUYING ) )
+			SETFLAG( vendMach.VENDING_MODE, IS_SELLING ); //default value on create
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap(map_id);
+        Item@ vendMach = GetItem(vendMach_id);
+	
+		bool locked_in_place = !FLAG( vendMach.Flags, ITEM_CAN_PICKUP );
+		
+        if( map is null || vendMach is null )
+		{
+            return false;
+        }
+
+		for( uint i = 0, len = cash_pids.length(); i < len; i++ )
+		{
+			uint16 pid = cash_pids[i];
+			uint balance_change = int( cash_values[i] );
+			Item@ cash = cr.GetItem( pid, -1 );			
+
+			if( menu.Button( "Вставить "+balance_change+" $" ) )
+			{
+				if( valid( cash ) )
+				{
+					TransferItemToContainer(cash, vendMach);
+					string sound = _GetOneRandom( VendingSoundNames );
+					PlayGenericSound( map, cr.HexX, cr.HexY, sound, 15 );
+					vendMach.BALANCE += balance_change;
+					cr.Say( SAY_EMOTE_ON_HEAD, "Платит" );
+				}
+				else if( cr.CountItem( PID_BOTTLE_CAPS ) >= balance_change )
+				{
+					@cash = cr.GetItem( PID_BOTTLE_CAPS, -1 );
+					vendMach.BALANCE += balance_change;
+					TransferItemToContainer(cash, vendMach, balance_change );
+				}
+				else
+				{
+					PlayGenericSound( map, cr.HexX, cr.HexY, "LOOSER.mp3", 15 );
+				}
+				return true;
+			}
+		}
+		
+		if( FLAG( vendMach.VENDING_MODE, IS_SELLING ) && menu.Button( "[ Купить 1 шт ]" ) )
+		{
+			PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+			if( vendMach.BALANCE >= vendMach.SELLING_PRICE )
+			{
+				Item@[] productItm;
+				if( vendMach.GetItems( uint( -1 ), productItm ) == 0 )
+				{
+					PlayGenericSound( map, cr.HexX, cr.HexY, "LOOSER.mp3", 15 );
+					return true;
+				}
+				
+				Item@ bought = vendMach.GetItem( vendMach.PRODUCT, 0 );
+				if( valid( bought ) )
+				{
+					if( bought.IsStackable() )
+					{ 
+						_SubItem( bought, 1 );
+						cr.AddItem( vendMach.PRODUCT, 1 );
+					}
+					else
+					{
+						MoveItem( bought, 1, cr );
+					}
+					string sound = _GetOneRandom( VendingSoundNames );
+					PlayGenericSound( map, cr.HexX, cr.HexY, sound, 15 );
+					vendMach.BALANCE -= vendMach.SELLING_PRICE;
+					cr.Say( SAY_EMOTE_ON_HEAD, "Покупает" );
+					return true;
+				}
+			}
+			else
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "LOOSER.mp3", 15 );
+				return true;
+			}
+			
+		}
+		
+		if( FLAG( vendMach.VENDING_MODE, IS_BUYING ) && menu.Button( "[ Продать 1 шт ]" ) )
+		{
+			PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+			
+			Item@ sold_item = cr.GetItem( vendMach.PRODUCT, -1 );
+			if( !valid( sold_item ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "LOOSER.mp3", 15 );
+				return true;
+			}
+			
+			MoveItem( sold_item, 1, vendMach, 0 );
+			vendMach.BALANCE += vendMach.BUYING_PRICE;
+
+			string sound = _GetOneRandom( VendingSoundNames );
+			PlayGenericSound( map, cr.HexX, cr.HexY, sound, 15 );
+			
+			cr.Say( SAY_EMOTE_ON_HEAD, "Продает" );
+			return true;
+		}
+		
+		if( menu.Button( "Взять сдачу" ) )
+		{
+			PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+			Item@ change = vendMach.GetItem( PID_BOTTLE_CAPS, 0 );
+			if( valid( change ) && vendMach.BALANCE > 0 )
+			{
+				int changeCount = MIN( int( change.GetCount() ), vendMach.BALANCE );
+				_SubItem( change, uint( changeCount ) );
+				cr.AddItem( PID_BOTTLE_CAPS, changeCount );
+				vendMach.BALANCE -= changeCount;
+				cr.Say( SAY_EMOTE_ON_HEAD, "Берет сдачу" );
+				return false;
+			}
+			else
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "LOOSER.mp3", 15 );
+				return true;
+			}
+		}
+		
+		if( !FLAG( vendMach.LockerCondition, LOCKER_LOCKED ) )
+		{
+			Item@[] productItm;
+			vendMach.GetItems( uint( -1 ), productItm );
+			if ( productItm.length() > 0 && menu.Button( "Выбрать товар" ) )
+			{
+				MenuSelectProduct@ select_product = MenuSelectProduct( vendMach, map );
+				select_product.level = level + 1;
+				return menu.OpenChild( "Level " + select_product.level, select_product );
+			}
+			
+			if( menu.Button( "Продавать по цене" ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+				cr.RunClientScript( "client_screen_numberpad@ShowScreen", vendMach.Id, 0, 0, "Введите цену", null );
+				return false;
+			}
+			
+			if( menu.Button( "Скупать по цене" ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+				cr.RunClientScript( "client_screen_numberpad@ShowScreen", vendMach.Id, 1, 0, "Введите цену", null );
+				return false;
+			}
+			
+			string[] mode_names = { "Продает", "Скупает", "Обменивает" };
+			int mode_max = mode_names.length() - 1;
+			int mode  = CLAMP( vendMach.VENDING_MODE - 1, 0, mode_max );
+			
+			if( menu.Button( "Режим: " + mode_names[mode] ) )
+			{
+				vendMach.VENDING_MODE = ( mode + 1 ) % ( mode_max + 1 ) + 1;				
+				return true;
+			}
+
+			if( locked_in_place )
+			{
+				if( menu.Button( "Открепить" ) )
+				{
+					LockInPlace( cr, vendMach );
+					return true;
+				}
+			}
+			else
+			{
+				if( menu.Button( "Закрепить" ) )
+				{
+					LockInPlace( cr, vendMach );
+					return true;
+				}
+
+				if( menu.Button( "Поднять" ) )
+				{
+					PickItem( cr, vendMach );
+					ChangeCritterSpeed( cr );
+					return false;
+				}			
+			}
+		}
+
+		if( menu.Button( "Содержимое" ) )
+		{
+			if( FLAG( vendMach.LockerCondition, LOCKER_LOCKED ) )
+			{
+				cr.Say( SAY_NETMSG, "Заперто" );
+				PlayGenericSound( map, cr.HexX, cr.HexY, "ILCNTNRB.mp3", 15 );
+				return true;
+			}
+			else
+			{
+				ShowContainer( cr, vendMach, TRANSFER_HEX_CONT_UP );
+				map.PlaySound( "keys.ogg", cr.HexX, cr.HexY, 2 );
+				PlayGenericSound( map, cr.HexX, cr.HexY, "IOCNTNRB.mp3", 15 );
+				cr.Say( SAY_EMOTE_ON_HEAD, "Открывает" );
+				return false;
+			}
+        }
+
+		if( menu.Button( "Закрыть" ) )
+			return false;
+		
+		return true;
+    }
+	
+    string@ Description( Critter& cr )
+	{
+		Item@ vendMach = GetItem( vendMach_id );
+		string vending_machine_description = "Вендомат № " + COLOR_YELLOW + "" + vendMach.Id + NEXT_LINE + COLOR_GREEN;
+		
+		
+		string merchandise_description = "Товар: ";
+		
+		uint itemPID = vendMach.PRODUCT;
+		if( itemPID != 0 )
+		{
+			merchandise_description += COLOR_YELLOW + GetMsgStr( 0, TEXTMSG_ITEM, itemPID * 100 ) + COLOR_GREEN + ", ";
+			
+			uint count = CountItemsByPID( vendMach, itemPID );
+			if( count == 0 )
+			{
+				merchandise_description += COLOR_RED + "ПРОДАНО";
+			}
+			else
+			{
+				merchandise_description += COLOR_YELLOW + count + " шт.";
+			}
+			
+			merchandise_description += NEXT_LINE + COLOR_GREEN;
+			
+			if( FLAG( vendMach.VENDING_MODE, IS_SELLING ) )
+			{
+				merchandise_description += "Продает за: " + COLOR_YELLOW + vendMach.SELLING_PRICE + COLOR_GREEN + " $. ";
+			}
+			
+			if( FLAG( vendMach.VENDING_MODE, IS_BUYING ) )
+			{
+				merchandise_description += "Скупает за: " + COLOR_YELLOW + vendMach.BUYING_PRICE + COLOR_GREEN + " $. ";
+			}
+		}
+		else
+		{
+			merchandise_description += COLOR_RED + "ПУСТО";
+		}
+		
+		merchandise_description += NEXT_LINE + COLOR_GREEN;
+		
+		
+		string available_actions_description;
+		string[] action_name = { "деньги", "товар", "деньги или товар" };
+		available_actions_description = "Вставьте " + COLOR_WHITE + action_name[CLAMP(vendMach.VENDING_MODE-1,0,action_name.length()-1)] + COLOR_GREEN + " в слот.";
+		available_actions_description += NEXT_LINE + COLOR_GREEN;
+		
+		
+		string cash_description = "Баланс: " + COLOR_YELLOW + vendMach.BALANCE + COLOR_GREEN + " $";
+
+		if( CountItemsByPID( vendMach, PID_BOTTLE_CAPS ) == 0 )
+		{
+			cash_description += " " + COLOR_RED + "НЕТ СДАЧИ"; 			
+		}		
+		
+        return vending_machine_description + merchandise_description + available_actions_description + cash_description;
+    }
+	
+    string@ ButtonCancel()
+	{
+        return ButtonDecorator( "", null );
+    }
+
+	bool ShouldRedraw( Critter& cr )
+	{
+		Item@ vendMach = GetItem(vendMach_id);
+		return valid( vendMach ) && GetDistantion( cr.HexX, cr.HexY, vendMach.HexX, vendMach.HexY ) < 2;
+    }	
+}
+
+void StartMenuVendingMachine( Critter& cr, Item& vendMach ) // exported
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+	{
+        return;
+    }
+
+    iMenuHandler@ handler = MenuVendingMachine( vendMach, map );
+    iDialogBox@ menu = OpenMenu( cr, "Vending Machine", handler );
+}
+
+class MenuSelectProduct: CenteredMenuHandler
+{
+    uint vendMach_id;
+    uint map_id;
+	uint level;
+	int selectorPos;
+	uint arrayPos;
+	
+    MenuSelectProduct( Item& vendMach, Map& map )
+	{
+        vendMach_id = vendMach.Id;
+        map_id = map.Id;
+		level = 1;
+		selectorPos = 0;
+		arrayPos = 0;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu )
+	{
+        Map@ map = GetMap( map_id );
+        Item@ vendMach = GetItem( vendMach_id );
+		
+        if( map is null || vendMach is null )
+		{
+            return false;
+        }
+			
+		Item@[] productItm;
+		vendMach.GetItems( uint( -1 ), productItm );
+		
+		if( productItm.length() > 0 )
+		{
+			if ( menu.Button( "Прошлый" ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+				selectorPos--;
+				if( arrayPos == 0 )
+				{
+					arrayPos = productItm.length() - 1;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				Item@ selectedProduct = productItm[arrayPos];
+				vendMach.PRODUCT = selectedProduct.GetProtoId();
+				return true;
+			}
+			
+			if ( menu.Button( "Следующий" ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+				selectorPos++;
+				if( arrayPos == productItm.length() -1 )
+				{
+					arrayPos = 0;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				Item@ selectedProduct = productItm[arrayPos];
+				vendMach.PRODUCT = selectedProduct.GetProtoId();
+				return true;
+			}
+			
+			if ( menu.Button( "Подтвердить" ) )
+			{
+				PlayGenericSound( map, cr.HexX, cr.HexY, "BUTIN1.mp3", 5 );
+				cr.SayMsg( SAY_EMOTE_ON_HEAD, TEXTMSG_TEXT, STR_SELECTS_ITEM );
+				return false;
+			}
+		}
+		return true;
+    }
+
+    string@ Description( Critter& cr ) {	
+		Item@ vendMach = GetItem( vendMach_id );
+		string info = "Vending Machine № ";
+		info += "|0xFFFF00 " + vendMach.Id + "\n";
+		
+		Item@[] productItm;
+		vendMach.GetItems( uint( -1 ), productItm );
+		if( productItm.length() > 0 && vendMach.PRODUCT != 0 )
+		{
+			uint len = productItm.length();
+			string amount = 0;
+			for( uint i = 0; i < len; i++ )
+			{			
+				Item@ product = productItm[i];
+				if( product.GetProtoId() == uint( vendMach.PRODUCT ) )
+				{
+					if( product.IsStackable() )
+					{
+						amount = "|0xFFFF00 " + productItm[i].GetCount();
+					}
+					else
+					{
+						uint count = 1;
+						Item@ countItems = null;
+						for( uint j = i + 1; j < len; j ++ )
+						{
+							@countItems = productItm[j];
+							if( countItems.GetProtoId() == uint( vendMach.PRODUCT ) )
+							{
+								count ++;
+							}
+						}
+						amount = "|0xFFFF00 " + count;
+					}
+					break;
+				}
+			}
+			info += "|0x3CF800 Выберите товар: \n[ ";
+			info += "|0xFFFF00 " + GetMsgStr( 0, TEXTMSG_ITEM, vendMach.PRODUCT * 100 );
+			info += "|0x3CF800  ]\nДоступно: ";
+			info += "|0xFFFF00 " + amount;
+			info += "|0x3CF800  шт.";
+		}
+	info += "|0x3CF800  \nВыберите товар и нажмите |0xFFFF00 Подтвердить|0x3CF800  что бы закончить.";
+	
+		return info;
+	}	
+		
+	string@ ButtonCancel()
+	{
+        return ButtonDecorator( "Закрыть", null );
+    }
+}
+
+void StartMenuSelectProduct( Critter& cr, Item& vendMach )
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+	{
+        return;
+    }
+
+    iMenuHandler@ handler = MenuSelectProduct( vendMach, map );
+    iDialogBox@ menu = OpenMenu( cr, "Vending machine", handler );
+}
+
+bool checkVendingMachines( Item@ item )
+{
+	if( !valid( item ) ) return false;
+	
+	uint[] pids = {
+		PID_VENDING_CIGS, PID_VENDING_NUKA, PID_VENDING_OMNI, PID_VENDING_FRIDGE1, PID_VENDING_FRIDGE2, PID_VENDING_NEWSP1, PID_VENDING_NEWSP2, PID_VENDING_NEWSP3
+	};
+	
+	if( pids.find( item.GetProtoId() ) != -1 )
+		return false;
+	
+	ProtoItem@ proto = GetProtoItem( item.GetProtoId() );
+	if( !valid( proto ) ) return false;
+
+	for( uint i = 0, l = pids.length(); i < l; i++ )
+		if( SamePic( proto.PicMap, pids[i] ) )
+		{
+			Map@ map = GetMap( item.MapId );
+			if( !valid( map ) ) return false;
+			
+			uint16 hx = item.HexX, hy = item.HexY;
+			DeleteItem( item );
+			
+			@item = map.AddItem( hx, hy, pids[i], 1 );
+			item.PicMap = proto.PicMap;
+			item.Update();
+
+			return true;
+		}
+
+	return false;
+}
+
+void PlayVendSound( Critter& cr, Map& map, string& sound, int distance )
+{
+	Critter@[] players;
+	map.GetCrittersHex( cr.HexX, cr.HexY, distance, FIND_ALL | FIND_ONLY_PLAYERS, players );
+	int[] val = { distance };
+	for( uint i = 0; i < players.length(); i++ )
+	{
+		Critter@ player = players[i];
+		if( valid( player ) )
+		{
+			player.RunClientScript( "fofmod@__PlaySound", map.Id, cr.HexX, cr.HexY, sound, val );
+		}
+	}
+}
+
+void PlayGenericSound( Map@ map, uint16 x, uint16 y, string file, uint range )
+{
+	map.PlaySound( file, x, y, range );
+}
+
+uint CountItemsByPID( Item@ container, uint PID )
+{
+	if( !isContainer( container ) ) return 0;
+	
+	ProtoItem@ proto = GetProtoItem( PID );
+	if( !valid( proto ) ) return 0;
+	
+	if( proto.Stackable )
+	{
+		Item@ item = container.GetItem( PID, 0 );
+		if( !valid( item ) ) return 0;
+		
+		return item.GetCount();
+	}
+	
+	return CountItemsByPID( getAllItemsFrom( container ), PID );
+}
+
+Item@[] getAllItemsFrom( Item@ container )
+{
+	Item@[] result;
+	
+	if( isContainer( container ) )
+	{
+		container.GetItems( uint( -1 ), result );
+	}
+	
+	return result;
+}
+
+uint CountItemsByPID( Item@[] list, uint PID )
+{
+	uint len = list.length();
+	if( len == 0 ) return 0;
+
+	for( uint i = 0; i < len; i++ )
+	{			
+		Item@ item = list[i];
+		
+		if( valid( item ) && item.GetProtoId() == PID )
+		{				
+			if( !item.IsStackable() )
+			{
+				uint count = 1;
+				for( uint j = i + 1; j < len; j ++ )
+				{
+					if( valid( list[j] ) && list[j].GetProtoId() == PID )
+					{
+						count++;
+					}
+				}
+				return count;
+			}
+			
+			return item.GetCount();
+		}
+	}
+	
+	return 0;
+}
+#endif // VENDING

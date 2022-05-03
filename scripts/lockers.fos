@@ -1,0 +1,1033 @@
+#ifndef LOCKERS
+#define LOCKERS
+
+#include "_utils.fos"
+#include "lockers_h.fos"
+#include "gateway_h.fos"
+#include "gathering_h.fos"
+
+import string item_generic_description( Item@ item ) from "test";
+import bool canPutItemInContainer( Item@ item, Item@ container ) from "main";
+
+bool UseItemOnLocker( Critter& cr, Item& locker, Item& item )                                                            // Export
+{
+    if( item.GetType() == ITEM_TYPE_KEY )
+    {
+        if( item.LockerId == locker.LockerId )
+        {
+            if( !FLAG( locker.LockerCondition, LOCKER_ISOPEN ) )
+            {
+				Map@ map = cr.GetMap();
+				if( hasKey( locker ) ) 
+				{
+					bool thisSide = hasKeyAround( cr, locker );
+					cr.Say( SAY_NETMSG, "С " + ( thisSide ? "этой" : "другой" ) + " стороны в замок вставлен ключ, он вам мешает." );
+					return false;
+				}
+
+                if( FLAG( locker.LockerCondition, LOCKER_LOCKED ) )
+                {
+                    UNSETFLAG( locker.LockerCondition, LOCKER_LOCKED );
+                    cr.Say( SAY_NETMSG, "Вы отперли замок." );
+					cr.Say( SAY_EMOTE_ON_HEAD, "Отпирает" );
+                }
+                else
+                {
+                    SETFLAG( locker.LockerCondition, LOCKER_LOCKED );
+                    cr.Say( SAY_NETMSG, "Вы заперли замок." );
+					cr.Say( SAY_EMOTE_ON_HEAD, "Запирает" );
+                }
+				map.PlaySound( "ui_lockpicking_unlock.wav", cr.HexX, cr.HexY, 2 );
+                return true;
+            }
+            cr.Say( SAY_NETMSG, "Сначала закройте." );
+            return true;
+        }
+        else
+        {
+            cr.Say( SAY_NETMSG, "Ключ не подходит." );
+            return true;
+        }
+    }
+    return true;
+}
+
+bool hasKeyAround( Critter& cr, Item& locker )
+{
+	Item@[] list = getItemsAround( cr );
+	for( uint i = 0, len = list.length(); i < len; i++ )
+		if( list[i].GetType() == ITEM_TYPE_KEY && list[i].LockerId == locker.LockerId )
+			return true;
+		
+	return false;
+}
+
+#define NO_DIR	-1
+bool hasKey( Item& locker, int dir = NO_DIR )
+{
+	Item@[] list = getItemsAround( locker );
+	
+	for( uint i = 0, len = list.length(); i < len; i++ )
+		if( list[i].GetType() == ITEM_TYPE_KEY && list[i].LockerId == locker.LockerId )
+			return true;
+	
+	return false;
+}
+
+bool hasKey( Critter& cr, Item& locker )
+{
+	Item@ hand = cr.GetItem( 0, SLOT_HAND1 );
+	if( !valid( hand ) ) return testInfo( cr, "Empty hand." );
+	if( hand.GetType() != ITEM_TYPE_KEY ) return testInfo( cr, "Not a key." );
+	if( hand.LockerId != locker.LockerId ) return testInfo( cr, "Wrong locker id: " + hand.LockerId + " != " + locker.LockerId );
+	return true;
+}
+
+bool LockpickMenu( Critter& cr, Item& locker )
+{
+	cr.StatBase[ ST_VAR0 ] = locker.Id;
+	
+	string[] data = { "lockers@answer_LOCKPICK", "Выберите действие:", "постучать", "выбить", "начать взлом" };
+	
+	string action = " ключ";
+	if( hasKey( locker ) && hasKeyAround( cr, locker ) )
+	{
+		data.insertLast( "вынуть" + action );
+		data.insertLast( ( FLAG( locker.LockerCondition, LOCKER_LOCKED ) ? "От" : "За" ) + "переть замок" );
+	}
+	else if( hasKey( cr, locker ) ) 
+	{
+		data.insertLast( "вставить" + action );
+		data.insertLast( ( FLAG( locker.LockerCondition, LOCKER_LOCKED ) ? "От" : "За" ) + "переть замок" );
+	}
+
+	DIALOG_MENU( cr, data );
+	
+	return true;
+}
+
+import bool FurnitureCheck( Item@ item ) from "furniture";
+
+bool UseSkillOnLocker( Critter& cr, Item& locker, int skill ) // Export
+{
+	if( FurnitureCheck( locker ) )
+	{
+		cr.Say( SAY_EMOTE, "Поправляет" );
+		return true;
+	}
+	
+	if( skill == SKILL_PICK_ON_GROUND && locker.GetProtoId() == PID_LO_CONTAINER )
+	{
+		Item@[] items;
+		uint count = locker.GetItems( uint( -1 ), items );
+		
+		testInfo( cr, "В контейнере " + count + " предметов." );
+		
+		if( count == 0 )
+			DeleteItem( locker );
+		else
+		{
+			ShowContainer( cr, locker, locker.Proto.GroundLevel ? TRANSFER_HEX_CONT_DOWN : TRANSFER_HEX_CONT_UP );
+		}
+		
+		return true;
+	}
+			
+	// NoOpen
+	if( FLAG( locker.LockerCondition, LOCKER_NOOPEN ) )
+	{
+		LogCrimeMovement( cr, locker, "не может открыть NOOPEN" ); 
+		cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_USE_NOTHING );
+		return true;
+	}
+
+	
+    Map@ map = cr.GetMap();
+    if( not valid( map ) )
+    {
+        cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_USE_NOTHING );
+        return true;
+    }
+    
+     if( skill == SKILL_PICK_ON_GROUND )
+    {
+		if( FLAG( locker.LockerCondition, LOCKER_ELECTRO ) && !FLAG( locker.LockerCondition, LOCKER_ISOPEN ) && ( locker.GetType() == ITEM_TYPE_DOOR || locker.GetType() == ITEM_TYPE_CONTAINER ) )
+        {
+            cr.RunClientScript( "client_screen_codedoor@ShowScreen", locker.Id, locker.Val1, 0, "Введите код", null );
+			LogCrimeMovement( cr, locker, "вводит код для электрозамка" ); 
+            return true;
+        }
+        if( locker.GetType() == ITEM_TYPE_DOOR )
+        {
+            // Critter on hex
+            if( FLAG( locker.LockerCondition, LOCKER_ISOPEN ) && valid( map.GetCritter( locker.HexX, locker.HexY ) ) )
+            {
+                cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_USE_NOTHING );
+				LogItemMovement( cr, locker, "не может закрыть дверь из-за занятого прохода" ); 
+                return true;
+            }
+
+            // Check key
+            if( !FLAG( locker.LockerCondition, LOCKER_ISOPEN ) && locker.LockerId != 0 &&
+                !FLAG( locker.LockerCondition, LOCKER_BROKEN ) && FLAG( locker.LockerCondition, LOCKER_LOCKED ) )
+            {
+                cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_ITEM_LOCKER_NEED_KEY );
+				LockerBudge( locker );
+				
+                if( !isGM(cr) )
+				{
+					LogCrimeMovement( cr, locker, "не может открыть запертое, т.к. нет ключа" ); 
+					return true;
+				}
+				else
+					LogCrimeMovement( cr, locker, "открывает запертое ГМ-силой" ); 
+            }
+
+            // Change state
+            if( FLAG( locker.LockerCondition, LOCKER_ISOPEN ) )
+			{
+				Map@ map = GetMap( locker.MapId );
+				if( !valid( map ) )
+					return true;
+				if( map.IsHexPassed( locker.HexX, locker.HexY) )
+				{
+					LogItemMovement( cr, locker, "закрывает" ); 
+					locker.LockerClose();
+					ToggleDoorBlocker( map, locker, true );
+				}
+				else
+				{
+					LogItemMovement( cr, locker, "не может закрыть дверь из-за занятого прохода" ); 
+					cr.Say( SAY_NETMSG, "Что-то не даёт закрыть дверь." );
+				}
+				return true;
+			}
+			else
+			{
+				LogItemMovement( cr, locker, "открывает" ); 
+				ToggleDoorBlocker( map, locker, false );
+				locker.LockerOpen();
+				return true;
+			}
+        }
+        else if( locker.GetType() == ITEM_TYPE_CONTAINER ) 
+        {
+            if( FLAG( locker.Flags, ITEM_CAN_PICKUP ) )
+            {
+                // cr.Say(SAY_NETMSG, "pick cont up");
+                int freeWeight = cr.Stat[ ST_CARRY_WEIGHT ] - ItemsWeight( cr ),
+                    contWeight = 0;
+                Item@[] items;
+                uint len = locker.GetItems( uint( -1 ), items );
+                for( uint i = 0; i < len; i++ )
+                {
+                    if( items[ i ] is null )
+                        continue;
+
+                    contWeight += int( items[ i ].Proto.Weight * items[ i ].GetCount() );
+                }
+
+                if( freeWeight >= ( contWeight + int(locker.Proto.Weight) ) )
+                {
+					LogItemMovement( cr, locker, "поднимает" ); 
+                    MoveItem( locker, 0, cr );
+                    return true;
+                }
+            }
+            // Check key
+            if( !FLAG( locker.LockerCondition, LOCKER_ISOPEN ) && locker.LockerId != 0 &&
+                !FLAG( locker.LockerCondition, LOCKER_BROKEN ) && FLAG( locker.LockerCondition, LOCKER_LOCKED ) ) 
+            {
+                cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_ITEM_LOCKER_NEED_KEY );
+				LockerBudge( locker );
+				
+                if( !isGM(cr) )
+				{
+					LogCrimeMovement( cr, locker, "не может открыть запертое, т.к. нет ключа" ); 
+					return true;
+				}
+				else
+					LogCrimeMovement( cr, locker, "открывает запертое ГМ-силой" ); 
+            }
+
+            // Is changeble
+            if( locker.Proto.Container_Changeble ) 
+            {
+                // Change state
+                if( FLAG( locker.LockerCondition, LOCKER_ISOPEN ) )
+				{
+					LogItemMovement( cr, locker, "закрывает" ); 
+                    locker.LockerClose();
+					return true;
+				}
+                else
+                {
+                    ShowContainer( cr, locker, locker.Proto.GroundLevel ? TRANSFER_HEX_CONT_DOWN : TRANSFER_HEX_CONT_UP );
+					LogItemMovement( cr, locker, "открывает" ); 
+                    locker.LockerOpen();
+					return true;
+                }
+            }
+            else
+            {
+                ShowContainer( cr, locker, locker.Proto.GroundLevel ? TRANSFER_HEX_CONT_DOWN : TRANSFER_HEX_CONT_UP );
+				LogItemMovement( cr, locker, "заглядывает в" ); 
+				return true;
+            }
+        }
+    }
+    else if( skill == SK_STEAL )
+    {
+        if( locker.GetType() == ITEM_TYPE_CONTAINER &&
+            ( ( !locker.Proto.Container_Changeble && FLAG( locker.Flags, ITEM_CAN_PICKUP ) && locker.Accessory == ACCESSORY_HEX ) ||
+              FLAG( locker.LockerCondition, LOCKER_ISOPEN ) ) )
+        {
+            ShowContainer( cr, locker, locker.Proto.GroundLevel ? TRANSFER_HEX_CONT_DOWN : TRANSFER_HEX_CONT_UP );
+			LogItemMovement( cr, locker, "подглядывает 'кражей' в" ); 
+			return true;
+        }
+        else return false;
+    }
+    else if( skill == SK_LOCKPICK )
+    {
+        if( cr.Timeout[ TO_SK_LOCKPICK ] > 0 && !isGM( cr ) )
+        {
+            cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_SKILL_WEARINESS );
+			LogItemMovement( cr, locker, "не может взломать из-за усталости" ); 
+            return true;
+        }
+
+        int base = cr.Skill[ SK_LOCKPICK ] - locker.LockerComplexity;
+        Item@lockpick = cr.GetItem( 0, SLOT_HAND1 );
+        if( locker.Val0 == 4 && valid( lockpick ) && lockpick.GetProtoId() != PID_ELECTRONIC_LOCKPICKS )
+        {
+			LogItemMovement( cr, locker, "не может взломать без электронной отмычки" ); 
+            cr.Say( SAY_NETMSG, "Нужна электроная отмычка." );
+            return true;
+        }
+
+        // Todo: PID_ELECTRONIC_LOCKPICKS +, PID_ELEC_LOCKPICK_MKII
+
+        if( cr.GetAccess() != ACCESS_ADMIN )
+            base = CLAMP( base, 0, 95 );
+
+        if( locker.LockerComplexity == 500 && !isGM(cr) ) {
+            cr.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_SKILL_LOCKPICK_FAIL );  // постоянный замок
+			LogItemMovement( cr, locker, "не может взломать ГМ-замок" ); 
+			return true;
+		}
+        else if( locker.LockerCondition == LOCKER_ELECTRO )                
+        {
+            uint16 complex = locker.LockerComplexity;
+            uint16 exp = complex * 2;
+
+            string tempCode = locker.Val4;
+            uint8  codeLength = tempCode.length();
+            uint16 skillLock = cr.Skill[ SK_LOCKPICK ];
+            uint8  count = complex / codeLength;
+
+            bool   changeCode = false;
+
+            for( uint8 i = 0; i < codeLength; i++ )
+            {
+                skillLock = ( skillLock >= count ? ( skillLock - count ) : 0 );
+                if( complex >= skillLock )
+                {
+                    tempCode[ i ] = '*';
+                    exp = ( exp >= count * 4 ? exp - ( count * 4 ) : 0 );
+
+                    changeCode = false;
+                }
+            }
+
+            cr.Say( SAY_NETMSG, "Код : " + /*locker.Val4*/ tempCode );
+			LogItemMovement( cr, locker, "узнаёт код замка: " + tempCode ); 
+			return true;
+        }
+        else
+        {
+			LogItemMovement( cr, locker, "взаимодействует с замком" ); 
+            return LockpickMenu( cr, locker );
+        }
+    }
+    else if( skill == SKILL_TAKE_ALL_CONT )
+    {
+        return false;
+    }
+	else if( skill == SK_SCIENCE )
+	{
+		if( locker.GetType() != ITEM_TYPE_CONTAINER || FLAG( locker.LockerCondition, LOCKER_BROKEN ) 
+			|| ( locker.LockerId != 0 && FLAG( locker.LockerCondition, LOCKER_LOCKED ) )
+			|| ( locker.Proto.Container_Changeble && !FLAG( locker.LockerCondition, LOCKER_ISOPEN ) ) ) 
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Это здесь бесполезно." );
+			return true;
+		}
+		
+		cr.Say( SAY_EMOTE_ON_HEAD, "Шарится" );
+
+		Item@[] items;
+		locker.GetItems( uint( -1 ), items );
+		if( items.length() == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Пусто." );
+
+			if( locker.GetProtoId() == PID_LO_CONTAINER )
+				DeleteItem( locker ); 
+
+			return true;
+		}
+
+		if( items.length() > 1 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Слишком много вещей." );
+			return true;
+		}
+		
+		if( !act( cr ) ) return true;
+		
+		MoveItems( items, cr );
+		cr.Say( SAY_NETMSG, "Вы нашли |0xFFFF00 " + item_generic_description( items[0] ) + "." );
+		
+		if( locker.GetProtoId() == PID_LO_CONTAINER )
+			DeleteItem( locker ); 
+		
+		return true;
+	}
+    else if( skill == SK_DOCTOR )
+	{
+		cr.Say( SAY_EMOTE_ON_HEAD, "Складывает вещи" );
+
+		if( cr.GetTimeEvents( CTE_WORK, null, null, null ) > 0 )
+			cr.EraseTimeEvents( CTE_WORK );
+
+		cr.AddTimeEvent( "cte_dropIn", REAL_SECOND( 2 ), CTE_WORK, locker.Id );
+		return true;
+	}
+	return false;
+}
+
+uint cte_dropIn( Critter& cr, int identifier, uint& rate )
+{
+	Item@ container = GetItem( rate );
+	if( !valid( container ) || cr.IsBusy() || cr.IsDead() || cr.IsKnockout() || GetDistantion( container.HexX, container.HexY, cr.HexX, cr.HexY ) > 1 ) 
+		return 0;
+	
+	Item@[] stuff; 
+	if( cr.GetItems( SLOT_INV, stuff ) == 0 || !valid( stuff ) || stuff.length() < 1 ) 
+		return 0;
+	
+	if( !canPutItemInContainer( stuff[0], container ) )
+	{
+		SEM( cr, "Не удалось впихнуть предмет в контейнер." );
+		return 0;	
+	}
+
+	MoveItem( stuff[0], stuff[0].GetCount(), container, 0 );
+	cr.Say( SAY_EMOTE_ON_HEAD, "Выкладывает " + item_generic_description( stuff[0] ) );
+	return REAL_MS( 250 );
+}
+
+void answer_LOCKPICK( Critter& player, uint answerI, string& answerS )
+{ 
+    Item@ lock = GetItem( player.Stat[ ST_VAR0 ] );
+    if( lock is null )
+        return;
+    Item@lockpick = player.GetItem( 0, SLOT_HAND1 );
+	Map@ map = player.GetMap();
+	
+	if( GetDistantion( lock.HexX, lock.HexY, player.HexX, player.HexY ) > 2 )
+	{
+		player.Say( SAY_NETMSG, "Вы слишком далеко от цели." );
+		return;
+	}
+
+    if( answerI == 0 )
+    {
+        map.SetText( lock.HexX, lock.HexY, COLOR_GRAY, "тук-тук" );
+        player.Say( SAY_NETMSG, "Вы постучали." );
+		LogItemMovement( player, lock, "стучит в" ); 
+    }
+    if( answerI == 1 )
+    {
+		map.SetText( lock.HexX, lock.HexY, COLOR_RED, "УДАР" );
+		LogItemMovement( player, lock, "долбасит в" ); 
+	
+		return;
+	}
+    if( answerI == 2 )
+    {
+		if( hasKey( lock ) ) 
+        {
+			bool thisSide = hasKeyAround( player, lock );
+            player.Say( SAY_NETMSG, "С " + ( thisSide ? "этой" : "другой" ) + " стороны в замок вставлен ключ, его не взломать." );
+			LogCrimeMovement( player, lock, "не может взломать замок, т.к. с другой стороны ключ" ); 
+            return;
+        }
+
+		if( FLAG( lock.LockerCondition, LOCKER_ISOPEN ) && InteractContainer.find( lock.GetProtoId() ) == -1 )
+        {
+            player.Say( SAY_NETMSG, "|0xFFFF00 Дверь и так открыта" );
+			LogCrimeMovement( player, lock, "не может взломать - замок открыт" ); 
+            return;
+        }
+		
+        if( lock.Val0 == 0 )
+        {
+            player.Say( SAY_NETMSG, "Нет замка." );
+			LogCrimeMovement( player, lock, "не может взломать - нет замка" ); 
+            return;
+        }
+
+		if( !valid( lockpick ) || ( lockpick.GetProtoId() != PID_FLocks && lockpick.GetProtoId() != PID_EXP_LOCKPICK_SET && lockpick.GetProtoId() != PID_LOCKPICKS ) )
+        {
+            player.Say( SAY_NETMSG, "Нужны отмычки или хотя бы какая-никакая шпилька." );
+			LogCrimeMovement( player, lock, "не может взломать - нет отмычек" ); 
+            return;
+        }
+
+		if( lock.Val0 == 1 )
+		{
+            lock.Val5 = Random( 1, 9 ) * 10 + Random( 1, 9 );
+            lock.Val4 = 11;
+        }
+        if( lock.Val0 == 2 )
+        {
+            lock.Val5 = Random( 1, 9 ) * 100 + Random( 1, 9 ) * 10 + Random( 1, 9 );
+            lock.Val4 = 111;
+        }
+        if( lock.Val0 == 3 )
+        {
+            lock.Val5 = Random( 1, 9 ) * 1000 + Random( 1, 9 ) * 100 + Random( 1, 9 ) * 10 + Random( 1, 9 );
+            lock.Val4 = 1111;
+        }
+
+        if( valid( lockpick ) && lockpick.Val0 != 0 && ( lockpick.GetProtoId() == PID_FLocks || lockpick.GetProtoId() == PID_EXP_LOCKPICK_SET || lockpick.GetProtoId() == PID_LOCKPICKS) )
+        {
+			lockpick.Val0 = 0;
+            _SubItem( lockpick, 1 );
+            player.Say( SAY_NETMSG, "Отмычка сломалась, видимо ее неудачно вытащили из замка в прошлый раз." );
+			map.PlaySound( LockpickBreak[ Random( 0, LockpickBreak.length() -1 ) ], player.HexX, player.HexY, 2 );
+			LogCrimeMovement( player, lock, "ломает отмычку" ); 
+            return;
+        } else if( valid( lockpick ) && Random( 0, 1 ) == 0 ) {
+            lockpick.Val0 = 10;
+		}
+		
+        player.StatBase[ ST_VAR1 ] = 1;     // положение щупа
+        player.StatBase[ ST_VAR2 ] = 0;     // число попыток
+
+        player.ShowScreen( SCREEN_DIALOGBOX, 8, "answer_LOCKPICK_lock" );
+        player.Say( SAY_DIALOGBOX_TEXT, "Состояние замка неизвестно" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 0 ), "Осмотреть замок" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 1 ), "Щуп дальше" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 2 ), "Щуп назад" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 3 ), "Щуп вверх" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 4 ), "Щуп вниз" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 5 ), "Повернуть" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 6 ), "Вынуть отмычку" );
+		player.Say( SAY_DIALOGBOX_BUTTON( 7 ), "Защелкнуть замок" );
+		
+        player.TimeoutBase[ TO_SK_LOCKPICK ] = LOCKPICK_TIMEOUT( player );
+		
+		map.PlaySound( "ui_lockpicking_enter.wav", player.HexX, player.HexY, 2 );
+		LogCrimeMovement( player, lock, "приступает к взлому замка, код: " + lock.Val5 ); 
+    }
+
+	if( answerI == 3 )
+	{
+		if( hasKey( lock ) )
+		{
+			if( hasKeyAround( player, lock ) )
+			{
+				LogItemMovement( player, lock, "вынимает ключ из замка" ); 
+				takeKey( player, lock );
+			}
+			else
+			{
+				LogItemMovement( player, lock, "не может вставить ключ - с другой стороны уже есть другой" ); 
+				player.Say( SAY_NETMSG, "С другой стороны в замок вставлен ключ, он вам мешает." );
+			}
+		}
+		else if( hasKey( player, lock ) ) 
+		{
+			LogItemMovement( player, lock, "вставляет ключ в замок" ); 
+			putKey( player, lock );
+		}
+	}
+	if( answerI == 4 )
+	{
+		if( !hasKey( lock ) )
+		{
+			if( FLAG( lock.LockerCondition, LOCKER_LOCKED ) )
+			{
+				UNSETFLAG( lock.LockerCondition, LOCKER_LOCKED );
+				player.Say( SAY_NETMSG, "Вы отперли замок." );
+				LogItemMovement( player, lock, "отпирает" ); 
+				player.Say( SAY_EMOTE_ON_HEAD, "Отпирает" );
+			}
+			else
+			{
+				SETFLAG( lock.LockerCondition, LOCKER_LOCKED );
+				player.Say( SAY_NETMSG, "Вы заперли замок." );
+				LogItemMovement( player, lock, "запирает" ); 
+				player.Say( SAY_EMOTE_ON_HEAD, "Запирает" );
+			}
+		}
+		else
+		{
+			bool thisSide = hasKeyAround( player, lock );
+			if( thisSide )
+			{
+				if( FLAG( lock.LockerCondition, LOCKER_LOCKED ) )
+				{
+					UNSETFLAG( lock.LockerCondition, LOCKER_LOCKED );
+					player.Say( SAY_NETMSG, "Вы отперли замок." );
+					player.Say( SAY_EMOTE_ON_HEAD, "Отпирает" );
+					LogItemMovement( player, lock, "отпирает" ); 
+				}
+				else
+				{
+					SETFLAG( lock.LockerCondition, LOCKER_LOCKED );
+					player.Say( SAY_NETMSG, "Вы заперли замок." );
+					player.Say( SAY_EMOTE_ON_HEAD, "Запирает" );
+					LogItemMovement( player, lock, "запирает" ); 
+				}
+			}
+			else 
+			{ 
+				player.Say( SAY_NETMSG, "С другой стороны в замок вставлен ключ, он вам мешает." ); 
+				LogCrimeMovement( player, lock, "не может взломать замок - с другой стороны вставлен ключ" ); 
+			}
+		}
+
+		LockpickMenu( player, lock );
+	}
+}
+
+bool takeKey( Critter& cr, Item& locker )
+{
+	Item@[] list = getItemsAround( locker );
+	
+	for( uint i = 0, len = list.length(); i < len; i++ )
+		if( list[i].GetType() == ITEM_TYPE_KEY && list[i].LockerId == locker.LockerId )
+		{
+			if( list[i].Val9 != 0 )
+			{
+				EraseTimeEvent( list[i].Val9 );
+				list[i].Val9 = 0;
+			}
+			
+			MoveItem( list[i], 1, cr );
+			UNSETFLAG( list[i].Flags, ITEM_HIDDEN );
+			list[i].Update();
+			cr.Say( SAY_EMOTE, "Вынимает ключ из замка" );
+			return true;
+		}
+	
+	return false;
+}
+
+bool putKey( Critter& cr, Item& locker )
+{
+	Item@ hand = cr.GetItem( 0, SLOT_HAND1 );
+	if( !valid( hand ) ) return testInfo( cr, "Empty hand." );
+	if( hand.GetType() != ITEM_TYPE_KEY ) return testInfo( cr, "Not a key." );
+	if( hand.LockerId != locker.LockerId ) return testInfo( cr, "Wrong locker id: " + hand.LockerId + " != " + locker.LockerId );
+	
+	Map@ map = cr.GetMap();
+	if( !valid( map ) ) return testInfo( cr, "Attempted to 'putKey' on global by cr #" + cr.Id + " for locker #" + locker.Id + "." );
+	MoveItem( hand, 1, map, cr.HexX, cr.HexY );
+	SETFLAG( hand.Flags, ITEM_HIDDEN );
+	
+	uint[] vals = { hand.Id, locker.Id };
+	hand.Val9 = CreateTimeEvent( AFTER( REAL_DAY( 10 ) ), "e_KeyRust", vals, true );
+	
+	hand.Update();
+	
+	cr.Say( SAY_EMOTE, "Вставляет ключ в замок" );
+	return true;
+}
+
+uint e_KeyRust( uint[]@ values )
+{
+	if( !valid( values ) || values.length() != 2 )
+		return 0;
+	
+	Item@ key = GetItem( values[0] );
+	Item@ door = GetItem( values[1] );
+	if( !valid( key ) || !valid( door ) )
+		return 0;
+
+	Map@ map = GetMap( key.MapId );
+	
+	if( !valid( map ) || !FLAG( key.Flags, ITEM_HIDDEN ) )
+		return 0;
+	
+	UNSETFLAG( key.Flags, ITEM_HIDDEN );
+	
+	uint16 x = key.HexX, y = key.HexY;
+	map.MoveHexByDir( x, y, GetDirection( door.HexX, door.HexY, key.HexX, key.HexY ), 1 );
+	
+	MoveItem( key, 1, map, x, y ); 
+	map.SetText( x, y, COLOR_SAND, "|0xFF828a96 :звяк:" );
+	
+	return 0;
+}
+
+void answer_LOCKPICK_lock( Critter& player, uint answerI, string& answerS )
+{
+    Item@ lock = GetItem( player.Stat[ ST_VAR0 ] );
+    if( lock is null )
+        return;
+    Map@ map = player.GetMap();
+    int  base = player.Skill[ SK_LOCKPICK ] - lock.LockerComplexity;
+    base = CLAMP( base, 60, 300 );
+    Item@ lockpick = player.GetItem( 0, SLOT_HAND1 );
+	
+	uint lockpickPid = lockpick.GetProtoId();
+
+	switch( lockpickPid )
+	{
+		case ( PID_FLocks ):
+		{
+			if( lock.Val0 == 2 )
+				base -= 30;
+
+			if( lock.Val0 == 3 )
+				base -= 60;
+			break;
+		}
+		case( PID_LOCKPICKS ):
+		{
+			if( lock.Val0 == 1 )
+				base += 30;
+
+			if( lock.Val0 == 3 )
+				base -= 30;
+			break;
+		}
+		case( PID_EXP_LOCKPICK_SET ):
+		{
+			if( lock.Val0 == 1 )
+				base += 60;
+
+			if( lock.Val0 == 2 )
+				base += 30;
+			break;
+		}
+	}
+
+	if( GetDistantion( lock.HexX, lock.HexY, player.HexX, player.HexY ) > 2 )
+	{
+		player.Say( SAY_NETMSG, "Вы слишком далеко от замка, ваши отмычки сломались." );
+		map.PlaySound( LockpickBreak[ Random( 0, LockpickBreak.length() -1 ) ], player.HexX, player.HexY, 2 );
+		_SubItem( lockpick, 1 );
+		return;
+	}
+
+    string state = "";
+    int    curComb = 0;
+	
+	int curPos = ( lock.Val4 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+
+    if( answerI == 0 )
+    {
+        if( lock.Val0 < 2 )
+            state = "Навесной замок, ";
+        if( lock.Val0 == 2 )
+            state = "Дверной замок, ";
+        if( lock.Val0 == 3 )
+            state = "Сейфовый замок, ";
+    }
+	
+    if( answerI == 1 )
+    {
+        if( player.Timeout[ TO_SK_LOCKPICK ] > int( REAL_MINUTE( 2 ) ) ) {
+            state = "Щуп застрял, нужно чуть ослабить зажим и попробовать еще раз.";
+			
+        } else if( player.StatBase[ ST_VAR1 ] < lock.Val0 + 1 ) {
+            player.StatBase[ ST_VAR1 ]++;
+			curPos = ( lock.Val4 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+			
+            state = "Вы продвинули щуп дальше.";
+			
+            if( Random( 0, 2 ) == 0 ) {
+                player.TimeoutBase[ TO_SK_LOCKPICK ] = __FullSecond + REAL_SECOND( 2 );
+			}
+        } else {
+            state = "Щуп уперся и дальше в замок не продвигается.";
+		}
+		map.PlaySound( LockpickMove[ Random( 0, LockpickMove.length() -1 ) ], player.HexX, player.HexY, 2 );
+    }
+	
+    if( answerI == 2 )
+    {
+        if( player.Timeout[ TO_SK_LOCKPICK ] > int( REAL_MINUTE( 2 ) ) ) {
+            state = "Щуп застрял, нужно чуть ослабить зажим и попробовать еще раз.";
+		} else if( player.StatBase[ ST_VAR1 ] > 1 ) {
+            player.StatBase[ ST_VAR1 ]--;
+			curPos = ( lock.Val4 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+			
+            state = "Вы отодвинули щуп назад.";
+            if( Random( 0, 2 ) == 0 ) {
+                player.TimeoutBase[ TO_SK_LOCKPICK ] = __FullSecond + REAL_SECOND( 2 );
+			}
+		} else {
+            state = "Щуп уже в крайнем положении, остается только вытащить его.";
+		}
+		map.PlaySound( LockpickMove[ Random( 0, LockpickMove.length() -1 ) ], player.HexX, player.HexY, 2 );
+	}
+	
+    if( answerI == 3 )
+    {
+        curPos = ( lock.Val4 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+        if( curPos < 9 )
+        {
+            curComb = ( lock.Val5 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+            lock.Val4 += pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+            curPos++;
+            state = "Вы подвинули щупом язычек замка вверх.";
+            if( player.Timeout[ TO_SK_LOCKPICK ] > 0 && Random( 0, 2 ) == 0 ) {
+				map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 6 );
+                state += "\nВы поторопились и неловко дернули щупом.";
+                if( Random( 0, 1 ) == 0 ) {
+                    int bar = Random( 1, lock.Val0 + 1 );
+                    curComb = ( lock.Val5 % pow( 10, bar ) ) / pow( 10, bar - 1 );
+                    lock.Val5 += ( Random( 1, 9 ) - curComb ) * pow( 10, bar - 1 );
+                }
+            } else if( curComb == curPos && base > Random( 0, 100 ) ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) )
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 6 );
+                state += "\nBы услышали щелчек.";
+            } else if( ( curComb == ( curPos - 1 ) || curComb == ( curPos + 1 ) ) && base > Random( 0, 100 ) && Random( 0, 1 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) )
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 6 );
+                state += "\nВы услышали щелчек.";
+            } else if( ( curComb == ( curPos - 2 ) || curComb == ( curPos + 2 ) ) && base > Random( 0, 100 ) && Random( 0, 3 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 6 );
+				}
+                state += "\nВы услышали щелчек.";
+            } else if( base < Random( 0, 100 ) && Random( 0, 9 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 6 );
+				}
+                state += "\nВы услышали щелчек, ";
+            }
+            player.TimeoutBase[ TO_SK_LOCKPICK ] = __FullSecond + REAL_SECOND( 10 - player.Skill[ SK_LOCKPICK ] * 0.03 );
+        }
+        else {
+            state = "Щуп уперся, пружина язычка уже максимально зажата.";
+		}
+		map.PlaySound( LockpickMove[ Random( 0, LockpickMove.length() -1 ) ], player.HexX, player.HexY, 2 );
+    }
+	
+    if( answerI == 4 )
+    {
+        curPos = ( lock.Val4 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+        if( curPos > 1 )
+        {
+            curComb = ( lock.Val5 % pow( 10, player.StatBase[ ST_VAR1 ] ) ) / pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+            lock.Val4 -= pow( 10, player.StatBase[ ST_VAR1 ] - 1 );
+            curPos--;
+            state = "Вы подвинули щупом язычек замка вниз.";
+            if( player.Timeout[ TO_SK_LOCKPICK ] > int( REAL_MINUTE( 2 ) ) ) {
+                map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+                state += "\nВы поторопились и неловко дернули щупом.";
+                if( Random( 0, 1 ) == 0 ) {
+                    int bar = Random( 1, lock.Val0 + 1 );
+                    curComb = ( lock.Val5 % pow( 10, bar ) ) / pow( 10, bar - 1 );
+                    lock.Val5 += ( Random( 1, 9 ) - curComb ) * pow( 10, bar - 1 );
+                }
+            } else if( curComb == curPos && base > Random( 0, 100 ) ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+				}
+                state += "\nВы услышали щелчек.";
+            } else if( ( curComb == ( curPos - 1 ) || curComb == ( curPos + 1 ) ) && base > Random( 0, 100 ) && Random( 0, 1 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+				}
+                state += "\nВы услышали щелчек.";
+            } else if( ( curComb == ( curPos - 2 ) || curComb == ( curPos + 2 ) ) && base > Random( 0, 100 ) && Random( 0, 3 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+                }
+				state += "\nВы услышали щелчек.";
+            } else if( base < Random( 0, 100 ) && Random( 0, 9 ) == 0 ) {
+                if( player.Skill[ SK_LOCKPICK ] < Random( 0, 200 ) ) {
+                    map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+				}
+                state += "\nВы услышали щелчек.";
+            }
+            player.TimeoutBase[ TO_SK_LOCKPICK ] = __FullSecond + REAL_SECOND( 10 - player.Skill[ SK_LOCKPICK ] * 0.03 );
+        } else {
+            state = "Щуп уперся, пружина язычка уже максимально отжата.";
+		}
+		map.PlaySound( LockpickMove[ Random( 0, LockpickMove.length() -1 ) ], player.HexX, player.HexY, 2 );
+	}
+	
+    if( answerI == 5 )
+    {
+        if( lock.Val4 == lock.Val5 )
+        {
+            if( lock.GetType() == ITEM_TYPE_CONTAINER ) {
+				ShowContainer( player, lock, lock.Proto.GroundLevel ? TRANSFER_HEX_CONT_DOWN : TRANSFER_HEX_CONT_UP );
+            } else {
+				lock.LockerOpen();
+                player.Say( SAY_NETMSG, "|0xFFFF00 Вы успешно вскрыли замок." );
+			}
+			lock.LockerCondition = LOCKER_ISOPEN;
+            lock.Update();
+            
+			player.AddScore( SCORE_CRACKER, 1 );
+            
+			if( valid( lockpick ) ) {
+                lockpick.Val0 = 0;
+            }
+			map.PlaySound( "ui_lockpicking_unlock.wav", player.HexX, player.HexY, 2 );
+			
+			LogCrimeMovement( player, lock, "успешно взламывает замок" ); 
+            return;
+        } else if( player.StatBase[ ST_VAR2 ] < Random( 0, player.Skill[ SK_LOCKPICK ] * 0.05 ) ) {
+            state = "Замок не поворачивается.";
+            player.StatBase[ ST_VAR2 ]++;
+			map.PlaySound( "ui_lockpicking_picktension_01_lpm.wav", player.HexX, player.HexY, 2 );
+        } else {
+            player.SayMsg( SAY_NETMSG, TEXTMSG_GAME, STR_SKILL_LOCKPICK_FAIL );
+            if( valid( lockpick ) && Random( 0, 1 ) == 0 ) {
+                lockpick.Val0 = 0;
+			}
+			map.PlaySound( "ui_lockpicking_forcefail.wav", player.HexX, player.HexY, 5 );
+            return;
+        }
+    }
+    if( answerI == 6 )
+    {
+        if( player.StatBase[ ST_VAR1 ] > 1 ) {
+            state = "Сначала выдвините щуп в первую позицию.";
+        } else {
+            lockpick.Val0 = 0;
+            player.Say( SAY_NETMSG, "|0xFFFF00 Вы аккуратно вытащили отмычку из замка." );
+			map.PlaySound( "ui_lockpicking_enter.wav", player.HexX, player.HexY, 2 );
+            return;
+        }
+    }
+	
+    if( answerI == 7 )
+    {
+		lockpick.Val0 = 0;
+		int realskill = player.Skill[ SK_LOCKPICK ];
+		
+        if( ( realskill - lock.LockerComplexity ) < 0 ) {
+            player.Say( SAY_NETMSG, "|0xFFFF00 Вашего навыка недостаточно, чтобы защелкнуть замок." );
+			LogCrimeMovement( player, lock, "не смог защелкнуть замок отмычкой, т.к. мало навыка" ); 
+			return;
+		} else if( FLAG( lock.LockerCondition, LOCKER_LOCKED ) ){
+			player.Say( SAY_NETMSG, "|0xFFFF00 Дверь и так заперта." );
+			LogCrimeMovement( player, lock, "не смог защелкнуть замок отмычкой, т.к. дверь заперта" ); 
+			return;
+		} else if( FLAG( lock.LockerCondition, LOCKER_ISOPEN ) && InteractContainer.find( lock.GetProtoId() ) == -1 ) {
+			player.Say( SAY_NETMSG, "|0xFFFF00 Сначала закройте дверь." );
+			LogCrimeMovement( player, lock, "не смог защелкнуть замок отмычкой, т.к. дверь открыта" ); 
+			return;
+        } else {
+            player.Say( SAY_NETMSG, "|0xFFFF00 Вы защелкнули замок." );
+			lock.LockerCondition = LOCKER_LOCKED;
+			map.PlaySound( "ui_lockpicking_unlock.wav", player.HexX, player.HexY, 2 );
+			LogCrimeMovement( player, lock, "защелкивает замок отмычкой" ); 
+            return;
+		}
+    }
+	_CritAnimateUse( player );
+    state += "\n\nПозиция язычка - " + curPos + "\nПозиция щупа - " + player.StatBase[ ST_VAR1 ];
+
+	if( player.Param[ QST_GAMEMODE ] == GAME_TEST )
+		state += "\n Код замка: " + lock.Val5 + ", набраный код: " + lock.Val4;
+	
+    player.ShowScreen( SCREEN_DIALOGBOX, 8, "answer_LOCKPICK_lock" );
+    player.Say( SAY_DIALOGBOX_TEXT, state );
+    player.Say( SAY_DIALOGBOX_BUTTON( 0 ), "Осмотреть замок" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 1 ), "Щуп дальше" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 2 ), "Щуп назад" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 3 ), "Щуп вверх" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 4 ), "Щуп вниз" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 5 ), "Повернуть" );
+    player.Say( SAY_DIALOGBOX_BUTTON( 6 ), "Вынуть отмычку" );
+	player.Say( SAY_DIALOGBOX_BUTTON( 7 ), "Защелкнуть замок" );
+}
+
+bool IsKeyAviable( Critter& cr, uint lockerId )
+{
+    if( lockerId == 0 )
+        return true;
+	
+	Map@ map = cr.GetMap();
+	if( !valid( map ) )
+		return false;
+	
+    Item@[] keys;
+    for( uint i = 0, j = cr.GetItems( -1, keys ); i < j; i++ )
+	{
+        if( keys[ i ].LockerId == lockerId )
+            return true;
+		
+		if( keys[ i ].GetProtoId() == PID_KEY_BUNCH )
+		{
+			map.PlaySound( "keys.ogg", cr.HexX, cr.HexY, 2 );
+			
+			Item@[] sub_keys;
+			uint count = keys[ i ].GetItems( 0, sub_keys );
+
+			for( uint i = 0; i < count; i++ )
+			{
+				if( sub_keys[i].LockerId == lockerId )
+					return true;
+			}
+		}
+	}
+    return false;
+}
+
+uint GetKeyId( Critter& cr, uint lockerId )
+{
+    if( lockerId == 0 || _CritFingersDoorId( cr.Id ) == lockerId || _CritEyesDoorId( cr.Id ) == lockerId )
+        return 0;
+    Item@[] keys;
+    for( uint i = 0, j = cr.GetItemsByType( ITEM_TYPE_KEY, keys ); i < j; i++ )
+        if( keys[ i ].LockerId == lockerId )
+            return keys[ i ].Id;
+    return 0;
+}
+
+void SwitchState( Item& locker ) // Export
+{
+    // Todo: show messages
+
+    if( locker.GetType() == ITEM_TYPE_DOOR || locker.GetType() == ITEM_TYPE_CONTAINER )
+    {
+        // Check open aviability
+        if( !FLAG( locker.LockerCondition, LOCKER_NOOPEN ) )
+        {
+            // Change state
+            if( FLAG( locker.LockerCondition, LOCKER_ISOPEN ) )
+                locker.LockerClose();
+            else
+                locker.LockerOpen();
+        }
+    }
+}
+
+//import void LockerBudge( Item& item ) from "lockers";
+void LockerBudge( Item& item )   // export
+{
+    Map@ map = GetMap( item.MapId );
+    if( !valid( map ) )
+        return;
+    string sound = item.GetType() == ITEM_TYPE_DOOR ? "SLDOORSC.ACM" : "ILCNTNRB.ACM";
+    // sound[ 7 ] = item.Proto.SoundId;
+    map.PlaySound( sound, item.HexX, item.HexY, 8 );
+}
+
+#endif //LOCKERS

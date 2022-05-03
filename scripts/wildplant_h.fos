@@ -1,0 +1,31 @@
+// Author: Anuri
+#ifndef WILDPLANT_H
+#define WILDPLANT_H
+
+	//PLANT_PARAMETERS
+	#define GROWTH_STAGE				Val0 		// Стадия роста растения
+	#define EVENT 						Val3 		// валка для записи тайм-ивента
+
+	//MAP_DATA
+	#define MAP_TIME_DATA_WILDPLANTS   	( 14 )
+
+	//BIOMES
+	#define BIOME_SAND					( 1 ) 
+	#define BIOME_CAVE					( 2 )
+	#define BIONE_GRASS 				( 3 )
+
+	const uint16[] Wildplants = { PID_PLANT_BROC, PID_PLANT_XANDER, PID_MUSH_LOW, PID_PLANT_TONGUE_GECKO, PID_PLANT_MURAVNIKTAR, PID_PLANT_BLACK_MUSHROOMS, PID_PLANT_PALE_MUSHROOM, PID_PLANT_MUTMUSH, PID_PLANT_PEYOTE };
+	const uint[] map_pids = merge( mPIDs( MAP_PLANTS ), mPIDs( ALL_CAVES ) );
+	const uint plant_amount = 9;
+
+	#ifndef WILDPLANT
+		import bool PickPlant( Critter& cr, Item& wildplant ) from "wildplant";
+		
+		#ifdef GAMEPLAY
+			import void WildplantAutoInit() from "wildplant";
+			import void FoceSpawnPlants() from "wildplant";
+		#endif //GAMEPLAY
+		
+	#endif //WILDPLANT
+	
+#endif //WILDPLANT_H

@@ -1,0 +1,57 @@
+// Author: cvet, heX, Tab10id
+#include "_msgstr.fos"
+#include "_macros.fos"
+#include "stdlib_h.fos"
+//#include "stdlib_trigger.fos"
+
+import void ShowElevator( Critter& player, uint8 elevatorType, uint[] mapPids, uint entireNum ) from "elevator";
+// лифт, всего существуют 8 типов лифтов. Максимум - 4 этажа
+// для четырехэтажного отдельный триггер
+// 1ый параметр - номер гекса, на который попадет игрок
+// остальные параметры - коды прототипов карт
+void t_Elevator4( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireExit, int map1Pid, int map2Pid, int map3Pid, int map4Pid )
+{
+    uint[] pids = { uint( map1Pid ), uint( map2Pid ), uint( map3Pid ), uint( map4Pid ) };
+    ShowElevator( player, 0, pids, entireExit );
+}
+// лифт, в котором меньше чем 4 этажа
+// 1ый параметр - номер гекса, на который попадет игрок
+// 2о1 параметр - типа лифта (от 1 до 8. см. _defines.fos, секцию // Elevators)
+// 3ий..5ый параметры - коды протоипов карт
+void t_Elevator( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireExit, int elevatorType, int map1Pid, int map2Pid, int map3Pid )
+{
+    uint[] pids = { uint( map1Pid ) };
+    if( map2Pid > 0 )
+        pids.insertLast( uint( map2Pid ) );
+    if( map3Pid > 0 )
+        pids.insertLast( uint( map3Pid ) );
+	
+    ShowElevator( player, elevatorType, pids, entireExit );
+}
+
+void t_DoorOpen( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireNum )
+{
+    DoorControl( player, entireNum, true );
+}
+
+void door_open( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireNum )
+{
+    t_DoorOpen( player, trigger, entered, dir, entireNum );
+}
+
+void t_DoorClose( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireNum )
+{
+    DoorControl( player, entireNum, false );
+}
+
+void door_close( Critter& player, Scenery& trigger, bool entered, uint8 dir, int entireNum )
+{
+    t_DoorClose( player, trigger, entered, dir, entireNum );
+}
+
+// Диалог с НПЦ рядом с триггером,  с определенной ролью. 1 параметр - роль НПЦ.
+void t_DialogNpc( Critter& player, Scenery& trigger, bool entered, uint8 dir, int npcRole )
+{
+    player.Wait( 0 );
+    DialogNpc( player, npcRole );
+}

@@ -1,0 +1,248 @@
+#ifndef MAP_START_H
+#define MAP_START_H
+
+#define PARAM_LOC 		( 0 )
+#define PARAM_X		 	( 1 )
+#define PARAM_Y		 	( 2 )
+
+#define MASSIVE_COAT    ( 0 )
+#define MASSIVE_FOOD    ( 1 )
+#define MASSIVE_WEAPON  ( 2 )
+
+import void skin( Critter& cr, int crType ) from "skins";
+import void skinchanger_main( Critter& player, uint answerI, string& answerS ) from "skins";
+import void skinchanger_show( Critter& player ) from "skins";
+import void CreateCell( uint16 x, uint16 y, uint mapId, uint8 type, int8 visibility ) from "globalmap_group";
+import int GetCellMap( uint16 x, uint16 y ) from "globalmap_group";
+import void RequestStartGameRemote( Critter& player) from "link";
+
+const uint16[][] StartTeleports = 
+{
+    // { mapid, mapx, mapy },
+    { 32, 180, 155 }
+};
+
+const uint16[] CoatMassive =
+{
+    1,
+    PID_OLD_JACKET,
+    PID_LEATHER_JACKET,
+    PID_BLACK_ROBE,
+    PID_RED_ROBE,
+    PID_BLACK_JUMPSUIT,
+    PID_LIGHT_GREEN_JUMPSUIT,
+    PID_RED_JUMPSUIT,
+    PID_GRAY_JUMPSUIT,
+    PID_GEKKO_DRESS,
+    PID_SANDROBE
+};
+
+const uint16[] StartFoodMassive = 
+{
+    PID_COOKED_MEAT,
+    PID_IGUANA_ON_A_STICK,
+    PID_FLAPJACK,
+    PID_COOKED_MOLERAT_STOMATCH,
+    PID_BURGER,
+    PID_MANTIS_MEAT,
+    PID_CANNED_MEAT,
+    PID_COOKED_FISH,
+    PID_COOKED_GECKO_MEAT,
+    PID_COOKED_RAT_MEAT
+};
+
+const uint[][] ItemMassive = 
+{
+    {
+        PID_REVFIST1,
+        PID_REVKNIFE1,
+        PID_ROSETTE,
+        PID_KNIFE,
+        PID_COMBAT_KNIFE,
+        PID_REVKNIFE2,
+        PID_RUST_KATANA,
+        PID_MACHETE,
+        PID_SPEAR,
+        PID_SHARP_SPEAR,
+        PID_SLEDGEHAMMER,
+        PID_PRIMITIVE_SLEDGE,
+        PID_BRASS_KNUCKLES,
+        PID_SPIKED_KNUCKLES,
+        PID_BOXING_GLOVES,
+        PID_PLATED_BOXING_GLOVES,
+        PID_CHAIN,
+        PID_CLUB,
+        PID_CROWBAR,
+        PID_WRENCH,
+        PID_LOUISVILLE_SLUGGER,
+        PID_IRON_PROD, 
+        PID_PRIMITIVE_HAMMER,
+        PID_CUTTHROAT,
+        PID_SCISSORS,
+        PID_SHIV
+    },
+    {  // Стрелковое
+        PID_9MM_MAUSER,
+        PID_ZIP_GUN,
+        PID_SHOTPISTOL_LOW,
+        PID_PISTOL_LOW,
+        PID_SMOKE_GUN_LOW,
+        PID_DEATHVVISH,
+        PID_REVOLVER_LOW,  
+        PID_SPRINGER_RIFLE,
+        PID_REV_RIFLE_LOW,
+        PID_SNIPER_GUN_LOW,
+        PID_SPEARTHROWER1,
+        PID_LOW_SNIPER2,
+        PID_GECKO_LOW,
+        PID_SHOTGUN,
+        PID_SAWED_OFF_SHOTGUN,
+        PID_QUADRO_SHOTGUN,
+        PID_SAVAGE
+    },
+    {  // Аммунация
+        PID_10mm_LOW,
+        PID_044mag_LOW,
+        PID_14mm_LOW,
+        PID_223_LOW,
+        PID_9MM_BALL,
+        PID_9MM_AMMO,
+        PID_45_CALIBER_AMMO,
+        PID_12g_LOW,
+        PID_12g_SLUG
+    },
+    {  // Инструменты
+        PID_SLEDGEHAMMER,
+        PID_PRIMITIVE_SLEDGE,
+        PID_CROWBAR,
+        PID_WRENCH,
+        PID_CUTTHROAT,
+        PID_SCISSORS,
+        PID_SHIV,
+        PID_MULTI_TOOL,
+        PID_LOCKPICKS,
+        PID_AXE,
+        PID_ROD_STRING_HOOK,
+        PID_PICKAXE,
+        PID_SHOVEL
+    },
+    {  // Броня
+        PID_PERSONAL_JACKET,
+        PID_TRIBE_ARMOR1,
+        PID_LEATHER_JACKET,
+        PID_PURPLE_ROBE,
+        PID_BLACK_ROBE,
+        PID_SANDROBE,
+        PID_BROWN_ROBE,
+        PID_DARK_GREEN_ROBE,
+        PID_RED_RITUAL_ROBE,
+        PID_BLACK_RITUAL_ROBE,
+        PID_DARK_BLACK_ROBE,
+        PID_DARK_RED_ROBE,
+        PID_RED_ROBE,
+        PID_DARK_BROWN_ROBE,
+        PID_DARK_BLUE_ROBE,
+        PID_ATOM_CHILD_ROBE,
+        PID_BIKER_JACKET,
+        PID_OLD_JACKET,
+        PID_BLUE_ROBE,
+        PID_BLACK_JUMPSUIT,
+        PID_FAKE_JUMPSUIT,
+        PID_LIGHT_GREEN_JUMPSUIT,
+        PID_RED_JUMPSUIT,
+        PID_GRAY_JUMPSUIT,
+        PID_SAND_JUMPSUIT,
+        PID_LAB_COAT,
+        PID_BLACK_DRESS,
+        PID_GEKKO_DRESS,
+        PID_BUSINESS_SUIT,
+        PID_LEATHER_ARMOR,
+        PID_CURED_LEATHER_ARMOR,
+        PID_GEKKO_ARMOR,
+        PID_LEATHER_COAT,
+        PID_CARAVAN_MASTER_JACKET
+    },
+    {  // Питание
+        PID_GLASS_BOTTLE_FULL,
+        PID_CLEAN_WATER2,
+        PID_BEER,
+        PID_BEER_DARK,
+        PID_BEER_LIGHT,
+        PID_SPIRIT,
+        PID_BOTTLE_MILCH1,
+        PID_BOTTLE_MILCH2,
+        PID_WHISKEY,
+        PID_WHISKEY_PREWAR,
+        PID_BLOODMARRY,
+        PID_LIQUER,
+        PID_MUTATED_FRUIT,
+        PID_IGUANA_ON_A_STICK,
+        PID_MEAT_ON_A_STICK,
+        PID_COOKED_MEAT,
+        PID_COOKED_RAT_MEAT,
+        PID_COOKED_GECKO_MEAT,
+        PID_COOKED_FISH,
+        PID_SALAD,
+        PID_COOKED_MOLERAT_STOMATCH,
+        PID_FLAPJACK,
+        PID_CANNED_MEAT,
+        PID_BURGER,
+        PID_FORSAGE_GUM
+    },
+    {  // Остальное
+        PID_LIGHTER,
+        PID_itmatchs,
+        PID_BOTTLE_CAPS,
+        PID_REAL_BOTTLE_CAPS,
+        /*PID_DOLLAR_100,
+        PID_DOLLAR_20,
+        PID_DOLLAR_5,*/
+        PID_BLUE_CONDOM,
+        PID_GREEN_CONDOM,
+        PID_RED_CONDOM,
+        PID_TRAVEL_BAG,
+        PID_BACKPACK,
+        PID_CIGARETTES,
+        PID_PREWAR_CIGAR1,
+        PID_PREWAR_CIGAR2,
+        PID_GAME,
+        PID_COSMETIC_CASE,
+        PID_FeralDog,
+        PID_FeralDog2,
+        PID_HEART_PILLS,
+        PID_SPECTACLES,
+        PID_RED_BANDANA,
+        PID_red_cap,
+        PID_blue_cap,
+        PID_BALACLAV,
+        PID_BALL_GAG,
+        PID_TOWEL,
+        PID_itcomb01,
+        PID_porno,
+        PID_PORTMONE,
+        PID_BASS1,
+        PID_BASS2,
+        PID_BASS3,
+        PID_PHOTO,
+        PID_HolyBible,
+        PID_AMULET_SAVAGE,
+        PID_FNKEYBT,
+        PID_BANDAGE,
+        PID_ANTISEPTIC,
+        PID_MEDCLIP,
+        PID_MEDSPLINT,
+        PID_MEDTHREAD,
+        PID_MEDNEEDLE,
+        PID_PILLS,
+        PID_ANESTETIC,
+        PID_HEALING_POWDER,
+        PID_mgzn01,
+        PID_HANDWRITINGS,
+        PID_RPSTUFF2,
+        PID_RPSTUFF3,
+        PID_PICTURE,
+        PID_WEDRING_M,
+        PID_WEDRING_F
+    }
+};
+#endif

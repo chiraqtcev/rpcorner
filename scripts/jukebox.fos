@@ -1,0 +1,689 @@
+#ifndef JUKEBOX
+#define JUKEBOX
+
+#include "_utils.fos"
+#include "vending_h.fos"
+#include "speed_h.fos"
+
+import void PlayMusic( Map& map, string& musicName, uint pos, uint repeat ) from "media";
+
+void TransferItemToJukebox( Item& item, Item& jukebox ) 
+{
+    uint16 pid = item.GetProtoId();
+    _SubItem( item, 1 );
+    jukebox.AddItem( pid, 1, 0 );
+}
+
+void PlayJukeSound( Map& map, Item & jukebox ) 
+{
+	Critter@[] players;
+    uint16 hx = jukebox.HexX;
+    uint16 hy = jukebox.HexY;
+	uint radius = 10;
+    map.GetCrittersHex( hx, hy, radius, FIND_ALL, players );
+	int[] values = { radius };
+	string sound = VendingSoundNames[ Random( 0, VendingSoundNames.length() -1 ) ];
+	for( uint i = 0; i < players.length(); i ++ )
+	{
+		Critter@ player = players[i];
+		if( valid( player ) && !player.IsNpc() )
+		{
+			player.RunClientScript( "fofmod@__PlaySound", jukebox.Id, hx, hy, sound, values );
+		}
+	}
+}
+
+void PlayJukeTune( JukeboxTune@ melody, Map& map, Item & jukebox )
+{
+	Critter@[] players;
+    uint16 hx = jukebox.HexX;
+    uint16 hy = jukebox.HexY;
+    map.GetCrittersHex( hx, hy, jukebox.JUKEBOX_VOLUME, FIND_ALL, players );
+	int[] values = { jukebox.JUKEBOX_VOLUME };
+	for( uint i = 0; i < players.length(); i ++ )
+	{
+		Critter@ player = players[i];
+		if( valid( player ) && !player.IsNpc() )
+		{
+			player.RunClientScript( "fofmod@__PlayJukeboxTune", jukebox.Id, hx, hy, melody.musicFile, values );
+		}
+	}
+}
+
+class MenuJukebox: CenteredMenuHandler 
+{
+    uint jukebox_id;
+    uint map_id;
+	uint level;
+	int selectorPos;
+	uint arrayPos;
+	
+    MenuJukebox( Item& jukebox, Map& map )
+	{
+        jukebox_id = jukebox.Id;
+        map_id = map.Id;
+		selectorPos = jukebox.ARRAY_POSITON;
+		arrayPos = jukebox.ARRAY_POSITON;
+    }
+
+		bool MenuUpdate( Critter& cr, iDialogBox& menu )
+		{
+        Map@ map = GetMap( map_id );
+        Item@ jukebox = GetItem( jukebox_id );
+	
+		bool locked_in_place = !FLAG( jukebox.Flags, ITEM_CAN_PICKUP );
+	
+        if( map is null || jukebox is null )
+		{
+            return false;
+        }
+		
+		bool ContineousPlay = ( jukebox.JUKEBOX_MODE == MODE_CONTINUOUS );
+		
+		Item@[] stuff;
+		JukeboxTune@[] tunes;
+		jukebox.GetItems( uint( -1 ), stuff );
+		if( stuff.length() > 0 )
+		{
+			for( uint i = 0; i < stuff.length(); i ++ )
+			{
+				uint16 Pid = stuff[i].GetProtoId();
+				JukeboxTune@ tune = getJukeboxTune( stuff[i] ); 
+				if( !valid( tune ) )
+				{ 
+					continue; 
+				}
+				else
+				{
+					tunes.insertLast( tune );
+				}
+			}
+		}
+		
+		if( tunes.length() > 0 )
+		{
+			if ( menu.Button( "Предыдущая" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos--;
+				if( arrayPos == 0 )
+				{
+					arrayPos = tunes.length() - 1;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				JukeboxTune@ selectedTune = tunes[arrayPos];
+				jukebox.PRODUCT = selectedTune.pid;
+				jukebox.ARRAY_POSITON = arrayPos;
+				return true;
+			}
+			
+			if ( menu.Button( "Следующая" ) ) 
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				selectorPos++;
+				if( arrayPos == tunes.length() -1 )
+				{
+					arrayPos = 0;
+					selectorPos = arrayPos;
+				}
+				else
+				{
+					arrayPos = selectorPos;
+				}
+				JukeboxTune@ selectedTune = tunes[arrayPos];
+				jukebox.PRODUCT = selectedTune.pid;
+				jukebox.ARRAY_POSITON = arrayPos;
+				return true;
+			}
+		}
+		
+		string info; 
+		info = !ContineousPlay ? "1 мелодия" : "До обнуления";						
+		if( menu.Button( "Режим: " + info ) )
+		{
+			PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+			!ContineousPlay ? jukebox.JUKEBOX_MODE = MODE_CONTINUOUS : jukebox.JUKEBOX_MODE = MODE_SINGLE;
+		}
+		
+		if( jukebox.JUKEBOX_STATUS == STATUS_WAITING )
+		{
+			if( menu.Button( "Проиграть мелодию" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				if( jukebox.BALANCE >= jukebox.PRICE )
+				{
+					uint16 Pid = jukebox.PRODUCT;
+					Item@ vinilCheck = jukebox.GetItem( Pid, 0 );
+					
+					if( !valid( vinilCheck ) )
+					{
+						PlayJukeSound( map, jukebox );
+						jukebox.PRODUCT = 0;
+						cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_TRACK_ERROR );
+						return false; 
+					}
+					
+					JukeboxTune@ melody = getJukeboxTuneByPid( Pid );
+					PlayJukeSound( map, jukebox );
+					
+					jukebox.BALANCE -= jukebox.PRICE;
+					PlayMusic( map, "DUMMY", 0, 0 );
+					PlayJukeTune( melody, map, jukebox );
+					
+					jukebox.JUKEBOX_STATUS = STATUS_PLAYING;
+					
+					uint[] values = { jukebox.Id, map.Id };
+					CreateTimeEvent( AFTER( REAL_SECOND( melody.length ) ), "e_JukeboxStatus", values, true );
+					
+					setAnimState( jukebox );
+					return false;
+				}
+				else
+				{
+					PlayVendSound( cr, map, "LOOSER.mp3", 20 );
+					return true;
+				}
+			}
+			
+			if( jukebox.JUKEBOX_VOLUME < 100 && menu.Button( "Увеличить радиус" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				jukebox.JUKEBOX_VOLUME ++;
+				if( jukebox.JUKEBOX_VOLUME > 100 )
+				{
+					jukebox.JUKEBOX_VOLUME = 100;
+				}
+			}
+			
+			if( jukebox.JUKEBOX_VOLUME != 0 && menu.Button( "Уменьшить радиус" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				jukebox.JUKEBOX_VOLUME --;
+				if( jukebox.JUKEBOX_VOLUME < 0 )
+				{
+					jukebox.JUKEBOX_VOLUME = 0;
+				}
+			}
+			
+			for( uint i = 0, len = cash_pids.length(); i < len; i++ )
+			{
+				
+				uint16 pid = cash_pids[i];
+				int balance_change = int( cash_values[i] );
+				Item@ cash = cr.GetItem( pid, -1 );
+				
+				if( valid( cash ) && menu.Button( "Вставить "+balance_change+" $" ) )
+				{
+					TransferItemToJukebox( cash, jukebox );
+					PlayJukeSound( map, jukebox );
+					jukebox.BALANCE += balance_change;
+					cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_INSERT_MONEY );
+					return true;
+				}
+			}
+		
+			if( menu.Button( "Возврат денег" ) )
+			{
+				PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+				Item@ change = jukebox.GetItem( PID_BOTTLE_CAPS, 0 );
+				if( valid( change ) && jukebox.BALANCE > 0 )
+				{
+					int changeCount = MIN( int( change.GetCount() ), jukebox.BALANCE );
+					_SubItem( change, uint( changeCount ) );
+					cr.AddItem( PID_BOTTLE_CAPS, changeCount );
+					jukebox.BALANCE -= changeCount;
+					cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_COLLECTS_CHANGE );
+					return false;
+				}
+				else
+				{
+					PlayVendSound( cr, map, "LOOSER.mp3", 20 );
+					cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_NO_CHANGE );
+					return true;
+				}
+			}
+			
+			if( !FLAG( jukebox.LockerCondition, LOCKER_LOCKED ) )
+			{
+				
+				if( menu.Button( "Выставить цену" ) )
+				{
+					PlayVendSound( cr, map, "BUTIN1.mp3", 5 );
+					cr.RunClientScript( "client_screen_numberpad@ShowScreen", jukebox.Id, 0, 0, "Введите новую цену", null );
+					return false;
+				}
+
+				if( locked_in_place )
+				{
+					if( menu.Button( "Демонтировать" ) )
+					{
+						LockInPlace( cr, jukebox );
+						return true;
+					}
+				}
+				else
+				{
+					if( menu.Button( "Установить" ) )
+					{
+						LockInPlace( cr, jukebox );
+						return true;
+					}
+
+					if( menu.Button( "Поднять" ) )
+					{
+						PickItem( cr, jukebox );
+						ChangeCritterSpeed( cr );
+						return false;
+					}			
+				}
+			}
+
+			if( menu.Button( "Открыть сейф" ) )
+			{
+				if( FLAG( jukebox.LockerCondition, LOCKER_LOCKED ) )
+				{
+					cr.SayMsg( SAY_NETMSG, TEXTMSG_TEXT, STR_MACHINE_LOCKED );
+					PlayVendSound( cr, map, "ILCNTNRB.mp3", 15 );
+					return true;
+				}
+				else
+				{
+					ShowContainer( cr, jukebox, TRANSFER_HEX_CONT_UP );
+					PlayVendSound( cr, map, "IOCNTNRB.mp3", 15 );
+					cr.SayMsg( SAY_EMOTE_ON_HEAD, TEXTMSG_TEXT, STR_OPENS_MACHINE );
+					return false;
+				}
+			}
+		}
+		if( menu.Button( "Закрыть меню" ) )
+		{
+			return false;
+		}
+		return true;
+    }
+	
+	// UI менюхи
+    string@ Description( Critter& cr )
+	{
+	
+		Item@ jukebox = GetItem( jukebox_id );
+		string status;
+		string mode = "|0x3CF800 \nРежим: ";
+		string info = "Музыкальная машина № ";
+		string balance = jukebox.BALANCE;
+		string price = jukebox.PRICE;
+		string volume = jukebox.JUKEBOX_VOLUME;
+		
+		info += "|0xFFFF00 " + jukebox.Id + "\n";
+		
+		Item@[] productItm;
+		jukebox.GetItems( uint( -1 ), productItm );
+		if( productItm.length() > 0 && jukebox.PRODUCT != 0 )
+		{
+			string tune =_GetProtoShortDisc( jukebox.PRODUCT );
+			uint len = productItm.length();
+			string duration;
+			uint lengthMin = 0;
+			string lengthSec;
+			for( uint i = 0; i < len; i++ )
+			{			
+				Item@ product = productItm[i];
+				if( product.GetProtoId() == jukebox.PRODUCT )
+				{
+					JukeboxTune@ selectedMelody = getJukeboxTune( product );
+					lengthMin = floor( selectedMelody.length / 60.00f );
+					float seconds = selectedMelody.length - ( lengthMin * 60 );
+					seconds / 10.0f < 1 ? lengthSec = "0" + seconds : lengthSec = seconds;
+					duration = lengthMin + ":" + lengthSec;
+					break;
+				}
+			}
+			
+			info += "|0x3CF800 Выбранная мелодия: \n[ ";
+			info += "|0xFFFF00 " + tune;
+			info += "|0x3CF800  ]";
+			info += "\nДлинна: ";
+			info += "|0xFFFF00 " + duration;
+			info += "|0x3CF800 . ";
+		}
+		else
+		{
+			info += "|0x3CF800 Выберите мелодию! \n";
+		}
+		
+		info += "|0x3CF800 Радиус звука: ";
+		info += "|0xFFFF00 " + volume;
+		
+		jukebox.JUKEBOX_MODE == MODE_SINGLE ? mode += "|0xFFFF00 1 мелодия" : mode += "|0xFFFF00 До обнуления";
+		info += mode;
+		
+		info += "|0x3CF800 \nЦена 1й мелодии: ";
+		info += "|0xFFFF00 " + price;
+		
+		jukebox.JUKEBOX_STATUS == STATUS_WAITING ? status += "|0x3CF800 Нажмите [Проиграть]." : status += "|0x3CF800 Мелодия играет.";
+		info += "\n" + status ;
+		
+		info += "|0x3CF800  Баланс: ";
+		info += "|0xFFFF00 " + balance;
+		info += "|0x3CF800  $";
+        return info;
+    }
+	
+    string@ ButtonCancel()
+	{
+        return ButtonDecorator( " ", null );
+    }
+	
+	bool ShouldRedraw( Critter& cr )
+	{
+		return true;
+    }
+}
+
+// точка входа из main.fos при юзе рукой
+void StartMenuJukebox( Critter& cr, Item& jukebox ) // exported
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+	{
+        return;
+    }
+
+    iMenuHandler@ handler = MenuJukebox( jukebox, map );
+    iDialogBox@ menu = OpenMenu( cr, "Музыкальный Аппарат", handler );
+}
+
+uint e_JukeboxStatus( uint[]@ values )
+{
+	Item@ jukebox = GetItem( values[0] );
+	if( !valid( jukebox ) )
+	{
+		return 0;
+	}
+	
+	int selectorPos = jukebox.ARRAY_POSITON;
+	uint arrayPos = jukebox.ARRAY_POSITON;
+	
+	Map@ map = GetMap( values[1] );
+	
+	if( jukebox.JUKEBOX_MODE == MODE_CONTINUOUS )
+	{
+		Item@[] stuff;
+		JukeboxTune@[] tunes;
+		jukebox.GetItems( uint( -1 ), stuff );
+		if( stuff.length() > 0 )
+		{
+			for( uint i = 0; i < stuff.length(); i ++ )
+			{
+				uint16 Pid = stuff[i].GetProtoId();
+				JukeboxTune@ tune = getJukeboxTune( stuff[i] ); 
+				if( !valid( tune ) )
+				{ 
+					continue; 
+				}
+				else
+				{
+					tunes.insertLast( tune );
+				}
+			}
+		}
+		selectorPos++;
+		if( arrayPos == tunes.length() -1 )
+		{
+			arrayPos = 0;
+			selectorPos = arrayPos;
+		}
+		else
+		{
+			arrayPos = selectorPos;
+		}
+		JukeboxTune@ selectedTune = tunes[arrayPos];
+		jukebox.PRODUCT = selectedTune.pid;
+		jukebox.ARRAY_POSITON = arrayPos;
+		
+		if( jukebox.BALANCE >= jukebox.PRICE )
+		{
+			uint16 Pid = jukebox.PRODUCT;
+			Item@ vinilCheck = jukebox.GetItem( Pid, 0 );
+					
+			if( !valid( vinilCheck ) )
+			{
+				jukebox.PRODUCT = 0;
+				return 0; 
+			}
+			
+			JukeboxTune@ melody = getJukeboxTuneByPid( Pid );
+			PlayJukeSound( map, jukebox );
+			
+			jukebox.BALANCE -= jukebox.PRICE;
+			
+			PlayMusic( map, "DUMMY", 0, 0 );   // to mute background music. Better not create "DUMMY" sound file ;)
+			PlayJukeTune( melody, map, jukebox );
+	
+			jukebox.JUKEBOX_STATUS = STATUS_PLAYING;
+			
+			uint[] values = { jukebox.Id };
+			return ( REAL_SECOND( melody.length ) );
+		}
+	}
+	
+	jukebox.JUKEBOX_STATUS = STATUS_WAITING;
+	setAnimState( jukebox );
+	return 0;
+}
+
+class JukeboxTune
+{
+	uint16 pid;
+	string musicFile;
+	uint length;
+	
+	JukeboxTune( uint16 pid, string musicFile, uint length )
+	{
+        this.pid = pid;
+		this.musicFile = musicFile;
+		this.length = length;
+	}
+}
+
+class JukeboxTuneCollection
+{
+	JukeboxTune@[] jukeboxTunes;
+	JukeboxTuneCollection()
+	{
+	}
+	
+	JukeboxTuneCollection@ tune( uint16 pid, string musicFile, uint length ) 
+	{
+		this.jukeboxTunes.insertLast( JukeboxTune(  pid, musicFile, length ) );
+		return this;
+	}
+	
+	JukeboxTune@ get_by_pid( uint16 Pid ) 
+	{
+		for( uint i = 0, len = this.jukeboxTunes.length(); i < len; i++ )
+		{
+			if( this.jukeboxTunes[i].pid == Pid )
+			{
+				return this.jukeboxTunes[i];
+			}
+		}
+		return null;
+	}
+}
+
+JukeboxTuneCollection@ jukeboxTunes = JukeboxTuneCollection()
+	.tune( PID_JUKEBOX_DISK_XFILES, "xfiles.ogg", 260 )
+	.tune( PID_JUKEBOX_DISK_AFTER_DARK, "afterdark.ogg", 260 )
+	.tune( PID_JUKEBOX_DISK_TERMINATOR,"terminator2.ogg", 121 )
+	.tune( PID_JUKEBOX_DISK_SIXTEEN_TONS,"sixteentons.ogg", 166 )
+	.tune( PID_JUKEBOX_DISK_MAYBE, "maybe.ogg", 180 )
+	.tune( PID_JUKEBOX_DISK_WORLD_ON_FIRE, "worldonfire.ogg", 180 )
+	.tune( PID_JUKEBOX_DISK_SPRINGTIME, "rockies.ogg", 114 )
+	.tune( PID_JUKEBOX_DISK_ZERG, "zerg.ogg", 204 )
+	.tune( PID_JUKEBOX_DISK_FIFTY_MEFATONS, "fiftymegatons.ogg",136 )
+	.tune( PID_JUKEBOX_DISK_DARK_EYES, "darkeyes.ogg", 164 )
+	.tune( PID_JUKEBOX_DISK_RADIOACTIVE_MAMA, "radioactivemama.ogg", 109 )
+	.tune( PID_JUKEBOX_DISK_SUMMERTIME, "summertime.ogg", 181 )
+	.tune( PID_JUKEBOX_DISK_CHEESE_MARCH, "imperialmarch.ogg", 139 )
+	.tune( PID_JUKEBOX_DISK_SOLD_WORLD, "soldtheworld.ogg", 220 )
+	.tune( PID_JUKEBOX_DISK_TRUE_LOVES, "loveshair.ogg", 205 )
+	.tune( PID_JUKEBOX_DISK_ROUND_TABLE, "roundtable.ogg", 350 )
+	.tune( PID_JUKEBOX_DISK_HOLY_GRAIL, "holygrail.ogg", 116 )
+	.tune( PID_JUKEBOX_DISK_WINTERS_SHELTER, "falloutshelter.ogg", 159 )
+	.tune( PID_JUKEBOX_DISK_LOVED_BY_YOU, "lovedbyyou.ogg", 170 )
+	.tune( PID_JUKEBOX_DISK_DREAM_ON, "Dreamon.ogg", 266 )
+	.tune( PID_JUKEBOX_DISK_WOUNDERFUL_WORLD, "wonderfulworld.ogg", 135 )
+	.tune( PID_JUKEBOX_DISK_LONDON_MARCH, "imperialmarch0.ogg", 181 )
+	.tune( PID_JUKEBOX_DISK_LAIKA, "laika.ogg", 129 )
+	.tune( PID_JUKEBOX_DISK_DARKSIDE_BLUES, "darksideblues.ogg", 175 )
+	.tune( PID_JUKEBOX_DISK_TAMPICO, "tampico.ogg", 156 )
+	.tune( PID_JUKEBOX_DISK_STILL_ALIVE, "stillalive.ogg", 175 )
+	.tune( PID_JUKEBOX_DISK_CANTINA_BAND, "cantinaband.ogg", 169 )
+	.tune( PID_JUKEBOX_DISK_ME_NICE, "askmenice.ogg", 297 )
+	.tune( PID_JUKEBOX_DISK_SOMEBODY_TO_LOVE, "somebodytolove.ogg", 170 )	
+	.tune( PID_JUKEBOX_DISK_PUTTIN, "ritz.ogg", 236 )
+	.tune( PID_JUKEBOX_DISK_HBOMB, "hbombrock.ogg", 134 )
+	.tune( PID_JUKEBOX_DISK_BARBER_BOMB, "atombomb.ogg", 186 )
+	.tune( PID_JUKEBOX_DISK_GHOSTBUSTERS, "ghostbusters.ogg", 243 )
+	.tune( PID_JUKEBOX_DISK_ATOMIC_COCTAIL, "atomiccocktail.ogg", 165 )
+	.tune( PID_JUKEBOX_DISK_MOON_WAS_YELLOW, "moonwasyellow.ogg", 192 )
+	.tune( PID_JUKEBOX_DISK_COLD_WAR, "coldwarwithyou.ogg", 166 )
+	.tune( PID_JUKEBOX_DISK_ATOMIC_BOMB_BABY, "AtomBombBaby.ogg", 144 )
+	.tune( PID_JUKEBOX_DISK_ROCK_IN, "rockininrhythm.ogg", 310 )
+	.tune( PID_JUKEBOX_DISK_BLUE_LOU, "bluelou.ogg", 157 )
+	.tune( PID_JUKEBOX_DISK_NEW_JUNK, "newjunkcity.ogg", 146 )
+	.tune( PID_JUKEBOX_DISK_URANIUM, "uranium.ogg", 136 )
+	.tune( PID_JUKEBOX_DISK_TWIST_AGAIN, "twistagain.ogg", 140 )
+	.tune( PID_JUKEBOX_DISK_VODKA, "vodka.ogg", 217 )
+	.tune( PID_JUKEBOX_DISK_NO_COMMUNIST, "nocommunist.ogg", 167 )
+	.tune( PID_JUKEBOX_DISK_ATOMIC_POWER, "atomicpower.ogg", 158 )
+	.tune( PID_JUKEBOX_DISK_WAY_TO_VEGAS, "waytovegas.ogg", 247 )
+	.tune( PID_JUKEBOX_DISK_JUST_ALLOW, "onemore.ogg", 118 )
+	.tune( PID_JUKEBOX_DISK_PARANOID, "paranoid.ogg", 172 )
+	.tune( PID_JUKEBOX_DISK_CHAMBDERS_SHELTER, "falloutshelter0.ogg", 165 )
+	.tune( PID_JUKEBOX_DISK_EYE_OF_TIGER, "EyeoftheTiger.ogg", 229 )
+	.tune( PID_JUKEBOX_DISK_WE_FIGHT_FOR, "WeFightforLove.ogg", 273 )
+	.tune( PID_JUKEBOX_DISK_MILBURN_ATOMIC, "atomicbaby.ogg", 154 )
+	.tune( PID_JUKEBOX_DISK_TNT, "tnt.ogg", 221 )
+	.tune( PID_JUKEBOX_DISK_JAVABAR, "javabar.ogg", 169 )
+	.tune( PID_JUKEBOX_DISK_GREATBALLS, "greatballsoffire.ogg", 152 )
+	.tune( PID_JUKEBOX_DISK_LONESOMEME, "ohlonesomeme.ogg", 148 )
+	.tune( PID_JUKEBOX_DISK_BATTLENEWORLEANS, "thebattleofneworleans.ogg", 149 )
+	.tune( PID_JUKEBOX_DISK_WATERLOO, "waterloo.ogg", 146 )
+	.tune( PID_JUKEBOX_DISK_ITBENICE, "wouldntitbenice.ogg", 140 )
+	.tune( PID_JUKEBOX_DISK_BILLIEJEAN, "billiejean.ogg", 293 )
+	.tune( PID_JUKEBOX_DISK_DADDYCOOL, "daddycool.ogg", 208 )
+	.tune( PID_JUKEBOX_DISK_NEVERGONNAGIVEYOUUP, "nevergonnagiveyouup.ogg", 212 )
+	.tune( PID_JUKEBOX_DISK_SMOOTHCRIMINAL, "smoothcriminal.ogg", 255 )
+	.tune( PID_JUKEBOX_DISK_TAKEONME, "takeonme.ogg", 226 )
+	.tune( PID_JUKEBOX_DISK_FLASH_ROCKIN_MAN, "FlashRockinMan.ogg", 268 )
+	.tune( PID_JUKEBOX_DISK_JOURNEY_OBLIVION, "JourneyOblivion.ogg", 259 )
+	.tune( PID_JUKEBOX_DISK_THE_DUELLISTS, "TheDuellists.ogg", 366 )
+	.tune( PID_JUKEBOX_DISK_MEDIEVAL_STEEL, "MedievalSteel.ogg", 336 )
+	.tune( PID_JUKEBOX_DISK_THE_FOUR_HORSEMEN, "FourHorsemen.ogg", 433 )
+	.tune( PID_JUKEBOX_DISK_LIGHTNING_WAR, "LightningWar.ogg", 416 )
+	.tune( PID_JUKEBOX_DISK_ELECTRO_VIOLENCE, "ElectroViolence.ogg", 225 )
+	.tune( PID_JUKEBOX_DISK_KEEPER_THE_FLAME, "KeeperFlame.ogg", 251 )
+	.tune( PID_JUKEBOX_DISK_MAKE_MY_DAY, "MakeMyDay.ogg", 218 )
+	.tune( PID_JUKEBOX_DISK_CAGE_RAGERS, "CageRagers.ogg", 208 )
+	.tune( PID_JUKEBOX_DISK_LONEWOLF, "Lonewolf.ogg", 288 )
+	.tune( PID_JUKEBOX_DISK_GYPSY, "Gypsy.ogg", 255 )
+	.tune( PID_JUKEBOX_DISK_CHEMICAL_WARFARE, "ChemicalWarfare.ogg", 326 )
+	.tune( PID_JUKEBOX_DISK_LOVE_SUCKERS, "LoveSuckers.ogg", 207 )
+	.tune( PID_JUKEBOX_DISK_SHOCKWAVES, "Shockwaves.ogg", 243 )
+	.tune( PID_JUKEBOX_DISK_WORLD_WAR, "WorldWar.ogg", 271 )
+	.tune( PID_JUKEBOX_DISK_BABA_ORILEY, "BabaORiley.ogg", 302 )
+	.tune( PID_JUKEBOX_DISK_GIMME, "Gimme.ogg", 295 )
+	.tune( PID_JUKEBOX_DISK_HONKY_TONK, "HonkyTonkWomen.ogg", 180 )
+	.tune( PID_JUKEBOX_DISK_LA_CUCARACHA, "LaCucaracha.ogg", 271 )
+	.tune( PID_JUKEBOX_DISK_NOTHING_ELSE, "NothingElseMatters.ogg", 389 )
+	.tune( PID_JUKEBOX_DISK_SHES_JUST_KILLIN, "ShesJustKillingMe.ogg", 298 )
+	.tune( PID_JUKEBOX_DISK_MOLOTOV, "Molotov.ogg", 199 )
+	.tune( PID_JUKEBOX_DISK_CITY_OF_ANGELS, "City_Of_Angels.ogg", 211 )
+	.tune( PID_JUKEBOX_DISK_DRAIN_THE_BLOOD, "Drain_the_Blood.ogg", 190  )
+	.tune( PID_JUKEBOX_DISK_GYPSY_ROSE_LEE, "Gypsy_Rose_Lee.ogg", 235 )
+	.tune( PID_JUKEBOX_DISK_THE_LORD, "The_Lord.ogg", 221 )
+	.tune( PID_JUKEBOX_DISK_SAMU, "SAMU.ogg", 270 )
+	.tune( PID_JUKEBOX_DISK_NIGHTWHITE, "Nightwhite.ogg", 271 )
+	.tune( PID_JUKEBOX_DISK_HOLYDIVER, "Holydiver.ogg", 277 )
+	.tune( PID_JUKEBOX_DISK_HOLDON, "Holdon.ogg", 156 )
+	.tune( PID_JUKEBOX_DISK_HEAVENSDOOR, "Heavensdoor.ogg", 190 )
+	.tune( PID_JUKEBOX_DISK_GREENBAG, "Greenbag.ogg", 197 )
+	.tune( PID_JUKEBOX_DISK_MINNIE, "Minnie.ogg", 205 )
+	.tune( PID_JUKEBOX_DISK_CHRIS1, "Chris1AnimalIhavebecome.ogg", 231 )
+	.tune( PID_JUKEBOX_DISK_CHRIS2, "Chris2VengefulOne.ogg", 253 )
+	.tune( PID_JUKEBOX_DISK_JOVI_MY_LIFE, "BonJoviItsMyLife.ogg", 224 )
+	.tune( PID_JUKEBOX_DISK_BULL_2SONG, "BUll2song.ogg", 263 )
+	.tune( PID_JUKEBOX_DISK_BULL_MINE, "BULLMINE.ogg", 247 )
+	.tune( PID_JUKEBOX_DISK_WE_GOT_MOVES, "EskimoCallboyWEGOTTHEMOVES.ogg", 206 )
+	.tune( PID_JUKEBOX_DISK_WANNA_BE_SLAVE, "ManeskinIWANNABEYOURSLAVE.ogg", 173 )
+	.tune( PID_JUKEBOX_DISK_RADJ_KISS, "RADJkiss.ogg", 260 )
+	.tune( PID_JUKEBOX_DISK_RADJ_MET, "RadJMetalicaMASH.ogg", 328 )
+	.tune( PID_JUKEBOX_DISK_SB_MADMAX, "SpiderbloodMADMAX.ogg", 237 )
+	.tune( PID_JUKEBOX_DISK_SB_MANS, "SpiderbloodMANMANSMAASN.ogg", 146 )
+	.tune( PID_JUKEBOX_DISK_SB_NECRO, "SpiderBloodNecromantt.ogg", 158 )
+	.tune( PID_JUKEBOX_DISK_SB_ZEMLYA, "SpiderBloodZEMLIA.ogg", 179 )
+    .tune( PID_JUKEBOX_DISK_SL_SUSANA, "OhSusana.ogg", 122 )
+	.tune( PID_JUKEBOX_DISK_SL_HEYBOY, "HeyBoy.ogg", 167 )
+	.tune( PID_JUKEBOX_DISK_SL_DIXIESLAND, "Dixiesland.ogg", 137 )
+	.tune( PID_JUKEBOX_DISK_SL_MWICKBONES, "Nick_Nolan-MyWickedBones.ogg", 233 )
+	.tune( PID_JUKEBOX_DISK_SL_WANTEDMAN, "Nick_Nolan-WantedMan.ogg", 202 )
+	.tune( PID_JUKEBOX_DISK_SL_FORBALES, "BobbyHortonForBales.ogg", 199 )
+	.tune( PID_JUKEBOX_DISK_SL_SEETHOMEALABAMA, "LynyrdSkynyrdSweetHomeAlabama.ogg", 285 )
+	.tune( PID_JUKEBOX_DISK_SL_MARCHINGHOME, "WhenJohnnyComesMarchingHome.ogg", 142 )
+	.tune( PID_JUKEBOX_DISK_SL_DONTBOTHERNONE, "DontBotherNone.ogg", 221 )
+	.tune( PID_JUKEBOX_DISK_SL_SOUTHERNSOLDIER, "SouthernSoldier.ogg", 325 )
+	.tune( PID_JUKEBOX_DISK_SL_ROSEALABAMA, "RoseAlabama.ogg", 209 )
+	.tune( PID_JUKEBOX_DISK_SL_JINECAVALRY, "JineCavalry.ogg", 167 )
+	.tune( PID_JUKEBOX_DISK_SL_COUNTRYBOY, "CountryBoy.ogg", 242 )
+	.tune( PID_JUKEBOX_DISK_SL_BLUEFLAG, "BlueFlag.ogg", 262 )
+	.tune( PID_JUKEBOX_DISK_SL_BATTEFREEDOM, "BattleCryFreedom.ogg", 254 )
+	.tune( PID_JUKEBOX_DISK_SL2_WGE, "World_Gonna_End.ogg", 186 )
+	.tune( PID_JUKEBOX_DISK_SL2_RBDGC, "RoyalBaggsDevilGonnaCome.ogg", 204 )
+	.tune( PID_JUKEBOX_DISK_SL2_SSh, "SteamboatShenanigans.ogg", 271 )
+	.tune( PID_JUKEBOX_DISK_SL2_RM, "RexMarksley.ogg", 322 )
+	.tune( PID_JUKEBOX_DISK_SL2_SM, "SuspenderMan.ogg", 299 )
+	.tune( PID_JUKEBOX_DISK_SL2_PA, "PrepareAdventure.ogg", 176 )
+	.tune( PID_JUKEBOX_DISK_SL2_CW, "CopperWar.ogg", 211 )
+	.tune( PID_JUKEBOX_DISK_SL2_ID, "InventorDaughter.ogg", 113 )
+	.tune( PID_JUKEBOX_DISK_SL2_ACT, "AnyoneCanTell.ogg", 316 )
+	.tune( PID_JUKEBOX_DISK_SL2_W, "Whistler.ogg", 216 )
+	.tune( PID_JUKEBOX_DISK_SL2_MG, "MechanicalGirl.ogg", 231 )
+	.tune( PID_JUKEBOX_DISK_SL2_DW, "DogsWar.ogg", 177 )
+	.tune( PID_JUKEBOX_DISK_SL2_EW, "EvilWays.ogg", 206 )
+	.tune( PID_JUKEBOX_DISK_SL2_AH, "AngelsHeaven.ogg", 294 )
+	.tune( PID_JUKEBOX_DISK_SL2_NS, "NoStranger.ogg", 192 )
+	.tune( PID_JUKEBOX_DISK_SL2_KMCD, "KingdomMustComeDown.ogg", 294 )
+	.tune( PID_JUKEBOX_DISK_SL2_SAL, "SoldierArmyLord.ogg", 236 )
+	.tune( PID_JUKEBOX_DISK_SL2_TSF, "ThoseSinnersFree.ogg", 172 );
+JukeboxTune@ getJukeboxTune( Item@ item )
+{
+	uint16 Pid = item.GetProtoId();
+	return jukeboxTunes.get_by_pid( Pid );
+}
+
+JukeboxTune@ getJukeboxTuneByPid( uint16 Pid ) 
+{
+	return jukeboxTunes.get_by_pid( Pid );
+}
+
+void setAnimState( Item& item )
+{
+	if( item.JUKEBOX_STATUS == STATUS_PLAYING )
+	{	
+		SETFLAG( item.Flags, ITEM_SHOW_ANIM );
+		UNSETFLAG( item.Flags, ITEM_SHOW_ANIM_EXT );
+	}
+	else
+	{
+		UNSETFLAG( item.Flags, ITEM_SHOW_ANIM );
+		SETFLAG( item.Flags, ITEM_SHOW_ANIM_EXT );
+	}
+	item.Update();
+}
+#endif //JUKEBOX

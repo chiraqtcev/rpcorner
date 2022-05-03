@@ -1,0 +1,28 @@
+[comment]
+Aaoe eiiiaioa?ee / Your comments.
+
+[data]
+lang=russ engl
+
+[dialog]
+&
+1 1000 None 0 #
+2 1010 @
+2 2000 None 0 &
+
+[russ]
+{100}{}{Житель}
+{200}{}{Горожанин Модока.}
+{210}{}{Вы видите горожанина Модока.}
+{1000}{}{Преддиалоговые установки}
+{1010}{}{не знаком}
+{2000}{}{Очень надеюсь, что скоро пойдет дождь.@@Будь осторожен, если собираешься идти в Саттер. Говорят, там живут одни отморозки.@@[Вздыхает] Даже колодцы пересохли.@@На небе ни облачка.@@Я подумываю о том, чтобы уехать отсюда.@@Раньше Модок был совсем другим. Больше полей, меньше караванов.@@Мистер Феличи не такой уж и плохой человек, он привлёк много туристов и путников в эти Богом забытые края.}
+
+[engl]
+{100}{}{Citizen}
+{200}{}{Modoc citizen.}
+{210}{}{You see some Modoc citizen.}
+{1000}{}{Initial preferences}
+{1010}{}{player is not familiar to citizens}
+{2000}{}{I sure hope it rains soon.@@Our crops are dying from lack of water.@@Even the wells have gone dry.@@Not a cloud in the sky.@@I'm thinking of moving away from here.@@Modoc used to be a prosperous farming community.@@Life in Modoc is slow. Just the way I like it.@@I hear that people have seen glowing figures during the night hours at the Ghost Farm.@@Did you hear? They found some idiot to go and investigate the Ghost Farm.@@I've been to the Ghost Farm. Scary!@@Daytime is the best time to go to the Ghost Farm.@@Karl used to live at the Ghost Farm. Now he probably haunts it.@@People shouldn't mess with the supernatural.@@Why would ghosts grow food?}
+

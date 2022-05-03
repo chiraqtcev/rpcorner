@@ -1,0 +1,90 @@
+[comment]
+
+[data]
+lang=russ
+
+[dialog]
+&
+1 1000 None 1 #
+2 1010 D _var p name_mem_npc_player = 0 D _var p forp_public_replica > 0 R _var p forp_public_replica = 0 #
+3 1020 D _var p name_mem_npc_player = 1 D _var p forp_public_replica > 0 R _var p forp_public_replica = 0 #
+4 1030 R _var p forp_public_replica = 1 @
+
+2 2000 None 0 @
+
+3 3000 None 0 @
+
+4 4000 None 1 #
+5 4010 D _item n PID_BOTTLE_CAPS > 4 #
+7 4020 D _item p PID_BOTTLE_CAPS < 1 #
+7 4030 D _item p PID_BOTTLE_CAPS > 0 R _item p PID_BOTTLE_CAPS - 1 R _item n PID_BOTTLE_CAPS + 1 @
+
+5 5000 None 1 #
+6 5010 D _item p PID_BEER > 0 				R _item p PID_BEER - 1 				R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5020 D _item p PID_GAMMA_GULP_BEER > 0 	R _item p PID_GAMMA_GULP_BEER - 1 	R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5030 D _item p PID_BEER_DARK > 0 			R _item p PID_BEER_DARK - 1 		R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5040 D _item p PID_ROOTBEER > 0 			R _item p PID_ROOTBEER - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5050 D _item p PID_BEER_LIGHT > 0 		R _item p PID_BEER_LIGHT - 1 		R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5060 D _item p PID_SPIRIT > 0 			R _item p PID_SPIRIT - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5070 D _item p PID_ROENTGEN_RUM > 0 		R _item p PID_ROENTGEN_RUM - 1 		R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5080 D _item p PID_ROT_GUT > 0 			R _item p PID_ROT_GUT - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5090 D _item p PID_WHISKEY > 0 			R _item p PID_WHISKEY - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5100 D _item p PID_WHISKEY_PREWAR > 0 	R _item p PID_WHISKEY_PREWAR - 1 	R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5110 D _item p PID_LIQUER > 0 			R _item p PID_LIQUER - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5120 D _item p PID_GROG > 0 				R _item p PID_GROG - 1 				R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5130 D _item p PID_HATFIELD_BOOZE > 0 	R _item p PID_HATFIELD_BOOZE - 1 	R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5140 D _item p PID_HOMEBREW > 0 			R _item p PID_HOMEBREW - 1 			R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+6 5150 D _item p PID_ATOM_BEER > 0 			R _item p PID_ATOM_BEER - 1 		R _item n PID_BOTTLE_GLASS + 1 		R _item n PID_BOTTLE_CAPS - 5	R _item p PID_BOTTLE_CAPS + 5 #
+7 5160 D _item p PID_BOTTLE_CAPS < 1 #
+7 5170 D _item p PID_BOTTLE_CAPS > 0 R _item p PID_BOTTLE_CAPS - 1 R _item n PID_BOTTLE_CAPS + 1 #
+7 5180 @
+
+6 6000 None 0 @
+
+7 7000 None 0 &
+
+[russ]
+{100}{}{Бомж}
+{200}{}{Бомж.}
+{210}{}{Бомж, бездомный.}
+
+{1000}{}{Преддиалоговые установки}
+{1010}{}{НПЦ просит милостыню}
+
+{2000}{}{**Трясет консервной банкой с парой крышек на дне**@@**Молча смотрит на вас со скорбным лицом**@@Подайте мелочишки...@@Мелочи не найдется? Для бывшего ИК! копа...@@Дай денюжку...@@**Пытается вызвать чувство вины всем своим видом**@@Подайте на пропитание...@@Смилуйтесь люди добрые...**Кашляет кровью**}
+
+{3000}{}{**Вновь заметив вас с надеждой смотрит вам в лицо**@@**Трясет банкой с мелочью и воняет перегаром**@@Ну хоть кто нибудь...?@@Я воевал...@@Вы мне обязаны ваще то... **Робко пытается напомнить**}
+
+{4000}{}{[Пьяный бездомный, который казалось вообще никогда не был трезв дышит на вас перегаром и требует денег] Дай мне... ИК! Ну, эта... ДАЙ кароче говоря, чо те жалко что ли? }
+{4010}{}{Да как ты заебал...}
+{4020}{}{Пошел на хуй бомжара сраный, отвали от меня! [Уйти]}
+{4030}{}{На, подавись тока отвали от меня! [Кинуть монету бомжу и уйти]}
+
+{5000}{}{[Бомжара активно трясет банкой и облизывает сухие губы, жадно пожирая ваше имущество глазами] Э-э, слушай, дай мне пузырек, в глотке сухо как в Пустоши, трубы горят! Я И ЗАПЛАТИТЬ МОГУ!}
+{5010}{}{[Дать бомжу бутылку пива]}
+{5020}{}{[Дать бомжу пиво "Гамма-глоток"]}
+{5030}{}{[Дать бомжу бутылку темного пива]}
+{5040}{}{[Дать бомжу бутылку корневого пива]}
+{5050}{}{[Дать бомжу бутылку светлого пива]}
+{5060}{}{[Дать бомжу флакон спирта]}
+{5070}{}{[Дать бомжу Рентген-ром]}
+{5080}{}{[Дать бомжу фуфырь пойла]}
+{5090}{}{[Дать бомжу бутылку виски]}
+{5100}{}{[Дать бомжу бутылку дорогого вискаря]}
+{5110}{}{[Дать бомжу бутылку ликера]}
+{5120}{}{[Дать бомжу бутылку грога]}
+{5130}{}{[Дать бомжу "Брагу Хатфилдов"]}
+{5140}{}{[Дать бомжу бутылку браги]}
+{5150}{}{[Дать бомжу домашнего пива]}
+{5160}{}{Пошел на хуй бомжара сраный, ничерта не получишь! [Уйти]}
+{5170}{}{Да забери бабки, блядь, и отъебись от меня нахуй! [Кинуть монету бомжу и уйти]}
+{5180}{}{Ничо я тебе не дам, алкаш, отвали! И монеты свои себе оставь! [Уйти]}
+
+{6000}{}{Храни тебя небо... **Начинает тут же хлестать напиток из бутылки, выпивая залпом все**@@Святой! СВЯТОЙ! **Выпивает залпом все до дна**@@Ну... **Присосался к бутылке**@@**Трясущимися руками схватил бутылку и, закрутив "воронку", вылили в себе в рот**@@Наконец-то! **начинает пить, роняет бутылку, та разбивается. Бомж смотрит на вас жалостливо**}
+
+{7000}{}{**Крестится вам в след**@@**Отвесил пьяный поклон** Небо храни тебя...@@**Виновато смотрит на вас, кивает робко**@@Я воевал за этот город... За страну...@@Пенсия маленькая...}
+
+
+
+
+

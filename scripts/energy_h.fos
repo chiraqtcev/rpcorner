@@ -1,0 +1,33 @@
+#ifndef ENERGY_H
+#define ENERGY_H
+
+	// Панель управления
+	#define BROKE 						Val0 // 0 - норм, 1 - сломано
+	#define CONNECT	 					Val1 // чем управляет
+
+	// Двигло
+	#define STATE 						Val0 // 0 - выключено, 1 - включено, 2 - сломано
+	#define ENERGY	 					Val1 // кол-во имеющейся энергии
+	#define LIMIT		 				Val2 // лимит оттока
+	#define FUEL_TYPE	 				Val3 // тип топлива
+	#define MAX_ENERGY	 				Val4 // макс энергии	
+	#define TRANSFER_EVENT 				Val5 // таймивент передачи	
+	#define CONNECTED1	 				Val6 // законнекчено к
+	#define CONNECTED2	 				Val7 // законнекчено к
+	#define CONNECTED3	 				Val8 // законнекчено к
+	#define EVENT		 				Val9 // таймивент
+
+	#define ENERGY_BURNING				REAL_SECOND( 2 )
+	#define ENERGY_TRANSFER				REAL_SECOND( 20 )
+
+	#define DEEP_MAIN					( 0 )
+	#define DEEP_CONNECTED				( 1 )
+	#define DEEP_CONNECTED2				( 2 )
+
+	#define FUEL_TYPE_TES				( 0 )
+	
+	#ifndef ENERGYF
+		import void StartEnergyMenu( Critter& cr, Item& computer, int p1, int p2 ) from "energy";
+	#endif 
+
+#endif //ENERGY_H

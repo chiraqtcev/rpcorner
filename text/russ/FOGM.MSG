@@ -1,0 +1,965 @@
+
+#
+# Local map
+#
+
+# Name, (pid + 1) * 10 + 0
+# Music, (pid + 1) * 10 + 5
+# Ambient, (pid + 1) * 10 + 6
+# NoLogOut, (pid + 1) * 10 + 7
+# Transit Name, (pid + 1) * 10 + 8 pm added
+
+# Map 0, Global, base 10
+{10}{}{Глобальная карта}
+{15}{}{20car}
+{15}{}{23world}
+{15}{}{03 - A Way To Anywhere.ogg}
+{15}{}{04 - 12h. Dusk.ogg}
+{15}{}{08 - Blue Grass.ogg}
+{15}{}{12 - Kill Klesk.ogg}
+{16}{}{blank:100}
+
+##### PERFECTION ####
+
+# Area 1, Map 10
+{110}{}{sandbox1_1}
+{115}{}{34Cataclysm.ogg}
+{116}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{118}{}{Болото}
+
+# Area 2, Map 12
+{130}{}{sandbox1_2}
+{135}{}{under_1.ogg}
+{136}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{138}{}{Западный склон}
+
+# Area 3, Map 13
+{140}{}{tanker_deck4}
+{145}{}{29mark-morgan-curst.ogg}
+{146}{}{animal:10; bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, steam:10, steam1:10, water:5, water1:5}
+{148}{}{Пещеры}
+
+# Area 3, Map 14
+{150}{}{sandbox1_3}
+{155}{}{03 - A Way To Anywhere.ogg}
+{156}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{158}{}{Вершина}
+
+# Area 4, Map 16
+{170}{}{sandbox1_4}
+{175}{}{14 - Organic Shadows.ogg}
+{176}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{178}{}{Восточный склон}
+
+# Area 5, Map 18
+{190}{}{sandbox1_5}
+{195}{}{36E3_Among_the_Friends.ogg}
+{196}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{198}{}{Ферма}
+
+# Area 6, Map 20
+{210}{}{sandbox2_1}
+{215}{}{55NNM_wind_of_war.ogg}
+{216}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{218}{}{Болотистый лес}
+
+# Area 7, Map 22
+{230}{}{sandbox2_2}
+{235}{}{50NNM_radioluminescence.ogg}
+{236}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{238}{}{Юго-западный склон}
+
+# Area 7, Map 23
+{240}{}{sandbox2_2dn}
+{245}{}{58Tales_of_the_Past.ogg}
+{246}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{248}{}{Зарядная станция}
+
+# Area 8, Map 24
+{250}{}{sandbox2_3}
+{255}{}{28Rangers-journey.ogg}
+{256}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{258}{}{КПП}
+
+# Area 8, Map 25
+{260}{}{sandbox2_3dn}
+{265}{}{under_1.ogg}
+{265}{}{41NNM_bonus.ogg}
+{265}{}{42NNM_ghost_town.ogg}
+{265}{}{43NNM_high_wind.ogg}
+{265}{}{44NNM_improper_subdivision.ogg}
+{265}{}{45NNM_jammer.ogg}
+{265}{}{46NNM_line_of_policy.ogg}
+{265}{}{47NNM_nevada_theme.ogg}
+{265}{}{48NNM_new_vegas.ogg}
+{265}{}{49NNM_radiationless.ogg}
+{265}{}{50NNM_radioluminescence.ogg}
+{265}{}{51NNM_ride_to_cheyenne.ogg}
+{265}{}{52NNM_root_information.ogg}
+{265}{}{53NNM_village.ogg}
+{265}{}{54NNM_we_are_sorry.ogg}
+{265}{}{55NNM_wind_of_war.ogg}
+{266}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{268}{}{Перфекшен}
+
+# Area 9, Map 30
+{310}{}{sandbox2_4}
+{315}{}{38Into_The_ACID_Breach.ogg}
+{316}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{318}{}{Юго-восточный склон}
+
+# Area 10, Map 32
+{330}{}{sandbox2_5}
+{335}{}{37E1_Into_the_Tower.ogg}
+{336}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{338}{}{Холмы}
+
+# Area 11, Map 34
+{350}{}{sandbox3_1}
+{355}{}{44NNM_improper_subdivision.ogg}
+{356}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{358}{}{Восточный лес}
+
+# Area 12, Map 36
+{370}{}{sandbox3_2}
+{375}{}{49NNM_radiationless.ogg}
+{376}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{378}{}{Поворот}
+
+# Area 13, Map 38
+{390}{}{sandbox3_3}
+{395}{}{26A_Candle_in_the_Darkness.ogg}
+{396}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{398}{}{Подстанция}
+
+# Area 13, Map 39
+{400}{}{sandbox3_3dn}
+{405}{}{45NNM_jammer.ogg}
+{406}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{408}{}{Служебные помещения}
+
+# Area 14, Map 40
+{410}{}{sandbox3_4}
+{415}{}{27Lost_Knowledge.ogg}
+{416}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{418}{}{Магазины}
+
+# Area 13, Map 41
+{420}{}{sandbox3_4dn}
+{425}{}{42NNM_ghost_town.ogg}
+{426}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{428}{}{Старая лаборатория}
+
+# Area 15, Map 42
+{430}{}{sandbox3_5}
+{435}{}{31old_earth.ogg}
+{436}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{438}{}{Окраина}
+
+# Area 16, Map 44
+{450}{}{sandbox4_1}
+{455}{}{54NNM_we_are_sorry.ogg}
+{456}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{458}{}{Юго-западный лес}
+
+# Area 16, Map 45
+{460}{}{sandbox4_1dn}
+{465}{}{05raider.acm}
+{466}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{468}{}{Юго-западный лес}
+
+# Area 17, Map 46
+{470}{}{sandbox4_2}
+{475}{}{41NNM_bonus.ogg}
+{476}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{478}{}{Перекрёсток}
+
+# Area 18, Map 48
+{490}{}{sandbox4_3}
+{495}{}{53NNM_village.ogg}
+{496}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{498}{}{Холм}
+
+# Area 18, Map 49
+{500}{}{sandbox4_3dn}
+{505}{}{58the25vault.ogg}
+{506}{}{pebble:5, pebble1:10}
+{508}{}{Старая шахта}
+
+# Area 19, Map 50
+{510}{}{sandbox4_4}
+{515}{}{45NNM_jammer.ogg}
+{516}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{518}{}{Форт}
+
+# Area 19, Map 51
+{520}{}{sandbox4_4dn}
+{525}{}{{26A_Candle_in_the_Darkness.ogg}
+{526}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{528}{}{Подвал Форта}
+
+# Area 20, Map 52
+{530}{}{sandbox4_5}
+{535}{}{47NNM_nevada_theme.ogg}
+{536}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{538}{}{Бродвей}
+
+# Area 21, Map 54
+{550}{}{sandbox5_1}
+{555}{}{57SHK_sinless_From_Seattle.ogg}
+{556}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{558}{}{Южный лес}
+
+# Area 22, Map 56
+{570}{}{sandbox5_2}
+{575}{}{52NNM_root_information.ogg}
+{576}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{578}{}{Мотель}
+
+# Area 23, Map 58
+{590}{}{sandbox5_3}
+{595}{}{42NNM_ghost_town.ogg}
+{596}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{598}{}{Сток}
+
+# Area 24, Map 60
+{610}{}{sandbox5_4}
+{615}{}{51NNM_ride_to_cheyenne.ogg}
+{616}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{618}{}{Кэмпинг}
+
+# Area 25, Map 62
+{630}{}{sandbox5_5}
+{635}{}{43NNM_high_wind.ogg}
+{636}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{638}{}{Лагерь гулей}
+
+# Area 26, Map 64
+{650}{}{perfection_ext}
+{655}{}{UnderRail Expedition Main Theme.ogg}
+{656}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{658}{}{Тоннели}
+
+# Area 26, Map 68
+{690}{}{perfection_ext4}
+{695}{}{UnderRail Expedition Main Theme.ogg}
+{696}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{698}{}{Химзавод}
+
+# Area 27, Map 69
+{700}{}{sandbox_bos}
+{705}{}{Desert_wind.ogg}
+{706}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{708}{}{Могильник}
+
+# Area 27, Map 70
+{710}{}{sandbox_bos_dn1}
+{715}{}{29mark-morgan-curst.ogg}
+{716}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{718}{}{Погреб}
+
+# Area 27, Map 71
+{720}{}{sandbox_bos_dn2}
+{725}{}{Metallic Monks.ogg}
+{726}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, jupiter:5, mechpum1:5, mechpum:5, neptune:5, steam:5, steam1:5, water:5, water1:5}
+{728}{}{База "Хельхейм"}
+
+# Area 27, Map 72
+{730}{}{sandbox_bos_dn3}
+{735}{}{mscTimestream.ogg}
+{736}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, jupiter:5, mechpum1:5, mechpum:5, neptune:5, steam:5, steam1:5, water:5, water1:5}
+{738}{}{База "Хельхейм" Технический уровень}
+
+# Area 28, Map 73
+{740}{}{sandbox0_2}
+{745}{}{UnderRail Expedition Main Theme.ogg}
+{746}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{748}{}{Лагерь в ущелье}
+
+# Area 28, Map 74
+{750}{}{sandbox0_2dn}
+{755}{}{UnderRail Expedition Main Theme.ogg}
+{756}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{758}{}{Лагерь в ущелье}
+
+##### TECH_MAPS #####
+
+# Area 92, Map 92
+{930}{}{startloc}
+{935}{}{}
+{936}{}{}
+{938}{}{Активация}
+
+# Area 93, Map 93
+{940}{}{dreamloc}
+{945}{}{}
+{946}{}{}
+{948}{}{Сон}
+
+##### EVENTS #####
+
+# Area 50, Map 100
+{1010}{}{event4_hill2}
+{1015}{}{F1_Drums_of_Battle.ogg}
+{1016}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1018}{}{Старые Руины}
+
+# Area 51, Map 101
+{1020}{}{event2_slavers_out}
+{1025}{}{F3_The_Rain_of_Steel.ogg}
+{1026}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1028}{}{Скала}
+
+# Area 51, Map 102
+{1030}{}{event2_slavers_in}
+{1035}{}{F7_Against_the_Odds.ogg}
+{1036}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1038}{}{Лагерь Рейдеров}
+
+##### RIVERDALE #####
+
+# Area 52, Map 103
+{1040}{}{fort_riverdale}
+{1045}{}{Out_of_Business.ogg}
+{1045}{}{The_Courier_Walks_Softly.ogg}
+{1045}{}{Under_the_Stars_Cut.ogg}
+{1046}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1048}{}{Форт Ривердейл}
+
+# Area 52, Map 104
+{1050}{}{fort_riverdale_dn}
+{1055}{}{Deeper_and_Darker.ogg}
+{1056}{}{{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}}
+{1058}{}{Форт Ривердейл - подземка}
+
+# Area 52, Map 105
+{1060}{}{fort_riverdale_up1}
+{1065}{}{51NNM_ride_to_cheyenne.ogg}
+{1066}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1068}{}{Форт Ривердейл2}
+
+# Area 52, Map 106
+{1070}{}{fort_riverdale_up2}
+{1075}{}{08 - Blue Grass.ogg}
+{1076}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1078}{}{Форт Ривердейл3}
+
+# Area 53, Map 107
+{1080}{}{riverdale1_2}
+{1085}{}{NNM_FS_16_One_Way.ogg}
+{1086}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1088}{}{Дорога}
+
+# Area 54, Map 109
+{1100}{}{riverdale1_3}
+{1105}{}{44NNM_improper_subdivision.ogg}
+{1106}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1108}{}{Побережье}
+
+# Area 55, Map 111
+{1120}{}{riverdale2_2}
+{1125}{}{NNM_FS_03_ Fogbound.ogg}
+{1126}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1128}{}{Мост}
+
+# Area 56, Map 113
+{1140}{}{riverdale2_3}
+{1145}{}{24redd.acm}
+{1146}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1148}{}{Утес}
+
+# Area 57, Map 115
+{1160}{}{riverdale3_1}
+{1165}{}{50NNM_radioluminescence.ogg}
+{1166}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1168}{}{Рудные Шахты}
+
+# Area 57, Map 117
+{1180}{}{riverdale3_1_mine1}
+{1185}{}{08vats.acm}
+{1186}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1188}{}{Шахта_МД}
+
+# Area 57, Map 118
+{1190}{}{riverdale3_1_mine2}
+{1195}{}{09glow.acm}
+{1196}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1198}{}{Шахта_ЖЗ}
+
+# Area 52, Map 119
+{1200}{}{fort_riverdale_dn2}
+{1205}{}{Deeper_and_Darker.ogg}
+{1206}{}{{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}}
+{1208}{}{Форт Ривердейл - тоннель}
+
+# Area 52, Map 120
+{1210}{}{fort_riverdale_dn3}
+{1215}{}{Flame_of_the_Ancient_World.ogg}
+{1216}{}{{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}}
+{1218}{}{Форт Ривердейл - крипта}
+
+# Area 60, Map 123
+{1240}{}{riverdale4_1}
+{1245}{}{52NNM_root_information.ogg}
+{1246}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1248}{}{Свинцовая Шахта}
+
+# Area 60, Map 125
+{1260}{}{riverdale4_1_mine1}
+{1265}{}{Desert_wind.ogg}
+{1266}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1268}{}{Шахта_СВ}
+
+# Area 61, Map 126
+{1270}{}{riverdale5_2}
+{1275}{}{55NNM_wind_of_war.ogg}
+{1276}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1278}{}{Холмы}
+
+# Area 62, Map 128
+{1290}{}{riverdale5_3}
+{1295}{}{NNM_FS_12_Casa_Grande.ogg}
+{1296}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1298}{}{Пляж}
+
+# Area 63, Map 130
+{1310}{}{riverdale6_1}
+{1315}{}{NNM_FS_14_Motel.ogg}
+{1316}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1318}{}{Старая Шахта}
+
+# Area 63, Map 132
+{1330}{}{riverdale6_1_mine1}
+{1335}{}{NNM_FS_10_Jackals.ogg}
+{1336}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1338}{}{Шахта Голдштейна}
+
+# Area 64, Map 133
+{1340}{}{riverdale6_2}
+{1345}{}{NNM_FS_07_City_of_Flagstaff.ogg}
+{1346}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1348}{}{Руины}
+
+# Area 65, Map 135
+{1360}{}{riverdale6_3}
+{1365}{}{NNM_FS_05_Collapse.ogg}
+{1366}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1368}{}{Кладбище}
+
+# Area 65, Map 136
+{1370}{}{riverdale6_3dn}
+{1375}{}{32Acolytes_of_the_New_God.ogg}
+{1376}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1378}{}{Катакомбы}
+
+# Area 66, Map 137
+{1380}{}{riverdale_dogs_motel}
+{1385}{}{City_of_the_Fallen-The_Hourglass.ogg}
+{1385}{}{City_of_the_fallen-Hour_of_Destiny.ogg}
+{1385}{}{City_of_the_Fallen-Darkest_Hour.ogg}
+{1385}{}{City_of_the_Fallen-Darkest_Before_the_Dawn.ogg}
+{1386}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1388}{}{Мотель Псов}
+
+# Area 67, Map 139
+{1400}{}{riverdale2_1}
+{1405}{}{17arroyo.acm}
+{1406}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1408}{}{Рыбацкий привал}
+
+# Area 67, Map 140
+{1410}{}{riverdale2_1dn}
+{1415}{}{NNM_FS_15_Out-of-Service.ogg}
+{1416}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1418}{}{Рыбацкий привал, пещера}
+
+# Area 68, Map 141
+{1420}{}{riverdale1_1}
+{1425}{}{NNM_FS_08_La_Ciudad_del_Sol.ogg}
+{1426}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1428}{}{Западный Склон}
+
+# Area 69, Map 143
+{1440}{}{riverdale0_1}
+{1445}{}{34Cataclysm.ogg}
+{1446}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1448}{}{Токсичная яма}
+
+# Area 69, Map 144
+{1450}{}{toxic_pit}
+{1455}{}{38Into_The_ACID_Breach.ogg}
+{1456}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1458}{}{Токсичная яма, пещера}
+
+# Area 70, Map 146
+{1470}{}{riverdale0_2}
+{1475}{}{26A_Candle_in_the_Darkness.ogg}
+{1476}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1478}{}{Ущелье, Юг}
+
+# Area 71, Map 148
+{1490}{}{riverdale0_3}
+{1495}{}{57SHK_sinless_From_Seattle.ogg}
+{1496}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1498}{}{Логово Смерти}
+
+# Area 71, Map 149
+{1500}{}{lair_of_death}
+{1505}{}{Desert_wind.ogg}
+{1506}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1508}{}{Логово Смерти, пещера}
+
+# Area 72, Map 151
+{1520}{}{riverdale_canyon}
+{1525}{}{NNM_FS_16_One_Way.ogg}
+{1526}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1528}{}{Каньон}
+
+# Area 73, Map 153
+{1540}{}{riverdale_up_3_1}
+{1545}{}{NNM_FS_14_Motel.ogg}
+{1546}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1548}{}{Племенная могила}
+
+# Area 73, Map 154
+{1550}{}{riverdale_up_3_1dn}
+{1555}{}{10labone.acm}
+{1556}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1558}{}{Племенная могила - храм}
+
+# Area 74, Map 155
+{1560}{}{riverdale_up_3_2}
+{1565}{}{NNM_FS_07_City_of_Flagstaff.ogg}
+{1566}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1568}{}{Распутье}
+
+# Area 75, Map 157
+{1580}{}{riverdale_up_3_3}
+{1585}{}{NNM_FS_04_City_of_Phoenix.ogg}
+{1586}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1588}{}{Дорога на Шейди}
+
+# Area 76, Map 159
+{1600}{}{riverdale_up_2_1}
+{1605}{}{49NNM_radiationless.ogg}
+{1606}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1608}{}{Западный Утес}
+
+##### TECH_MAPS #####
+
+# Area 95, Map 170
+{1710}{}{Deadloc}
+{1715}{}{}
+{1716}{}{}
+{1718}{}{Чистилище}
+
+##### RIVERDALE_CONTINUE ####
+
+# Area 77, Map 172
+{1730}{}{riverdale_up_2_2}
+{1735}{}{NNM_FS_15_Out-of-Service}
+{1736}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1738}{}{Мотель Псов}
+
+# Area 78, Map 174
+{1750}{}{riverdale_up_2_3}
+{1755}{}{NNM_FS_12_Casa_Grande.ogg}
+{1756}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1758}{}{Заброшенная шахта}
+
+# Area 79, Map 176
+{1770}{}{riverdale7_1}
+{1775}{}{29mark-morgan-curst.ogg}
+{1776}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1778}{}{Промзона}
+
+# Area 80, Map 178
+{1790}{}{riverdale7_2}
+{1795}{}{Desert_wind.ogg}
+{1796}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1798}{}{Центр}
+
+# Area 81, Map 180
+{1810}{}{riverdale7_3}
+{1815}{}{NNM_FS_06_Out_of_The_World.ogg}
+{1816}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1818}{}{Жилой Район}
+
+# Area 81, Map 181
+{1820}{}{riverdale7_3_mine1}
+{1825}{}{NNM_FS_14_Motel.ogg}
+{1826}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{1828}{}{Выработанная шахта}
+
+# Area 82, Map 183
+{1840}{}{riverdale8_2}
+{1845}{}{NNM_FS_15_Out-of-Service.ogg}
+{1846}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1848}{}{Лес Костей}
+
+##### POSEIDON #####
+
+# Area 110, Map 185
+{1860}{}{tanker_deck0}
+{1865}{}{30 - Clockwork.ogg}
+{1866}{}{gntlwin1:5, gntlwind:5, gustwin1:5, gustwind:5, seagull:10, seagull1:10, seawind:5, seawind1:5, waves:15, waves1:15}
+{1868}{}{Верхняя палуба}
+
+# Area 110, Map 186
+{1870}{}{tanker_deck1}
+{1875}{}{01hub.acm}
+{1876}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, fixstill:5, laughte1:5, laughter:5, water:5, water1:5, waves:5, waves1:5}
+{1878}{}{Торговая палубы}
+
+# Area 110, Map 187
+{1880}{}{tanker_deck2}
+{1885}{}{akiss.acm}
+{1886}{}{dice:5, dice1:5, potspan1:5, potspsns:5, laughte1:10, laughter:10, saloon:5, saloon1:5, shuffle:5, steam:5, steam1:5, water:5, water1:5, winner:5}
+{1888}{}{Барная палуба}
+
+# Area 110, Map 188
+{1890}{}{tanker_deck3}
+{1895}{}{06 - Cluster Decay.ogg}
+{1896}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, jupiter:5, mechpum1:5, mechpum:5, neptune:5, steam:5, steam1:5, water:5, water1:5}
+{1898}{}{Инженерная палуба}
+
+# Area 110, Map 189
+{1900}{}{tanker_deck4}
+{1905}{}{29mark-morgan-curst.ogg}
+{1906}{}{animal:10; bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, steam:10, steam1:10, water:5, water1:5}
+{1908}{}{Дыра}
+
+# Area 110, Map 190
+{1910}{}{tanker_str}
+{1915}{}{27Lost_Knowledge.ogg}
+{1916}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, fixstill:5, seawind:10, seawind1:5, waves:15, waves1:15}
+{1918}{}{Башня}
+
+# Area 110, Map 191
+{1920}{}{tanker_sub1}
+{1925}{}{29mark-morgan-curst.ogg}
+{1926}{}{puddle1:30, puddle:30, water:5, water1:5, pebble:5, pebble1:5}
+{1928}{}{Подпалуба №1}
+
+# Area 110, Map 192
+{1930}{}{tanker_sub2}
+{1935}{}{29mark-morgan-curst.ogg}
+{1936}{}{puddle1:30, puddle:30, water:5, water1:5, pebble:5, pebble1:5}
+{1938}{}{Подпалуба №2}
+
+# Area 110, Map 193
+{1940}{}{tanker_sub3}
+{1945}{}{29mark-morgan-curst.ogg}
+{1946}{}{puddle1:30, puddle:30, water:5, water1:5, pebble:5, pebble1:5}
+{1948}{}{Подпалуба №3}
+
+##### RIVERDALE_CONTINUE ####
+
+# Area 83, Map 196
+{1970}{}{riverdale8_2}
+{1975}{}{16follow.acm}
+{1976}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1978}{}{Цветение}
+
+# Area 83, Map 187
+{1980}{}{riverdale8_2up}
+{1985}{}{09glow.acm}
+{1986}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{1988}{}{Институт - 2й этаж}
+
+##### NCR LOCATIONS #####
+
+# Area 111, Map 200
+{2010}{}{NCR}
+{2015}{}{01hub.acm}
+{2016}{}{animal1:10, animal:10, water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2018}{}{НКР}
+
+##### RENO LOCATIONS #####
+
+# Area 112, Map 201
+{2020}{}{new_reno}
+{2025}{}{19reno.acm}
+{2026}{}{animal1:10, animal:10, water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2028}{}{Нью Рено}
+
+##### Frisco ####
+
+
+
+# Area 118, Map 226
+{2270}{}{stop2_frisco2_3}
+{2275}{}{56SHK_Prosperity.ogg}
+{2276}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2278}{}{Отель Сан-Франциско}
+
+# Area 118, Map 227
+{2280}{}{stop2_frisco2_3dn}
+{2285}{}{21sf.acm}
+{2286}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2288}{}{Отель Сан-Франциско подвалы}
+
+# Area 118, Map 228
+{2290}{}{stop2_frisco2_3up}
+{2295}{}{40SHK_Club88.ogg}
+{2296}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2298}{}{Отель Сан-Франциско Клуб}
+
+# Area 118, Map 229
+{2300}{}{stop2_frisco2_3up2}
+{2305}{}{21sf.acm}
+{2306}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2308}{}{Отель Сан-Франциско 2й этаж отеля и 2е этажи}
+
+# Area 118, Map 230
+{2310}{}{stop2_frisco2_3up3}
+{2315}{}{21sf.acm}
+{2316}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2318}{}{Отель Сан-Франциско 3й этаж отеля }
+
+# Area 118, Map 231
+{2320}{}{stop2_frisco2_3up4}
+{2325}{}{21sf.acm}
+{2326}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{2328}{}{Отель Сан-Франциско 4й этаж отеля}
+
+##### MORE_RIVERDALE #####
+
+# Area 130, Map 250
+{2510}{}{riverdale_up_1_1}
+{2515}{}{07desert.acm}
+{2516}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{2518}{}{Лесное племя}
+
+##### EDD_SESSION #####
+
+# Area 250, Map 350
+{3510}{}{edbox1_1}
+{3515}{}{EVERSPACE OST #3 - Where Am I.ogg}
+{3516}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3518}{}{Свалка}
+
+# Area 251, Map 352
+{3530}{}{edbox1_2}
+{3535}{}{05raider.acm}
+{3536}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3538}{}{Племя}
+
+# Area 251, Map 353
+{3540}{}{43NNM_high_wind.ogg}
+{3545}{}{City_of_the_Fallen-The_Hourglass.ogg}
+{3546}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{3548}{}{Шахта}
+
+# Area 252, Map 354
+{3550}{}{edbox2_1}
+{3555}{}{02 - Into The Dust.ogg}
+{3556}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3558}{}{Дорога}
+
+# Area 253, Map 356
+{3570}{}{edbox2_2}
+{3575}{}{City_of_the_Fallen-The_Hourglass.ogg}
+{3576}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3578}{}{Водокачка}
+
+# Area 254, Map 358
+{3590}{}{edbox3_1}
+{3595}{}{Xcentric-Noiz-Crotalinae.ogg}
+{3596}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3598}{}{Поселение}
+
+# Area 254, Map 359
+{3600}{}{edbox3_1dn}
+{3605}{}{Institute of Tchort - Underrail soundtrack.ogg}
+{3606}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{3608}{}{Поселение, подвал}
+
+# Area 255, Map 360
+{3610}{}{edbox3_2}
+{3615}{}{PathofExileTheBellyOfTheBeast.ogg}
+{3616}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3618}{}{Лес}
+
+# Area 256, Map 362
+{3630}{}{edbox3_3}
+{3635}{}{Underrail Expedition O.S.T. - Lemuria Outside.ogg}
+{3636}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3638}{}{Угольная шахта}
+
+# Area 256, Map 363
+{3640}{}{edbox3_3dn}
+{3645}{}{58the25vault.ogg}
+{3646}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{3648}{}{Угольная шахта - уровень шахты}
+
+
+
+# Area 279, Map 379
+{3800}{}{eddvent_mountains}
+{3805}{}{City_of_the_Fallen-The_Hourglass.ogg}
+{3805}{}{City_of_the_fallen-Hour_of_Destiny.ogg}
+{3805}{}{City_of_the_Fallen-Darkest_Hour.ogg}
+{3805}{}{City_of_the_Fallen-Darkest_Before_the_Dawn.ogg}
+{3806}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3808}{}{Караванный путь}
+
+##### NEWTON #####
+
+# Area 280, Map 380
+{3810}{}{intro6}
+{3815}{}{Memories of the Lost (Main Title) - Endless Space 2 Original Soundtrack.ogg}
+{3816}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, fixstill:5, seawind:10, seawind1:5, waves:15, waves1:15}
+{3818}{}{Храм Управления, 3й этаж. Конференц-зал.}
+
+##### RDR_EVENT #####
+
+# Area 281, Map 384
+{3850}{}{event_frost_camp}
+{3855}{}{05raider.acm}
+{3856}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{3858}{}{Лагерь в пустыне.}
+
+##### TECH_MAPS #####
+
+# Area 300, Map 400
+{4010}{}{hell}
+{4015}{}{33DOOM.ogg}
+{4016}{}{gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15, pebble:25, pebble1:15, ore:10, ore1:10}
+{4018}{}{АД}
+
+##### OLD_MAPS #####
+
+# Area 357, Map 491
+{4920}{}{junk_new}
+{4925}{}{57SHK_sinless_From_Seattle.ogg}
+{4926}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{4928}{}{Свалка}
+
+# Area 357, Map 492
+{4930}{}{junk_new_dn}
+{4935}{}{Desert_wind.ogg}
+{4936}{}{water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{4938}{}{Свалка, подземка}
+
+# Area 358, Map 493
+{4940}{}{lake}
+{4945}{}{NNM_FS_12_Casa_Grande.ogg}
+{4946}{}{animal:20, gntlwind:30, gntlwin1:20, brdchir1:10, brdchirp:20}
+{4948}{}{Феникс, уровень 0}
+
+# Area 359, Map 494
+{4950}{}{phoenix_0}
+{4955}{}{27Lost_Knowledge.ogg}
+{4956}{}{animal:20, gntlwind:30, gntlwin1:20, brdchir1:10, brdchirp:20}
+{4958}{}{Феникс, уровень 0}
+
+# Area 359, Map 495
+{4960}{}{phoenix_1}
+{4965}{}{32Acolytes_of_the_New_God.ogg}
+{4966}{}{bangpip1:5, bangpipe:5, clang:5, clang1:5, clank:5, clank1:5, coolant:5, fixstill:5, jupiter:5, mechpum1:5, mechpum:5, neptune:5, steam:5, steam1:5, water:5, water1:5}
+{4968}{}{Феникс, уровень 1}
+
+# ---------------
+# Area 114, Map 221
+{11410}{}{stop2_frisco1_2}
+{11415}{}{31old_earth.ogg}
+{11416}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
+{11418}{}{Порт Сан-Франциско}
+
+# Area 117, Map 224
+{11710}{}{stop2_frisco2_2}
+{11715}{}{39SHK_Heoi.ogg}
+{17716}{}{animal1:10, animal:10, water:10, water1:10, pebble:25, pebble1:15, ore:10, ore1:10}
+{17718}{}{Центр Сан-Франциско}
+
+
+# Area 360, Map 496
+{36010}{}{stop1_ruin1_0}
+{36015}{}{05 - Anesthetic.ogg}
+{36016}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
+{36018}{}{Склады}
+
+# Area 361, Map 497
+{36110}{}{stop1_ruin1_1}
+{36115}{}{02 - Into The Dust.ogg}
+{36116}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
+{36118}{}{Подстанция}
+
+# Area 362, Map 498
+{36210}{}{stop1_ruin1_2}
+{36215}{}{04 - 12H. Dusk.ogg}
+{36216}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
+{36218}{}{Магазины}
+
+# Area 363, Map 499
+{36310}{}{stop1_ruin1_3}
+{36315}{}{26A_Candle_in_the_Darkness.ogg}
+{36316}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
+{36318}{}{Пирс}
+
+# Area 364, Map 500
+{36410}{}{stop1_ruin2_1}
+{36415}{}{18modoc.mp3}
+{36416}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36418}{}{Холм}
+
+# Area 365, Map 502
+{36510}{}{stop1_ruin2_2}
+{36515}{}{12junktn.mp3}
+{36516}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36518}{}{Руины}
+
+# Area 366, Map 503
+{36610}{}{stop1_ruin2_3}
+{36615}{}{13 - Killadrone.ogg}
+{36616}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36618}{}{Главная улица}
+
+# Area 367, Map 504
+{36710}{}{stop1_ruin3_1}
+{36715}{}{03wrldmp}
+{36716}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36718}{}{Сток}
+
+# Area 368, Map 505
+{36810}{}{stop1_ruin3_2}
+{36815}{}{17arroyo}
+{36816}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36818}{}{Кэмпинг}
+
+# Area 369, Map 506
+{36910}{}{stop1_ruin3_3}
+{36915}{}{28Rangers-journey.ogg}
+{36916}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{36918}{}{Старый Лагерь}
+
+
+#
+# Global map
+#
+
+# Name, (pid + 100) * 1000 + 0
+# Info, (pid + 100) * 1000 + 5
+# Location picture, (pid + 100) * 1000 + 20
+# Tab picture, (pid + 100) * 1000 + 30
+# Count entries, (pid + 100) * 1000 + 90
+# Entire X name, (pid + 100) * 1000 + 100 + X*10 + 1
+# Entire X pic x, (pid + 100) * 1000 + 100 + X*10 + 2
+# Entire X pic y, (pid + 100) * 1000 + 100 + X*10 + 3
+
+
+#
+# Worldmap Encounter messages
+#
+
+#{10000010}{}{Вы наткнулись на @lex who@.}
+#{10000011}{}{Вы наткнулись на @lex who@ и @lex player@.}
+#{10000012}{}{Вы наткнулись на @lex who@ и банду @lex player@.}
+#{10000013}{}{Вы наткнулись на @lex player@.}
+#{10000014}{}{Вы наткнулись на банду @lex player@.}
+#{10000020}{}{Вы хотите увидеть @lex who@?}
+#{10000021}{}{Вы хотите увидеть @lex who@ и @lex player@?}
+#{10000022}{}{Вы хотите увидеть @lex who@ и банду @lex player@?}
+#{10000023}{}{Вы хотите увидеть @lex player@?}
+#{10000024}{}{Вы хотите увидеть банду @lex player@?}

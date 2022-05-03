@@ -1,0 +1,75 @@
+#ifndef PERKS
+#define PERKS
+
+#include "_utils.fos"
+#include "perks_h.fos"
+
+	#ifdef __CLIENT // Macro defined in client_main.fos
+		# define Critter            CritterCl
+	#endif
+
+	#ifndef __CLIENT
+		import int NextLevelNeedExp( Critter& cr )  from "parameters";
+	#endif
+
+	bool PerkCheck( Critter& cr, uint perk ) // Export
+	{
+		#define PROCESS_PERK0                   \
+			# ( perk, range, level ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level )
+		#define PROCESS_PERK1                            \
+			# ( perk, range, level, demand0 ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level && demand0 )
+		#define PROCESS_PERK2                                     \
+			# ( perk, range, level, demand0, demand1 ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level && demand0 && demand1 )
+		#define PROCESS_PERK3                                              \
+			# ( perk, range, level, demand0, demand1, demand2 ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level && demand0 && demand1 && demand2 )
+		#define PROCESS_PERK4                                                       \
+			# ( perk, range, level, demand0, demand1, demand2, demand3 ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level && demand0 && demand1 && demand2 && demand3 )
+		#define PROCESS_PERK5                                                                \
+			# ( perk, range, level, demand0, demand1, demand2, demand3, demand4 ) case perk: \
+			return ( cr.ParamBase[ perk ] < range && cr.ParamBase[ ST_LEVEL ] >= level && demand0 && demand1 && demand2 && demand3 && demand4 )
+		switch( perk )
+		{
+			case(0): break;
+			default:
+				break;
+		}
+		return false;
+	}
+
+	#ifndef __CLIENT
+
+	void PerkUp( Critter& cr, uint perk ) // Export
+	{
+		# define PERKUP_STAT    # ( param, val )cr.StatBase[ param ] val
+		# define PERKUP_SKILL                                                                      \
+			# ( param, val )cr.SkillBase[ param ] val; if( cr.SkillBase[ param ] > MAX_SKILL_VAL ) \
+				cr.SkillBase[ param ] = MAX_SKILL_VAL
+		switch( perk )
+		{
+			case(0): break;
+			default:
+				break;
+		}
+	}
+
+	void PerkDown( Critter& cr, uint perk ) // Export
+	{
+		# define PERKDOWN_STAT    # ( param, val )cr.StatBase[ param ] val
+		# define PERKDOWN_SKILL                                                                     \
+			# ( param, val )cr.SkillBase[ param ] val; if( cr.SkillBase[ param ] < -MAX_SKILL_VAL ) \
+				cr.SkillBase[ param ] = -MAX_SKILL_VAL
+		switch( perk )
+		{
+			case(0): break;
+			default:
+				break;
+		}
+	}
+	#endif // CLIENT
+
+#endif // PERKS

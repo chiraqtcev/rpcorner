@@ -1,0 +1,2870 @@
+// Author: cvet
+// Mapper main script
+// Compile using fo_mapper.dll
+
+//
+// API specification
+//
+
+// / Reserved functions
+// void start()
+// uint loop()
+// bool console_message(string& message)
+// void render_iface(uint layer)
+// void render_map()
+// bool mouse_down(int click)
+// bool mouse_up(int click)
+// void mouse_move(int x, int y)
+// bool key_down(uint8 key)
+// bool key_up(uint8 key)
+// void input_lost()
+
+// / User functions
+// string FuncName(string str)
+// Call in console using '#'
+
+// / Global functions
+// void    SetDefaultCritterParam(uint index, int param)
+//  Init state: 0 ST_DIALOG_ID, 1 ST_AI_ID, 2 ST_BAG_ID, 3 ST_TEAM_ID, 4 ST_NPC_ROLE, 5 ST_REPLICATION_TIME, 6..14 -1
+// MapperMap@+ LoadMap(string& fileName, int pathType)
+// void    UnloadMap(MapperMap@+ map)
+// bool    SaveMap(MapperMap@+ map, string& fileName, int pathType)
+// bool    ShowMap(MapperMap@+ map)
+// int     GetLoadedMaps(MapperMap@[]@+ maps)
+// void    DeleteObject(MapperObject@+ obj)
+// void    DeleteObjects(MapperObject@[]& objects)
+// void    SelectObject(MapperObject@+ obj, bool set)
+// void    SelectObjects(MapperObject@[]& objects, bool set)
+// MapperObject@+ GetSelectedObject()
+// uint    GetSelectedObjects(MapperObject@[]@+ objects)
+// MapperObject@+ GetMonitorObject(int x, int y, bool ignoreInterface = false)
+// void    GetMousePosition(int& x, int& y)
+// uint    GetMapFileNames(string@+ dir, string@[]@+ names)
+//
+// ProtoItem@+ GetProtoItem(uint16 protoId)
+// bool    LoadDat(string& datName)
+// void    MoveScreen(uint16 hexX, uint16 hexY, uint speed)
+// int     GetKeybLang()
+// string@ GetIfaceIniStr(string& key)
+// bool    LoadFont(int font, string& fontFileName)
+// void    SetDefaultFont(int font, uint color)
+// void    MouseClick(int x, int y, int button, int cursor)
+// void    KeyboardPress(uint8 key1, uint8 key2)
+//
+// void    Log(string& text)
+// string@ GetLastError()
+// int     Random(int minimum, int maximum)
+// uint    GetTick()
+// uint    GetAngelScriptProperty(int property)
+// void    SetAngelScriptProperty(int property, uint value)
+//
+// void    GetHexCoord(uint16 fromHx, uint16 fromHy, uint16& toHx, uint16& toHy, float angle, uint dist)
+// uint    GetPathLength(uint16 fromHx, uint16 fromHy, uint16 toHx, uint16 toHy, uint cut)
+// bool    GetHexPos(uint16 hx, uint16 hy, int& x, int& y)
+// bool    GetMonitorHex(int x, int y, uint16& hx, uint16& hy)
+// void    MoveHexByDir(uint16& hexX, uint16& hexY, uint8 dir, uint steps)
+// uint    GetDistantion(uint16 hexX1, uint16 hexY1, uint16 hexX2, uint16 hexY2)
+// uint8   GetDirection(uint16 fromX, uint16 fromY, uint16 toX, uint16 toY)
+// uint8   GetOffsetDir(uint16 hx, uint16 hy, uint16 tx, uint16 ty, float offset)
+//
+// void    Message(string& text)
+// void    Message(int textMsg, uint strNum)
+// void    MapMessage(string& text, uint16 hx, uint16 hy, uint timeMs, uint color, bool fade, int offsX, int offsY)
+// string@ GetMsgStr(int textMsg, uint strNum)
+// string@ GetMsgStr(int textMsg, uint strNum, uint skipCount)
+// uint    GetMsgStrNumUpper(int textMsg, uint strNum)
+// uint    GetMsgStrNumLower(int textMsg, uint strNum)
+// uint    GetMsgStrCount(int textMsg, uint strNum)
+// bool    IsMsgStr(int textMsg, uint strNum)
+// string@ ReplaceText(const string& text, const string& replace, const string& str)
+// string@ ReplaceText(const string& text, const string& replace, int i)
+//
+// uint    LoadSprite(string& name, int pathIndex)
+// uint    LoadSprite(uint16 sprNum, uint8 dir, int pathIndex)
+// int     GetSpriteWidth(uint sprId, int sprIndex)
+// int     GetSpriteHeight(uint sprId, int sprIndex)
+// uint    GetSpriteCount(uint sprId)
+// void    DrawSprite(uint sprId, int sprIndex, int x, int y, uint color)
+// void    DrawSprite(uint sprId, int sprIndex, int x, int y, int w, int h, bool scratch, bool center, uint color)
+// void    DrawText(string& text, int x, int y, int w, int h, uint color, int font, int flags)
+// void    DrawPrimitive(int primitiveType, int[]& data)
+// void    DrawMapSprite(uint16 hx, uint16 hy, uint16 effectPid, uint sprId, int sprIndex, int offsX, int offsY)
+// void    DrawCritter2d(uint crType, uint anim1, uint anim2, uint8 dir, int l, int t, int r, int b, bool scratch, bool center, uint color)
+// void    DrawCritter3d(uint instance, uint crType, uint anim1, uint anim2, int[]@+ layers, float[]@+ position, uint color)
+//
+// uint    TabGetTileDirs(int tab, string@[]@+ dirNames, bool[]@+ includeSubdirs)
+// uint    TabGetItemPids(int tab, string@+ subTab, uint16[]@+ itemPids)
+// uint    TabGetCritterPids(int tab, string@+ subTab, uint16[]@+ critterPids)
+// void    TabSetTileDirs(int tab, string@[]@+ dirNames, bool[]@+ includeSubdirs)
+// void    TabSetItemPids(int tab, string@+ subTab, uint16[]@+ itemPids)
+// void    TabSetCritterPids(int tab, string@+ subTab, uint16[]@+ critterPids)
+// void    TabDelete(int tab)
+// void    TabSelect(int tab, string@+ subTab, bool show = false)
+// void    TabSetName(int tab, string@+ subName)
+
+// / MapperObject
+// Shared parameters
+// const uint8  MapObjType
+// const uint16 ProtoId
+// const uint16 MapX
+// const uint16 MapY
+// uint8   Dir
+// const uint UID;
+// const uint ContainerUID;
+// const uint ParentUID;
+// const uint ParentChildIndex;
+// string  ScriptName
+// string  FuncName
+// uint    LightColor
+// uint8   LightDay
+// uint8   LightDirOff
+// uint8   LightRadius
+// int8    LightIntensity
+// int     UserData0..9
+//  Critter parameters
+// uint8   Critter_Cond
+// uint8   Critter_CondExt
+// int16   Critter_ParamIndex0..14
+// int     Critter_ParamValue0..14
+//  Item/Scenery shared parameters
+// int16   OffsetX
+// int16   OffsetY
+// uint8   AnimStayBegin
+// uint8   AnimStayEnd
+// uint16  AnimWait
+// string  PicMap
+// string  PicInv
+// uint8   InfoOffset
+//  Item parameters
+// uint    Item_Count
+// uint8   Item_BrokenFlags
+// uint8   Item_BrokenCount
+// uint16  Item_Deterioration
+// uint8   Item_ItemSlot
+// uint16  ITEM_TYPE_AMMOPid
+// uint    ITEM_TYPE_AMMOCount
+// uint    Item_LockerDoorId
+// uint16  Item_LockerCondition
+// uint16  Item_LockerComplexity
+// int16   Item_TrapValue
+// int     Item_Val0..9
+//  Scenery parameters
+// bool    Scenery_CanUse
+// bool    Scenery_CanTalk
+// uint    Scenery_TriggerNum
+// uint8   Scenery_ParamsCount
+// int     Scenery_Param0..4
+// uint    Scenery_ToMapPid
+// uint    Scenery_ToEntire
+// uint8   Scenery_ToDir
+// uint8   Scenery_SpriteCut
+//
+// void    Update() const
+// uint    GetChilds(MapperObject@[]@+ objects) const
+// void    MoveToHex(uint16 hexX, uint16 hexY)
+// void    MoveToHexOffset(int x, int y)
+// void    MoveToDir(uint8 dir)
+
+// / MapperMap
+// const uint16 Width
+// const uint16 Height
+// const int    WorkHexX
+// const int    WorkHexY
+// int    Time
+// bool   NoLogOut
+// string ScriptModule
+// string ScriptFunc
+
+// MapperObject@+ AddObject(uint16 hexX, uint16 hexY, int mapObjType, uint16 pid)
+// MapperObject@+ GetObject(uint16 hexX, uint16 hexY, int mapObjType, uint16 pid, uint skip) const
+// uint    GetObjects(uint16 hexX, uint16 hexY, uint radius, int mapObjType, uint16 pid, MapperObject@[]@+ objects) const
+// void    UpdateObjects() const
+// uint    GetTilesCount(uint16 hexX, uint16 hexY, bool roof) const
+// void    DeleteTile(uint16 hexX, uint16 hexY, bool roof, uint index)
+// uint    GetTile(uint16 hexX, uint16 hexY, bool roof, uint index) const
+// void    AddTile(uint16 hexX, uint16 hexY, int offsX, int offsY, int layer, bool roof, uint picHash)
+// string@ GetTileName(uint16 hexX, uint16 hexY, bool roof, uint index) const
+// void    AddTileName(uint16 hexX, uint16 hexY, int offsX, int offsY, int layer, bool roof, string@+ picName)
+// uint    GetDayTime(uint dayPart) const
+// void    SetDayTime(uint dayPart, uint time)
+// void    GetDayColor(uint dayPart, uint8& r, uint8& g, uint8& b) const
+// void    SetDayColor(uint dayPart, uint8 r, uint8 g, uint8 b)
+// void    Resize(uint16 width, uint16 height)
+
+#include "_client_defines.fos"
+#include "_mapper_defines.fos"
+#include "_defines.fos"
+#include "_itempid.fos"
+
+#define GRID_COLOR_INNER (0x33000000)
+#define GRID_COLOR_OUTER (0x66000000)
+
+import void InitializeGame() from "config";
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Call on new mapper instance creating.
+// Return true to handle event and close new instance or
+// return false to allow creating of new mapper instance.
+bool new_instance( string commandLine )
+{
+    return false;
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Call on mapper loaded.
+void start()
+{
+    InitializeGame();
+    InitializeTabs();
+}
+
+void InitializeTabs()
+{
+    uint16[] pids;
+	ProtoItem@[] ProtoItems;
+	for( uint16 i = 1; i <= 30000; i++ ) {
+		ProtoItem@ protoItem = GetProtoItem( i );
+		if( protoItem is null ) { continue; }
+		ProtoItems.insertLast( protoItem );
+	}
+
+    TabDelete( TAB_FAST_ITEMS );
+	
+	// FAST TAB
+    // Special hexes
+    pids.resize( 0 );
+	pids.insertLast( 6531 );   // Map region hex
+    pids.insertLast( 2049 );   // Exit hex
+    pids.insertLast( 2067 );   // Secret Blocking Hex
+    pids.insertLast( 2141 );   // Light source
+    pids.insertLast( 2344 );   // Block Hex Auto Inviso
+    pids.insertLast( 3852 );   // Trigger
+    pids.insertLast( 3853 );   // Entire
+    pids.insertLast( 4012 );   // Scroll block
+    pids.insertLast( 4592 );   // Light stopper
+    pids.insertLast( 5621 );   // Wall blocker with light
+    pids.insertLast( 5622 );   // Wall blocker without light
+    for( uint i = 6800; i <= 6805; i++ )
+        pids.insertLast( i );
+    for( uint i = 4016; i <= 4023; i++ )
+        pids.insertLast( i );
+    for( uint i = 4031; i <= 4046; i++ )
+        pids.insertLast( i );
+    //pids.insertLast( 10000 );
+    pids.insertLast( 10001 );
+    TabSetItemPids( TAB_FAST_ITEMS, "001 - special", pids );
+    pids.resize( 0 );
+    pids.insertLast( 2612 );
+    pids.insertLast( 2827 );
+    pids.insertLast( 2828 );
+    pids.insertLast( 2907 );
+    pids.insertLast( 2908 );
+    pids.insertLast( 2935 );
+    pids.insertLast( 2936 );
+    for( uint i = 3373; i <= 3376; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_FAST_ITEMS, "002 - light", pids );
+
+    // ARMOR TAB
+    TabDelete( TAB_CUSTOM0 );
+    pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC0 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "070 - AC 0", pids );
+
+    pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC5 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "071 - AC 5", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC10 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "072 - AC10", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC15 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "073 - AC15", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC20 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "074 - AC20", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC25 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "075 - AC25", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC30 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "076 - AC30", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC35 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "077 - AC35", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC40 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "078 - AC40", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC45 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "079 - AC45", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_ARMOR_AC50 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM0, "080 - AC50", pids );
+    TabSetName( TAB_CUSTOM0, "Arm" );
+	
+    // DRUGS TAB
+    TabDelete( TAB_CUSTOM1 );
+	
+    pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_DRUG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM1, "001 - Drugs", pids );
+    TabSetName( TAB_CUSTOM1, "Drg" );
+
+    // WEAPON TAB
+    TabDelete( TAB_CUSTOM2 );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_PISTOL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "001 - Пистолеты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_PISTOL_REVOLVER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "002 - Револьверы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_SMG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "003 - СМГ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "004 - Винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_ASSAULT_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "005 - Штурмовухи", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_SNIPER_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "006 - Снайперки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_SHOTGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "007 - Дробовики", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_AUTOSHOTGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "008 - Авто Дробовики", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_LMG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "009 - Легкие Пулеметы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_MACHINEGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "010 - Пулеметы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_NADELAUNCHER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "011 - Гранатометы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_FLAMETHROWER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "012 - Огнеметы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_MINIGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "013 - Миниганы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_NORMAL_HEAVY_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "014 - Тяжелые Винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_PISTOL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "015 - Лазерные Пистолеты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "016 - Лазерные Винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_SMG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "017 - Лазерные СМГ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_SNIPER_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "018 - Лазерные Снайперки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_HEAVY_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "019 - Лазерные Пушки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_MINIGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "020 - Лазерный миниган", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_LASER_MACHINEGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "021 - Лазерный пулемет", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_PISTOL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "025 - Плазменные пистолеты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "026 - Плазменные винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_SMG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "027 - Плазменные СМГ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_SNIPER_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "028 - Плазменные Снайперки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_HEAVY_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "029 - Плазменные Пушки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PLASMA_MINIGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "030 - Плазменные Миниганы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_PISTOL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "035 - Импульсные пистолеты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "036 - Импульсные винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_SMG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "037 - Импульсные СМГ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_SNIPER_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "038 - Импульсные снайперки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_SHOTGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "039 - Импульсные дробовики", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_PULSE_MINIGUN ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "040 - Импульсные миниганы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_SONIC_PISTOL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "041 - Звуковые пистолеты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_SONIC_RIFLE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "042 - Звуковые винтовки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_PRIM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "043 - Примитивные метательные", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_KIFE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "044 - Метательные ножи", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_FRAG ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "045 - Осколочные Гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_CONCUSSION ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "046 - Оглушающие гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_FLASH ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "047 - Световые гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_SMOKE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "048 - Дымовые гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_PLASMA ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "049 - Плазменные гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_ELECTRO ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "050 - Электро гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_MOLOTOV ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "051 - Молотовы", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_INCENDIARY ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "052 - Зажигательные гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_GAS ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "053 - Газовые гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_GRENADE_ACID ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "054 - Кислотные гранаты", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_KNIFE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "055 - Ножи", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_LONG_KNIFE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "056 - Большие Ножи", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_SPEAR ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "057 - Копья", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_HAMMER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "058 - Молот", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_GLOVE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "059 - Перчатки", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_CLUB ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "060 - Дубины", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+		uint8 item_Subtype = protoItem.Item_Subtype;
+		if( item_Subtype == ITEM_SUBTYPE_WEAPON_MELEE_SHORT_SPEAR ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM2, "061 - Короткие копья", pids );
+	
+    TabSetName( TAB_CUSTOM2, "Wpn" );
+
+    // AMMO TAB
+	TabDelete( TAB_CUSTOM3 );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_ROCKET ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "001 - CALIBER_ROCKET", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_FLAMETHROWER_FUEL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "002 - CALIBER_FLAMETHROWER_FUEL", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_C_ENERGY_CELL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "003 - CALIBER_C_ENERGY_CELL", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_D_ENERGY_CELL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "004 - CALIBER_D_ENERGY_CELL", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_223 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "005 - CALIBER_223", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_5MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "006 - CALIBER_5MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_40 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "007 - CALIBER_40", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_10MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "008 - CALIBER_10MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_44 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "009 - CALIBER_44", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_14MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "010 - CALIBER_14MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_12_GAUGE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "011 - CALIBER_12_GAUGE", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_9MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "012 - CALIBER_9MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_BB ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "013 - CALIBER_BB", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_45 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "014 - CALIBER_45", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_2MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "015 - CALIBER_2MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_4_7MM_CASELESS ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "016 - CALIBER_4_7MM_CASELESS", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_HN_NEEDLER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "017 - CALIBER_HN_NEEDLER", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_7_62MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "018 - CALIBER_7_62MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_DART ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "019 - CALIBER_DART", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_SHELLS_40MM ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "020 - CALIBER_SHELLS_40MM", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_SIGNAL_CARTRIDGES ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "021 - CALIBER_SIGNAL_CARTRIDGES", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_22 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "022 - CALIBER_22", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_SPIKE ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "023 - CALIBER_SPIKE", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_50 ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "024 - CALIBER_50", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Cal = protoItem.Ammo_Caliber;
+		if( item_Cal == CALIBER_NAILS ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM3, "030 - CALIBER_NAILS", pids );
+	
+	TabSetName( TAB_CUSTOM3, "Amm" );
+	
+    // MSC TAB
+    TabDelete( TAB_CUSTOM4 );
+
+    pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_MISC ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM4, "001 - Misc", pids );
+    TabSetName( TAB_CUSTOM4, "Msc" );
+
+    // MSC2 TAB
+    TabDelete( TAB_CUSTOM5 );
+    // Key
+    pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_KEY ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM5, "001 - keys", pids );
+
+    // Msc2 items
+    pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_CAR ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM5, "001 - Cars", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_EFFECT ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM5, "002 - Effects", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_PLANT ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM5, "003 - Plants", pids );
+
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_FOOD ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM5, "004 - Food", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_DRINK ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM5, "005 - Drink", pids );
+	TabSetName( TAB_CUSTOM5, "Msc2" );
+	
+    // CONTAINERS AND DOORS TAB
+    TabDelete( TAB_CUSTOM6 );
+
+    // Containers
+    pids.resize( 0 );
+	for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_CONTAINER ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM6, "001 - Containers", pids );
+
+    // Door
+    pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_DOOR ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM6, "002 - Doors", pids );
+
+    TabSetName( TAB_CUSTOM6, "C/D" );
+
+    // GRIDS TAB
+    TabDelete( TAB_CUSTOM7 );
+
+    // Scenery
+	pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_GRID ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+
+    TabSetItemPids( TAB_CUSTOM7, "001 - grids", pids );
+
+    TabSetName( TAB_CUSTOM7, "Grd" );
+
+    // GENERIC SCENERY TAB
+    TabDelete( TAB_CUSTOM8 );
+
+    pids.resize( 0 );
+    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_GENERIC ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+    TabSetItemPids( TAB_CUSTOM8, "000 - Everything", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2009; i <= 2017; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 2020 );
+    pids.insertLast( 2021 );
+    for( uint i = 2024; i <= 2048; i++ )
+        pids.insertLast( i );
+    for( uint i = 2050; i <= 2062; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "001 - Vault 13", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2063; i <= 2066; i++ )
+        pids.insertLast( i );
+    for( uint i = 2069; i <= 2076; i++ )
+        pids.insertLast( i );
+    for( uint i = 2078; i <= 2086; i++ )
+        pids.insertLast( i );
+    for( uint i = 2090; i <= 2093; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "002 - Stones and misc", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2094; i <= 2127; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "003 - Junktown", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2129; i <= 2138; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "004 - Necro sewer", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2145; i <= 2150; i++ )
+        pids.insertLast( i );
+    for( uint i = 2155; i <= 2172; i++ )
+        pids.insertLast( i );
+    for( uint i = 2174; i <= 2193; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "005 - Bro&Vault", pids );
+
+    pids.resize( 0 );
+    pids.insertLast( 2194 );
+    for( uint i = 2198; i <= 2257; i++ )
+        pids.insertLast( i );
+    for( uint i = 2262; i <= 2331; i++ )
+        pids.insertLast( i );
+    for( uint i = 2334; i <= 2343; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "006 - Necro city", pids );
+
+    pids.resize( 0 );
+    pids.insertLast( 2345 );
+    pids.insertLast( 2347 );
+    for( uint i = 2357; i <= 2360; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "007 - Cathedral", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2363; i <= 2383; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "008 - S. Sands", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2384; i <= 2405; i++ )
+        pids.insertLast( i );
+    for( uint i = 2407; i <= 2420; i++ )
+        pids.insertLast( i );
+    for( uint i = 2422; i <= 2423; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "009 - Tents&Indstr", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2425; i <= 2436; i++ )
+        pids.insertLast( i );
+    for( uint i = 2439; i <= 2447; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 2449 );
+    TabSetItemPids( TAB_CUSTOM8, "010 - M.base/Cath", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2450; i <= 2466; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "011 - Gamble", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2467; i <= 2469; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "012 - Old elev.", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2471; i <= 2480; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "013 - Warehouse", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2483; i <= 2485; i++ )
+        pids.insertLast( i );
+    for( uint i = 2487; i <= 2508; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "014 - Pray@Follow", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2509; i <= 2515; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "015 - Crrap", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2516; i <= 2526; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "016 - Bro Elders", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2527; i <= 2532; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "017 - Carts", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2533; i <= 2543; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "018 - Bro sport", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2544; i <= 2580; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 2582 );
+    for( uint i = 2585; i <= 2590; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "019 - Ind,Bro,Cath", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2591; i <= 2644; i++ )
+        pids.insertLast( i );
+    for( uint i = 2646; i <= 2685; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "020 - In&Out", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2686; i <= 2696; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "021 - Cliffs", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2697; i <= 2824; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "022 - Master", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2827; i <= 2847; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "023 - Robo", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2851; i <= 2900; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "024 - Signs", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2901; i <= 2908; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "025 - Robo2", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2909; i <= 2933; i++ )
+        pids.insertLast( i );
+    for( uint i = 2935; i <= 2953; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "026 - Arroyo", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2963; i <= 2975; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "027 - Klamath", pids );
+
+    pids.resize( 0 );
+    for( uint i = 2979; i <= 2980; i++ )
+        pids.insertLast( i );
+    for( uint i = 2985; i <= 2994; i++ )
+        pids.insertLast( i );
+    for( uint i = 2996; i <= 3018; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "028 - Gecko&Ind", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3019; i <= 3141; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 3448 );
+    TabSetItemPids( TAB_CUSTOM8, "029 - Reno", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3142; i <= 3158; i++ )
+        pids.insertLast( i );
+    for( uint i = 3161; i <= 3168; i++ )
+        pids.insertLast( i );
+    for( uint i = 3171; i <= 3191; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "030 - Indstr", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3192; i <= 3215; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "031 - Cav&Wall", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3216; i <= 3227; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "032 - Bodies", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3230; i <= 3236; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "033 - Sierra", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3237; i <= 3253; i++ )
+        pids.insertLast( i );
+    for( uint i = 3294; i <= 3296; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "034 - Grvs&Grss", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3254; i <= 3273; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "035 - NCR", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3274; i <= 3292; i++ )
+        pids.insertLast( i );
+    for( uint i = 3305; i <= 3320; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "036 - Beams", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3299; i <= 3304; i++ )
+        pids.insertLast( i );
+    for( uint i = 3321; i <= 3329; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "037 - Gore", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3330; i <= 3336; i++ )
+        pids.insertLast( i );
+    for( uint i = 3338; i <= 3357; i++ )
+        pids.insertLast( i );
+    for( uint i = 3359; i <= 3379; i++ )
+        pids.insertLast( i );
+    for( uint i = 3468; i <= 3472; i++ )
+        pids.insertLast( i );
+    for( uint i = 3706; i <= 3708; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "038 - Bulk", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3380; i <= 3386; i++ )
+        pids.insertLast( i );
+    for( uint i = 3436; i <= 3447; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "039 - VCity", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3393; i <= 3416; i++ )
+        pids.insertLast( i );
+    for( uint i = 3419; i <= 3432; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "040 - Signs", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3473; i <= 3478; i++ )
+        pids.insertLast( i );
+    for( uint i = 3481; i <= 3490; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "041 - Reno Bulk", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3493; i <= 3530; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 3537 );
+    for( uint i = 3636; i <= 3644; i++ )
+        pids.insertLast( i );
+    for( uint i = 3649; i <= 3651; i++ )
+        pids.insertLast( i );
+    for( uint i = 3746; i <= 3747; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "042 - Enclave", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3450; i <= 3465; i++ )
+        pids.insertLast( i );
+    for( uint i = 3538; i <= 3572; i++ )
+        pids.insertLast( i );
+    for( uint i = 3577; i <= 3599; i++ )
+        pids.insertLast( i );
+    for( uint i = 3609; i <= 3619; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "043 - Frisco", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3600; i <= 3608; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "044 - Temple&Ant", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3620; i <= 3635; i++ )
+        pids.insertLast( i );
+    for( uint i = 3652; i <= 3654; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 3656 );
+    for( uint i = 3684; i <= 3687; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "045 - Mining", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3657; i <= 3659; i++ )
+        pids.insertLast( i );
+    for( uint i = 3661; i <= 3683; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "046 - NCR", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3688; i <= 3705; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "047 - Vertywhat?", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3711; i <= 3720; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "048 - Tanker", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3721; i <= 3736; i++ )
+        pids.insertLast( i );
+    for( uint i = 3737; i <= 3744; i++ )
+        pids.insertLast( i );
+    for( uint i = 3749; i <= 3755; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "049 - Greece", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3756; i <= 3792; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "050 - Moar Bulk ", pids );
+
+    pids.resize( 0 );
+    for( uint i = 3793; i <= 3817; i++ )
+        pids.insertLast( i );
+    for( uint i = 3820; i <= 3834; i++ )
+        pids.insertLast( i );
+    for( uint i = 3836; i <= 3852; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "051 - Colored stuff", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4001; i <= 4011; i++ )
+        pids.insertLast( i );
+    for( uint i = 4013; i <= 4015; i++ )
+        pids.insertLast( i );
+    for( uint i = 4024; i <= 4030; i++ )
+        pids.insertLast( i );
+    for( uint i = 4047; i <= 4060; i++ )
+        pids.insertLast( i );
+	pids.insertLast( PID_FLYING_SLEDGEHAMMER );
+	pids.insertLast( 22300 );
+	pids.insertLast( 22301 );
+	pids.insertLast( 22302 );
+	pids.insertLast( 22303 );
+	pids.insertLast( 22304 );
+    TabSetItemPids( TAB_CUSTOM8, "052 - Effects", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4277; i <= 4282; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "053 - Craft", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4500; i <= 4590; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "054 - Tactics", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4594; i <= 4611; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "055 - Fallout:BGE", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4612; i <= 4657; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "056 - Hell", pids );
+
+    pids.resize( 0 );
+    for( uint i = 4667; i <= 4756; i++ )
+        pids.insertLast( i );
+    for( uint i = 4770; i <= 4999; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM8, "FOnline latest", pids );
+
+    TabSetName( TAB_CUSTOM8, "Gen" );
+
+    // WALLS TAB
+    TabDelete( TAB_CUSTOM9 );
+	pids.resize( 0 );
+	    for( uint i = 0; i < ProtoItems.length(); i++ ) {
+		ProtoItem@ protoItem = ProtoItems[i];
+		if( protoItem is null ) { continue; }
+			uint8 item_Type = protoItem.Type;
+		if( item_Type == ITEM_TYPE_WALL ) {
+			pids.insertLast( ProtoItems[i].ProtoId );
+		}
+	}
+	TabSetItemPids( TAB_CUSTOM9, "000 - Everything", pids );
+	  
+    pids.resize( 0 );
+    for( uint i = 5001; i <= 5055; i++ )
+        pids.insertLast( i );
+	for( uint i = 6033; i <= 6034; i++ )
+        pids.insertLast( i );
+	for( uint i = 6583; i <= 6587; i++ )
+        pids.insertLast( i );
+	for( uint i = 6624; i <= 6630; i++ )
+        pids.insertLast( i );
+	for( uint i = 6741; i <= 6744; i++ )
+        pids.insertLast( i );
+	for( uint i = 6748; i <= 6749; i++ )
+        pids.insertLast( i );
+	for( uint i = 15199; i <= 15200; i++ )
+        pids.insertLast( i );
+	for( uint i = 8642; i <= 8647; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "001 - Vault 13", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6296; i <= 6343; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "002 - Vault City Entrance ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5989; i <= 6032; i++ )
+        pids.insertLast( i );
+	for( uint i = 6037; i <= 6038; i++ )
+        pids.insertLast( i );
+	for( uint i = 6135; i <= 6138; i++ )
+        pids.insertLast( i );
+	for( uint i = 6404; i <= 6407; i++ )
+        pids.insertLast( i );
+	for( uint i = 6769; i <= 6775; i++ )
+        pids.insertLast( i );
+	for( uint i = 6739; i <= 6740; i++ )
+        pids.insertLast( i );
+	for( uint i = 25675; i <= 25683; i++ )
+        pids.insertLast( i );
+	for( uint i = 15197; i <= 15198; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "003 - Shelter - gray walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5666; i <= 5727; i++ )
+        pids.insertLast( i );
+	for( uint i = 6035; i <= 6036; i++ )
+        pids.insertLast( i );
+	for( uint i = 6174; i <= 6176; i++ )
+        pids.insertLast( i );
+	for( uint i = 6257; i <= 6262; i++ )
+        pids.insertLast( i );
+	for( uint i = 6579; i <= 6582; i++ )
+        pids.insertLast( i );
+	for( uint i = 6750; i <= 6756; i++ )
+        pids.insertLast( i );
+	for( uint i = 6319; i <= 6143; i++ )
+        pids.insertLast( i );
+	for( uint i = 25996; i <= 26006; i++ )
+        pids.insertLast( i );
+	for( uint i = 15195; i <= 15196; i++ )
+        pids.insertLast( i );
+	for( uint i = 8515; i <= 8523; i++ )
+        pids.insertLast( i );
+	for( uint i = 8648; i <= 8654; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "004 - Shelter - sand walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5749; i <= 5799; i++ )
+        pids.insertLast( i );
+	for( uint i = 6646; i <= 6651; i++ )
+        pids.insertLast( i );
+	for( uint i = 6657; i <= 6664; i++ )
+        pids.insertLast( i );
+	for( uint i = 6850; i <= 6890; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "005 - Brotherhood of Steel ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6558; i <= 6573; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "006 - Enclave's shelter ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 5056; i <= 5085; i++ )
+        pids.insertLast( i );
+	for( uint i = 6721; i <= 6721; i++ )
+        pids.insertLast( i );
+	for( uint i = 6891; i <= 6891; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "007 - Pipes", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 5086; i <= 5091; i++ )
+        pids.insertLast( i );
+	for( uint i = 5141; i <= 5152; i++ )
+        pids.insertLast( i );
+	for( uint i = 5487; i <= 5488; i++ )
+        pids.insertLast( i );
+	for( uint i = 6270; i <= 6281; i++ )
+        pids.insertLast( i );
+	for( uint i = 6382; i <= 6387; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "008 - Wood Fence Low ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5092; i <= 5140; i++ )
+        pids.insertLast( i );
+	for( uint i = 5153; i <= 5159; i++ )
+        pids.insertLast( i );
+    for( uint i = 5244; i <= 5250; i++ )
+        pids.insertLast( i );
+    for( uint i = 5366; i <= 5367; i++ )
+        pids.insertLast( i );
+    for( uint i = 5419; i <= 5421; i++ )
+        pids.insertLast( i );
+	for( uint i = 5728; i <= 5748; i++ )
+        pids.insertLast( i );
+	for( uint i = 5957; i <= 5976; i++ )
+        pids.insertLast( i );
+	for( uint i = 6910; i <= 6915; i++ )
+        pids.insertLast( i );
+	for( uint i = 6934; i <= 6956; i++ )
+        pids.insertLast( i );
+    pids.insertLast( 15201 );
+	for( uint i = 23655; i <= 23656; i++ )
+		pids.insertLast( i );
+	for( uint i = 23661; i <= 23662; i++ )
+		pids.insertLast( i );
+	for( uint i = 25411; i <= 25421; i++ )
+        pids.insertLast( i );
+
+    TabSetItemPids( TAB_CUSTOM9, "009 - Wooden walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 8655; i <= 8705; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "010 - Wooden house ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 25482; i <= 25507; i++ )
+        pids.insertLast( i );
+	for( uint i = 8418; i <= 8421; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "011 - High wooden walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5467; i <= 5486; i++ )
+        pids.insertLast( i );
+	for( uint i = 25050; i <= 25050; i++ )
+        pids.insertLast( i );
+	for( uint i = 25476; i <= 25481; i++ )
+        pids.insertLast( i );
+	for( uint i = 8280; i <= 8290; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "012 - Bar counter ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5161; i <= 5173; i++ )
+        pids.insertLast( i );
+	for( uint i = 6669; i <= 6681; i++ )
+        pids.insertLast( i );
+	for( uint i = 25127; i <= 25148; i++ )
+        pids.insertLast( i );
+	for( uint i = 15100; i <= 15107; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "013 - Metal low fence ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 8422; i <= 8429; i++ )
+        pids.insertLast( i );
+	for( uint i = 8276; i <= 8276; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "014 - Metal high fence ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 25422; i <= 25458; i++ )
+        pids.insertLast( i );
+	for( uint i = 25786; i <= 25802; i++ )
+        pids.insertLast( i );
+	for( uint i = 8293; i <= 8311; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "015- Corrugated metal walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6115; i <= 6134; i++ )
+        pids.insertLast( i );
+	for( uint i = 6588; i <= 6588; i++ )
+        pids.insertLast( i );
+	for( uint i = 6633; i <= 6633; i++ )
+        pids.insertLast( i );
+	for( uint i = 6768; i <= 6768; i++ )
+        pids.insertLast( i );
+	for( uint i = 6906; i <= 6909; i++ )
+        pids.insertLast( i );
+	for( uint i = 25051; i <= 25052; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "016 - Tall metal building ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6491; i <= 6511; i++ )
+        pids.insertLast( i );
+	for( uint i = 6631; i <= 6632; i++ )
+        pids.insertLast( i );
+	for( uint i = 6710; i <= 6718; i++ )
+        pids.insertLast( i );
+	for( uint i = 25508; i <= 25531; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "017 - Metal walls ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6593; i <= 6623; i++ )
+        pids.insertLast( i );
+	for( uint i = 6719; i <= 6720; i++ )
+        pids.insertLast( i );
+	for( uint i = 6724; i <= 6738; i++ )
+        pids.insertLast( i );
+	for( uint i = 7274; i <= 7275; i++ )
+        pids.insertLast( i );
+	for( uint i = 25053; i <= 25126; i++ )
+        pids.insertLast( i );
+	for( uint i = 25613; i <= 25642; i++ )
+        pids.insertLast( i );
+	for( uint i = 25721; i <= 25768; i++ )
+        pids.insertLast( i );
+	for( uint i = 25823; i <= 25879; i++ )
+        pids.insertLast( i );
+	for( uint i = 8530; i <= 8555; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "018- Rusty metal wall ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5251; i <= 5267; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "019 - Junk Town fence ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5288; i <= 5361; i++ )
+        pids.insertLast( i );
+	for( uint i = 5422; i <= 5425; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "020 - Car trash fence ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 5281; i <= 5287; i++ )
+        pids.insertLast( i );
+    for( uint i = 5977; i <= 5987; i++ )
+        pids.insertLast( i );
+	for( uint i = 8330; i <= 8339; i++ )
+        pids.insertLast( i );
+	for( uint i = 8570; i <= 8615; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "021 - Cars ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5268; i <= 5280; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "022 - Junk Town gate ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5800; i <= 5823; i++ )
+        pids.insertLast( i );
+	for( uint i = 6282; i <= 6295; i++ )
+        pids.insertLast( i );
+	for( uint i = 6652; i <= 6656; i++ )
+        pids.insertLast( i );
+	for( uint i = 15170; i <= 15183; i++ )
+        pids.insertLast( i );
+	for( uint i = 15193; i <= 15194; i++ )
+        pids.insertLast( i );
+	for( uint i = 8291; i <= 8291; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "023 - Rabitz ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6344; i <= 6381; i++ )
+        pids.insertLast( i );
+	for( uint i = 8455; i <= 8507; i++ )
+        pids.insertLast( i );
+	for( uint i = 8524; i <= 8529; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "024 - Beautiful wall ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 25643; i <= 25674; i++ )
+        pids.insertLast( i );
+	for( uint i = 25684; i <= 25709; i++ )
+        pids.insertLast( i );
+	for( uint i = 25769; i <= 25785; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "025- Mansion ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 25149; i <= 25165; i++ )
+        pids.insertLast( i );
+	for( uint i = 25170; i <= 25188; i++ )
+        pids.insertLast( i );
+	for( uint i = 25228; i <= 25316; i++ )
+        pids.insertLast( i );
+	for( uint i = 25532; i <= 25612; i++ )
+        pids.insertLast( i );
+	for( uint i = 25803; i <= 25822; i++ )
+        pids.insertLast( i );
+	for( uint i = 15116; i <= 15148; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "026- Hose wall ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5362; i <= 5365; i++ )
+        pids.insertLast( i );
+	for( uint i = 5368; i <= 5418; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "027 - Gas Station ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5426; i <= 5466; i++ )
+        pids.insertLast( i );
+	for( uint i = 15149; i <= 15150; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "028 - White stone buildings ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5849; i <= 5923; i++ )
+        pids.insertLast( i );
+	for( uint i = 6589; i <= 6592; i++ )
+        pids.insertLast( i );
+	for( uint i = 6634; i <= 6644; i++ )
+        pids.insertLast( i );
+	for( uint i = 6665; i <= 6668; i++ )
+        pids.insertLast( i );
+	for( uint i = 6757; i <= 6767; i++ )
+        pids.insertLast( i );
+	for( uint i = 25919; i <= 25991; i++ )
+        pids.insertLast( i );
+	for( uint i = 8312; i <= 8329; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "029 - White stone buildings ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 8312; i <= 8329; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "030 - Supermarcet ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6039; i <= 6080; i++ )
+        pids.insertLast( i );
+	for( uint i = 6154; i <= 6157; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "031 - White brick house ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5489; i <= 5542; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "032 - Black stone building ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5543; i <= 5561; i++ )
+        pids.insertLast( i );
+	for( uint i = 5654; i <= 5665; i++ )
+        pids.insertLast( i );
+	for( uint i = 6519; i <= 6520; i++ )
+        pids.insertLast( i );
+	for( uint i = 6918; i <= 6933; i++ )
+        pids.insertLast( i );
+	for( uint i = 5627; i <= 5630; i++ )
+        pids.insertLast( i );
+	for( uint i = 25166; i <= 25169; i++ )
+        pids.insertLast( i );
+	for( uint i = 23663; i <= 23664; i++ )
+        pids.insertLast( i );
+	for( uint i = 25196; i <= 25227; i++ )
+        pids.insertLast( i );
+	for( uint i = 25710; i <= 25720; i++ )
+        pids.insertLast( i );
+	for( uint i = 25903; i <= 25910; i++ )
+        pids.insertLast( i );
+	for( uint i = 25992; i <= 25994; i++ )
+        pids.insertLast( i );
+	for( uint i = 15155; i <= 15169; i++ )
+        pids.insertLast( i );
+	for( uint i = 8706; i <= 8729; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "033 - Brick building ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5562; i <= 5620; i++ )
+        pids.insertLast( i );
+	for( uint i = 5635; i <= 5645; i++ )
+        pids.insertLast( i );
+	for( uint i = 5824; i <= 5848; i++ )
+        pids.insertLast( i );
+	for( uint i = 6081; i <= 6086; i++ )
+        pids.insertLast( i );
+	for( uint i = 6160; i <= 6173; i++ )
+        pids.insertLast( i );
+	for( uint i = 6230; i <= 6241; i++ )
+        pids.insertLast( i );
+	for( uint i = 6521; i <= 6524; i++ )
+        pids.insertLast( i );
+	for( uint i = 6745; i <= 6747; i++ )
+        pids.insertLast( i );
+	for( uint i = 5623; i <= 5626; i++ )
+        pids.insertLast( i );
+	for( uint i = 5631; i <= 5634; i++ )
+        pids.insertLast( i );
+	for( uint i = 15108; i <= 15115; i++ )
+        pids.insertLast( i );
+	for( uint i = 15152; i <= 15154; i++ )
+        pids.insertLast( i );
+	for( uint i = 8340; i <= 8417; i++ )
+        pids.insertLast( i );
+	for( uint i = 8430; i <= 8436; i++ )
+        pids.insertLast( i );
+	for( uint i = 8730; i <= 8734; i++ )
+        pids.insertLast( i );
+	for( uint i = 23657; i <= 23660; i++ )
+		pids.insertLast( i );
+	for( uint i = 25800; i <= 25822; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "034 - Gray building ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6087; i <= 6114; i++ )
+        pids.insertLast( i );
+	for( uint i = 6527; i <= 6557; i++ )
+        pids.insertLast( i );
+	for( uint i = 6527; i <= 6530; i++ )
+        pids.insertLast( i );
+	for( uint i = 6531; i <= 6578; i++ )
+        pids.insertLast( i );
+	for( uint i = 25880; i <= 25902; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "035 - High stone fence ", pids );
+	
+	
+	pids.resize( 0 );
+    for( uint i = 24999; i <= 25049; i++ )
+        pids.insertLast( i );
+	for( uint i = 8616; i <= 8641; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "036 - Old brick wall ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 25459; i <= 25475; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "037 - Old white brick fence ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 5174; i <= 5243; i++ )
+        pids.insertLast( i );
+	for( uint i = 5646; i <= 5653; i++ )
+        pids.insertLast( i );
+	for( uint i = 5988; i <= 5988; i++ )
+        pids.insertLast( i );
+	for( uint i = 6227; i <= 6229; i++ )
+        pids.insertLast( i );
+	for( uint i = 6242; i <= 6256; i++ )
+        pids.insertLast( i );
+	for( uint i = 6525; i <= 6526; i++ )
+        pids.insertLast( i );
+	for( uint i = 7177; i <= 7233; i++ )
+        pids.insertLast( i );
+	for( uint i = 25317; i <= 25410; i++ )
+        pids.insertLast( i );
+	for( uint i = 15202; i <= 15252; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "038 - Cave ", pids );
+	
+	pids.resize( 0 );
+	for( uint i = 5924; i <= 5956; i++ )
+        pids.insertLast( i );
+	for( uint i = 6177; i <= 6200; i++ )
+        pids.insertLast( i );
+	for( uint i = 15184; i <= 15192; i++ )
+        pids.insertLast( i );
+	for( uint i = 8557; i <= 8569; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "039 - Tent ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6144; i <= 6153; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "040 - Water tank ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6201; i <= 6226; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "041 - Rope Bridge ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6263; i <= 6269; i++ )
+        pids.insertLast( i );
+	for( uint i = 6722; i <= 6723; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "042 - Shadows ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6388; i <= 6403; i++ )
+        pids.insertLast( i );
+	for( uint i = 6409; i <= 6490; i++ )
+        pids.insertLast( i );
+	for( uint i = 6518; i <= 6518; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "043 - Temple ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6777; i <= 6789; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "044 - Mr.Proper's wall ", pids );
+	
+	pids.resize( 0 );
+    for( uint i = 6958; i <= 7176; i++ )
+        pids.insertLast( i );
+	for( uint i = 7234; i <= 7273; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "045 - Subway ", pids );
+    TabSetName( TAB_CUSTOM9, "Wall" );
+	
+	pids.resize( 0 );
+    for( uint i = 7276; i <= 7886; i++ )
+        pids.insertLast( i );
+	for( uint i = 9026; i <= 9503; i++ )
+        pids.insertLast( i );
+    TabSetItemPids( TAB_CUSTOM9, "046 - MutantsRising ", pids );
+    TabSetName( TAB_CUSTOM9, "Wall" );
+	
+    // Tactics tiles, tiles_0.bos
+    if( __GeometryType == GEOMETRY_TACTICS )
+    {
+        TabSetName( TAB_CUSTOM0, "TacT" );
+        string@[] ftTiles = { "tiles/" };
+        bool[] includeSubdirs = { true };
+        TabSetTileDirs( TAB_CUSTOM0, ftTiles, includeSubdirs );
+    }
+
+    // Arcanum tiles, arcanum2.dat
+    if( __GeometryType == GEOMETRY_ARCANUM )
+    {
+        TabSetName( TAB_CUSTOM0, "ArcT" );
+        string@[] arcanumTiles = { "art/tile/" };
+        bool[] includeSubdirs = { true };
+        TabSetTileDirs( TAB_CUSTOM0, arcanumTiles, includeSubdirs );
+    }
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Main loop function. Returned time of next call in milliseconds.
+uint loop()
+{
+    return 60000;
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Call on console message. Return true to disable engine processing.
+bool console_message( string& message )
+{
+    // Command prefixes
+    // ~ load map
+    // ^ save map
+    // @ critter animation
+    // # run script
+    // * other
+    return false;
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Render interface function. You can use Draw* functions only there.
+// Layer specification:
+//    0
+// Game map
+//    1
+// Mapper interface
+//    2
+// Console, Messbox
+//    3
+// Mapper object interface
+//    4
+// Cursor
+//    5
+void render_iface( uint layer )
+{
+	if (0 == layer) {
+		renderMapGrid();
+		return;
+	}
+	if (1 == layer) {
+		renderRegionBoundaries();
+		return;
+	}
+}
+
+void renderRegionBoundaries() 
+{
+	MapperMap@ map = GetActiveMap();
+	if (null is map) return;
+
+	//  Gather all PID_REGION_BOUNDARY_CORNER around mouse position
+	array<MapperObject@> boundaryMarkers = {};
+	uint16 screenHexX = 0, screenHexY = 0;
+	GetMonitorHex(__MouseX, __MouseY, screenHexX, screenHexY);
+	uint boundaryMarkerCount = map.GetObjects(screenHexX, screenHexY, 100, 2, PID_REGION_BOUNDARY_CORNER, boundaryMarkers);
+	// Draw an outline for each one
+	for (uint pos = 0; pos < boundaryMarkerCount; pos++) {
+		MapperObject@ boundary = boundaryMarkers[pos];
+		uint16 width = uint16(boundary.Scenery_Param0) * 2;
+		uint16 height = uint16(boundary.Scenery_Param1) * 2;
+		// If width is not set, = 2
+		if (width == 0) {
+			width  = 2;
+		}
+		// If height is not set, = width
+		if (height == 0) {
+			height = width;
+		}
+		// Should snap to grid and be within map boundaries
+		bool isValid = (boundary.MapX % 2 == 0 && boundary.MapY % 2 == 1);
+		if (boundary.MapX < width + 1) {
+			width = boundary.MapX;
+			isValid = false;
+		}
+		if (boundary.MapY < height + 1) {
+			height = boundary.MapY;
+			isValid = false;
+		}
+		// Draw in green spectre if valid, otherwise red
+		int toneOffset = isValid ? 8 : 16;
+		drawRegionOutline(boundary.MapX, boundary.MapY, boundary.MapX - width, boundary.MapY - height, 0xFF000000 | ( getBlinkingColorTone() / 2 + 127) << toneOffset);
+	}
+}
+
+int getBlinkingColorTone(int speedDiv = 5) {
+	// Should gradually blink between 0 and 255 depending on current tick
+	int result = ((GetTick() / speedDiv) % 511);
+	if (result > 255) {
+		return 255 -  (result - 255);
+	}
+	return result;
+}
+
+void drawRegionOutline(uint16 mapX1, uint16 mapY1, uint16 mapX2, uint16 mapY2, int color) 
+{
+	uint16 regionWidth = uint16(abs(int(mapX1) - int(mapX2)) / 2);
+	uint16 regionHeight = uint16(abs(int(mapY1) - int(mapY2)) / 2);
+	int x1 = 0, x2 = 0, x3 = 0, x4 = 0, y1 = 0, y2 = 9, y3 = 0, y4 = 0, // vertices
+		yOffset = int(100.0f / __SpritesZoom); // "second floor" rectangle offset
+	float // tile sprite offsets
+		offX = 16 / __SpritesZoom,
+		offY = -11 / __SpritesZoom;
+	GetHexPos(mapX1, mapY1, x1, y1);
+	GetHexPos(mapX1, mapY2, x2, y2);
+	GetHexPos(mapX2, mapY2, x3, y3);
+	GetHexPos(mapX2, mapY1, x4, y4);
+	array<int> vertices = {
+		x1, y1, color,
+		x2, y2, color,
+		x3, y3, color,
+		x3, y3 - yOffset, color,
+		x3, y3, color,
+		x4, y4, color,
+		x1, y1, color,
+		x1, y1 - yOffset, color,
+		x2, y2 - yOffset, color,
+		x3, y3 - yOffset, color,
+		x4, y4 - yOffset, color,
+		x1, y1 - yOffset, color,
+	};
+	DrawPrimitive(DRAW_PRIMITIVE_LINESTRIP, vertices);
+	DrawText(regionWidth + "x" + regionHeight, int(x1 + x3) / 2, int(y1 + y3) / 2, 150, 20, color, FONT_FALLOUT, FT_BORDERED);
+}
+
+void renderMapGrid() {
+	MapperMap@ map = GetActiveMap();
+	if (null is map) return;
+	int color = GRID_COLOR_INNER, outerColor = GRID_COLOR_OUTER, ox = 0, oy = 0;
+	// Get origin
+	GetHexPos(1, 0, ox, oy); // Hex{1;0} Corresponds to tile{0;0}
+	// Get zoomed sprite per row/column offsets for hexagonal geometry
+	float  
+		wdx = 24 / __SpritesZoom,
+		wdy = -6 / __SpritesZoom,
+		hdx = -16 / __SpritesZoom,
+		hdy = -12 / __SpritesZoom,
+		offX = 16 / __SpritesZoom,
+		offY = -11 / __SpritesZoom;
+	uint16 width = uint16(ceil(map.Width / 2));
+	uint16 height = uint16(ceil(map.Height / 2));
+	// Draw grid
+	array<int> gridLines = {};
+	for (uint16 x = 0; x < width; x++) {
+		int lineColor = x % 10 == 0 ? GRID_COLOR_OUTER : GRID_COLOR_INNER;
+		gridLines.insertLast(ox - 2 * (x * wdx + 0 * hdx) + offX);
+		gridLines.insertLast(oy - 2 * (x * wdy + 0 * hdy) + offY);
+		gridLines.insertLast(lineColor);
+		gridLines.insertLast(ox - 2 * (x * wdx + height * hdx) + offX);
+		gridLines.insertLast(oy - 2 * (x * wdy + height * hdy) + offY);
+		gridLines.insertLast(lineColor);
+	}
+	for (uint16 y = 0; y < height; y++) {
+		int lineColor = y % 10 == 0 ? GRID_COLOR_OUTER : GRID_COLOR_INNER;
+		gridLines.insertLast(ox -  2 * (0 * wdx + y * hdx) + offX);
+		gridLines.insertLast(oy -  2 * (0 * wdy + y * hdy) + offY);
+		gridLines.insertLast(lineColor);
+		gridLines.insertLast(ox - 2 * (width * wdx + y * hdx) + offX);
+		gridLines.insertLast(oy - 2 * (width * wdy + y * hdy) + offY);
+		gridLines.insertLast(lineColor);
+	}
+	DrawPrimitive(DRAW_PRIMITIVE_LINELIST, gridLines);
+	// Draw perimeter border
+	array<int> borderLines = {};
+	borderLines.insertLast(ox - 2 * (0 * wdx + 0 * hdx) + offX);
+	borderLines.insertLast(oy - 2 * (0 * wdy + 0 * hdy) + offY);
+	borderLines.insertLast(GRID_COLOR_OUTER);
+	borderLines.insertLast(ox - 2 * (0 * wdx + height * hdx) + offX);
+	borderLines.insertLast(oy - 2 * (0 * wdy + height * hdy) + offY);
+	borderLines.insertLast(GRID_COLOR_OUTER);
+	borderLines.insertLast(ox - 2 * (width * wdx + height * hdx) + offX);
+	borderLines.insertLast(oy - 2 * (width * wdy + height * hdy) + offY);
+	borderLines.insertLast(GRID_COLOR_OUTER);
+	borderLines.insertLast(ox - 2 * (width * wdx + 0 * hdx) + offX);
+	borderLines.insertLast(oy - 2 * (width * wdy + 0 * hdy) + offY);
+	borderLines.insertLast(GRID_COLOR_OUTER);
+	borderLines.insertLast(ox - 2 * (0 * wdx + 0 * hdx) + offX);
+	borderLines.insertLast(oy - 2 * (0 * wdy + 0 * hdy) + offY);
+	borderLines.insertLast(GRID_COLOR_OUTER);
+	DrawPrimitive(DRAW_PRIMITIVE_LINESTRIP, borderLines);
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Render map function. You can use DrawMap* functions only there. This drawing before 1 iface layer.
+void render_map()
+{
+}
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Mouse behaviours. Click states look in _client_defines.fos, Mouse click states.
+// Return true to disable engine events.
+bool mouse_down( int click )
+{
+    return false;
+}
+
+bool mouse_up( int click )
+{
+    return false;
+}
+
+void mouse_move( int x, int y )
+{}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Keyboard behaviours. Key codes look in _mapper_defines.fos DirectInput keyboard scan codes.
+// Return true to disable engine events.
+bool key_down( uint8 key )
+{
+    return false;
+}
+
+bool key_up( uint8 key )
+{
+    return false;
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// Called on mouse/keyboard input lost (alt-tab, minimize, lost focus).
+void input_lost()
+{}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Some useful functions.
+// #ConvertMaps
+// #ClearTiles
+// #MapTime         value
+// #MapNoLogOut     value
+// #MapScriptModule moduleName
+// #MapScriptFunc   funcName
+
+MapperMap@ GetActiveMap()
+{
+	MapperMap@[] maps;
+	int cur = GetLoadedMaps(maps);
+	if(cur == -1) return null;
+	return maps[cur];
+}
+
+// Maps convertation to text format
+string ConvertMaps(string str)
+{
+	string@[] mapNames;
+	GetMapFileNames(null, mapNames);
+
+	uint success = 0;
+	uint fail = 0;
+	for(uint i = 0; i < mapNames.length(); i++)
+	{
+		MapperMap@ map = LoadMap(mapNames[i], PT_SERVER_MAPS);
+		if(not (map is null))
+		{
+			if(SaveMap(map, mapNames[i], PT_SERVER_MAPS))
+			{
+				success++;
+			}
+			else
+			{
+				Message("Fail to save " + mapNames[i]);
+				fail++;
+			}
+
+			UnloadMap(map);
+		}
+		else
+		{
+			Message("Fail to load " + mapNames[i]);
+			fail++;
+		}
+	}
+
+	return "Done, maps converted " + (success + fail) + ", success " + success + ", fail " + fail + ".";
+}
+
+// Keep only one tile per hex
+string ClearTiles(string str)
+{
+	MapperMap@ map = GetActiveMap();
+	if(map is null) return "Map not loaded.";
+
+	uint deleted = 0;
+	for(uint hx = 0; hx < map.Width; hx++)
+	{
+		for(uint hy = 0; hy < map.Height; hy++)
+		{
+			if( hx%2 == 0 && hy%2 == 0)
+			{
+				for(;map.GetTilesCount(hx, hy, false) > 1; deleted++)
+					map.DeleteTile(hx, hy, false, 0);
+				for(;map.GetTilesCount(hx, hy, true)  > 1; deleted++)
+					map.DeleteTile(hx, hy, true , 0);
+			}
+			else
+			{
+				for(;map.GetTilesCount(hx, hy, false) > 0; deleted++)
+					map.DeleteTile(hx, hy, false, 0);
+				for(;map.GetTilesCount(hx, hy, true)  > 0; deleted++)
+					map.DeleteTile(hx, hy, true , 0);
+			}
+		}
+	}
+
+	return "Done. Deleted " + deleted + " tiles.";
+}
+
+// Map parameters
+string MapTime(string str)
+{
+	MapperMap@ map = GetActiveMap();
+	if(map is null) return "Map not loaded.";
+	int value = 0;
+	if(not StrToInt(str, value)) return "Wrong value.";
+
+	map.Time = value;
+	return "Done. Time setted to " + map.Time + ".";
+}
+
+string MapNoLogOut(string str)
+{
+	MapperMap@ map = GetActiveMap();
+	if(map is null) return "Map not loaded.";
+	int value = 0;
+	if(not StrToInt(str, value)) return "Wrong value.";
+
+	map.NoLogOut = value != 0 ? true : false;
+	return "Done. NoLogOut setted to " + map.NoLogOut + ".";
+}
+
+string MapScriptModule(string str)
+{
+	MapperMap@ map = GetActiveMap();
+	if(map is null) return "Map not loaded.";
+
+	map.ScriptModule = str;
+	return "Done. ScriptModule setted to " + map.ScriptModule + ".";
+}
+
+string MapScriptFunc(string str)
+{
+	MapperMap@ map = GetActiveMap();
+	if(map is null) return "Map not loaded.";
+
+	map.ScriptFunc = str;
+	return "Done. ScriptFunc setted to " + map.ScriptFunc + ".";
+}
+
+
+
+
+    #define EXIT_GRID_NEW   (4052)
+    #define MAP_LENGTH  (1000)
+     
+    string setexitval(string str)
+    {
+        MapperMap@ map = GetActiveMap();
+        if(map !is null)
+        {
+            for(uint16 y = 0; y < MAP_LENGTH; ++y)
+            {
+                for(uint16 x = 0; x < MAP_LENGTH; ++x)
+                {
+                    MapperObject@ obj = map.GetObject(x, y, MAP_OBJECT_ITEM, EXIT_GRID_NEW, 0);
+                    if(obj !is null)
+                    {
+                        obj.Item_Val1 = obj.Item_Val0;
+                        obj.Item_Val0 = 0;
+                    }
+                }
+            }
+            return "done.";
+        }
+        return "fail, map !loaded";
+    } 
+
+
+    #define SPLIT_TOKEN " "
+        
+	string removegrid(string str){
+        for(uint i = 4031; i <= 4038; ++i){
+            delbypid(""+i+" ");
+        }
+       
+        return "done.";
+    }  
+    string delbypid(string str)
+    {
+        string@[]@ param = split(str, SPLIT_TOKEN);
+        int pid = 0;
+        StrToInt(param[0], pid);
+        if(pid == 0) {return "not valid protoId";}
+        MapperMap@ map = GetActiveMap();
+        if(map !is null)
+        {
+            for(uint16 y = 0; y < MAP_LENGTH; ++y)
+            {
+                for(uint16 x = 0; x < MAP_LENGTH; ++x)
+                {
+                    MapperObject@ obj = map.GetObject(x, y, param[1] == "0" ? MAP_OBJECT_ITEM : MAP_OBJECT_SCENERY, pid, 0);
+                    if(obj !is null)
+                    {
+                        DeleteObject(obj);
+                    }
+                }
+            }
+            return "done.";
+        }
+        return "fail, map !loaded";
+    } 
+
+
+    #define EXIT_GRID_NEW   (4052)
+    #define EXIT_GRID_NEW_  (4053)
+    #define MAP_LENGTH  (1000)
+     
+    string convgen(string str)
+    {
+        MapperMap@ map = GetActiveMap();
+        if(map !is null)
+        {
+            for(uint16 y = 0; y < MAP_LENGTH; ++y)
+            {
+                for(uint16 x = 0; x < MAP_LENGTH; ++x)
+                {
+                    MapperObject@ obj = map.GetObject(x, y, MAP_OBJECT_ITEM, EXIT_GRID_NEW, 0);
+                    if(obj !is null)
+                    {
+                        int tempVal = obj.Item_Val1;
+                        DeleteObject(obj);
+                        @obj = map.AddObject(x, y, MAP_OBJECT_SCENERY, EXIT_GRID_NEW_);
+                        //obj.MapObjType = 11;
+                        if(obj !is null)
+                        {
+                            obj.Scenery_Param0 = tempVal;
+                            obj.Scenery_ParamsCount = 1;
+                        }
+                        else {Message("!valid");}
+                        //obj.Item_Val1 = obj.Item_Val0;AddObject(uint16 hexX, uint16 hexY, int mapObjType, uint16 pid)
+                        //obj.Item_Val1 = 0;
+                    }
+                }
+            }
+            return "done.";
+        }
+        return "fail, map !loaded";
+    } 
+    string ClearClones( string str )
+    {
+        MapperMap@ map = GetActiveMap();
+        if( map is null )
+            return "Map not loaded.";
+	int iConv = -1; StrToInt(str, iConv);
+
+     
+        uint deleted = 0;
+        for( uint16 hx = 0; hx < map.Width; hx++ )
+        {
+            for( uint16 hy = 0; hy < map.Height; hy++ )
+            {
+                MapperObject@[] objects;
+              uint len; if( iConv > -1 ) len = map.GetObjects(hx, hy, 0,  iConv , 0, objects); else {
+               len = map.GetObjects(hx, hy, 0, MAP_OBJECT_SCENERY, 0, objects); len+=map.GetObjects(hx, hy, 0, MAP_OBJECT_ITEM, 0, objects);
+		}
+		 for(uint i=0; i<len; i++)
+                {
+                    if(objects[i] is null) continue;
+                    uint16 pid = objects[i].ProtoId;
+                    for(uint k=i+1; k<len; k++)
+                    {
+                        if((objects[k] !is null) and (objects[k].ProtoId==pid))
+                        {
+                            DeleteObject(objects[k]);
+                            @objects[k]=null;
+                            deleted++;
+                        }
+                    }
+                }
+            }
+        }
+     
+        return "Done. Deleted " + deleted + " items.";
+    } 

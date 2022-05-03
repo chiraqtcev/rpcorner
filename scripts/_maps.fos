@@ -1,0 +1,42 @@
+#ifndef __MAPS__
+#define __MAPS__
+
+// ************************************************************************/
+// *                      Локации                                         */
+// ************************************************************************/
+
+//other
+#define LOCATION_START				( 92 )
+	#define MAP_UTILITY_START	( LOCATION_START )
+#define LOCATION_DREAM				( 2 )
+	#define MAP_DREAM			( LOCATION_DREAM )
+#define LOCATION_HEAVEN				( 3 )
+	#define MAP_HEAVEN			( LOCATION_HEAVEN )
+#define LOCATION_HELL				( 4 )
+	#define MAP_HELL			( LOCATION_HELL )
+
+#define LOCATION_MODOC				( 378 )
+#define LOCATION_SATTER				( 408 )
+#define LOCATION_BRIDGE				( 373 )
+#define LOCATION_WATERCLIFF			( 374 )
+#define LOCATION_CARAVAN_CAMP		( 379 )
+#define LOCATION_GAS_STATION		( 380 )
+#define LOCATION_OASIS				( 381 )
+#define LOCATION_GRAVEYARD			( 382 )
+#define LOCATION_SHEBANG			( 384 )
+#define LOCATION_FOREST_FARM		( 386 )
+
+#define LOCATION_PHOENIX			( 600 )
+#define LOCATION_JUNKTOWN			( 650 )
+// #define LOCATION_				(  )
+// #define LOCATION_				(  )
+// #define LOCATION_				(  )
+
+//Устаревшие карты, нужно будет выпилить скрипты.
+						 #define VALUE_DEPRECATED (0)
+#define LOCATION_TANKER 	    (VALUE_DEPRECATED)
+#define MAP_TANKER_ONBOARD      (VALUE_DEPRECATED)
+#define MAP_TANKER_TOWER_BRIDGE (VALUE_DEPRECATED)
+#define MAP_PIERCE_SF 			(VALUE_DEPRECATED)
+
+#endif // __MAPS__

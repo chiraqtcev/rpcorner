@@ -1,0 +1,656 @@
+#ifndef LOCAL_POPULATION
+#define LOCAL_POPULATION
+
+#include "_ai.fos"
+#include "_utils.fos"
+#include "entire_h.fos"
+#include "local_population_h.fos"
+#include "repair_h.fos"
+#include "furniture_h.fos"
+
+#include "gathering_h.fos"
+
+#include "cimp.fos"
+
+uint8 timeNum = 0;
+/************
+   debug
+************/
+
+uint8 CheckNpcAi( uint16 crType )
+{
+    uint8 retn = 0;
+    switch( crType )
+    {
+    case 5:
+        retn = AIPACKET_SCORPION;
+        break;
+    case 9:
+        retn = AIPACKET_GENERIC_DOG;
+        break;
+    case 11:
+        retn = AIPACKET_RAT;
+        break;
+    case 80:
+        retn = AIPACKET_GECKO;
+        break;
+    case 83:
+        retn = AIPACKET_GECKO;
+        break;
+    case 85:
+        retn = AIPACKET_DEATHCLAW;
+        break;
+    case 113:
+        retn = AIPACKET_RAT;
+        break;
+    case 117:
+        retn = AIPACKET_RAT;
+        break;
+    case 119:
+        retn = AIPACKET_SUPER_MUTANT;
+        break;
+    case 177:
+        retn = AIPACKET_FLOATER;
+        break;
+    case 249:
+        retn = AIPACKET_CENTAUR;
+        break;
+    default:
+        retn = 0;
+        break;
+    }
+    return retn;
+}
+
+
+void TeleportNpcToMap( Critter& npc )
+{
+    // Location @ loc = npc.GetMap().GetLocation();
+    // Map @ map = loc.GetMapByIndex(0);
+    // npc.TransitToMap(map.Id, 1);
+    // Map @ map = GetMapByPid(GetCritInfo(npc.GetMap().GetProtoId(),0,4), 0);
+    // npc.TransitToMap(map.Id, 1);
+}
+
+/****************************************
+/***********************GROUPS***********
+/***************************************/
+
+void _MapInit(Map& map, bool what)
+{
+	return;
+}
+
+void MobsAutoInit() //export to gameplay.fos
+{    
+    Map@[] maps;
+    for( int i = 0, iend = GetAllMaps( 0, maps ); i < iend; i++)
+	{   
+		CheckMapEvent( maps[i] );
+	}
+}
+
+uint e_SpawnMobs( int[]@ values )
+{
+	Map @ map = GetMap( values[ 0 ] );
+	if( !valid( map ) )
+	{	
+		return 0;
+	}
+	
+	AddCritter( map );
+
+	EraseTimeEvent( map.GetData( MAP_TIME_DATA_MOB_SPAWN ) );
+	map.SetData( MAP_TIME_DATA_MOB_SPAWN, CreateTimeEvent( AFTER( DELAY_FOR_MOBS_RESPAWN ), "e_SpawnMobs", values, true ) );
+	return 0;
+}
+
+void AddCritter( Map& map )
+{
+	uint[] max_count = {
+		LVAR( LMVAR_CRITTER_RATS ),					// Entire 200
+		LVAR( LMVAR_CRITTER_MANTISS ),				// Entire 201			
+		LVAR( LMVAR_CRITTER_ANTS ),					// Entire 202
+		LVAR( LMVAR_CRITTER_ANT_LION ),				// Entire 203
+		LVAR( LMVAR_CRITTER_PIGRATS ),				// Entire 204
+		LVAR( LMVAR_CRITTER_GRIZRATS ),				// Entire 205
+		LVAR( LMVAR_CRITTER_GRISRAT_MUTANT ),		// Entire 206
+		LVAR( LMVAR_CRITTER_GECKO_SILVER ),			// Entire 207
+		LVAR( LMVAR_CRITTER_GECKO_GOLD ),			// Entire 208
+		LVAR( LMVAR_CRITTER_GECKO_CAVE ),			// Entire 209
+		LVAR( LMVAR_CRITTER_DOGS ),					// Entire 210
+		LVAR( LMVAR_CRITTER_WOLVES ),				// Entire 211
+		LVAR( LMVAR_CRITTER_RADSCORPIONS ),			// Entire 212
+		LVAR( LMVAR_CRITTER_RADSCORPIONS_BLACK ),	// Entire 213
+		LVAR( LMVAR_CRITTER_YAO ),					// Entire 214
+		LVAR( LMVAR_CRITTER_CAVESCORPIONS ),		// Entire 215
+		LVAR( LMVAR_CRITTER_BRAMIN ),				// Entire 216
+		LVAR( LMVAR_CRITTER_EVILPLANTS ),			// Entire 217
+		LVAR( LMVAR_CRITTER_ALIENS ),				// Entire 218
+		LVAR( LMVAR_CRITTER_DEATHCLAWS ),			// Entire 219
+		LVAR( LMVAR_CRITTER_CROC ),					// Entire 220
+		LVAR( LMVAR_CRITTER_SHADOW_CROC ),			// Entire 221
+		LVAR( LMVAR_CRITTER_FIREGECKO ),			// Entire 222
+		LVAR( LMVAR_CRITTER_BRUTES ),				// Entire 223
+		LVAR( LMVAR_CRITTER_CENTAURS ),				// Entire 224
+		LVAR( LMVAR_CRITTER_FLOATERS ),				// Entire 225
+		LVAR( LMVAR_CRITTER_MURLOCKS ),				// Entire 226
+		LVAR( LMVAR_CRITTER_GIANT_WASPS ),			// Entire 227
+		LVAR( LMVAR_CRITTER_GIANT_BEETLES ),		// Entire 228
+		LVAR( LMVAR_CRITTER_WILD_GHOULS ),
+		LVAR( LMVAR_CRITTER_GIANT_WASPS ),
+		LVAR( LMVAR_CRITTER_GIANT_BEETLES ),
+		LVAR( LMVAR_CRITTER_WILD_GHOULS )			// Entire 229
+	};
+
+	for( uint i = 0; i < max_count.length(); i++ ) {
+		uint[] mob_array = Critter_list[i];
+		uint16 mobPid = 0;
+		Critter@[] mobs;
+		
+		for( uint j = 0; j < mob_array.length; j ++ ) {
+			mobPid = mob_array[j];
+			map.GetCritters( mobPid, FIND_LIFE_AND_KO | FIND_ONLY_NPC, mobs );
+		}
+		
+		int delta = max_count[i] - mobs.length();
+		//Log("дельта" + delta );
+		if( delta == 0 ) { 							// next Cycle
+			continue;
+		} else if ( delta < 0 ) { 					// delete excess pops
+			int overPop = delta * -1;
+			//Log("перенаселение: " + overPop );
+			for( int l = 0; l < overPop; l++ ) {
+				if( mobs[l].IsDead() ) {
+					DeleteNpc( mobs[l] );
+					overPop --;
+				}
+			}
+			for( int m = 0; m < overPop; m++ ) {
+				if( valid( mobs[m] ) ) {
+					DeleteNpc( mobs[m] );
+				}
+			}
+		} else { 									//add mobs
+			uint8 entireId = MAP_MOB_SPAWNER + i;
+			
+			int entires = map.CountEntire( entireId );
+			int range = 2;
+			
+			if( entires == 0 ) { 
+				continue; 
+			} else {
+				range += max_count[i] / ( entires * 6 );
+				
+				uint8  teamId = 1 + i;
+				for( int k = 0; k < delta; k++ ) {
+					uint16 hexX = 0, hexY = 0, tempX = 0, tempY = 0;
+					
+					map.GetEntireCoords( entireId, Random( 0, entires - 1 ), hexX, hexY );
+					
+					tempX = hexX;
+					tempY = hexY;
+
+					int attempts_left = 9;
+
+					while( attempts_left > 0 && !map.IsHexPassed( tempX, tempY ) ) {
+						tempX = hexX + Random( -range, range );
+						tempY = hexY + Random( -range, range );
+						attempts_left--;
+					}
+					
+					if( attempts_left <= 0 && !map.IsHexPassed( tempX, tempY ) )
+						continue;
+					
+					uint16 pid = mob_array[Random ( 0, mob_array.length() - 1 ) ];
+					//Log( "Adding pid #" + pid + "." );
+					int[] values = { map.Id, pid, tempX, tempY, teamId, 0 };
+					CreateTimeEvent( AFTER( REAL_SECOND( Random( 1, 5 ) ) ), "e_delayed_spawn", values, true );
+				}
+			}
+		}
+	}
+}	
+
+uint e_delayed_spawn( int[]@ values )
+{
+	Map@ map = GetMap( values[0] );	
+
+	if( values[5] == 0 )
+	{
+		values[5]++;
+		map.SetText( values[2], values[3], COLOR_LGRAY, ":шорох:" );
+		return REAL_SECOND( Random( 1, 5 ) );
+	}
+	
+	Critter@ npc = map.AddNpc( values[1], values[2], values[3], Random( 0, 5 ), null, null, "mob@_MobInit" );
+	
+	if( npc is null ) return 0;
+	
+	npc.SetHomePos( npc.HexX, npc.HexY, npc.Dir );
+	npc.StatBase[ ST_AI_ID ] = CheckNpcAi( npc.CrType );
+	npc.StatBase[ ST_TEAM_ID ] = values[4];
+	
+	return 0;
+}
+ 
+//~run local_population _InitMobs 0 0 0 
+void _InitMobs(Critter& player, int param0, int param1, int param2)
+{
+	ForceSpawnMobs();
+}
+
+void ForceSpawnMobs()
+{
+    Map@[] maps;
+    for( int i = 0, iend = GetAllMaps( 0, maps ); i < iend; i++)
+	{   
+		CheckMapEvent( maps[i] );
+	}
+}
+
+bool CheckMapEvent( Map& map )
+{
+    for( int n = MAP_MOB_SPAWNER, nend = MAP_MOB_SPAWNER  + MOB_SPAWNER_COUNT; n < nend ; n++ )
+	{
+		if( map.CountEntire( n ) != 0 ) 
+		{
+			int[] values = { map.Id };
+			map.SetData( MAP_TIME_DATA_MOB_SPAWN, CreateTimeEvent( AFTER( REAL_SECOND( 1 ) ), "e_SpawnMobs", values, true ) );
+			return true;
+		}
+	}
+    return false;
+}
+
+//=============MAP_LOOT_SPAWN================//
+
+void runitemspawn( Critter& player, int param0, int param1, int param2 )
+{
+    Map @ map = player.GetMap();
+    FillContainer( map );
+}
+
+void ChangeBrokeAndAmmo( Item& item )
+{
+    if( item.IsDeteriorable() )                                         // check for detoirable weapon
+    {
+        SetDeterioration( item, Random( 30, 90 ) );                     // detoirate weapon to 30-90 percents
+        if( item.AmmoCount > 0 )
+        {
+            item.AmmoCount = 0;
+        }
+    }
+}
+
+uint e_SpawnStuff( uint[] @ values )
+{
+    Map @ map = GetMap( values[ 0 ] );
+    if( !valid( map ) )
+        return 0;
+    FillContainer( map );
+    SpawnLO( map );  //disabled by ErlKing
+
+    EraseTimeEvent( map.GetData( MAP_TIME_DATA_LOW_SPAWN ) );
+    timeNum = CreateTimeEvent( __FullSecond + RESPAWN_TIME, "e_SpawnStuff", values, false );
+    map.SetData( MAP_TIME_DATA_LOW_SPAWN, timeNum );
+    timeNum = 0;
+    return 0;
+}
+
+string msg;
+
+void Clean_LO( Map& map )
+{
+    Item@[] containers;
+    map.GetItemsByType( ITEM_TYPE_CONTAINER, containers );
+    if( valid( containers ) && containers.length() != 0 )
+    {
+        for( uint16 i = 0; i < containers.length(); i++ )
+        {
+            if( containers[ i ] is null )
+                continue;
+            if( containers[ i ].GetProtoId() == PID_LO_CONTAINER )
+            {
+				//map.SetText( containers[i].HexX, containers[i].HexY, COLOR_RED, "!!!" );
+                DeleteItem( containers[ i ] );
+                continue;
+            }
+        }
+    }
+}
+
+//ќтключенные контейнеры, в которых лут не спавнитс€
+/*uint[] special_container_pids = {
+	PID_BAG, PID_BACKPACK, PID_AMMO_BELT,
+	PID_SUPER_TOOL_KIT, PID_repkit3i, PID_repkit2i, PID_repkit1i, 
+	PID_BRIEFCASE, PID_KEIS, PID_FIRST_AID_KIT, PID_FIELD_MEDIC_KIT, PID_DOCTORS_BAG, PID_PARAMEDICS_BAG, 
+	
+	PID_HANDWRITINGS, PID_PORTMONE, PID_CRAFT_RECIPES, PID_PASSPORT, PID_LETTER, PID_POSTMAN_LETTER, PID_PAPERS_JAMMED,
+	PID_ELRON_FIELD_REP, PID_CLIPBOARD, PID_FLIST08, PID_FLIST09, PID_StrpBlt, PID_mgzn01,
+	
+	PID_KEY_BUNCH,
+	PID_CARDS_DECK,
+	PID_POT_ALCO, PID_VENDING_CIGS, PID_VENDING_NUKA, PID_VENDING_OMNI, PID_VENDING_FRIDGE1, PID_VENDING_FRIDGE2, PID_VENDING_NEWSP1, PID_VENDING_NEWSP2, PID_VENDING_NEWSP3,
+	PID_SLOT_MACHINE, PID_SLOT_MACHINE2, PID_TERMINAL,
+	
+	PID_STILL_S, PID_STILL_S_ACTIVE, PID_STILL_S_BROKEN, PID_FURNACE_SMALL, PID_FRIDGE, PID_CR_DRYER
+};*/
+
+//ќтключенные карты, на которых не спавнитс€ рандомный лут в контейнерах
+//uint[] disabled_map_pids = merge( mPIDs(TECH_MAP), mPIDs(CITY_MODOC) );
+// upd: механика отключена за ненадобностью
+	
+void FillContainer( Map& map )  // filling containers with random items
+{
+	return;
+	
+	// if( disabled_map_pids.find( map.GetProtoId() ) != -1 )
+		// return;
+	
+    // Item@[] containers;
+    // uint16 itemPid = 0;
+    // map.GetItemsByType( ITEM_TYPE_CONTAINER, containers );
+	// uint l = containers.length();
+	
+    // if( valid( containers ) && l != 0 )
+    // {
+        // Item @ item;
+        // for( uint16 i = 0; i < l; i++ )
+        // {
+            // if( containers[ i ] is null )
+				// continue;
+				
+            // // if( containers[ i ].GetProtoId() == PID_LO_CONTAINER )
+            // // {
+                // // DeleteItem( containers[ i ] );
+                // // continue;
+            // // }
+			
+			// if( special_container_pids.find( containers[ i ].GetProtoId() ) != -1 )
+			// {
+				// continue;
+			// }
+			
+			// if( isFurniture( containers[i] ) )
+			// {
+				// //map.SetText( containers[i].HexX, containers[i].HexY, COLOR_RED, "!!!" );
+				// continue;
+			// }
+
+            // Item@[] contBag;
+
+            // containers[ i ].GetItems( ITEM_ACCESSORY, contBag );
+            // if( valid( contBag ) ) // && contBag.length() == 0
+            // {
+                // itemPid = Random( 0, ( sutterGroup.length() / 3 ) - 1 );
+				// if( sutterGroup[itemPid * 3] > Random( 0, 9 ) )
+				// {
+					// @item = containers[ i ].AddItem( sutterGroup[ itemPid*3 + 2 ], Random( 1, sutterGroup[ itemPid*3 + 1 ] ), ITEM_ACCESSORY );
+							// i += Random( 0, Random( 1, 4 ) );
+				// }
+
+				// if( valid( item ) )	ChangeBrokeAndAmmo( item );
+            // }
+        // }
+    // }
+}
+
+//=============MAP_CONTAITER_LOOT_SPAWN================//
+const uint16[] sutterGroup =
+{
+//шанс, макс, пид
+	3,	1,	PID_FLARE,
+	3,	2,	PID_ROCK,
+	10,	50,	PID_REAL_BOTTLE_CAPS,
+	1,	1,	PID_KNIFE,
+	4,	2,	PID_ROPE,
+	10,	9,	PID_CRAFT_L_RAGS,
+	10,	2,	PID_FLINT,
+	10,	2,	PID_EMPTY_JET,
+	10,	2,	PID_BOTTLE_GLASS,
+	10,	5,	PID_PART_OF_ROPE,
+	7,	1,	PID_TUBE,
+	5,	1,	PID_CRAFT_M_STEL,
+	1,	1,	PID_BRAHMIN_SKIN,
+	4,	1,	PID_CIGARETTES,
+	1,	1,	PID_SHOVEL,
+	1,	1,	PID_IRON_ROD,
+	1,	1,	PID_AXE,
+	3,	1,	PID_LIGHTER,
+	10,	10,	PID_10mm_LOW,
+	7,	10,	PID_044mag_LOW,
+	3,	12,	PID_14mm_LOW,
+	5,	15,	PID_12g_LOW,
+	3,	10,	PID_223_LOW,
+	1,	1,	PID_CUENCELL_LOW,
+	4,	1,	PID_IRON_PROD,
+	8,	1,	PID_WOOD_PLANK,
+	5,	1,	PID_WATER_TUBE,
+	5,	1,	PID_CHAIN,
+	3,	1,	PID_IRON_PLATE,
+	2,	1,	PID_IRON_DETALS,
+	5,	1,	PID_PB_PLATE,
+	5,	2,	PID_PB_FOR_AMMO,
+	8,	1,	PID_PERED_MEH,
+	5,	1,	PID_SOED_MEH,
+	4,	1,	PID_OHLAD_MEH,
+	8,	1,	PID_DETAL_MEH,
+	1,	1,	PID_EMKOCT_MEH,
+	4,	1,	PID_HLAM_MEH,
+	7,	1,	PID_HLAM2_MEH,
+	9,	1,	PID_BANKA_MEH,
+	4,	1,	PID_SPIKE_MEH,
+	3,	1,	PID_ELECTO_MEH,
+	3,	1,	PID_CRAFT_L_HIDE,
+	1,	1,	PID_MAG_LENTA,
+	1,	1,	PID_DVIGAT_MEH,
+	1,	1,	PID_METAL_LIST_MEH,
+	1,	1,	PID_HYPODERMIC_NEEDLE,
+};
+
+void additemsrndpic( Critter& cr, int id, int x, int y )
+{
+    Map @ map = cr.GetMap();
+    if( map is null )
+    {
+        cr.Say( SAY_NETMSG, "map" );
+        return;
+    }
+
+    for( uint8 i = 0; i < x; ++i )
+    {
+        Item @ item = map.AddItem( cr.HexX + ( Random( -10, 10 ) ), cr.HexY + ( Random( -10, 10 ) ), 2004, 1 );
+        if( item is null )
+            continue;
+        uint hash = GetStrHash( "art\\scenery\\corpse1.png" );
+
+
+        item.SetMapPic( hash );
+
+        cr.Say( SAY_NETMSG, "add " + hash );
+    }
+
+}
+
+void setpic( Critter& cr, int id, int x, int y )
+{
+    Item @ item = GetItem( id );
+    if( item is null )
+        return;
+    string temp = "art\\scenery\\";
+    temp += "boxes3.frm";
+    item.SetMapPic( GetLOHash( GROUP_TRASH ) );
+    item.Update();
+}
+
+void itemrndpic( Critter& cr, int id, int x, int y )
+{
+    CLO @ clo = CLO( GROUP_TRASH, 100, false );
+    Map @ map = cr.GetMap();
+    if( clo is null )
+    {
+        cr.Say( SAY_NETMSG, "clo null" );
+    }
+    if( map is null )
+    {
+        cr.Say( SAY_NETMSG, "map null" );
+    }
+
+    string msg_ = "fail.";
+
+    if( clo.Add( map ) )
+    {
+        msg_ = ( "succesfull " + clo.HexX + ":" + clo.HexY + "\n clo : " + clo.Hash );
+
+        if( !cr.TransitToHex( clo.HexX, clo.HexY, 1 ) )
+        {
+            ShowContainer( cr, clo.Object, 0 );
+        }
+    }
+
+    cr.Say( SAY_NETMSG, msg_ );
+}
+void forcespawn( Critter& cr, int id, int x, int y )
+{
+    Map @ map = ( id <= 0 ? cr.GetMap() : GetMap( id ) );
+    if( map is null )
+    {
+        cr.Say( SAY_NETMSG, "null map" );
+        return;
+    }
+    if( x > 0 )
+    {
+        FillContainer( map );
+    }
+    SpawnLO( map );
+}
+
+bool SpawnLO( Map& map )
+{
+    uint[][] groups = getAvailableGroups( map );
+	uint maxGroup = groups.length();
+	
+	if( maxGroup == 0 )
+	{
+		//Log( "No available groups in the map #" + map.Id + " PID " + map.GetProtoId() );
+		return false;
+	}
+	
+	uint max_roll = 0;
+	for( uint i = 0; i < maxGroup; i++ )
+		max_roll += groups[i][1];
+
+	// int rechLvl = MAX_RECH_LEVEL;
+    for( uint i = 0; i < MAX_LO_COUNT; ++i )
+    { //TODO: Понять, почему спаунится так много контейнеров.
+        // uint8 temp = Random( 1, 15 );
+        // rechLvl -= temp;
+        // if( rechLvl <= 0 )
+			// break;
+		
+		uint type = 0;
+		uint group_roll = Random( 1, max_roll );
+		for( uint n = 0; n < maxGroup; n++ )
+			if( group_roll <= groups[n][1] )
+			{
+				type = n;
+				break;
+			}
+			else
+				group_roll -= groups[n][1];
+		
+		CLO @ clo = CLO( groups[type][0], 100, true );
+
+		if( !valid( clo ) || !valid( clo.Group ) )
+		{
+			Log( "!valid CLO or clo.Group" );
+			continue;
+		}
+
+		clo.Add( map );
+    }
+	
+    return true;
+}
+
+import void PlayerLooting( Critter& player, Map& map ) from "test";
+
+bool GatherItemCell( Critter& player, uint mapId )
+{
+	Map @ map = GetMap( mapId );
+	if( valid( map ) ) 
+	{
+		PlayerLooting( player, map );
+		return true;
+	}
+	return false;
+}
+
+
+bool SpawnItemCell( uint mapId )
+{
+    Map @ map = GetMap( mapId );
+    if( !(map is null) )
+    {
+		uint style = 0;
+		GameVar@ styleVar = GetGlobalVar( GVAR_LootingStyle );
+		if( valid(styleVar) )
+			style = styleVar.GetValue();
+		
+		int[] values = { mapId, 0 };
+		
+		switch( style )
+		{
+			case(0): //default
+				FillContainer( map );
+				
+				CreateTimeEvent( AFTER( 0 ), "e_SpawnLO", values, true );
+				break;
+			case(1): //only static
+				FillContainer( map );
+				break;
+			case(2):// only dynamic
+				CreateTimeEvent( AFTER( 0 ), "e_SpawnLO", values, true );
+				break;
+			default: Log( "Some crasy shit happened." );
+		}
+		//DebugLog( "Loot spawned at " + mapId + " with settings at " + style + "." );
+        return true;
+    }
+
+    return false;
+}
+
+import uint[] getGlobalCords( uint mapId )  from "globalmap_group";
+
+uint e_SpawnLO( int[] @ values )
+{
+	if( !valid(values) || values.length() != 2 )
+		return 0;
+	
+	Map @ map = GetMap( values[ 0 ] );
+	if( !valid( map ) )
+		return 0;
+	
+	// uint[] cords = getGlobalCords( values[0] );
+	// string text = "Map #" + values[0] + " PID " + map.GetProtoId() + " iteration " + values[1];
+	// if( cords.length() == 2 )
+		// text += " at [ " + cords[0] + ", " + cords[1] + " ]";
+	// else 
+		// text += " at global!";
+	
+	// Log(text);	
+	
+	switch( values[1] )
+	{
+		case(0): Clean_LO( map ); break;
+		case(1): SpawnLO( map ); break;
+		default: return 0;
+	}
+
+	values[1]++;
+	return REAL_SECOND(5);
+}
+
+#endif // LOCAL_POPULATION

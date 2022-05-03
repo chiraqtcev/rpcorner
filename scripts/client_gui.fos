@@ -1,0 +1,2498 @@
+#ifndef CLIENT_GUI
+#define CLIENT_GUI
+
+#include "client_gui_h.fos"
+#include "_defines.fos"
+#include "_client_defines.fos"
+#include "sprite.fos"
+#include "_colors.fos"
+#include "_msgstr.fos"
+
+#define IS_COLLISION    # ( x1, y1, x2, y2, w, h )( ( x1 ) >= ( x2 ) && ( x1 ) <= ( x2 ) + ( w ) && ( y1 ) >= ( y2 ) && ( y1 ) <= ( y2 ) + ( h ) )
+
+//Жуткий костыль, но тут почему-то "испокон веков" не ЗАГРУЖАЛСЯ `_macros.fos`
+#define valid                        # (ptr) ( @ptr != null )
+
+// @pm menu
+import void ShowContScreen( uint8 screenType, uint8 actionType ) from "client_screen_contmenu";
+import void GetActiveLayer( IGUIElementOpt@[] @ activeBtnLayer ) from "client_screen_fastpanel";
+import int8 ChangeLayer( int8 layer ) from "client_screen_fastpanel";
+import void HidePanel( bool show ) from "client_screen_fastpanel";
+import void GetPanelButtons( IGUIElementOpt@[] @ panelBtns ) from "client_screen_fastpanel";
+import void InputBoxKeyPressed( uint8 key, uint8 kbData ) from "client_screen_inputbox";
+import void InputBoxClipboardInsert()  from "client_screen_inputbox";
+import bool isGM( CritterCl@ cr ) from "client_main";
+// #pm menu
+import void critter_action( bool localCall, CritterCl& cr, int action, int actionExt, ItemCl@ item ) from "client_main";
+// binyan - Hotkeys
+import void SetHotkeysUse( bool use ) from "hotkeys";
+import bool ProcessCommand( uint8 curKey, uint8 prevKey, bool[] KeysPressed, uint8 mainScreen, uint8 curScreen ) from "hotkeys";
+import bool IsScreenAllowed( string screen ) from "hotkeys";
+uint8 previews = 0;
+
+import int to_hit_hex( bool anyway ) from "client_main";
+// /////////////////////////////////
+
+void _PlaySound( int pos, int repeat, int, string@ soundName, int[] @ )
+{
+    PlaySound( soundName );
+}
+
+// qthree - Naming
+
+import bool CharClick( CritterCl@ target ) from "client_names";
+import bool NameClick( CritterCl@ target, int click ) from "client_names";
+
+int GM_store_type = -1;
+
+int[] controlled = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+uint8  current_group;
+string name0;
+string name1;
+string name2;
+string name3;
+string name4;
+string name5;
+string name6;
+string name7;
+string name8;
+string name9;
+
+GUIScreen@[] AllScreens;
+GUIScreen@[] ActiveScreens;
+bool[] KeyPressed;
+KeybData@[] KbData;
+IGUIScreenOpt@  LastScreenOpt = null;
+IGUIElementOpt@ LastElementOpt = null;
+
+class           KeybData
+{
+    KeybData( int8 r, int8 rs, int8 e, int8 es )
+    {
+        Char.resize( 4 );
+        Char[ 0 ] = r;
+        Char[ 1 ] = rs;
+        Char[ 2 ] = e;
+        Char[ 3 ] = es;
+    }
+    uint8[] Char;     // Russian, Rissian Shift, English, English Shift
+}
+
+class GUIElement : IGUIElementOpt
+{
+    GUIElement( string@ sprName, int path )
+    {
+        if( @sprName != null )
+            Surface.Load( sprName, path );
+        DefaultPath = path;
+        PosX = 0;
+        PosY = 0;
+        IsTextInput = false;
+        InputMaxLen = 0;
+        TextColorFocused = 0;
+        TextColorDown = 0;
+        IsFocused = false;
+        MousePressed.resize( MOUSE_CLICK_EXT4 + 1 );
+        for( uint i = 0, j = MousePressed.length(); i < j; i++ )
+            MousePressed[ i ] = false;
+        SwitchEnabled = false;
+
+        // @pm menu
+        ElementFastPanelId = 0;
+        ElementFastPanelType = 0;
+        Visible = true;
+
+        RenderLayer = 3;         // pm add
+        // #pm menu
+
+        @InitCallback = null;
+        @DrawCallback = null;
+        @MouseClickCallback = null;
+        @KeyPressCallback = null;
+    }
+
+    void Draw( int screenX, int screenY )
+    {
+        if( !Visible )
+            return;                                                                                                                      // @pm menu
+
+        if( Surface.Id != 0 )
+            DrawSprite( Surface.Id, Surface.DrawFrame, screenX + PosX, screenY + PosY, Surface.Width, Surface.Height, true, false, 0 );  // pm edit (added Sprite::Width \ Sprite::Height)
+        bool isDown = ( ( MousePressed[ MOUSE_CLICK_LEFT ] || SwitchEnabled ) && DownSpr.Id != 0 );
+        if( isDown )
+            DrawSprite( DownSpr.Id, Surface.DrawFrame, screenX + PosX, screenY + PosY, Surface.Width, Surface.Height, true, false, 0 );  // pm edit (added Sprite::Width \ Sprite::Height)//DrawSprite(DownSpr.Id,-1,screenX+PosX,screenY+PosY,0);
+        if( Label != "" )
+            DrawText( Label, screenX + PosX, screenY + PosY,
+                      Surface.Width != 0 ? Surface.Width : __ScreenWidth, ( Surface.Height != 0 ? Surface.Height : __ScreenHeight ) - ( isDown ? 2 : 0 ),
+                      IsTextInput && IsFocused ? TextColorFocused : ( isDown && TextColorDown != 0 ? TextColorDown : TextColor ), Font, TextFlags );
+        if( @DrawCallback !is null )
+            DrawCallback.OnDraw( screenX + PosX, screenY + PosY, Surface.Width, Surface.Height );
+    }
+
+    bool MouseDown( int click )
+    {
+        if( Visible && ( DownSpr.Id != 0 || not (MouseClickCallback is null) || IsTextInput ) )
+        {
+            MousePressed[ click ] = true;
+			PlaySound( "BUTIN4.ACM" );
+            return true;
+        }
+        return false;
+    }
+
+    void MouseUp( int click, bool isCollision )
+    {
+	   if( not (MouseClickCallback is null) && MousePressed[ click ] && isCollision && GetVisible() )
+            MouseClickCallback.OnMouseClick( click ); // @pm menu
+        MousePressed[ click ] = false;
+    }
+
+    void MouseMove( int x, int y )
+    {}
+
+    bool KeyPress( uint8 key )
+    {
+        uint8 letter = 0;
+        bool  result = ProcessKey( key, Label, letter );
+        if( Label.length() > InputMaxLen )
+            Label.resize( InputMaxLen );
+        if( valid( KeyPressCallback ) )
+            KeyPressCallback.OnKeyPress( key, letter );
+        return result;
+    }
+
+    void InputLost()
+    {
+        for( uint i = 0, j = MousePressed.length(); i < j; i++ )
+            MousePressed[ i ] = false;
+    }
+
+    GUIElement@ GetNewInstance()
+    {
+        GUIElement newElement = this;
+        return @newElement;
+    }
+
+    // Options
+    IGUIElementOpt@ CallbackInit( IGUIElementCallbackInit@ callback )
+    {
+        @InitCallback = callback;
+        return this;
+    }
+    IGUIElementOpt@ CallbackDraw( IGUIElementCallbackDraw@ callback )
+    {
+        @DrawCallback = callback;
+        return this;
+    }
+    IGUIElementOpt@ CallbackMouseClick( IGUIElementCallbackMouseClick@ callback )
+    {
+        @MouseClickCallback = callback;
+        return this;
+    }
+    IGUIElementOpt@ CallbackKeyPress( IGUIElementCallbackKeyPress@ callback )
+    {
+        @KeyPressCallback = callback;
+        return this;
+    }
+
+    IGUIElementOpt@ Position( int x, int y )
+    {
+        PosX = x;
+        PosY = y;
+        return this;
+    }
+
+    IGUIElementOpt@ Position( int x, int y, int w, int h )
+    {
+        PosX = x;
+        PosY = y;
+        Surface.Width = w;
+        Surface.Height = h;
+        return this;
+    }
+
+    IGUIElementOpt@ Position( string& iniKey )
+    {
+        PosX = 0;
+        PosY = 0;
+        Surface.Width = 0;
+        Surface.Height = 0;
+
+        // Parse four values from ini option
+        string@ str = GetIfaceIniStr( iniKey );
+        if( @str == null || str == "" )
+		{
+			Message( "Error 1 " + iniKey );
+			Log( "Error 1 " + iniKey );
+            return this;
+		}
+		
+        string@[] @ valuesStr = splitEx( str, " " );
+        if( valuesStr.length() != 4 )
+		{
+			Message( "Error 2 " + iniKey );
+			Log( "Error 2 " + iniKey );
+            return this;
+		}
+
+        int[] values( 4 );
+        for( int i = 0; i < 4; i++ )
+            if( not StrToInt( valuesStr[ i ], values[ i ] ) )
+			{
+				Message( "Error 3 " + iniKey );
+				Log( "Error 3 " + iniKey );
+				return this;
+			}
+
+        PosX = values[ 0 ];
+        PosY = values[ 1 ];
+		if( values[ 2 ] != 0 )
+			Surface.Width = values[ 2 ] - values[ 0 ] + 1;
+		if( values[ 3 ] != 0 )
+			Surface.Height = values[ 3 ] - values[ 1 ] + 1;
+        return this;
+    }
+
+    IGUIElementOpt@ DownPic( string@ sprName )
+    {
+        if( @sprName != null )
+            DownSpr.Load( sprName, DefaultPath );
+        else
+            DownSpr.Id = 0;
+
+        if( DownSpr.Id != 0 && Surface.Width == 0 && Surface.Height == 0 )
+        {
+            Surface.Width = DownSpr.Width;
+            Surface.Height = DownSpr.Height;
+        }
+        return this;
+    }
+
+    IGUIElementOpt@ Text( string@ text, int font, uint color, uint downColor, int flags )
+    {
+        if( text is null )
+            Label = "";
+        else
+            Label = text;
+        Font = font;
+        TextColor = color;
+        TextColorDown = downColor;
+        TextFlags = flags;
+        return this;
+    }
+
+    IGUIElementOpt@ TextInput( bool enabled, uint maxLen, uint colorFocused )
+    {
+        IsTextInput = enabled;
+        InputMaxLen = maxLen;
+        TextColorFocused = colorFocused;
+        return this;
+    }
+
+    IGUIElementOpt@ Switch( bool enabled )
+    {
+        SwitchEnabled = enabled;
+        return this;
+    }
+
+// @pm menu
+    IGUIElementOpt@ SetVisible( bool enabled )   // pm add
+    {
+        Visible = enabled;
+        return this;
+    }
+
+    IGUIElementOpt@ Realese()     // pm add
+    {
+        MouseClickCallback.OnMouseClick( MOUSE_CLICK_LEFT );
+        return this;
+    }
+
+    IGUIElementOpt@ SetElementType( uint8 type )   // pm add
+    {
+        ElementType = type;
+        return this;
+    }
+
+    IGUIElementOpt@ SetDescription( string desc )   // pm add
+    {
+        Description = desc;
+        return this;
+    }
+
+    IGUIElementOpt@ SetElementBtnNum( uint8 btnNum )   // pm add
+    {
+        ElementBtnNum = btnNum;
+        return this;
+    }
+
+    IGUIElementOpt@ SetElementFastPanelType( uint8 type )   // pm add
+    {
+        ElementFastPanelType = type;
+        return this;
+    }
+
+    IGUIElementOpt@ SetElementFastPanelId( uint16 id )   // pm add
+    {
+        ElementFastPanelId = id;
+        return this;
+    }
+
+    IGUIElementOpt@ Pic( string@ sprName, int path )
+    {
+        if( @sprName != null )
+            Surface.Load( sprName, path );
+        else
+            Surface.Id = 0;
+
+        if( Surface.Id != 0 && Surface.Width == 0 && Surface.Height == 0 )
+        {
+            Surface.Width = Surface.Width;
+            Surface.Height = Surface.Height;
+        }
+        return this;
+    }
+
+    IGUIElementOpt@ UpPic( string@ sprName )   // pm add
+    {
+        if( @sprName != null )
+            Surface.Load( sprName, DefaultPath );
+        else
+            Surface.Id = 0;
+
+        if( Surface.Id != 0 && Surface.Width == 0 && Surface.Height == 0 )
+        {
+            Surface.Width = Surface.Width;
+            Surface.Height = Surface.Height;
+        }
+        return this;
+    }
+
+    IGUIElementOpt@ SetLayer( uint8 layer )
+    {
+        Layer = layer;
+        return this;
+    }
+
+    IGUIElementOpt@ SetSpecialValue( uint value )
+    {
+        SpecialValue = value;
+        return this;
+    }
+
+    IGUIElementOpt@ SetRenderLayer( uint8 layer )
+    {
+        RenderLayer = layer;
+        return this;
+    }
+
+    IGUIElementOpt@ PicSetFrmCount( uint16 count )
+    {
+        Surface.DrawFrame = count;
+        return this;
+    }    // pm add
+// #pm menu
+
+    // Info
+    int     GetPosX() { return PosX; }
+    int     GetPosY() { return PosY; }
+    string@ GetText() { return Label; }
+// @pm menu
+    bool   GetVisible()       { return Visible; }              // pm add
+    uint8  GetLayer()         { return Layer; }                // pm add
+    uint8  GetType()          { return ElementType; }          // pm add
+    uint8  GetBtnNum()        { return ElementBtnNum; } // pm add
+    uint8  GetFastPanelType() { return ElementFastPanelType; } // pm add
+    uint16 GetFastPanelId()   { return ElementFastPanelId; }   // pm add
+    string GetDescription()   { return Description; }          // pm add
+    uint16 GetSurfaceHeight() { return Surface.Height; }
+    uint16 GetSurfaceWidth()  { return Surface.Width; }
+    uint   GetSpecValue()     { return SpecialValue; }
+    uint8  GetRenderLayer()   { return RenderLayer; }
+    // string GetSpriteName()	{ return Surface.Name; }
+    // void  SetType(uint8 type) { ElementType = type; } //pm add
+
+    // pm add
+    bool   Visible;
+    uint8  Layer;
+    uint8  ElementType;
+    uint8  ElementBtnNum;
+    uint8  ElementFastPanelType;
+    uint16 ElementFastPanelId;
+    string Description;
+
+    uint8  RenderLayer;
+    uint   SpecialValue;
+// #pm menu
+
+    // Data
+    int                            PosX;
+    int                            PosY;
+    Sprite                         Surface;
+    Sprite                         DownSpr;
+    int                            DefaultPath;
+    string                         Label;
+    int                            Font;
+    uint                           TextColor;
+    uint                           TextColorFocused;
+    uint                           TextColorDown;
+    int                            TextFlags;
+    bool                           IsTextInput;
+    uint                           InputMaxLen;
+    bool                           IsFocused;
+    bool[] MousePressed;
+    bool                           SwitchEnabled;
+    IGUIElementCallbackInit@       InitCallback;
+    IGUIElementCallbackDraw@       DrawCallback;
+    IGUIElementCallbackMouseClick@ MouseClickCallback;
+    IGUIElementCallbackKeyPress@   KeyPressCallback;
+}
+
+import void qmap_iface() from "qmap_client";
+
+class GUIScreen : IGUIScreenOpt
+{
+    GUIScreen( string@ sprName, int path )
+    {
+        if( @sprName != null )
+            Surface.Load( sprName, path );
+        Index = 0;
+
+        IsCanMove = true;
+        IsModal = true;
+        IsMultiinstance = false;
+        IsIgnoreBorders = false;
+        IsCloseOnMiss = false;
+        IsAutoCursor = false;
+
+        AutoCursorType = CURSOR_DEFAULT;
+        AutoCursorPrev = CURSOR_DEFAULT;
+
+        IsHardcoded = false;
+        IsLMouseDown = false;
+
+        PosX = __ScreenWidth / 2 - Surface.Width / 2;
+        PosY = __ScreenHeight / 2 - Surface.Height / 2;
+        LastX = 0;
+        LastY = 0;
+        @ShowCallback = null;
+        @HideCallback = null;
+        @MoveCallback = null;
+    }
+
+    void Draw()
+    {
+        if( Surface.Id != 0 )
+            DrawSprite( Surface.Id, -1, PosX, PosY, 0 );
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+            Elements[ i ].Draw( PosX, PosY );
+
+        if( IsHardcoded && Index == CLIENT_MAIN_SCREEN_GAME )
+        {
+            qmap_iface();
+
+            if( ( __sinf & SINF_HEX ) != 0 && GetCurrentCursor() == CURSOR_MOVE )
+            {
+                uint16 x = 0, y = 0, hexX = 0, hexY = 0;
+                GetMonitorHex( x, y, hexX, hexY );
+                DrawText( hexX + ":" + hexY, __MouseX + 22, __MouseY - 18, 50, 10, COLOR_RED, FONT_FALLOUT, 0 );
+				
+            }
+            if( ( __sinf & SINF_HEX ) != 0 )
+            {
+                if( controlled[ 0 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 0 + current_group * 10 ] + " " + name0, 10, 40, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 1 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 1 + current_group * 10 ] + " " + name1, 10, 50, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 2 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 2 + current_group * 10 ] + " " + name2, 10, 60, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 3 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 3 + current_group * 10 ] + " " + name3, 10, 70, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 4 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 4 + current_group * 10 ] + " " + name4, 10, 80, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 5 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 5 + current_group * 10 ] + " " + name5, 10, 90, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 6 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 6 + current_group * 10 ] + " " + name6, 10, 100, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 7 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 7 + current_group * 10 ] + " " + name7, 10, 110, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 8 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 8 + current_group * 10 ] + " " + name8, 10, 120, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+                if( controlled[ 9 + current_group * 10 ] != 0 )
+                    DrawText( "" + controlled[ 9 + current_group * 10 ] + " " + name9, 10, 130, 100, 10, COLOR_RED, FONT_FALLOUT, 0 );
+            }
+            
+			CritterCl@ chosen = GetChosen();
+            if( !valid( chosen ) ) { 
+				return;
+			}
+            
+			uint8 hungerProc = chosen.StatBase[ST_HUNGER],
+			thristProc = chosen.StatBase[ST_THIRST],
+			dyspneaProc = chosen.StatBase[ST_DYSPNEA],
+			drunkProc = chosen.StatBase[ST_DRUNK],
+            overdoseProc = chosen.StatBase[ST_GLOBAL_OVERDOSE];
+			
+			//Show blast radius
+			ItemCl@ weapon = chosen.GetItem( 0, SLOT_HAND1 );
+			if( valid( weapon ) ) 
+            {
+				uint8 blastRadius = weapon.Proto.Blast_Radius;
+				bool isGrenade = blastRadius > 0;
+				bool isRocket = false;
+				bool usesAmmo = weapon.Proto.Weapon_MaxAmmoCount > 0;
+				if( usesAmmo ) 
+                {
+					ProtoItem@ ammo = GetProtoItem( weapon.AmmoPid );
+					if( valid( ammo ) && ammo.Blast_Radius > 0 ) 
+                    {
+						blastRadius = ammo.Blast_Radius;
+						isRocket = true;
+					}
+				}
+				
+				uint8 mode = weapon.Mode;
+				uint8 ammoRound = ( mode ) == 0 ? weapon.Proto.Weapon_Round_0 : ( ( mode ) == 1 ? weapon.Proto.Weapon_Round_1 : ( ( mode ) == 2 ? weapon.Proto.Weapon_Round_2 : 0 ) );
+				bool isBurst = ammoRound > 1;
+				
+				if( GetCurrentCursor() == CURSOR_USE_WEAPON ) 
+                {
+					uint16 x = 0, y = 0, hxX = 0, hxY = 0;
+					GetMonitorHex( x, y, hxX, hxY );
+					/*uint8 dir = GetDirection( chosen.HexX, chosen.HexY, hxX, hxY );
+					int xAdjust = 0, yAdjust = -24;
+					switch( dir )
+					{
+						case( 0 ):
+							xAdjust += +24;
+							yAdjust += -24;
+							break;
+						case( 1 ):
+							xAdjust += +36;
+							yAdjust += -6;
+							break;
+						case( 2 ):
+							xAdjust += +24;
+							yAdjust += +12;
+							break;
+						case( 3 ):
+							xAdjust += -24;
+							yAdjust += +12;
+							break;
+						case( 4 ):
+							xAdjust += -36;
+							yAdjust += -6;
+							break;
+						case( 5 ):
+							xAdjust += -24;
+							yAdjust += -24;
+							break;
+					}*/
+					
+					if( isGrenade || isRocket ) {
+						uint8 r0 = 0xFF, g0 = 0x00, b0 = 0x00;
+						int[] drawData;
+                        int hx = 0, hy = 0;
+						for( uint8 i = 0; i < 6; i++ ) 
+                        {
+							uint16 tx = hxX, ty = hxY;
+							MoveHexByDir( tx, ty, i, blastRadius );
+							
+							GetHexPos( tx, ty, hx, hy );
+							drawData.insertLast( hx );
+							drawData.insertLast( hy );
+							drawData.insertLast( COLOR_RGBA( r0, g0, b0, 20 ) );
+						}
+						DrawPrimitive( DRAW_PRIMITIVE_TRIANGLEFAN, drawData );
+
+						drawData.insertLast( drawData[0] );
+						drawData.insertLast( drawData[1] );
+						drawData.insertLast( COLOR_RGBA( r0, g0, b0, 150 ) );
+						for( uint j = 2; j < drawData.length() - 3; j+= 3 ) {
+							drawData[ j ] = COLOR_RGBA( r0, g0, b0, 150 );
+						}
+						DrawPrimitive( DRAW_PRIMITIVE_LINESTRIP, drawData );
+					}
+					
+					/*if( usesAmmo ) { //WIP FOR WEAPON ARCS ETC
+						int[] data;
+						uint8 r0 = 0xFF, g0 = 0x00, b0 = 0x00;
+						int hx = 0, hy = 0;
+						GetHexPos( chosen.HexX, chosen.HexY, hx, hy );
+						data.insertLast( hx + xAdjust );
+						data.insertLast( hy + yAdjust );
+						data.insertLast( COLOR_RGBA( r0, g0, b0, 100 ) );
+						int cx = 0, cy = 0;
+						GetHexPos( hxX, hxY, cx, cy );
+						data.insertLast( cx );
+						data.insertLast( cy );
+						data.insertLast( COLOR_RGBA( r0, g0, b0, 100 ) );
+						//data.insertLast( cx );
+						//data.insertLast( cy );
+						//data.insertLast( COLOR_RGBA( r0, g0, b0, 100 ) );
+						//data.insertLast( cx );
+						//data.insertLast( cy - 36 );
+						//data.insertLast( COLOR_RGBA( r0, g0, b0, 100 ) );
+						DrawPrimitive( DRAW_PRIMITIVE_LINELIST, data );
+					}*/
+				} 
+			}
+        }
+    }
+
+    bool MouseDown( int click, int x, int y )
+    {
+		if( __waiting && click == MOUSE_CLICK_RIGHT ) 
+			RunServerScriptUnsafe( "ltp@unsafe_StopAndStayPut",  0, 0, 0, null, null );
+		
+        if( IsHardcoded && Index == CLIENT_MAIN_SCREEN_GAME && click == MOUSE_CLICK_RIGHT )
+            __mouse2Pressed = true;                                                                                        // pm added
+
+        if( IsHardcoded && Index == CLIENT_MAIN_SCREEN_GAME )
+        {
+            if( __waiting ) {
+				return true;
+			}
+            		
+            if( GetCurrentCursor() == CURSOR_USE_SKILL && __fastPanel ) {
+
+                __contMenuCrId = 0;
+                __contMenuItId = 0;
+
+
+                CritterCl@ target = GetMonitorCritter( x, y );
+
+                if( !(target is null) )
+                {
+                    __contMenuCrId = target.Id;
+                    if( target.IsDead() )
+                        __pickType = 0;
+                    else
+                        __pickType = 1;
+                }
+
+                ItemCl@ trItem = GetMonitorItem( x, y );
+
+                if( !(trItem is null) )
+                {
+                    __contMenuItId = trItem.Id;
+                    __itemHexX = trItem.HexX;
+                    __itemHexY = trItem.HexY;
+                    __itemPid = trItem.GetProtoId();
+                }
+                ChangeCursor( CURSOR_DEFAULT );
+                ShowContScreen( 26, CHOSEN_NONE );
+                return true;
+
+			} else if( click == MOUSE_CLICK_LEFT && GetCurrentCursor() == CURSOR_MOVE ) {
+                ItemCl@ exitGrid = GetMonitorItem( x, y );
+                if( exitGrid !is null && ( exitGrid.GetProtoId() >= EXIT_GRID_PID && exitGrid.GetProtoId() <= EXIT_GRID_PID + 8 ) )
+                {
+                    CritterCl@ choo = GetChosen();
+                    if( choo !is null )
+                    {
+                        RunServerScriptUnsafe( "globalmap_group@unsafe_ExitGridClick", exitGrid.HexX, exitGrid.HexY, exitGrid.GetProtoId(), null, null );
+                        return true;
+                    }
+
+                }
+                return false;
+
+            } else if( click == MOUSE_CLICK_LEFT && GetCurrentCursor() == CURSOR_USE_WEAPON && to_hit_hex( KeyPressed[ DIK_LCONTROL ] ) > 0 ) {
+				CritterCl @ choo = GetChosen();
+				if( choo.IsBusy() ) return true;
+				
+                uint16 hexX = 0, hexY = 0;
+                GetMonitorHex( x, y, hexX, hexY );
+				
+				RunServerScriptUnsafe( "general_unsafe@unsafe_hex_attack", hexX, hexY, 0, null, null );
+				return true;
+				
+			} else if( click == MOUSE_CLICK_LEFT && GetCurrentCursor() == CURSOR_USE_OBJECT ) {
+				CritterCl @ choo = GetChosen();
+				if( choo.IsBusy() ) return true;
+				
+                uint16 hexX = 0, hexY = 0;
+                GetMonitorHex( x, y, hexX, hexY );
+				CritterCl @cr = GetMonitorCritter( x, y );
+                ItemCl    @it = GetMonitorItem( x, y );
+				if( valid( cr ) ) return false;
+				if( valid( it ) ) return false;
+				RunServerScriptUnsafe( "general_unsafe@unsafe_hex_useItem", hexX, hexY, 0, null, null );
+				return true;			
+
+            } else if( click == MOUSE_CLICK_RIGHT && KeyPressed[ DIK_LMENU ] ) {
+                if( __mobhotkeys )
+                {
+                    uint16    x = __MouseX, y = __MouseY;
+                    CritterCl @cr = GetMonitorCritter( x, y );
+                    ItemCl    @it = GetMonitorItem( x, y );
+                    if( @cr != null ) {
+                        if( cr.IsPlayer() ) {
+                            RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_CRITTER_PLAYER", cr.Id, 0, 0, null, null );                     // панель действий с игроком
+                        } else {
+                            RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_CRITTER_NPC", cr.Id, 0, 0, null, null );                        // панель действий с нпц
+                        }
+						return true;
+                    } else if( @it != null ) {
+                        RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_ITEM", it.Id, 0, 0, null, null );                       // панель действий с итемом
+                        return true;
+                    } else {
+                        uint16 hexX = 0, hexY = 0;
+                        GetMonitorHex( x, y, hexX, hexY );
+                        RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_HEX", hexX, hexY, 0, null, null );                       // панель действий с гексом
+                        return true;
+                    }
+                }
+			} else if( click == MOUSE_CLICK_RIGHT && KeyPressed[ DIK_LCONTROL ] ) {
+				if( __mobhotkeys ) {
+                    uint16 x = __MouseX, y = __MouseY;
+					uint16 hexX = 0, hexY = 0;
+					GetMonitorHex( x, y, hexX, hexY );
+					RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_HEX", hexX, hexY, 0, null, null );                       // панель действий с гексом
+					return true;
+                }
+            } else if( ( click == MOUSE_CLICK_MIDDLE || ( __mouse2Pressed && click == MOUSE_CLICK_LEFT ) && !__mobhotkeys ) && GetCurrentCursor() == CURSOR_DEFAULT ) {
+                __isContMenuOpen = true;
+                __contMenuCrId = 0;
+                __contMenuItId = 0;
+                CritterCl@ target = GetMonitorCritter( x, y );
+
+                if( !(target is null) )
+                {
+                    __contMenuCrId = target.Id;
+                    if( target.IsDead() )
+                        __pickType = 0;
+                    else
+                        __pickType = 1;
+                }
+                ItemCl@ trItem = GetMonitorItem( x, y );
+
+                if( !(trItem is null) )
+                {
+                    __contMenuItId = trItem.Id;
+                    __itemHexX = trItem.HexX;
+                    __itemHexY = trItem.HexY;
+                    __itemPid = trItem.GetProtoId();
+                }
+
+                ::ShowScreen( CLIENT_SCREEN_CONTMENU, x, y, 0 );
+                return true;
+            }
+        }
+
+        // pm add new context menu
+        if( Index == CLIENT_SCREEN_CONTMENU && click > MOUSE_CLICK_LEFT )
+        {
+            IGUIElementOpt @ eDesc;
+            uint8 elemCount = Elements.length() - 1;           // from 0
+            uint8 temp = 0;
+            uint8 count = this.LastElementNum;
+            uint8 countExt = 0;
+
+            if( click == MOUSE_CLICK_WHEEL_UP )
+            {
+                temp = this.LastElementNum;
+                if( !( this.LastElementNum == 1 ? Elements[ elemCount ].GetVisible() : Elements[ this.LastElementNum - 1 ].GetVisible() ) )
+                {
+                    do
+                    {
+                        if( countExt > 100 )
+                        {
+                            Message( "countExt end" );
+                            break;
+                        }
+                        countExt++;
+                        count == 1 ? count = elemCount : count--;
+//                                              Message(""+count);
+                    }
+                    while( !( Elements[ count ].GetVisible() ) );               // && Elements[count].GetType() == SCREEN_ELEMENT_BUTTON));
+                    this.LastElementNum = count;
+                }
+                else
+                {
+                    this.LastElementNum > 1 ? this.LastElementNum-- : this.LastElementNum = elemCount;
+                }
+
+            }
+            else if( click == MOUSE_CLICK_WHEEL_DOWN )
+            {
+                temp = this.LastElementNum;
+                if( !( this.LastElementNum == elemCount ? Elements[ 1 ].GetVisible() : Elements[ this.LastElementNum + 1 ].GetVisible() ) )
+                {
+                    do
+                    {
+                        if( countExt > 100 )
+                        {
+                            Message( "countExt end" );
+                            break;
+                        }
+                        countExt++;
+                        count == elemCount ? count = 1 : count++;
+//                                              Message(""+count);
+                    }
+                    while( !( Elements[ count ].GetVisible() ) );               // && Elements[count].GetType() == SCREEN_ELEMENT_BUTTON));
+                    this.LastElementNum = count;
+                }
+                else
+                {
+                    this.LastElementNum < elemCount ? this.LastElementNum++ : this.LastElementNum = 1;
+                }
+
+            }
+            else if( click == MOUSE_CLICK_MIDDLE )
+            {
+                if( Elements[ this.LastElementNum ].GetVisible() )
+                {
+                    Elements[ this.LastElementNum ].Realese();
+                    __isContMenuOpen = false;
+                    __HideCursor  = false;
+                    return true;
+                }
+            }
+
+            // Message("num = "+this.LastElementNum+" vis = "+Elements[this.LastElementNum].GetVisible()+" type = "+Elements[this.LastElementNum].GetType());
+            Elements[ 0 ].Text( "" + Elements[ this.LastElementNum ].GetDescription(), FONT_FALLOUT, COLOR_GREEN, COLOR_GREEN, FT_CENTERX | FT_CENTERY );
+            Elements[ this.LastElementNum ].Switch( true );
+            Elements[ temp ].Switch( false );
+            return true;
+        }
+        // end
+// #pm menu
+
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+            Elements[ i ].IsFocused = false;
+        for( uint i = Elements.length(); i > 0;)
+        {
+            i--;
+            GUIElement@ e = Elements[ i ];
+            if( IS_COLLISION( x, y, PosX + e.PosX, PosY + e.PosY, e.Surface.Width, e.Surface.Height ) && e.MouseDown( click ) )
+            {
+                e.IsFocused = true;
+                return true;
+            }
+        }
+
+        if( not IsHardcoded && click == MOUSE_CLICK_LEFT )
+        {
+            if( IS_COLLISION( x, y, PosX, PosY, Surface.Width, Surface.Height ) )
+            {
+                IsLMouseDown = true;
+                LastX = x;
+                LastY = y;    
+				return true;
+            }
+            else if( IsCloseOnMiss )
+            {
+                ::HideScreen( 0, 0, 0, 0 );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool MouseUp( int click, int x, int y )
+    {
+        if( IsHardcoded && Index == CLIENT_MAIN_SCREEN_GAME && click == MOUSE_CLICK_RIGHT && __mouse2Pressed )
+            __mouse2Pressed = false;                                                                                                               // pm added
+
+        IsLMouseDown = false;
+        bool result = false;
+        for( uint i = Elements.length(); i > 0;)
+        {
+            i--;
+            GUIElement@ e = Elements[ i ];
+            if( IS_COLLISION( x, y, PosX + e.PosX, PosY + e.PosY, e.Surface.Width, e.Surface.Height ) )
+            {
+                e.MouseUp( click, true );
+                result = true;
+            }
+            else
+            {
+                e.MouseUp( click, false );
+            }
+        }
+        return result;
+    }
+
+    void MouseMove( int x, int y )
+    {
+        if( IsCanMove && IsLMouseDown )
+        {
+            int lastPosX = PosX;
+            int lastPosY = PosY;
+            int offsX = x - LastX;
+            int offsY = y - LastY;
+            LastX = x;
+            LastY = y;
+            PosX += offsX;
+            PosY += offsY;
+
+            // Check screen borders
+            if( not IsIgnoreBorders )
+            {
+                int px = PosX;
+                int py = PosY;
+                if( PosX < 0 )
+                    PosX = 0;
+                if( PosY < 0 )
+                    PosY = 0;
+                if( PosX + Surface.Width > __ScreenWidth )
+                    PosX = __ScreenWidth - Surface.Width;
+                if( PosY + Surface.Height > __ScreenHeight )
+                    PosY = __ScreenHeight - Surface.Height;
+                LastX += PosX - px;
+                LastY += PosY - py;
+            }
+            if( not (MoveCallback is null) && ( lastPosX != PosX || lastPosY != PosY ) )
+                MoveCallback.OnMove( PosX, PosY );
+        }
+
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+        {
+            Elements[ i ].MouseMove( x, y );
+            if( Index == CLIENT_SCREEN_CONTMENU && i != 0 )         // [0] is description element pm added
+            {
+                IGUIElementOpt @ e = Elements[ i ];
+
+                if( IS_COLLISION( x, y, PosX + e.GetPosX(), PosY + e.GetPosY(), e.GetSurfaceWidth(), e.GetSurfaceHeight() ) )
+                {
+                    if( e.GetVisible() )
+                    {
+                        Elements[ 0 ].Text( "" + e.GetDescription(), FONT_FALLOUT, COLOR_GREEN, COLOR_GREEN, FT_CENTERX | FT_CENTERY );
+                        e.Switch( true );
+                        __elementActive = true;
+                    }
+                }
+                else
+                {
+                    if( __elementActive )
+                    {
+                        // Elements[0].Text("",FONT_FALLOUT,COLOR_GREEN, COLOR_GREEN,FT_CENTERX|FT_CENTERY);
+                        e.Switch( false );
+
+                    }
+                }
+            }
+        }
+    }
+
+    bool KeyPress( uint8 key )
+    {
+		int screen_type = GUI_GetActiveScreen();
+		
+		if( screen_type == 11 )
+		{
+			CritterCl@ chosen = GetChosen();			
+			if( !isGM( chosen ) ) return false;
+			
+			if( GM_store_type != -1 && key == DIK_ESCAPE )
+			{
+				RunServerScriptUnsafe( "store@unsafe_StoreMenu", GM_store_type, 0, 0, null, null );
+				GM_store_type = -1;
+				
+				return false;
+			}			
+		}
+
+		if( screen_type == 11 || screen_type == 10 )
+			if( KeyPressed[ DIK_LSHIFT ] && key == DIK_Q )
+			{
+				RunServerScriptUnsafe( "gm@unsafe_show_containments", 0, 0, 0, null, null );
+				return false;
+			}
+
+        //Включение-выключение отображения интерфейса.
+		if( key == DIK_F4 )
+        {
+			__f4Pressed = !__f4Pressed;
+			return false;
+        }
+
+		if( key == DIK_F1 )
+			__ShowF1Help = !__ShowF1Help;
+
+		if( key == DIK_F6 ) // Включение/выключение отображения имён кукол. Мио.
+		{
+			__ShowNpcNames = ( __ShowNpcNames ? false : true );
+			RunServerScriptUnsafe( "gm@unsafe_sinf", 0, 0, 0, null, null );
+			return false;
+		}
+
+        if( Index == CLIENT_MAIN_SCREEN_GAME || Index == CLIENT_MAIN_SCREEN_GLOBAL_MAP )
+        {
+			//Старый костыль от выдачи опыта.
+            if( key == DIK_ESCAPE && __getExpToPlayer )
+            {
+                __getExpToPlayer = false;
+                return true;
+            }
+			
+			//ГМ-Инвиз.
+			if( key == DIK_0 && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] )
+			{
+				RunServerScriptUnsafe("main@unsafe_swap_invis", 0, 0, 0, null, null);
+				return true;
+			}
+
+			// Мио.
+			// Автоиспользование дверей.
+			if( key == DIK_E && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] )
+			{
+				RunServerScriptUnsafe( "general_unsafe@unsafe_OpenDoor", 0, 0, 0, "", null );
+				return true;
+			}
+
+			/*if( !__ConsoleActive && key == DIK_SPACE )
+			{
+				RunServerScriptUnsafe( "main@unsafe_jumpOver", 0, 0, 0, null, null );
+				return false;
+			}*/
+
+			if( !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_LMENU ] )
+			{
+				int[][] keybinds = {
+					{ DIK_NUMPAD0, HIT_LOCATION_NONE },
+					{ DIK_NUMPAD9, HIT_LOCATION_NONE },
+					{ DIK_NUMPAD7, HIT_LOCATION_EYES },
+					{ DIK_NUMPAD8, HIT_LOCATION_HEAD },
+					{ DIK_NUMPAD4, HIT_LOCATION_LEFT_ARM },
+					{ DIK_NUMPAD5, HIT_LOCATION_TORSO },
+					{ DIK_NUMPAD6, HIT_LOCATION_RIGHT_ARM },
+					{ DIK_NUMPAD1, HIT_LOCATION_LEFT_LEG },
+					{ DIK_NUMPAD2, HIT_LOCATION_GROIN },
+					{ DIK_NUMPAD3, HIT_LOCATION_RIGHT_LEG }
+				};
+				for( uint i = 0; i < keybinds.length(); i++ )
+					if( keybinds[i][0] == key ) 
+					{
+						RunServerScriptUnsafe( "main@unsafe_set_aim", keybinds[i][1], 0, 0, null, null );
+						return false;
+					}
+			}
+			
+			//Хоткейные анимации.
+			if( !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_LSHIFT ] && !KeyPressed[ DIK_LMENU ] && !KeyPressed[ DIK_RMENU ] )
+			{
+				int[][] keybinds = {
+					{ DIK_L, ACTION_DAMAGE_FORCE, 1 },
+					{ DIK_K, ACTION_DAMAGE_FORCE, 2 },
+					//{ DIK_U, ACTION_PICK_ITEM, 0 },
+					{ DIK_Y, ACTION_DODGE },
+					{ DIK_V, ACTION_FIDGET },
+					{ DIK_X, ACTION_WINDUP }
+				};
+				for( uint i = 0; i < keybinds.length(); i++ )
+					if( keybinds[i][0] == key ) 
+					{
+						CritterCl @cr = GetMonitorCritter( __MouseX, __MouseY );
+						RunServerScriptUnsafe( "main@unsafe_animation", keybinds[i][1], ( keybinds[i].length() > 2 ? keybinds[i][2] : 0 ), valid(cr) ? cr.Id : 0, null, null );
+						return true;
+					}
+			}
+
+			//Стук.
+            if( key == DIK_H && GetCurrentCursor() == CURSOR_DEFAULT && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] )
+            {
+                CritterCl @cr = GetMonitorCritter( __MouseX, __MouseY );
+                ItemCl    @it = GetMonitorItem( __MouseX, __MouseY );
+				
+				if( @cr != null ) RunServerScriptUnsafe( "general_unsafe@unsafe_itemhit", cr.Id, 0, 0, null, null );
+				else if( @it != null ) RunServerScriptUnsafe( "general_unsafe@unsafe_itemhit2", 0, it.HexX, it.HexY, null, null );
+                ChangeCursor( CURSOR_DEFAULT );
+                return true;
+
+            }
+			
+			//Бросание предметов.
+            if( key == DIK_J && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_LSHIFT ] && !KeyPressed[ DIK_LMENU ] && !KeyPressed[ DIK_RMENU ] ) {
+				CritterCl @ choo = GetChosen();
+				uint16 x = 0, y = 0, hexX = 0, hexY = 0;
+            	GetMonitorHex (x, y, hexX, hexY);
+				if( !choo.IsBusy() ) 
+					RunServerScriptUnsafe ("general_unsafe@unsafe_itemthrow", hexX, hexY, 0, null, null);
+				return true;
+            }
+			
+			//Перезарядка.
+            if( key == DIK_R && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_LSHIFT ] ) {
+				CritterCl @ choo = GetChosen();
+				if( !choo.IsBusy() ) 
+					RunServerScriptUnsafe ("general_unsafe@unsafe_hotkey_command", 0, 0, 0, "RELOAD", null);
+				return true;
+            }
+			
+			//Смена типа боеприпаса.
+            if( key == DIK_R && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && KeyPressed[ DIK_LSHIFT ] ) {
+				CritterCl @ choo = GetChosen();
+				if( !choo.IsBusy() ) 
+					RunServerScriptUnsafe ("general_unsafe@unsafe_hotkey_command", 0, 0, 0, "SWAPAMMO", null);
+				return true;
+            }
+			
+			//Использования предмета в руках на что-либо. Хоткей "использовать на".
+            if( key == DIK_A && !__ConsoleActive && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_LMENU ] ) {
+				CritterCl @ choo = GetChosen();
+				ItemCl@ tool = choo.GetItem( 0, SLOT_HAND1 );
+				if( tool !is null )
+				{
+					if( tool.GetType() != ITEM_TYPE_WEAPON )
+					{
+						ChangeCursor( CURSOR_USE_OBJECT );
+						return true;
+					}
+					else
+					{
+						uint8 mode = 0;
+						ProtoItem@ weapon = choo.GetSlotProto( SLOT_HAND1, mode );
+						if( mode == 4 )
+						{
+							ChangeCursor( CURSOR_USE_OBJECT );
+							return true;
+						}
+					}
+				}
+            }
+
+			//Хоткеи по alt
+			if( KeyPressed[ DIK_LMENU ] || KeyPressed[ DIK_RMENU ] )
+			{
+				if( key == DIK_F && KeyPressed[ DIK_LSHIFT ] ) { RunServerScriptUnsafe( "gm@unsafe_GMSwitch", 0, 0, 0, null, null ); return true; }
+
+				uint16 x = 0, y = 0;
+				GetMonitorHex( __MouseX, __MouseY, x, y );//TODO: Передавать координаты гекса, что бы если цель была за спрайтом её все равно можно было выцелить, изменив курсор на "гекс".
+				CritterCl@ target = GetMonitorCritter( __MouseX, __MouseY );
+				uint targetId = @target !is null ? target.Id : 0;
+				switch( key )
+				{
+					//case( DIK_G ): RunServerScriptUnsafe( "test@unsafe_testBag",  0, 0, 0, null, null ); return true;
+					case( DIK_B ): RunServerScriptUnsafe( "test@unsafe_getCost",  0, 0, 0, null, null ); return true;
+					
+					case( DIK_C ): RunServerScriptUnsafe( "general_unsafe@unsafe_pushing", 0, 0, 0, null, null ); return true;					
+					
+
+					//case( DIK_D ): RunServerScriptUnsafe( "workout@unsafe_wringing", 0, 0, 0, null, null ); return true;
+					//case( DIK_F ): RunServerScriptUnsafe( "workout@unsafe_wringing", 1, 0, 0, null, null ); return true;
+					
+
+					case( DIK_T ): RunServerScriptUnsafe( "handcuffs@unsafe_call_mob", targetId, x, y, null, null ); return true;					
+					case( DIK_V ): RunServerScriptUnsafe( "handcuffs@unsafe_switch_aggro", targetId, x, y, null, null ); return true;					
+					case( DIK_A ): RunServerScriptUnsafe( "handcuffs@unsafe_attack", targetId, x, y, null, null ); return true;
+					case( DIK_W ): RunServerScriptUnsafe( "handcuffs@unsafe_walk", targetId, x, y, null, null ); return true;
+					case( DIK_S ): RunServerScriptUnsafe( "handcuffs@unsafe_see", targetId, x, y, null, null ); return true;
+					case( DIK_X ): RunServerScriptUnsafe( "handcuffs@unsafe_retreat", targetId, x, y, null, null ); return true;					
+					case( DIK_F ): RunServerScriptUnsafe( "handcuffs@unsafe_follow", targetId, x, y, null, null ); return true;					
+
+					case( DIK_J ): RunServerScriptUnsafe( "mio_social@unsafe_FAST_AFK_MODE", 1, 0, 0, null, null ); return true;
+					case( DIK_K ): RunServerScriptUnsafe( "mio_social@unsafe_FAST_AFK_MODE", 2, 0, 0, null, null ); return true;
+					case( DIK_L ): RunServerScriptUnsafe( "mio_social@unsafe_FAST_AFK_MODE", 3, 0, 0, null, null ); return true;
+                    case ( DIK_N ): RunServerScriptUnsafe( "client_iterations@unsafe_CallPlayerMenu", 20, 0, 0, "", null ); return true;
+					// Mio хоткеи.
+					case( DIK_M ):
+						if( targetId == 0 ) { RunServerScriptUnsafe( "mio_social@unsafe_CONTROL_PANEL_PLAYER",        0, 0, 0, null, null ); }
+									   else { RunServerScriptUnsafe( "mio_social@unsafe_CONTROL_PANEL_PLAYER", targetId, 0, 1, null, null ); }
+						return true;
+					case( DIK_MULTIPLY ): RunServerScriptUnsafe( "mio_social@unsafe_QuickSoundTuning", 0, 0, 0, null, null ); return true;
+					case( DIK_SUBTRACT ): RunServerScriptUnsafe( "mio_social@unsafe_QuickSoundTuning", 1, 0, 0, null, null ); return true;
+					case( DIK_ADD ): RunServerScriptUnsafe( "mio_social@unsafe_QuickSoundTuning", 2, 0, 0, null, null ); return true;
+				}
+			}
+
+			//Вкл-выкл Хоткеи на стороне клиента.
+			if( key == DIK_F && KeyPressed[ DIK_LCONTROL ] )
+			{
+				CritterCl@ chosen = GetChosen();
+				if( chosen.Stat[ ST_ACCESS_LEVEL ] >= ACCESS_MODER )
+				{
+					__mobhotkeys = !__mobhotkeys;
+					Message( "Hotkeys are " + ( __mobhotkeys ? "on" : "off" ) + "." );
+				}
+				return true;
+			}
+
+			//Полу-ГМ хоткеи:
+				//Улучшенный режим вывода текста, как на сервере Мио:
+				if( !__ConsoleActive && KeyPressed[ DIK_LCONTROL ] && ( !__mobhotkeys && key == DIK_S ) )
+				{
+					CritterCl@ target = GetMonitorCritter( __MouseX, __MouseY );
+					uint targetId = @target !is null ? target.Id : 0;
+					RunServerScriptUnsafe( "rp_chat@unsafe_SetChatTarget", targetId, 0, 0, null, null );
+					return true;
+				}
+			//Конец сегмента полу-ГМ хоткеев.
+			
+			//ГМ-хоткеи:
+			if( !__ConsoleActive && ( __mobhotkeys || __usermobhotkeys ) )
+			{
+				CritterCl@ chosen = GetChosen();
+				uint16 x = 0, y = 0, hexX = 0, hexY = 0;
+				GetMonitorHex( x, y, hexX, hexY );//TODO: Передавать координаты гекса, что бы если цель была за спрайтом её все равно можно было выцелить, изменив курсор на "гекс".
+				CritterCl@ target = GetMonitorCritter( __MouseX, __MouseY );
+				uint targetId = @target !is null ? target.Id : 0;
+				ItemCl@ targetItem = GetMonitorItem( __MouseX, __MouseY );
+				uint targetItemId = @targetItem !is null ? targetItem.Id : 0;
+				
+				bool processed = false;
+				
+				//ГМ-хоткеи по шифту.
+				if( KeyPressed[ DIK_LSHIFT ] )
+				{
+					processed = true;
+					switch( key )
+					{
+						case(DIK_Q): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_INV, null, null ); break;
+						case(DIK_I): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_HAND1, null, null ); break;
+						case(DIK_O): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_HAND2, null, null ); break;
+						case(DIK_P): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_ARMOR, null, null ); break;
+						case(DIK_J): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_HEAD, null, null ); break;
+						case(DIK_K): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_BACK, null, null ); break;
+						case(DIK_L): RunServerScriptUnsafe( "gm@unsafe_show_containments", targetId, targetItemId, SLOT_MISC, null, null ); break;
+						default: processed = false; break;
+					}
+				}
+				
+				//ГМ-хоткеи по контролу.
+				if( KeyPressed[ DIK_LCONTROL ] )
+				{
+					processed = true;
+					switch( key )
+					{
+						//Дефолтные хоткеи:
+						case(DIK_T): RunServerScriptUnsafe( "debug@unsafe_GM_tel",  chosen.Id, hexX, hexY, null, null ); break; //Телепорт под гекс
+						case(DIK_N): RunServerScriptUnsafe( "gm@unsafe_GM_teleport_to_next_player",  0, 0, 0, null, null ); break; //ТП-к-следующему персонажу.
+						case(DIK_G): RunServerScriptUnsafe( "gm@unsafe_GM_PANNEL_SELF", 0, 0, 0, null, null ); break; //GM-панель.
+						case(DIK_H): RunServerScriptUnsafe( "raiders@unsafe_HomeMob", 0, 0, current_group, null, controlled ); break; //Установить хомгекс.
+						
+						case(DIK_4): RunServerScriptUnsafe( "rp_chat@unsafe_SetChatTarget",  targetId, 0, 0, null, null ); break;
+						
+						//Говорить за целевого криттера или серым текстом:
+						case(DIK_D): RunServerScriptUnsafe( "gm@unsafe_GM_voice",  hexX, hexY, 0, null, null ); break;
+						case(DIK_S): RunServerScriptUnsafe( "gm@unsafe_GM_say",  targetId, SAY_NORM, 0, null, null ); break;
+						case(DIK_E): RunServerScriptUnsafe( "gm@unsafe_GM_say",  targetId, SAY_EMOTE, 0, null, null ); break;
+						case(DIK_U): RunServerScriptUnsafe( "gm@unsafe_GM_say",  targetId, SAY_SHOUT, 0, null, null ); break;
+						case(DIK_Z): RunServerScriptUnsafe( "gm@unsafe_GM_say",  targetId, SAY_WHISP, 0, null, null ); break;
+						case(DIK_Y): RunServerScriptUnsafe( "gm@unsafe_GM_say",  targetId, SAY_NETMSG, 0, null, null ); break;
+
+						//Контроль мобов:
+						case(DIK_C): if( @target !is null ) SetControlCritters( targetId ); break;
+						
+						//Отправить домой:
+						case(DIK_B): if( @target !is null ) RunServerScript( "general_unsafe@unsafe_MobGoHome", targetId, 0, 0, "", null ); break;
+
+						//Контроль держания/убирания/выбора оружия:
+						case(DIK_M): RunServerScriptUnsafe( "test@unsafe_weapon_update",  0, current_group, 0, null, controlled ); break;
+						case(DIK_J): RunServerScriptUnsafe( "test@unsafe_weapon_show",  0, current_group, 0, null, controlled ); break;
+						case(DIK_K): RunServerScriptUnsafe( "test@unsafe_weapon_hide",  0, current_group, 0, null, controlled ); break;
+						//Смена брони
+						case(DIK_L): RunServerScriptUnsafe( "test@unsafe_armor_update",  0, current_group, 0, null, controlled ); break;
+						//Ходьба/бег/атака:
+						case(DIK_X): RunServerScriptUnsafe( "raiders@unsafe_stopMob", current_group, hexX, hexY, null, controlled ); break;
+						case(DIK_W): RunServerScriptUnsafe( "raiders@unsafe_moveMob", current_group, hexX, hexY, null, controlled ); break;
+						case(DIK_A):
+							if( @target != null )
+								RunServerScriptUnsafe( "raiders@unsafe_attackMob",  targetId, current_group, 0, null, controlled );
+							else
+								RunServerScriptUnsafe( "raiders@unsafe_moveMob", current_group, hexX, hexY, "run", controlled );
+							break;
+
+						//Контроль групп:
+						case(DIK_Q): {
+							Message( "Очищена группа " + ( current_group + 1 ) + "." );
+							controlled[ 0 + current_group * 10 ] = 0;
+							controlled[ 1 + current_group * 10 ] = 0;
+							controlled[ 2 + current_group * 10 ] = 0;
+							controlled[ 3 + current_group * 10 ] = 0;
+							controlled[ 4 + current_group * 10 ] = 0;
+							controlled[ 5 + current_group * 10 ] = 0;
+							controlled[ 6 + current_group * 10 ] = 0;
+							controlled[ 7 + current_group * 10 ] = 0;
+							controlled[ 8 + current_group * 10 ] = 0;
+							controlled[ 9 + current_group * 10 ] = 0;
+						break; }
+						case(DIK_1): {
+							Message( "Выбрана Группа № 1." );
+							current_group = 0;
+							name0 = "";
+							name1 = "";
+							name2 = "";
+							name3 = "";
+							name4 = "";
+							name5 = "";
+							name6 = "";
+							name7 = "";
+							name8 = "";
+							name9 = "";
+						break; }
+						case(DIK_2): {
+							Message( "Выбрана Группа № 2." );
+							current_group = 1;
+							name0 = "";
+							name1 = "";
+							name2 = "";
+							name3 = "";
+							name4 = "";
+							name5 = "";
+							name6 = "";
+							name7 = "";
+							name8 = "";
+							name9 = "";
+						break; }
+						case(DIK_3): {
+							Message( "Выбрана Группа № 3." );
+							current_group = 2;
+							name0 = "";
+							name1 = "";
+							name2 = "";
+							name3 = "";
+							name4 = "";
+							name5 = "";
+							name6 = "";
+							name7 = "";
+							name8 = "";
+							name9 = "";
+						break; }
+						default: processed = false; break;
+					}
+				}
+				
+				if( processed )
+					return true;
+			}
+		}
+        else if( Index == CLIENT_SCREEN_CLOCK )
+        {
+			//Закрытие пип-боя по нажатию клавиши P
+            if( key == DIK_P && !__ConsoleActive )
+            {
+                ::HideScreen( 0, 0, 0, 0 );
+                return false;
+            }
+        }
+        else if( Index == CLIENT_SCREEN_INPUTBOX )
+        {
+            uint8 char = 0;
+            uint8 charIndex = 0;
+
+            if( ( KeyPressed[ DIK_LCONTROL ] || KeyPressed[ DIK_RCONTROL ] ) && key == DIK_V )
+            {
+                InputBoxClipboardInsert();
+                return false;
+            }
+
+            uint8[] disabledKeys = { DIK_BACK, DIK_LEFT, DIK_RIGHT };
+            if( disabledKeys.find( key ) == -1 )
+            {
+                if( GetKeybLang() > 0 )
+                    charIndex = 2;
+                if( KeyPressed[ DIK_LSHIFT ] || KeyPressed[ DIK_RSHIFT ] )
+                    charIndex++;
+                char = KbData[ key ].Char[ charIndex ];
+            }
+			
+            if( ( key != DIK_ESCAPE || key == DIK_RETURN ) && !__ConsoleActive )
+            {
+                InputBoxKeyPressed( key, char );
+                return true;
+            }
+        }
+		
+		//Обработчик индивидуальных хоткеев у всплывающих окон, чать 1
+        if( ( __IsHotkeysUse ) && IsScreenAllowed( "" + Index + "" ) )
+        {
+            if( ( Index == CLIENT_SCREEN_PIP_BOY ) && ( key == DIK_P ) )
+                return false;
+            uint8 mainScr = 0;
+            for( uint i = 0; i < ActiveScreens.length(); i++ )
+            {
+                if( ( ActiveScreens[ i ].Index == CLIENT_MAIN_SCREEN_GAME ) || ( ActiveScreens[ i ].Index == CLIENT_MAIN_SCREEN_GLOBAL_MAP ) )
+                {
+                    mainScr = ActiveScreens[ i ].Index;
+                    break;
+                }
+            }
+            if( mainScr != 0 )
+                return ProcessCommand( key, previews, KeyPressed, mainScr, Index );
+            else
+                return false;
+        }
+		
+		//Обработчик индивидуальных хоткеев у всплывающих окон, чать 2
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+        {
+            GUIElement@ e = Elements[ i ];
+            if( e.IsFocused && e.IsTextInput )
+                return e.KeyPress( key );
+        }
+		
+        return false;
+    }
+
+    void InputLost()
+    {
+        IsLMouseDown = false;
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+            Elements[ i ].InputLost();
+    }
+
+    GUIScreen@ GetNewInstance()
+    {
+        GUIScreen               screen = this;
+        IGUIScreenCallbackShow@ newCallback = ShowCallback;
+        for( uint i = 0, j = Elements.length(); i < j; i++ )
+            @screen.Elements[ i ] = Elements[ i ].GetNewInstance();
+        return @screen;
+    }
+
+    IGUIScreenOpt@ Pic( string@ sprName, int path )
+    {
+        if( @sprName != null )
+            Surface.Load( sprName, path );
+        else
+            Surface.Id = 0;
+
+        if( Surface.Id != 0 && Surface.Width == 0 && Surface.Height == 0 )
+        {
+            Surface.Width = Surface.Width;
+            Surface.Height = Surface.Height;
+        }
+        return this;
+    } // @pm
+
+    // Options
+    IGUIScreenOpt@ CallbackShow( IGUIScreenCallbackShow@ callback )
+    {
+        @ShowCallback = callback;
+        return this;
+    }
+    IGUIScreenOpt@ CallbackHide( IGUIScreenCallbackHide@ callback )
+    {
+        @HideCallback = callback;
+        return this;
+    }
+    IGUIScreenOpt@ CallbackMove( IGUIScreenCallbackMove@ callback )
+    {
+        @MoveCallback = callback;
+        return this;
+    }
+    IGUIScreenOpt@ Position( int x, int y )
+    {
+        PosX = x;
+        PosY = y;
+        return this;
+    }
+    IGUIScreenOpt@ CanMove( bool enabled )
+    {
+        IsCanMove = enabled;
+        return this;
+    }
+    IGUIScreenOpt@ Modal( bool enabled )
+    {
+        IsModal = enabled;
+        return this;
+    }
+    IGUIScreenOpt@ Multiinstance( bool enabled )
+    {
+        IsMultiinstance = enabled;
+        return this;
+    }
+    IGUIScreenOpt@ IgnoreBorders( bool enabled )
+    {
+        IsIgnoreBorders = enabled;
+        return this;
+    }
+    IGUIScreenOpt@ CloseOnMiss( bool enabled )
+    {
+        IsCloseOnMiss = enabled;
+        return this;
+    }
+    IGUIScreenOpt@ AutoCursor( bool enabled, int cursorType )
+    {
+        IsAutoCursor = enabled;
+        AutoCursorType = cursorType;
+        return this;
+    }
+
+    IGUIScreenOpt@ SetElementCount( int8 ElementCount )
+    {
+        LastElementNum = ElementCount;
+        return this;
+    } // @pm menu
+
+    // Info
+    int GetPosX() { return PosX; }
+    int GetPosY() { return PosY; }
+// @pm menu
+    uint8           GetLastElement()           { return LastElementNum; }    // pm add
+    uint16          GetElementsLength()        { return Elements.length(); } // pm add
+    IGUIElementOpt@ GetElement( uint16 index ) { return Elements[ index ]; }
+// #pm menu
+
+    // Data
+
+    int8                    LastElementNum; // @pm menu
+
+    int                     Index;
+    int                     PosX;
+    int                     PosY;
+    int                     LastX;
+    int                     LastY;
+    Sprite                  Surface;
+
+    bool                    IsCanMove;
+    bool                    IsModal;
+    bool                    IsMultiinstance;
+    bool                    IsIgnoreBorders;
+    bool                    IsCloseOnMiss;
+    bool                    IsAutoCursor;
+
+    int                     AutoCursorType;
+    int                     AutoCursorPrev;
+
+    bool                    IsHardcoded;
+    bool                    IsLMouseDown;
+    IGUIScreenCallbackShow@ ShowCallback;
+    IGUIScreenCallbackHide@ HideCallback;
+    IGUIScreenCallbackMove@ MoveCallback;
+    GUIElement@[] Elements;
+}
+
+//
+// API
+//
+
+// Create new screen
+IGUIScreenOpt@ GUI_CreateScreen( int screenIndex, string@ sprName )
+{
+    if( screenIndex == 0 )
+        return null;
+    DeleteScreen( screenIndex );
+    return CreateScreen( screenIndex, sprName );
+}
+
+// Create new screen ini
+IGUIScreenOpt@ GUI_CreateScreenIni( int screenIndex, string@ iniKey )
+{
+	return GUI_CreateScreen( screenIndex, GetIfaceIniStr( iniKey + "MainPic" ) )
+		.Position( GetIniValue( iniKey + "MainX", 0 ), GetIniValue( iniKey + "MainY", 0 ) );
+}
+
+// @pm menu
+void GUI_DeleteScreenElements( int screenIndex ) // pm add
+{
+    if( screenIndex == 0 )
+        return;
+    GUIScreen@ screen = GetScreen( screenIndex );
+    // for(uint16 i = 0; i < screen.Elements.length(); i
+    screen.Elements.resize( 0 );
+}
+// #pm menu
+
+// Delete old screen, hardcoded screens included
+void GUI_DeleteScreen( int screenIndex )
+{
+    if( screenIndex == 0 )
+        return;
+    DeleteScreen( screenIndex );
+}
+
+// Add element on screen
+IGUIElementOpt@ GUI_AddScreenElement( int screenIndex, string@ sprName, int x, int y )
+{
+    if( screenIndex == 0 )
+        return null;
+    if( GetScreen( screenIndex ) is null )
+        CreateScreen( screenIndex, null );
+
+    GUIScreen@ screen = GetScreen( screenIndex );
+    GUIElement element( sprName, PT_ART_INTRFACE );
+    element.Position( x, y );
+
+    screen.Elements.insertLast( @element );
+    return @element;
+}
+
+int GetIniValue( string@ iniKey, int def )
+{
+	string@ str = GetIfaceIniStr( iniKey );
+	if( @str is null || str == "" )
+		return def;
+	int value = def;
+	if( !StrToInt( str, value ) )
+		return def;
+	return value;
+}
+
+IGUIElementOpt@ GUI_AddScreenElementIni( int screenIndex, string@ ini, int defx, int defy )
+{
+	return GUI_AddScreenElement( screenIndex, GetIfaceIniStr( ini ), GetIniValue( ini + "X", defx ), GetIniValue( ini + "Y", defy ) );
+}
+
+IGUIElementOpt@ GUI_AddScreenElementIni( int screenIndex, string@ ini, int defx, int defy, string@ defSpr )
+{
+	string@ spr = GetIfaceIniStr( ini );
+	if( @spr is null || spr == "" )
+		@spr = defSpr;
+	return GUI_AddScreenElement( screenIndex, spr, GetIniValue( ini + "X", defx ), GetIniValue( ini + "Y", defy ) );
+}
+
+// Screen options
+IGUIScreenOpt@ GUI_GetScreenOptions( int screenIndex )
+{
+    return GetScreen( screenIndex );
+}
+
+// Valid only on IGUIScreenCallbackShow::OnShow callback
+IGUIScreenOpt@ GUI_GetScreenOptions()
+{
+    return LastScreenOpt;
+}
+
+// Valid only on IGUIElementCallbackInit::OnInit callback
+IGUIElementOpt@ GUI_GetElementOptions()
+{
+    return LastElementOpt;
+}
+
+//
+// Engine callbacks
+//
+
+void GUI_Init()
+{
+    SetHotkeysUse( false ); // binyan -Hotkeys
+    AllScreens.resize( 0 );
+    ActiveScreens.resize( 0 );
+    KeyPressed.resize( 0x100 );
+    for( uint i = 0, j = KeyPressed.length(); i < j; i++ )
+        KeyPressed[ i ] = false;
+
+    // Register hardcoded screens
+    CreateScreen( CLIENT_MAIN_SCREEN_LOGIN, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_REGISTRATION, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_OPTIONS, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_CREDITS, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_GAME, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_GLOBAL_MAP, null );
+    CreateScreen( CLIENT_MAIN_SCREEN_WAIT, null );
+    CreateScreen( CLIENT_SCREEN_INVENTORY, null );
+    CreateScreen( CLIENT_SCREEN_PICKUP, null );
+    CreateScreen( CLIENT_SCREEN_MINIMAP, null );
+    CreateScreen( CLIENT_SCREEN_CHARACTER, null );
+    CreateScreen( CLIENT_SCREEN_DIALOG, null );
+    CreateScreen( CLIENT_SCREEN_BARTER, null );
+    CreateScreen( CLIENT_SCREEN_PIP_BOY, null );
+    CreateScreen( CLIENT_SCREEN_FIX_BOY, null );
+    CreateScreen( CLIENT_SCREEN_MENU, null );
+    CreateScreen( CLIENT_SCREEN_AIM, null );
+    CreateScreen( CLIENT_SCREEN_TEST, null );
+    CreateScreen( CLIENT_SCREEN_SPLIT, null );
+    CreateScreen( CLIENT_SCREEN_TIMER, null );
+    CreateScreen( CLIENT_SCREEN_DIALOGBOX, null );
+    CreateScreen( CLIENT_SCREEN_ELEVATOR, null );
+    CreateScreen( CLIENT_SCREEN_SAY, null );
+    CreateScreen( CLIENT_SCREEN_CHA_NAME, null );
+    CreateScreen( CLIENT_SCREEN_CHA_AGE, null );
+    CreateScreen( CLIENT_SCREEN_CHA_SEX, null );
+    CreateScreen( CLIENT_SCREEN_GM_TOWN, null );
+    CreateScreen( CLIENT_SCREEN_INPUT_BOX, null );
+    CreateScreen( CLIENT_SCREEN_SKILLBOX, null );
+    CreateScreen( CLIENT_SCREEN_USE, null );
+    CreateScreen( CLIENT_SCREEN_PERK, null );
+    CreateScreen( CLIENT_SCREEN_TOWN_VIEW, null );
+    CreateScreen( CLIENT_SCREEN_SAVE_LOAD, null );
+    for( uint i = 0, j = AllScreens.length(); i < j; i++ ) {
+        AllScreens[ i ].IsHardcoded = true;
+	}
+	
+    // Keyboard init
+    KbData.resize( 0x100 );
+    @KbData[ DIK_1 ] =						KeybData( '1', '!', '1', '!' );
+    @KbData[ DIK_2 ] =						KeybData( '2', '"', '2', '@' );
+    @KbData[ DIK_3 ] =						KeybData( '3', '№', '3', '#' );
+    @KbData[ DIK_4 ] =						KeybData( '4', ';', '4', '$' );
+    @KbData[ DIK_5 ] =						KeybData( '5', '%', '5', '%' );
+    @KbData[ DIK_6 ] =						KeybData( '6', ':', '6', '^' );
+    @KbData[ DIK_7 ] =						KeybData( '7', '?', '7', '&' );
+    @KbData[ DIK_8 ] =						KeybData( '8', '*', '8', '*' );
+    @KbData[ DIK_9 ] =						KeybData( '9', '(', '9', '(' );
+    @KbData[ DIK_0 ] =						KeybData( '0', ')', '0', ')' );
+    @KbData[ DIK_MINUS ] =					KeybData( '-', '_', '-', '_' );
+    @KbData[ DIK_EQUALS ] =					KeybData( '=', '+', '=', '+' );
+    @KbData[ DIK_Q ] =						KeybData( 'й', 'Й', 'q', 'Q' );
+    @KbData[ DIK_W ] =						KeybData( 'ц', 'Ц', 'w', 'W' );
+    @KbData[ DIK_E ] =						KeybData( 'у', 'У', 'e', 'E' );
+    @KbData[ DIK_R ] =						KeybData( 'к', 'К', 'r', 'R' );
+    @KbData[ DIK_T ] =						KeybData( 'е', 'Е', 't', 'T' );
+    @KbData[ DIK_Y ] =						KeybData( 'н', 'Н', 'y', 'Y' );
+    @KbData[ DIK_U ] =						KeybData( 'г', 'Г', 'u', 'U' );
+    @KbData[ DIK_I ] =						KeybData( 'ш', 'Ш', 'i', 'I' );
+    @KbData[ DIK_O ] =						KeybData( 'щ', 'Щ', 'o', 'O' );
+    @KbData[ DIK_P ] =						KeybData( 'з', 'З', 'p', 'P' );
+    @KbData[ DIK_LBRACKET ] =				KeybData( 'х', 'Х', '[', '{' );
+    @KbData[ DIK_RBRACKET ] =				KeybData( 'ъ', 'Ъ', ']', '}' );
+    @KbData[ DIK_A ] =						KeybData( 'ф', 'Ф', 'a', 'A' );
+    @KbData[ DIK_S ] =						KeybData( 'ы', 'Ы', 's', 'S' );
+    @KbData[ DIK_D ] =						KeybData( 'в', 'В', 'd', 'D' );
+    @KbData[ DIK_F ] =						KeybData( 'а', 'А', 'f', 'F' );
+    @KbData[ DIK_G ] =						KeybData( 'п', 'П', 'g', 'G' );
+    @KbData[ DIK_H ] =						KeybData( 'р', 'Р', 'h', 'H' );
+    @KbData[ DIK_J ] =						KeybData( 'о', 'О', 'j', 'J' );
+    @KbData[ DIK_K ] =						KeybData( 'л', 'Л', 'k', 'K' );
+    @KbData[ DIK_L ] =						KeybData( 'д', 'Д', 'l', 'L' );
+    @KbData[ DIK_SEMICOLON ] =				KeybData( 'ж', 'Ж', ';', ':' );
+    @KbData[ DIK_APOSTROPHE ] =				KeybData( 'э', 'Э', 39, 39 );
+    @KbData[ DIK_Z ] =						KeybData( 'я', 'Я', 'z', 'Z' );
+    @KbData[ DIK_X ] =						KeybData( 'ч', 'Ч', 'x', 'X' );
+    @KbData[ DIK_C ] =						KeybData( 'с', 'С', 'c', 'C' );
+    @KbData[ DIK_V ] =						KeybData( 'м', 'М', 'v', 'V' );
+    @KbData[ DIK_B ] =						KeybData( 'и', 'И', 'b', 'B' );
+    @KbData[ DIK_N ] =						KeybData( 'т', 'Т', 'n', 'N' );
+    @KbData[ DIK_M ] =						KeybData( 'ь', 'Ь', 'm', 'M' );
+    @KbData[ DIK_COMMA ] =					KeybData( 'б', 'Б', ',', '<' );
+    @KbData[ DIK_PERIOD ] =					KeybData( 'ю', 'Ю', '.', '>' );
+    @KbData[ DIK_SLASH ] =					KeybData( '.', ',', '/', '?' );
+    @KbData[ DIK_MULTIPLY ] =				KeybData( '*', '*', '*', '*' );
+    @KbData[ DIK_SPACE ] =					KeybData( ' ', ' ', ' ', ' ' );
+    @KbData[ DIK_GRAVE ] =					KeybData( 'ё', 'Ё', '`', '~' );
+    @KbData[ DIK_NUMPAD1 ] =				KeybData( '1', '1', '1', '1' );
+    @KbData[ DIK_NUMPAD2 ] =				KeybData( '2', '2', '2', '2' );
+    @KbData[ DIK_NUMPAD3 ] =				KeybData( '3', '3', '3', '3' );
+    @KbData[ DIK_NUMPAD4 ] =				KeybData( '4', '4', '4', '4' );
+    @KbData[ DIK_NUMPAD5 ] =				KeybData( '5', '5', '5', '5' );
+    @KbData[ DIK_NUMPAD6 ] =				KeybData( '6', '6', '6', '6' );
+    @KbData[ DIK_NUMPAD7 ] =				KeybData( '7', '7', '7', '7' );
+    @KbData[ DIK_NUMPAD8 ] =				KeybData( '8', '8', '8', '8' );
+    @KbData[ DIK_NUMPAD9 ] =				KeybData( '9', '9', '9', '9' );
+    @KbData[ DIK_NUMPAD0 ] =				KeybData( '0', '0', '0', '0' );
+    @KbData[ DIK_SUBTRACT ] =				KeybData( '-', '-', '-', '-' );
+    @KbData[ DIK_ADD ] =					KeybData( '+', '+', '+', '+' );
+    @KbData[ DIK_DECIMAL ] =				KeybData( '.', '.', '.', '.' );
+    @KbData[ DIK_DIVIDE ] =					KeybData( '/', '/', '/', '/' );
+    @KbData[ DIK_RETURN ] =					KeybData( '\n', '\n', '\n', '\n' );
+    @KbData[ DIK_NUMPADENTER ] =			KeybData( '\n', '\n', '\n', '\n' );
+    @KbData[ DIK_TAB ] =					KeybData( '\t', '\t', '\t', '\t' );
+}
+
+int GUI_GetActiveMainScreen()
+{
+    return ActiveScreens.length() > 0 ? ActiveScreens.first().Index : CLIENT_SCREEN_NONE;
+}
+
+int GUI_GetActiveScreen()
+{
+    return ActiveScreens.length() > 0 ? ActiveScreens.last().Index : CLIENT_SCREEN_NONE;
+}
+
+void GUI_GetActiveScreens( int[]& result )
+{
+    result.resize( ActiveScreens.length() );
+    for( uint i = 0, j = result.length(); i < j; i++ )
+        result[ i ] = ActiveScreens[ i ].Index;
+}
+
+int isAggressive;
+
+void GUI_ShowScreen( int screenIndex, int p0, int p1, int p2 )
+{
+    GUIScreen@ screen = GetScreen( screenIndex );
+    if( not (screen is null) )
+    {
+        if( not screen.IsMultiinstance )
+        {
+            // Close all another instances
+            for( uint i = ActiveScreens.length(); i > 0;)       // From end
+            {
+                i--;
+                if( ActiveScreens[ i ].Index == screenIndex )
+                {
+                    ActiveScreens.removeAt( i );
+                    if( not ( screen.HideCallback is null ) )
+                        screen.HideCallback.OnHide( p0, p1, p2 );
+                }
+            }
+        }
+
+        // Create new instance
+        @screen = screen.GetNewInstance();
+        ActiveScreens.insertLast( @screen );
+
+        // Set screen cursor
+        if( screen.IsAutoCursor )
+        {
+            screen.AutoCursorPrev = ::GetCurrentCursor();
+            ::ChangeCursor( screen.AutoCursorType );
+        }
+
+        // Call init callbacks
+        @LastScreenOpt = screen;
+        // First init elements
+        for( uint i = 0, j = screen.Elements.length(); i < j; i++ )
+        {
+            GUIElement@ e = screen.Elements[ i ];
+            if( not ( e.InitCallback is null ) )
+            {
+                @LastElementOpt = e;
+                e.InitCallback.OnInit();
+                @LastElementOpt = null;
+            }
+        }
+        // Then show
+        if( not ( screen.ShowCallback is null ) )
+        {
+            screen.ShowCallback.OnShow( p0, p1, p2 );
+        }
+        @LastScreenOpt = null;
+    }
+}
+
+void GUI_HideScreen( int screenIndex, int p0, int p1, int p2 )
+{
+    for( uint i = ActiveScreens.length(); i > 0;) // From end
+    {
+        i--;
+        GUIScreen@ screen = ActiveScreens[ i ];
+        if( screen.Index == screenIndex )
+        {
+            // Remove
+            ActiveScreens.removeAt( i );
+
+            // Hide callback
+            if( not ( screen.HideCallback is null ) )
+            {
+                screen.HideCallback.OnHide( p0, p1, p2 );
+            }
+
+            // Restore cursor
+            if( screen.IsAutoCursor )
+            {
+                ::ChangeCursor( screen.AutoCursorPrev );
+            }
+
+            // Store position for non-multiinstance screens
+            if( not screen.IsMultiinstance )
+            {
+                GUIScreen@ instance = GetScreen( screenIndex );
+                instance.PosX = screen.PosX;
+                instance.PosY = screen.PosY;
+            }
+            break;
+        }
+    }
+}
+
+void GUI_Render()
+{
+    for( uint i = 0, j = ActiveScreens.length(); i < j; i++ )
+    {
+        GUIScreen@ screen = ActiveScreens[ i ];
+        if( screen.IsHardcoded )
+        {
+            if( screen.Index != CLIENT_MAIN_SCREEN_LOGIN )
+            {
+                ::DrawHardcodedScreen( screen.Index );
+                ::GetHardcodedScreenPos( screen.Index, screen.PosX, screen.PosY );
+            }
+        }
+        screen.Draw();
+    }
+}
+
+bool GUI_MouseDown( int click, int x, int y )
+{
+	CheckAggression();
+    uint len = ActiveScreens.length();
+    if( len != 0 )
+    {
+        GUIScreen@ screen = ActiveScreens[ len - 1 ];
+        bool       result = screen.MouseDown( click, x, y );
+        if( result )
+        {
+            if( click == MOUSE_CLICK_WHEEL_UP || click == MOUSE_CLICK_WHEEL_DOWN )
+                return GUI_MouseUp( click, x, y );
+            return true;
+        }
+
+        if( len > 1 && not screen.IsHardcoded && not screen.IsModal && click == MOUSE_CLICK_LEFT &&
+			not IS_COLLISION( x, y, screen.PosX, screen.PosY, screen.Surface.Width, screen.Surface.Height ) )
+        {
+            for( uint i = ActiveScreens.length() - 1; i > 0;)     // From end
+            {
+                i--;
+                GUIScreen@ nextScreen = ActiveScreens[ i ];
+                if( IS_COLLISION( x, y, nextScreen.PosX, nextScreen.PosY, nextScreen.Surface.Width, nextScreen.Surface.Height ) )
+                {
+                    // Swap screens
+                    GUIScreen@ tmpScreen = ActiveScreens[ i ];
+                    @ActiveScreens[ i ] = ActiveScreens[ len - 1 ];
+                    @ActiveScreens[ len - 1 ] = tmpScreen;
+                    return GUI_MouseDown( click, x, y );                 // Click new screen
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool GUI_MouseUp( int click, int x, int y )
+{
+	CheckAggression();
+    uint len = ActiveScreens.length();
+    if( len != 0 )
+        return ActiveScreens[ len - 1 ].MouseUp( click, x, y );
+    return false;
+}
+
+void CheckAggression()
+{
+	CritterCl@ ch = GetChosen();
+	if( @ch != null )
+	{
+		if( ch.Timeout[ TO_BATTLE ] > 0 || ch.Trait[ TRAIT_BLOODY_MESS ] == 0 )
+			return;
+		
+		if( GetCurrentCursor() == CURSOR_USE_WEAPON )
+		{
+			if( ch.Param[ CR_IS_AGGRESSIVE ] == 0 && isAggressive != 1 )
+				RunServerScriptUnsafe( "test@unsafe_setCombatState", 1, 0, 0, null, null );
+			isAggressive = 1;
+		}
+		if( GetCurrentCursor() == CURSOR_MOVE )
+		{
+			if( ch.Param[ CR_IS_AGGRESSIVE ] != 0 && isAggressive == 1 )
+				RunServerScriptUnsafe( "test@unsafe_setCombatState", 0, 0, 0, null, null );
+			isAggressive = 0;
+		}
+	}
+}
+
+void GUI_MouseMove( int x, int y )
+{
+	CheckAggression();
+    uint len = ActiveScreens.length();
+    if( len != 0 )
+        ActiveScreens[ len - 1 ].MouseMove( x, y );
+}
+
+bool GUI_KeyDown( uint8 key )
+{
+	CheckAggression();
+    bool result;
+
+    if( KeyPressed.length() != 0 )
+        KeyPressed[ key ] = true;
+    uint len = ActiveScreens.length();
+    if( len != 0 )
+    {
+        if( ActiveScreens[ len - 1 ].Index == CLIENT_MAIN_SCREEN_GAME && GetCurrentCursor() == CURSOR_USE_WEAPON && ( key == DIK_LCONTROL || key == DIK_RCONTROL ) )
+            __IsHexAttack = true;
+        result = ActiveScreens[ len - 1 ].KeyPress( key );
+    }
+    else
+        result = false;
+// binyan - Hotkeys
+    if( __IsHotkeysUse )
+	{
+        if( previews == 0 )
+		{
+            previews = key;
+		}
+	}
+    return result;
+}
+
+bool GUI_KeyUp( uint8 key )
+{
+	__IsHexAttack = true;
+    if( __IsHotkeysUse )
+	{
+        if( key == previews )
+		{
+            previews = 0;
+		}
+	}
+	
+    if( KeyPressed.length() != 0 )
+	{
+        KeyPressed[ key ] = false;
+    }
+	return false;
+}
+
+void GUI_InputLost()
+{
+    for( uint i = 0, j = KeyPressed.length(); i < j; i++ )
+        KeyPressed[ i ] = false;
+    uint len = ActiveScreens.length();
+    if( len != 0 )
+        ActiveScreens[ len - 1 ].InputLost();
+}
+
+//
+// Internal
+//
+
+IGUIScreenOpt@ CreateScreen( int screenIndex, string@ sprName )
+{
+    GUIScreen screen( sprName, PT_ART_INTRFACE );
+    screen.CanMove( true );
+    screen.Position( __ScreenWidth / 2 - screen.Surface.Width / 2, __ScreenHeight / 2 - screen.Surface.Height / 2 );
+    screen.Index = screenIndex;
+    AllScreens.insertLast( @screen );
+    return @screen;
+}
+
+void DeleteScreen( int screenIndex )
+{
+    for( uint i = 0; i < ActiveScreens.length();)
+    {
+        if( ActiveScreens[ i ].Index == screenIndex )
+        {
+            ActiveScreens.removeAt( i );
+            i = 0;
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    for( uint i = 0, j = AllScreens.length(); i < j; i++ )
+    {
+        if( AllScreens[ i ].Index == screenIndex )
+        {
+            AllScreens.removeAt( i );
+            break;
+        }
+    }
+}
+
+GUIScreen@ GetScreen( int screenIndex )
+{
+    if( screenIndex == 0 )
+	{
+        return null;
+    }
+	
+	for( uint i = 0, j = AllScreens.length(); i < j; i++ )
+	{
+        if( AllScreens[ i ].Index == screenIndex )
+		{
+            return @AllScreens[ i ];
+		}
+	}
+	return null;
+}
+
+bool ProcessKey( uint8 key, string& text, uint8& letter )
+{
+    if( KeyPressed.length() == 0 )
+	{
+        return false;
+	}
+	
+    if( key == DIK_BACK )
+    {
+        if( text.length() > 0 )
+            text.resize( text.length() - 1 );
+        return true;
+    }
+
+    KeybData@ k = KbData[ key ];
+    if( not (k is null) )
+    {
+        bool shiftDown = ( KeyPressed[ DIK_LSHIFT ] || KeyPressed[ DIK_RSHIFT ] );
+        uint len = text.length();
+        text.resize( text.length() + 1 );
+        text[ len ] = k.Char[ ::GetKeybLang() * 2 + ( shiftDown ? 1 : 0 ) ];
+        letter = text[ len ];
+        return true;
+    }
+    return false;
+}
+
+void _SetControlCritters( int Id, int p1, int p2, string@ + p3, int[] @ + p4 )
+{
+    SetControlCritters( Id );
+}
+
+int ControlledGroupNumber() 
+{ 
+	return current_group;
+}
+
+int getControlledGroup( int id )
+{
+	int index = controlled.find( id );
+	if( index == -1 )
+	{
+		return -1;
+	}
+	return 1 + index / 10;
+}
+
+int[] getControlledGroups( int id )
+{
+	int[] result = {};
+	for( uint i = 0, l = controlled.length(); i < l; i++ )
+	{
+		if( controlled[i] == id )
+		{
+			result.insertLast( 1 + i / 10 );
+		}
+	}
+	return result;
+}
+
+bool isControlled( int id ) 
+{ 
+	return isControlled( id, -1 );
+}
+
+bool isControlled( int id, int groupN )
+{
+	int index = controlled.find( id );
+	if( groupN == -1 )
+	{
+		return index != -1;
+	}
+	return index/10 == groupN;
+}
+
+
+void SetControlCritters( int Id )
+{
+    CritterCl@ chosen = GetChosen();
+	if( chosen.Stat[ ST_ACCESS_LEVEL ] < ACCESS_MODER ) 
+	{ 
+		return;
+	}
+	
+    uint8 Ex = 0;
+    for( uint i = current_group * 10, ii = 9 + current_group * 10; i < ii; i++ )
+    {
+        if( controlled[ i ] == Id )
+        {
+			RunServerScriptUnsafe( "raiders@unsafe_FreeMob", current_group, i, 0, null, controlled );
+			
+            Message( "Снят контроль с криттера " + Id );
+            Ex = i - current_group * 10 + 10;
+        }
+		
+        if( Ex != 0 )
+        {
+            if( i != 9 )
+			{
+                controlled[ i ] = controlled[ i + 1 ];
+            }
+			else 
+			{
+                controlled[ i ] = 0;
+			}
+		}
+    }
+	
+    if( Ex == 0 )
+    {
+        for( uint i = current_group * 10, ii = 10 + current_group * 10; i < ii; i++ )
+        {
+            if( controlled[ i ] == 0 )
+            {
+                controlled[ i ] = Id;
+                Message( "Взят под контроль криттер " + Id );
+                CritterCl@ Cont = GetCritter( controlled[ i ] );
+                if( Cont.IsPlayer() )
+                {
+                    switch( i - current_group * 10 )
+                    {
+						case 0:
+							name0 = Cont.Name;
+						case 1:
+							name1 = Cont.Name;
+						case 2:
+							name2 = Cont.Name;
+						case 3:
+							name3 = Cont.Name;
+						case 4:
+							name4 = Cont.Name;
+						case 5:
+							name5 = Cont.Name;
+						case 6:
+							name6 = Cont.Name;
+						case 7:
+							name7 = Cont.Name;
+						case 8:
+							name8 = Cont.Name;
+						case 9:
+							name9 = Cont.Name;
+					}
+                }
+				
+                else
+                {
+                    uint   dlgId = Cont.Stat[ ST_DIALOG_ID ];
+                    uint16 npcPid = Cont.Pid;
+                    switch( i - current_group * 10 )
+                    {
+						case 0:
+							name0 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 1:
+							name1 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 2:
+							name2 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 3:
+							name3 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 4:
+							name4 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 5:
+							name5 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 6:
+							name6 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 7:
+							name7 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 8:
+							name8 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+						case 9:
+							name9 = GetMsgStr( TEXTMSG_DLG, STR_NPC_NAME( dlgId, npcPid ) );
+                    }
+                }
+                return;
+            }
+        }
+    }
+	
+    else
+    {
+        if( Ex <= 10 )
+            name0 = name1;
+        if( Ex <= 11 )
+            name1 = name2;
+        if( Ex <= 12 )
+            name2 = name3;
+        if( Ex <= 13 )
+            name3 = name4;
+        if( Ex <= 14 )
+            name4 = name5;
+        if( Ex <= 15 )
+            name5 = name6;
+        if( Ex <= 16 )
+            name6 = name7;
+        if( Ex <= 17 )
+            name7 = name8;
+        if( Ex <= 18 )
+            name8 = name9;
+        if( Ex <= 19 )
+            name9 = "";
+    }
+}
+
+int[] control()
+{
+    return controlled;
+}
+
+uint8 current()
+{
+    return current_group;
+}
+
+void SetGMstore( int param0, int param1, int param2, string@ param3, int[] @ param4 )
+{
+	GM_store_type = param0;
+}
+
+//WIP AoP RTS SELECTION TO BE DICECTED AND ADOPTED
+class RtsSelection
+{
+	int x1;
+	int x2;
+	int y1;
+	int y2;
+
+	float[] xs;
+	float[] ys;
+
+	bool validKurwa;
+
+	int[] selectedIds;
+	int[] invitees;
+	dictionary controlGroup;
+
+	RtsSelection(int x, int y)
+	{
+		x1 = x;
+		y1 = y;
+		validKurwa = false;
+	}
+
+	void setFirstCorner(int x, int y)
+	{
+		x1 = x;
+		y1 = y;
+	}
+
+	void drag(int x, int y)
+	{
+		x2 = x;
+		y2 = y;
+	}
+
+	void draw()
+	{
+		// draw selection box
+		if( validKurwa )
+		{
+			uint8 r0 = 0xFF, g0 = 0x00, b0 = 0x00;
+			int[] ps1 = { x1,y1,COLOR_RGBA( r0, g0, b0, 50 ),x2,y1,COLOR_RGBA( r0, g0, b0, 50 ),x2,y2,COLOR_RGBA( r0, g0, b0, 50 ),x1,y2,COLOR_RGBA( r0, g0, b0, 50 ) };
+			int[] ps2 = { x1,y1,COLOR_RGBA( r0, g0, b0, 150 ),x2,y1,COLOR_RGBA( r0, g0, b0, 150 ),x2,y2,COLOR_RGBA( r0, g0, b0, 150 ),x1,y2,COLOR_RGBA( r0, g0, b0, 150 ),x1,y1,COLOR_RGBA( r0, g0, b0, 150 ) };
+			DrawPrimitive( DRAW_PRIMITIVE_TRIANGLEFAN, ps1 );
+			DrawPrimitive( DRAW_PRIMITIVE_LINESTRIP, ps2 );
+		}
+	}
+
+	bool isValid()
+	{
+		return validKurwa;
+	}
+
+	void setValid( bool v )
+	{
+		this.validKurwa = v;
+	}
+
+    bool isSelected(uint16 hx, uint16 hy)
+    {
+		int x=0, y=0;
+		GetHexPos(hx, hy, x, y);
+
+		int top = y1 < y2 ? y1 : y2; //MIN(y1,y2);
+		int left = x1 < x2 ? x1 : x2; //MIN(x1,x2);
+		int bottom = y1 > y2 ? y1 : y2;//MAX(y1,y2);
+		int right = x1 > x2 ? x1 : x2;//MAX(x1,x2);
+
+		if (x < left || x > right) {
+			return false;
+		}
+		
+		if (y < top || y > bottom) {
+			return false;
+		}
+		return true;
+    }
+
+    void selectAll()
+    {
+    	CritterCl@ chosen = GetChosen();
+    	if ( !valid( chosen ) ) 
+		{ 
+			return;
+		}
+    	CritterCl@[] crs;
+
+    	GetCritters( 0, FIND_LIFE_AND_KO|FIND_ALL, crs );
+
+		uint len = crs.length();
+    	for( uint i = 0; i < len; i++ ) {
+    		if( !valid( crs[i] ) || crs[i].IsDead() ) {
+				continue;
+			}
+			
+			if( crs[i].IsNpc() ) {
+				if(  crs[i].ParamBase[ST_FOLLOW_CRIT] != int( chosen.Id ) ) {
+					continue;	
+				}
+				selectedIds.insertLast(crs[i].Id);
+			} else {
+				selectedIds.insertLast(crs[i].Id);
+			}    		
+    	}
+    }
+
+	void makeSelection()
+	{
+		CritterCl@ chosen = GetChosen();
+		if( !valid( chosen ) ) {
+			return;
+		}
+		CritterCl@[] crs;
+
+		GetCritters( 0, FIND_LIFE_AND_KO|FIND_ALL, crs );
+
+		if( !KeyPressed[ DIK_LSHIFT ] && !KeyPressed[ DIK_RSHIFT ] && !KeyPressed[ DIK_LCONTROL ] && !KeyPressed[ DIK_RCONTROL ] ) {
+			selectedIds.resize(0);
+			invitees.resize(0);
+		}
+		
+		int len = crs.length();
+		int len2 = selectedIds.length();
+		for( int i = 0; i < len; i++ ) {
+
+			if( !valid( crs[i] ) || crs[i].IsDead() ) {
+				continue;
+			}
+			
+			if ( crs[i].IsNpc() ) {
+				if (  crs[i].ParamBase[ST_FOLLOW_CRIT] != int( chosen.Id ) ) {
+					continue;									
+				}
+			}
+
+			if( isSelected( crs[i].HexX,crs[i].HexY ) ) {
+				// Add to normal selection		  
+
+				if( KeyPressed[ DIK_LSHIFT ] || KeyPressed[ DIK_RSHIFT ] ) {
+					bool addme = true;
+					
+					
+					for( int j=0; j < len2; j++ ) {  
+						if( selectedIds[j] == int( crs[i].Id ) ) {
+							addme = false;
+							break;
+						}
+					}
+
+					if( addme ) {
+						selectedIds.insertLast(crs[i].Id);
+					}
+				} else {
+					selectedIds.insertLast(crs[i].Id);
+				}
+			}
+		}
+		if ( len2 == 0 ) {
+			selectAll();
+		}
+	}
+
+	void selectCritter(CritterCl@ cr)
+	{
+		if( !valid( cr ) ) {
+			return;
+		}
+		CritterCl@ chosen = GetChosen();
+		if( !valid( chosen ) ) {
+			return;
+		}
+		
+		if( cr.IsNpc() ) {
+			if( cr.ParamBase[ ST_FOLLOW_CRIT ] != int( chosen.Id ) ) {
+				return;	
+			}
+		}   
+		
+		int len2 = selectedIds.length();
+		if( KeyPressed[ DIK_LSHIFT ] || KeyPressed[ DIK_RSHIFT ] ) {
+			for ( int j = 0; j < len2; j++ ) {
+				if( selectedIds[j] == int( cr.Id ) ) {
+					selectedIds.removeAt( j ); // Shift+click at something already selected: deselect it!
+					return;
+				}
+			}
+			selectedIds.insertLast( cr.Id );
+		} else {
+			selectedIds.resize(0);
+			selectedIds.insertLast( cr.Id );
+		}
+	}
+}
+
+#endif //CLIENT_GUI

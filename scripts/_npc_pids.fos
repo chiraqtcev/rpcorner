@@ -1,0 +1,103 @@
+#ifndef __NPC_PIDS__
+#define __NPC_PIDS__
+
+#define NPC_PID_RegularRat               ( 310 )
+#define NPC_PID_Mantis                   ( 311 )
+#define NPC_PID_Ant                      ( 312 )
+#define NPC_PID_RegularPigRat            ( 313 )
+#define NPC_PID_Molerat                  ( 314 )
+#define NPC_PID_MutatedMolerat           ( 315 )
+#define NPC_PID_SmallSilverGecko         ( 316 )
+#define NPC_PID_GoldenGecko              ( 317 )
+#define NPC_PID_WildDog                  ( 318 )
+#define NPC_PID_SmallRadscorpion         ( 319 )
+#define NPC_PID_LargeRadscorpion         ( 320 )
+#define NPC_PID_Brahmin                  ( 321 )
+#define NPC_PID_SporePlant               ( 322 )
+#define NPC_PID_Alien                    ( 323 )
+#define NPC_PID_SmDeathclaw              ( 324 )
+#define NPC_PID_Deathclaw                ( 325 )
+#define NPC_PID_ToughDeathclaw           ( 326 )
+#define NPC_PID_FireGecko                ( 327 )
+#define NPC_PID_Centaur                  ( 328 )
+#define NPC_PID_Floater                  ( 329 )
+#define NPC_PID_MirelurkWeak             ( 330 )
+#define NPC_PID_GiantWasp             	 ( 331 )
+#define NPC_PID_GiantBeetle              ( 332 )
+
+#define NPC_PID_SporePlantND             ( 1090 )
+#define NPC_PID_SporePlantND1            ( 1091 )
+
+#define NPC_PID_LAS_TURRET 				 ( 1904 )  //ПИД лазерной охранной турели 
+#define NPC_PID_LAS_TURRET2 			 ( 1905 )  //ПИД лазерной охранной турели на башне
+#define NPC_PID_PLAS_TURRET 			 ( 1906 )  //ПИД плазменной охранной турели 
+#define NPC_PID_MG_TURRET 				 ( 1907 )  //ПИД пулеметной охранной турели 
+
+#define NPC_PID_RegularRat2              ( 2200 )  // Крыса
+#define NPC_PID_Mantis2                  ( 2201 )  // Мантис
+#define NPC_PID_Ant2                     ( 2202 )  // Муравей
+#define NPC_PID_Ant_Lion                 ( 2203 )  // Муравьиный Лев
+#define NPC_PID_RegularPigRat2           ( 2204 )  // Свинокрыс
+#define NPC_PID_Molerat2                 ( 2205 )  // Кротокрыс
+#define NPC_PID_MutatedMolerat2          ( 2206 )  // Кротокрыс мутант
+#define NPC_PID_SmallSilverGecko2        ( 2207 )  // Серебрянный Гекко
+#define NPC_PID_GoldenGecko2             ( 2208 )  // Золотой Гекко
+#define NPC_PID_CaveGecko                ( 2209 )  // Пещерный Гекко
+#define NPC_PID_WildDog2                 ( 2210 )  // Собака
+#define NPC_PID_GiantWasp                ( 2211 )  // Оса
+#define NPC_PID_GiantBeetle              ( 2212 )  // Таракан
+#define NPC_PID_SmallBlackscorps         ( 2213 )  // Мелкий Радскорпион черный
+#define NPC_PID_LargeBlackscorps         ( 2214 )  // Радскорпион черный
+#define NPC_PID_LargeCavescorps          ( 2215 )  // Радскорпион пещерный
+#define NPC_PID_Brahmin2                 ( 2216 )  // Брамин
+#define NPC_PID_SporePlant2              ( 2217 )  // Хищный цветок
+#define NPC_PID_Alien2                   ( 2218 )  // Алиен
+#define NPC_PID_SmDeathclaw2             ( 2219 )  // Детеныш когтя-смерти
+#define NPC_PID_Deathclaw2               ( 2220 )  // Коготь-смерти
+#define NPC_PID_ToughDeathclaw2          ( 2221 )  // Коготь-смерти охотник
+#define NPC_PID_FireGecko2               ( 2222 )  // Огнегекко
+#define NPC_PID_Bsti11                   ( 2223 )  // Бестия
+#define NPC_PID_Centaur2                 ( 2224 )  // Кентавр
+#define NPC_PID_Floater2                 ( 2225 )  // Летатель
+#define NPC_PID_MirelurkWeak2            ( 2226 )  // Болотник
+#define NPC_PID_YaoGai                   ( 2227 )  // Яо-Гай
+#define NPC_PID_ErieRath                 ( 2228 )  // Жуткохват
+#define NPC_PID_NightErieRath            ( 2229 )  // Тенехват
+
+#define NPC_PID_BanditMale               ( 337 )
+#define NPC_PID_BanditFemale             ( 338 )
+#define NPC_PID_MauraderMale             ( 339 )
+#define NPC_PID_RaiderMale               ( 340 )
+#define NPC_PID_RaiderFemale             ( 341 )
+#define NPC_PID_MaleSlaver               ( 342 )
+#define NPC_PID_MaleSlaver2              ( 343 )
+#define NPC_PID_ToughMaleThug            ( 344 )
+#define NPC_PID_ToughFemaleThug          ( 345 )
+#define NPC_PID_MaleTrapper              ( 346 )
+#define NPC_PID_GreenGhoul               ( 347 )
+#define NPC_PID_WhiteGhoul               ( 348 )
+#define NPC_PID_Supermutant              ( 349 )
+
+#define NPC_PID_Ball                     ( 490 )  // Мячик
+
+#define NPC_PID_NAGUL1               	 ( 524 )
+#define NPC_PID_NAGUL2               	 ( 525 )
+#define NPC_EKZOf               	 	 ( 526 )
+#define NPC_EKZOm              	 	     ( 527 )
+#define NPC_serCAf              	 	 ( 528 )
+#define NPC_serCAm             	 	     ( 529 )
+#define NPC_pustCAf              	 	 ( 530 )
+#define NPC_pustCAm             	 	 ( 531 )
+#define NPC_kozjMK2              	 	 ( 532 )
+#define NPC_jozjMK2             	 	 ( 533 )
+#define NPC_THING		             	 ( 534 )
+#define NPC_PROTECT             	 	 ( 535 )
+#define NPC_JUKEBOX             	 	 ( 536 )
+#define NPC_CHIM	             	 	 ( 537 )
+#define NPC_YELL                	 	 ( 538 )
+#define NPC_LINN	             	 	 ( 539 )
+#define NPC_kraCAf	             	 	 ( 540 )
+#define NPC_kraCAm	             	 	 ( 541 )
+#define NPC_BRAHMIN_SM		             ( 545 )
+
+#endif // __NPC_PIDS__

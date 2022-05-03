@@ -1,0 +1,138 @@
+#include "_macros.fos"
+#include "qmap_defines.fos"
+#include "_colors.fos"
+
+// Export:
+// import uint8 checkWater(Map& map, uint16 tx, uint16 ty) from "qmap_water";
+// import uint8 checkWaterAround(Map& map, uint16 tx, uint16 ty, uint8 coast_flags) from "qmap_water";
+// import uint8 checkWaterAround(Map& map, uint16 tx, uint16 ty, uint8 coast_flags, uint8 radius) from "qmap_water";
+// import uint8 checkWaterAround(Map& map, uint16 tx, uint16 ty, uint8 coast_flags, uint8 radius, bool smartRadius) from "qmap_water";
+
+bool hashes_inited = false;
+
+uint[][] hashes_water( HASHES_WATER_MAX );
+
+void init_hashes()
+{
+    string dir = "art/tiles/",
+           seas0 = "seas0",
+           SHORE = "SHORE",
+           shor = "shor",
+           frm = ".frm";
+
+    uint[] @ data = null;
+
+    @data = hashes_water[ HASHES_WATER_WEST ];
+    data.resize( 0 );
+    for( uint i = 1; i <= 3; i++ )
+        data.insertLast( GetStrHash( dir + shor + "0" + i + frm ) );
+
+    @data = hashes_water[ HASHES_WATER_NORTH ];
+    data.resize( 0 );
+    for( uint i = 1; i <= 9; i++ )
+        data.insertLast( GetStrHash( dir + seas0 + i + frm ) );
+
+    @data = hashes_water[ HASHES_WATER_EAST ];
+    data.resize( 0 );
+
+    @data = hashes_water[ HASHES_WATER_SOUTH ];
+    data.resize( 0 );
+
+    @data = hashes_water[ HASHES_WATER_SIMPLE ];
+    data.resize( 0 );
+    for( uint i = 8; i <= 10; i++ )
+        data.insertLast( GetStrHash( dir + SHORE + ( ( i < 10 ) ? "0" : "" ) + i + frm ) );
+    for( uint i = 12; i <= 14; i++ )
+        data.insertLast( GetStrHash( dir + shor + i + frm ) );
+    for( uint i = 23; i <= 26; i++ )
+        data.insertLast( GetStrHash( dir + shor + i + frm ) );
+
+    data.insertLast( GetStrHash( dir + "slime05.png" ) );
+    data.insertLast( GetStrHash( dir + "slime06.png" ) );
+    data.insertLast( GetStrHash( dir + "slime09.png" ) );
+    data.insertLast( GetStrHash( dir + "slime10.png" ) );
+
+    // Caveslimes
+	data.insertLast( GetStrHash( dir + "CAVESLIME05.png" ) );
+    data.insertLast( GetStrHash( dir + "CAVESLIME06.png" ) );	  
+	data.insertLast( GetStrHash( dir + "CAVESLIME09.png" ) );
+    data.insertLast( GetStrHash( dir + "CAVESLIME10.png" ) );
+    data.insertLast( GetStrHash( dir + "CAVESLIME16.png" ) );
+	data.insertLast( GetStrHash( dir + "CAVESLIME19.png" ) );
+	data.insertLast( GetStrHash( dir + "CAVESLIME24.png" ) );
+    data.insertLast( GetStrHash( dir + "CAVESLIME27.png" ) );
+
+    hashes_inited = true;
+}
+
+// проверка наличия воды на ближайших тайлах
+uint8 checkWaterAround( Map& map, uint16 tx, uint16 ty, uint8 coast_flags )
+{
+    return checkWaterAround( map, tx, ty, coast_flags, 1, false );
+}
+uint8 checkWaterAround( Map& map, uint16 tx, uint16 ty, uint8 coast_flags, uint8 radius )
+{
+    return checkWaterAround( map, tx, ty, coast_flags, radius, false );
+}
+
+uint8 checkWaterAround( Map& map, uint16 tx, uint16 ty, uint8 coast_flags, uint8 radius, bool smartRadius )
+{
+    if( !hashes_inited )
+        init_hashes();
+
+    int8 answer = 0;
+
+    for( int dx = -radius; dx <= radius; dx++ )
+        for( int dy = -radius; dy <= radius; dy++ )
+        {
+			int x = tx + dx;
+			int y = ty + dy;
+			
+            uint thash = map.GetTile( x , y );
+			
+
+            if( thash == 0 )
+                continue;
+
+            for( uint p = 0; p < 5; p++ )
+            {
+                for( uint k = 0, len = hashes_water[ p ].length(); k < len; k++ )
+                {
+                    if( hashes_water[ p ][ k ] != thash )
+                        continue;
+					answer++;
+                    return answer;
+                }
+            }
+        }
+    return 0;
+}
+
+uint8 checkWater( Map& map, uint16 tx, uint16 ty )
+{
+    if( !hashes_inited )
+        init_hashes();
+
+    uint hash = map.GetTile( tx, ty );
+    if( hash == 0 )
+        return 0;
+
+    uint8 answer = 0;
+    uint[] @ data = null;
+
+    for( uint i = 0; i < 5; i++ )
+    {
+        @data = hashes_water[ i ];
+        for( uint k = 0, len = data.length(); k < len; k++ )
+        {
+            if( hash != data[ k ] )
+                continue;
+            if( i != 4 )
+                answer |= ( ( 0x01 ) << i );
+            else
+                answer |= 0xF;
+            return answer;
+        }
+    }
+    return 0;
+}

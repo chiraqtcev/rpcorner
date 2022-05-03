@@ -1,0 +1,186 @@
+/* ѕо€снительна€ бригада: функции выведены в отдельный модуль дл€ возможности обращени€ к
+механу из других точек игровой сборки. »ными словами, мне не в кайф повтор€ть один и тот же
+код. ƒа, у мен€ проблемы с головой, поэтому € решил вывести всЄ в отдельный модуль ради
+одной маленькой фичи, но.. это делаетс€ с уклоном на то, что в будущем будет создано
+больше вариаций употреблени€ табака или чего-нибудь покрепче. — любовью, чиракцев. */
+
+#ifndef SMOKING
+#define SMOKING
+
+#include "_utils.fos"
+#include "smoking_h.fos"
+
+bool SmokeCigarette( Critter & cr, Item & item )
+{
+    if( !valid( item ) )
+        return false;
+
+    if( !CanSmoke ( cr ) )
+        return false;
+
+    Map@ map = cr.GetMap();
+    uint8 SmokingType = 0;
+    int Tiredness = cr.Timeout[ TO_TIREDNESS ];
+    uint16 itemPID = item.GetProtoId(),
+          dyspnea,
+          hunger,
+          thirst,
+          tired;
+
+   
+    switch( itemPID )
+    {
+        case ( PID_CIGARETTE_PRT ):
+        {
+            dyspnea = ( 6 - cr.StatBase[ ST_ENDURANCE ] / 2 );
+            hunger = Random( 0, 1 );
+            thirst = Random( 0, 1 );
+            tired = Random ( 8, 15 );
+            SmokingType = 1;
+            break;
+        }
+
+        case ( PID_PREWAR_CIGAR1_PRT ):
+        {
+            dyspnea = ( 8 - cr.StatBase[ ST_ENDURANCE ] / 2 );
+            hunger = Random( 0, 1 );
+            thirst = 1;
+            tired = Random ( 7, 20 );
+            SmokingType = 2;
+            break;
+        }
+
+        case ( PID_PREWAR_CIGAR2_PRT ):
+        {
+            dyspnea = ( 8 - cr.StatBase[ ST_ENDURANCE ] / 2 );
+            hunger = Random( 1, 1 );
+            thirst = Random( 1, 2 );
+            tired = Random ( 10, 20 );
+            SmokingType = 2;
+            break;
+        }
+
+        case ( PID_KOSYAK_PRT ):
+        {
+            dyspnea = ( 7 - cr.StatBase[ ST_ENDURANCE ] / 2 );
+            hunger = Random( 1, 2 );
+            thirst = Random( 1, 4 );
+            tired = Random ( 10, 30 );
+            SmokingType = 3;
+            break;
+        }
+    }
+
+    if( SmokingType == 0 )
+        return false;
+
+    cr.Say( SAY_EMOTE_ON_HEAD, "делает зат€жку" );
+    item.SMOKES_REMAINING--;
+
+    map.PlaySound( cr.Stat[ ST_GENDER ] == GENDER_MALE ? SmokingSFX[MALE_SFX][Random(1, SmokingSFX[MALE_SFX].length()-1)] : SmokingSFX[FEMALE_SFX][Random(1, SmokingSFX[FEMALE_SFX].length()-1)], cr.HexX, cr.HexY, 1 );
+
+    if( item.SMOKES_REMAINING < 1 )
+    {
+        _SubItem( item, 1 );
+        cr.Say( SAY_EMOTE_ON_HEAD, "отбрасывает окурок в сторону" );
+    }
+
+    if( SmokingType == 2 && valid (item) )
+    {
+        string hash = "art\\inven\\misc\\cigar\\cigar_st" + ( 10 - item.SMOKES_REMAINING ) + "_inv.png";
+        item.PicInv = GetStrHash( hash );
+    }
+
+    if( Tiredness > 0 )
+    {
+        Tiredness = CLAMP( Tiredness - REAL_SECOND( tired ), 0, Tiredness );
+        cr.TimeoutBase[ TO_TIREDNESS ] = __FullSecond + Tiredness;
+    }
+
+    cr.StatBase[ ST_HUNGER ] += hunger; // не знаю как у вас, но у мен€ сигареты убивают аппетит
+    cr.StatBase[ ST_THIRST ] -= thirst; 
+    cr.StatBase[ ST_DYSPNEA ] -= dyspnea;
+
+    if( valid (item) )
+        item.Update();
+
+    return true;
+}
+
+bool IgniteCigarette( Critter & cr, Item & item )
+{
+    if( !valid( item ) )
+        return false;
+
+    if( !CanSmoke ( cr ) )
+        return false;
+
+    _SubItem( item, 1 );
+
+    if( valid( item ) )
+        cr.MoveItem( item.Id, item.GetCount(), SLOT_INV );
+
+    uint16 pid = item.GetProtoId();
+    uint16 cigPID = GetSmokingItem( pid );
+    Item@ cigarette = cr.AddItem( cigPID, 1 );
+    cr.MoveItem( cigarette.Id, cigarette.GetCount(), SLOT_HAND1 );
+    SmokeCigarette( cr, item );
+    return true;
+}
+
+bool CanSmoke( Critter & cr )
+{
+    Item@ respirator = _CritGetItemHandExt( cr );
+    if( !(respirator is null) && respirator.GetProtoId() == PID_RESPIRATOR )
+    {
+        cr.Say( SAY_NETMSG, "|0xFF0000 ¬ы не можете курить через респиратор." );
+        return false;
+    }  
+
+    // добавить проверку на критсмерть
+
+    return true;
+}
+
+uint GetSmokingItem( uint16 pid )
+{
+    uint16 smokingPID;
+
+    switch( pid )
+    {
+        case PID_CIGARETTE:
+        {
+            smokingPID = PID_CIGARETTE_PRT;
+            break;
+        }
+
+        case PID_PREWAR_CIGAR1:
+        {
+            smokingPID = PID_PREWAR_CIGAR1_PRT;
+            break;
+        }
+
+        case PID_PREWAR_CIGAR2:
+        {
+            smokingPID = PID_PREWAR_CIGAR2_PRT;
+            break;
+        }
+
+        case PID_KOSYAK:
+        {
+            smokingPID = PID_KOSYAK_PRT;
+            break;
+        }
+             /* временное решение из-за отсутсви€ какого либо желани€
+            вводить дл€ них новые механики. ћожет, когда-нибудь перестану дутьс€ и напишу, а пока
+            пусть довольствуютс€ тем, что есть. */
+        default:
+        {
+            smokingPID = pid;
+            break;
+        }
+    }
+
+    return smokingPID;
+}
+#endif

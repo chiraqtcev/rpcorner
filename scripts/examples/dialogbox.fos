@@ -1,0 +1,141 @@
+#include "_defines.fos"
+#include "_dialogbox.fos"
+
+class MenuFireBarrel: CenteredMenuHandler {
+    uint target_id;
+    uint map_id;
+
+    bool fired_up;
+    uint fuel;
+    uint more_buttons;
+
+    uint level;
+
+    MenuFireBarrel(Item& target, Map& map) {
+        target_id = target.Id;
+        map_id = map.Id;
+
+        fired_up = false;
+        fuel = 0;
+        more_buttons = 0;
+
+        level = 0;
+    }
+
+    // бизнес логика
+    // вернуть false чтобы закрыть меню
+    bool MenuUpdate( Critter& cr, iDialogBox& menu ) {
+        Map@ map = GetMap(map_id);
+        Item@ target = GetItem(target_id);
+
+        if( map is null || target is null ) {
+            return false;
+        }
+
+        if ( menu.Button("Добавить кнопку") ) {
+            more_buttons += 1;
+            return true;
+        }
+        if ( menu.Button("Убрать кнопку") ) {
+            if( more_buttons > 0 ) {
+                more_buttons -= 1;
+            }
+            return true;
+        }
+        if ( fired_up ) {
+            if( menu.Button("Потушить огонь") ) {
+                cr.Say(SAY_EMOTE, "Тушит огонь");
+                fired_up = false;
+                return true;
+            }
+        } else {
+            if( menu.Button("Разжечь огонь") ) {
+                cr.Say(SAY_EMOTE, "Разжигает огонь");
+                fired_up = true;
+                return true;
+            }
+        }
+        
+        if ( fuel < 5 && menu.ButtonExt("Подкинуть горючее", " "+fuel) ) {
+            fuel += 1;
+            cr.Say(SAY_EMOTE, "Подкидывает горючее, теперь его "+fuel);
+            return true; //TryFeedTheFire( cr );
+        }
+    
+        if ( menu.Button("Открепить бочку") ) {
+            cr.Say(SAY_EMOTE, "Открепляет бочку");
+            return true; //TryLockInPlace( cr );
+        }
+
+        if ( menu.ButtonSay("Ввести текст", "Введите ваш текст") ) {
+            string@ text = menu.GetSayValue();
+            if(text !is null && text.length() > 0) {
+                cr.Say(SAY_EMOTE, "Вы ввели: "+text);
+            } else {
+                cr.Say(SAY_EMOTE, "Вы ничего не ввели.");
+            }
+            return true;
+        }
+    
+        if ( menu.Button("Ничего не делать") ) {
+            cr.Say(SAY_EMOTE, "Ничего не делает.");
+            return false;
+        }
+
+        for(uint i=0; i<more_buttons; i++) {
+            if( menu.Button("Кнопка "+i) ) {
+                cr.Say(SAY_EMOTE_ON_HEAD, "Кнопка "+i);
+                return true;
+            }
+        }
+
+        if ( menu.Button("Вложенное меню") ) {
+            MenuFireBarrel@ new_menu = MenuFireBarrel(target, map);
+            new_menu.level = level + 1; 
+            return menu.OpenChild("Уровень "+new_menu.level, new_menu);
+        }
+    
+        return true;
+    }
+    string@ Description( Critter& cr ) {
+        return "Горючая бочка.\nУровень меню: "+level+"\nВыберите действие:";
+    }
+    string@ ButtonCancel() {
+        return ButtonDecorator("Скрыть меню", null);
+    }
+    void OnMenuDraw(Critter& cr) {
+        cr.Say(SAY_NETMSG, DebugMenu(cr));
+    }
+}
+
+// точка входа
+void StartMenuFireBarrel( Critter& cr, Item& target)
+{
+    Map@ map = cr.GetMap();
+    if( map is null ) {
+        return;
+    }
+
+    iMenuHandler@ handler = MenuFireBarrel(target, map);
+    iDialogBox@ menu = OpenMenu(cr, "Бочка", handler);
+}
+
+// тестировать через это
+// ~run examples/dialogbox TestBarrel [id любого предмета] 0 0
+void TestBarrel( Critter& player, int param0, int param1, int param2 )  {
+    Item@ item = GetItem(param0);
+    if( item is null ) {
+        return;
+    }
+    StartMenuFireBarrel(player, item);
+}
+
+// восстановить закрытое меню
+// ~run examples/dialogbox Restore 0 0 0
+void Restore( Critter& player, int param0, int param1, int param2 )  {
+    if( RestoreMenu(player, null) ){
+        player.Say(SAY_NETMSG, "Меню восстановлено.");
+    } else {
+        player.Say(SAY_NETMSG, "Меню не найдено.");
+    }
+}

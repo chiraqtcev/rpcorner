@@ -1,0 +1,927 @@
+bool _prestarter = prestarter();
+
+bool prestarter() 
+{
+	return main_logic();
+	
+	//return stopper();
+}
+
+string[] all_fopro_files() {
+	string[] file_names = { 
+		"ammo.fopro",
+		"armor.fopro",
+		"blueprint.fopro",
+		"car.fopro",
+		"container.fopro",
+		"deprecated.fopro",
+		"door.fopro",
+		"dynamic_items.fopro",
+		"drug.fopro",
+		"effect.fopro",
+		"food.fopro",
+		"furniture.fopro",
+		"generic.fopro",
+		"grid.fopro",
+		"key.fopro",
+		"misc.fopro",
+		"monitors.fopro",
+		"mountains.fopro",
+		"mutants_rising.fopro",
+		"nevada.fopro",
+		"nevada_wall.fopro",
+		"plant.fopro",
+		"ship.fopro",
+		"TLJ.fopro",
+		"traps.fopro",
+		"trees.fopro",
+		"wall.fopro",
+		"weapon.fopro",
+		"workplace.fopro",
+		"f2_generic.fopro",
+		"f2_wall.fopro",
+		"sonora.fopro",
+		"sonora_container.fopro",
+		"sonora_wall.fopro",
+		"ukur_mounts.fopro"
+	};
+
+	return file_names;
+}
+
+bool change_proto_files() { //TODO: хз че он делает
+	uint[] pids = getAllPids();
+	
+	string[] names = all_fopro_files();
+
+	string file_name;
+
+	for( uint i = 0, l = names.length(); i < l; i++ )
+	{
+		file_name = "proto\\items\\" + names[i];
+		if( !proto_picmap_changer( file_name, "buffer.txt" ) || !copy_file( "buffer.txt", file_name ) )
+			Log("Failed to process file '" + file_name + "'." );
+	}
+	
+	return true;
+}
+
+bool main_logic() 
+{
+	uint[] pids = getAllPids();
+	
+	// if( !change_pid_type( file_name, pids ) )
+		// return false;
+
+	string[] maps = { 
+		"riverdale3_1_mine2"
+	};	
+	
+	//string[] maps = getAllMaps(); 
+	
+	update_all_pids_on_maps( maps, pids );
+	
+	return stopper(); 
+}
+
+bool enlishAllMaps() {
+	string[] all_maps = getAllMaps();
+	
+	string result = "";
+	for( uint i = 0, l = all_maps.length(); i < l; i++ )
+		result += all_maps[i] + " ";
+	
+	Log( result + "!" );
+	
+	return false;
+}
+
+string@[]@ splitSpace( string line, string delimiter ) 
+{
+	if( findFirst( line, "	" ) != -1 )
+		for( uint i = 0, l = line.length(); i < l; i++ )
+			if( line[i] == '	' )
+				line[i] = ' ';
+	
+	string[] result;
+	
+	return splitEx( line, delimiter );
+}
+
+string[] getAllMaps() {
+	string[] result;
+
+	file source;
+	if( source.open( "maps\\Locations.cfg", "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return result;
+	}
+	
+	int found = 0;
+	string line;	
+	while( !source.isEndOfFile() )
+    {
+        source.readLine( line );
+
+		if( line.length() > 2 )
+		{
+			string@[]@ str = splitSpace( line, " " );
+			if( str.length() == 2 )
+			{
+				@str = splitSpace( str[0], "=" );
+				if( str.length() == 2 )
+				{
+					if( findFirst( str[0], "map_" ) != -1 )
+					{
+						result.insertLast( str[1] );
+						found++;
+					}
+				}
+			}
+		}
+	}
+	source.close();
+	
+	return result;
+}
+
+uint[] getAllPids() {
+	uint[] pids = {
+		2001, 2005, 2006, 2007, 2051, 2052, 2053, 2054, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2074, 2075, 2078, 2079, 2080, 2081, 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100, 2101, 2194, 2200, 2199, 2206, 2207, 2208, 2209, 2210, 2211, 2212, 2213, 2220, 2221, 2222, 2223, 2229, 2230, 2231, 2232, 2233, 2234, 2235, 2236, 2237, 2252, 2253, 2254, 2255, 2256,
+		2257, 2262, 2263, 2264, 2265, 2266, 2267, 2268, 2269, 2270, 2271, 2272, 2273, 2274, 2275, 2276, 2277, 2278, 2279, 2280, 2281, 2286, 2287, 2302, 2303, 2304, 2305, 2306, 2311, 2312, 2313, 2314, 2315, 2325, 2326, 2342, 2343, 2347, 2363, 2364, 2365, 2368, 2372, 2373, 2374, 2375, 2376, 2377, 2378, 2382, 2392,
+		2393, 2394, 2395, 2396, 2397, 2398, 2399, 2401, 2402, 2403, 2424, 2425, 2426, 2427, 2428, 2429, 2430, 2431, 2432, 2433, 2434, 2435, 2485, 2494, 2493, 2514, 2525, 2526, 2527, 2528, 2533, 2534, 2535, 2536, 2537, 2538, 2539, 2540, 2541, 2542, 2543, 2545, 2544, 2551, 2552, 2566, 2569, 2570, 2571, 2572, 2573,
+		2574, 2575, 2596, 2600, 2604, 2605, 2606, 2607, 2608, 2609, 2610, 2611, 2613, 2614, 2632, 2633, 2641, 2642, 2643, 2644, 2648, 2649, 2651, 2652, 2659, 2660, 2661, 2662, 2663, 2664, 2665, 2666, 2667, 2668, 2669, 2670, 2671, 2672, 2673, 2674, 2675, 2677, 2676, 2678, 2679, 2680, 2681, 2690, 2736, 2737, 2738,
+		2739, 2740, 2741, 2742, 2743, 2744, 2745, 2746, 2747, 2748, 2765, 2766, 2772, 2773, 2774, 2775, 2776, 2777, 2778, 2779, 4500, 4501, 4503, 4504, 4505, 4506, 4507, 4508, 4509, 4510, 4511, 4512, 4513, 4514, 4525, 4535, 4536, 4537, 4553, 4561, 4599, 4600, 4601, 4602, 4608, 4731, 4732, 4733, 8018, 8020, 8095,
+		8098, 8099, 15275, 15277, 15278, 15279, 15276, 15292, 15293, 15327, 3603, 3604, 4524, 
+		4595, 4589, 4611, 3181, 3180, 3820, 4547, 3017, 2949, 3018, 2809, 2853, 2040, 2628, 2948, 3803, 3806, 3727, 3728, 3730, 3731, 3732, 3733, 3735, 3224, 3227, 3179, 3180, 3181, 2295, 3225
+	};
+	return merge( pids, TreePids() ); //merge( TreePids(), JunkPids() );
+}
+
+uint[] JunkPids() {
+	uint[] basic = {
+		2001, 2005, 2006, 2007, 2051, 2052, 2053, 2054, 2057, 2058, 2059, 2060, 2061, 2062, 2063,
+		2074, 2075, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086,
+		2178, 2179, 2180, 2193, 2194, 2220, 2221, 2222, 2223, 2229, 2230, 2231, 2232, 2233, 2234, 2235, 2236, 2237,
+		2252, 2253, 2254, 2255, 2256, 2257, 2286, 2287, 2298, 2299, 2302, 2303, 2304, 2305, 2306, 2311, 2312, 2313, 2314, 2315, 2319, 2320, 2325, 2326,
+		2342, 2343, 2347, 2382, 2392, 2393, 2394, 2395, 2396, 2397, 2398, 2399, 2401, 2402, 2403, 2424, 2425, 2426, 2427, 2428, 2429, 2430, 2431, 2432, 2433, 2434, 2435,
+		2566, 2483, 2485, 2493, 2494, 2514, 2525, 2526, 2527, 2528, 2533, 2534, 2535, 2536, 2537, 2538, 2539, 2540, 2541, 2542, 2543, 2544, 2545, 2551, 2552, 2569, 2570, 2571, 2572,
+		2573, 2574, 2575, 2591, 2592, 2593, 2594, 2595, 2596, 2600, 2604, 2605, 2606, 2607, 2608, 2609, 2610, 2611, 2613, 2614, 2632, 2633,
+		2641, 2642, 2643, 2644, 2648, 2649, 2651, 2652, 2690, 2765, 2766, 2772, 2773, 2774, 2775, 2776, 2777, 2778, 2779, 4500, 4501, 4503, 4504, 4505, 4506, 4507, 4508, 4509, 4510, 
+		4511, 4512, 4513, 4514, 4525, 4535, 4536, 4537, 4553, 4561, 4599, 4600, 4601, 4602, 4608, 4731, 4732, 4733, 8018, 8020, 8095, 8096, 8098, 8099, 15275, 15277, 15278, 15279, 15276, 
+		15292, 15293, 15327
+	};
+	
+	uint[] other = merge( FromTo( 2090, 2127 ), FromTo( 2199, 2213 ), FromTo( 2262, 2281 ), merge( FromTo( 2363, 2378 ), FromTo( 2659, 2681 ), FromTo( 2736, 2748 ) ) );
+	
+	uint[] pids = { 15292, 15293, 8018, 8020, 8095, 8096, 8098, 8099 };
+
+	return merge( basic, other );
+}
+
+uint[] FromTo( int start, int end ) 
+{
+	uint[] result;
+	for( int x = start; x <= end; x++ )
+		result.insertLast(x);
+	
+	return result;
+}
+
+uint[] TreePids() 
+{
+	uint[] result = { 2066, 2316, 2317, 2318, 2319, 2320, 2321, 2945, 2946, 2947, 3842, 3843, 16760, 16999 };
+	return merge( result, FromTo( 4562, 4572 ), FromTo( 16233, 16286 ), FromTo( 16788, 16795 ), FromTo( 16835, 16841 ) );
+}
+
+bool update_all_pids_on_maps( string[] maps, uint[] pids )
+{
+	for( uint i = 0, l = maps.length(); i < l; i++ )
+	{
+		string file_name = "maps\\" + maps[i] + ".fomap";
+
+		if( !map_proto_changer( file_name, "buffer.txt", pids ) || !copy_file( "buffer.txt", file_name ) )
+			Log("[update_all_pids_on_maps] Failed to parse file: '" + file_name + "'" );
+	}
+	
+	return true;
+}
+
+string addStrAfterName( string name, string addon ) { return addStrAfterName( name, addon, "." ); }
+string addStrAfterName( string name, string addon, string delimiter ) 
+{
+	string@[]@ str = splitEx( name, delimiter );
+	if( str.length() != 2 )
+		return name + addon;
+	
+	return str[0] + addon + delimiter + str[1];
+}
+
+bool change_pid_type( string source_name, uint[] pids ) {
+	return 
+		fopro_changer( source_name, "buffer.txt", pids ) &&
+		copy_file( source_name, addStrAfterName( source_name, "-backup" ) ) &&
+		copy_file( "buffer.txt", source_name )
+		;
+}
+
+bool proto_picmap_changer( string source_name, string target_name )
+{
+	file source, target;
+	if( source.open( source_name, "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return false;
+	}
+
+	if( target.open( target_name, "w" ) == -1 )
+	{
+		Log( "Не удалось начать запись." );
+		return false;
+	}
+
+    int found = 0;
+	bool parsing = false;
+	string line, picmap;
+	
+	uint[] not_found;
+	
+	int i = 0;
+	while( !source.isEndOfFile() )
+    {
+		i++;
+
+        source.readLine( line );
+
+		if( line.length() > 2 )
+		{
+			string@[]@ str = splitSpace( line, "=" );
+			if( str.length() == 2 )
+			{
+				if( str[0] == "PicMap" )
+					picmap = cutLine( str[1] );
+				
+				if( str[0] == "PicInv" && findFirst( str[1], "reserved" ) != -1 )
+				{
+					line = str[0] + "=" + picmap + "\n";
+					found++;
+				}
+			}
+		}
+		
+		target.writeString( line );
+	}
+	
+	Log( "[proto_picmap_changer] Заменены инвентарные картинки в файле '" + source_name + "': " + found + " пидов." );
+	
+	target.close();
+	source.close();
+	
+	return true;
+}
+
+string decrypt( string source ) {
+	string result;
+	for( uint i = 0, l = source.length(); i < l ; i++ )
+		result += uint(source[i]) + ":[" + substring(source,i,1) +"] ";
+	return result;
+}
+
+string cutLine( string source ) 
+{
+	bool done = false;
+	do
+	{
+		uint l = source.length() - 1;
+		done = source[l] != 10 && source[l] != 13;
+		if( !done )
+			source = substring( source, 0, source.length() - 1 );
+	}
+	while( !done );
+		
+	return source;
+}
+
+bool map_proto_changer( string source_name, string target_name, uint[] pids )
+{
+	file source, target;
+	if( source.open( source_name, "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return false;
+	}
+
+	if( target.open( target_name, "w" ) == -1 )
+	{
+		Log( "Не удалось начать запись." );
+		return false;
+	}
+
+    int found = 0;
+	bool parsing = false;
+	bool show_new_pids = false;
+	string line, last_line;
+	
+	uint[] not_found, not_found_all;
+	
+	uint[] proper_scenery_pids = { 5001, 5007, 5622, 3853, 4012, 2067, 4053, 4054, 4055, 4060, 4056, 4059, 4057, 4058, 2064, 2065, 2344, 435 };
+
+	int i = 0;
+	while( !source.isEndOfFile() )
+    {
+		i++;
+
+        source.readLine( line );
+
+		if( line.length() > 2 )
+		{
+			string@[]@ str = splitSpace( line, " " );
+			if( str.length() == 2 )
+			{
+				if( str[0] == "ProtoId" )
+				{
+					string substr = cutLine(str[1]);
+					int pid = 0;
+					if( !StrToInt( substr, pid ) )
+					{
+						Log( "[map_proto_changer] Failed to parse line #" + i + ": '" + substr + "' in: '" + line + "'" );
+					}
+					else if( pids.find( pid ) != -1 )
+					{
+						last_line = "MapObjType           1" + "\n";
+						found++;
+					}
+					else
+					{
+						if( proper_scenery_pids.find( pid ) == -1 )
+						{
+							//Log( "PID #" + pid + " was not found!" );
+							if( show_new_pids )
+							{
+								if( not_found_all.find( pid ) == -1 )
+								{
+									not_found_all.insertLast( pid );
+									not_found.insertLast( pid );
+									
+									if( not_found.length() > 50 ) {
+										Log( "Новые пиды: " + enlistUINT( not_found ) );
+										not_found.resize(0);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		target.writeString( last_line );
+		last_line = line;
+	}
+	
+	target.writeString( last_line );
+	
+	target.close();
+	source.close();
+
+	Log( "[map_proto_changer] Пропарсено пидов на карте '" + source_name + "': " + found );
+	
+	if( show_new_pids )
+		Log( "Новые пиды: " + enlistUINT( not_found ) );	
+	
+	return true;
+}
+
+bool copy_file( string source_name, string target_name )
+{
+	file source, target;
+	if( source.open( source_name, "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return false;
+	}
+
+	if( target.open( target_name, "w" ) == -1 )
+	{
+		Log( "Не удалось начать запись." );
+		return false;
+	}
+
+	while( !source.isEndOfFile() )
+    {
+        string line;
+        source.readLine( line );
+		target.writeString( line );
+	}
+	
+	source.close();
+	target.close();
+	
+	return true;
+}
+
+bool fopro_changer( string source_name, string target_name, uint[] pids )
+{
+	file source, target;
+	if( source.open( source_name, "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return false;
+	}
+
+	if( target.open( target_name, "w" ) == -1 )
+	{
+		Log( "Не удалось начать запись." );
+		return false;
+	}
+
+    int found = 0;
+	int skipped = 0;
+	bool parsing = false;
+	
+	int i = 0;
+	while( !source.isEndOfFile() )
+    {
+		i++;
+
+        string line;
+        source.readLine( line );
+
+		if( line.length() > 2 )
+		{
+			string@[]@ str = splitSpace( line, "=" );
+			if( str.length() != 2 )
+			{
+				target.writeString( line );
+				continue;
+			}
+				
+			if( str[0] == "ProtoId" )
+			{
+				string substr = cutLine( str[1] );
+				int pid = 0;
+				if( !StrToInt( substr, pid ) )
+				{
+					Log( "[fopro_changer] Failed to parse ProtoId: '" + substr + "'" );
+					continue;
+				}
+				
+				if( pids.find( pid ) != -1 )
+				{
+					parsing = true;
+					found++;
+				}
+			}
+			
+			if( parsing )
+			{
+				if( str[0] == "Type" )
+				{
+					string substr = substring( str[1], 0, 1 );
+					int type = 0;
+					if( StrToInt( substr, type ) )
+					{
+						if( type == 5 )
+						{
+							skipped++;
+							parsing = false;
+						}
+						else
+							line = str[0] + "=" + 5 + "\n";
+					}
+				}
+			}
+			
+			target.writeString( line );
+			continue;
+		}
+		
+		if( parsing )
+		{
+			parsing = false;
+
+			target.writeString( "Weight=30000" + "\n" );
+			target.writeString( "Volume=200" + "\n" );
+			target.writeString( "Cost=1" + "\n" );
+			target.writeString( "" + "\n" );
+		}
+		else
+			target.writeString( line );
+	}
+	
+	Log( "[fopro_changer] Пропарсено " + found + " из " + pids.length() + " пидов. Пропущено: " + skipped );
+	
+	target.close();
+	source.close();
+	
+	return true;
+}
+
+bool free_pid_searcher( string file_name )
+{
+	dictionary pids = sort_lines( find_gaps( pid_reader( file_name ) ) );
+	Log( show_lines( pids, 2 ) );
+
+	string@[] keys;
+	int count = pids.keys( keys );
+	if( count == 0 || !valid( keys ) )
+	{
+		Log( "Dictionary is empty!" );
+		return false;
+	}
+	
+	Log( "Всего обнаружено " + keys.length() + " типов пропусков. Итого пропущено " + missed + " позиций." );
+	
+	return stopper();
+}
+
+bool pid_writer( uint[] data, string file_name )
+{
+	file f;
+	if( f.open( file_name, "w" ) == -1 )
+	{
+		Log( "Не удалось начать запись." );
+		return false;
+	}
+
+	for( uint i = 0, l = data.length(); i < l; i++ )
+		f.writeString( data[i] + "\n" );
+	
+	f.close();
+	return true;
+}	
+
+uint[] pid_reader( string proto_file_name )
+{
+	uint[] result;
+	
+	file f;
+	if( f.open( proto_file_name, "r" ) == -1 )
+	{
+		Log( "Не удалось начать чтение." );
+		return result;
+	}
+
+    int i = 0;
+	while( !f.isEndOfFile() )
+    {
+		i++;
+
+        string line;
+        f.readLine( line );
+
+		if( line.length() < 2 )
+			continue;
+
+		//string value = TRIM( substring( data[1], 0, data[1].length() - 2 ) );
+		string value = substring( line, 0, line.length() - 1 );
+		
+		int pid = 0;
+		if( !StrToInt( value, pid ) || pid == 0 )
+		{
+			Log("[" + proto_file_name + "] Failed to parse line #" + i + ": '" + value + "' into the [" + pid + "]" );
+			continue;
+		}
+		
+		result.insertLast( pid );
+	}
+	f.close();
+	
+	Log( "Readed " + result.length() + " pids. " );
+	
+	return result;
+}
+
+uint[] pid_parser() {
+	string[] file_names = { 
+		"ammo.fopro",
+		"armor.fopro",
+		"blueprint.fopro",
+		"car.fopro",
+		"container.fopro",
+		"deprecated.fopro",
+		"door.fopro",
+		"dynamic_items.fopro",
+		"drug.fopro",
+		"effect.fopro",
+		"food.fopro",
+		"furniture.fopro",
+		"generic.fopro",
+		"grid.fopro",
+		"key.fopro",
+		"misc.fopro",
+		"monitors.fopro",
+		"mountains.fopro",
+		"nevada.fopro",
+		"nevada_wall.fopro",
+		"plant.fopro",
+		"ship.fopro",
+		"TLJ.fopro",
+		"traps.fopro",
+		"trees.fopro",
+		"wall.fopro",
+		"weapon.fopro",
+		"workplace.fopro",
+		"f2_generic.fopro",
+		"f2_wall.fopro",
+		"sonora.fopro",
+		"sonora_container.fopro",
+		"sonora_wall.fopro",
+		"ukur_mounts.fopro"
+	};
+	
+	uint checksum = 0;
+	uint[] everything;
+	for( uint i = 0, l = file_names.length(); i < l; i++ )
+	{
+		uint[] data = get_pids( "proto\\items\\" + file_names[i] );
+		checksum += data.length();
+		everything = joinWith( everything, data );
+	}
+	
+	if( checksum != everything.length() )
+		Log( "Шеф, кто-то выпал за борт!" );
+	
+	Log( checksum + "/" + everything.length() );
+		
+	return everything;
+}
+
+bool stopper() { Log("\n\n\n\n\n\n\t\t!!! BOOOM !!!\n\n\n\n\n\n\n"); int a = 1, b = 0; return( a / b == 0 ); }
+
+uint[] joinWith( uint[] origin, uint[] other ) 
+{
+	
+	uint[] result;
+
+	if( origin.length() == 0 && other.length() == 0 ) return result;
+	if( origin.length() == 0  ) return other;
+	if( other.length() == 0 ) return origin;
+	
+	origin = sort( origin );
+	other = sort( other );
+
+	//Log( "Origin after sort:\t" + enlistUINT( origin ) );
+	//Log( "Other after sort:\t" + enlistUINT( other ) );
+	
+	uint other_length = other.length();
+	uint origin_length = origin.length();
+	
+	uint i = 0, j = 0;
+	while( i < origin_length && j < other_length ) 
+	{	
+		if( origin[i] == other[j] )
+		{
+			Log( "ERROR: Same values at origin(" + i + ") and other(" + j + ") = " + origin[i] + "\t\tAdding anyway.." );
+			result.insertLast(origin[i]);
+			i++;
+			j++;
+		}
+		else if( origin[i] < other[j] )
+		{
+			result.insertLast(origin[i]);
+			i++;
+		}
+		else
+		{
+			result.insertLast(other[j]);
+			j++;
+		}
+	}
+	
+	if( i < origin_length )
+		for( int x = i; x < origin_length; x++ )
+			result.insertLast( origin[x] );
+			
+	if( i < other_length )
+		for( int x = j; x < other_length; x++ )
+			result.insertLast( other[x] );
+	
+	return result;
+}
+
+uint[] sort( uint[] origin ) {
+	if( origin.length() == 0 ) return origin;
+	
+	uint[] result;
+	
+	uint max = origin.length();
+	
+	for( uint j = 0; j < max; j++ )
+	{
+		uint min = origin[0], n = 0;
+		
+		for( uint i = 0; i < max; i++ )
+		{
+			if( origin[i] < min )
+			{
+				//Log( "#" + i + " " + origin[i] + " is less than #" + n + " " + min );
+				min = origin[i];
+				n = i;
+			}
+		}
+		origin[n] = uint(-1);
+		result.insertLast(min);
+		//Log("Added #" + n + ": " + min + " (" + result.length() + ")" );
+	}
+	
+	if( result.length() != origin.length() )
+	{
+		Log("При сортировке были потеряны элементы - было " + origin.length() + ", стало - " + result.length() );
+	}
+	
+	return result;
+}
+
+uint[] get_pids( string proto_file_name ) 
+{
+	uint[] result;
+
+	file f;
+	if( f.open( proto_file_name, "r" ) == -1 )
+	{
+		Log( "Не найден файл: " + proto_file_name );
+		return result;
+	}
+	
+    int i = 0;
+	while( !f.isEndOfFile() )
+    {
+		i++;
+
+        string line;
+        f.readLine( line );
+
+		string@[]@ data = splitSpace( line, "=" );
+		if( !valid( data ) || data.length() != 2 )
+			continue;
+		
+		if( data[0] != "ProtoId" && data[0] != "Pid" )
+			continue;
+
+		string value = TRIM( cutLine( data[1] ) );
+		
+		int pid = 0;
+		if( !StrToInt( value, pid ) || pid == 0 )
+		{
+			Log("[" + proto_file_name + "] Failed to parse line #" + i + ": '" + value + "' into the [" + pid + "]" );
+			continue;
+		}
+		
+		result.insertLast( pid );
+	}
+	f.close();
+	
+	return result;
+}
+
+int missed = 0;
+
+string show_lines( dictionary data ) { return show_lines( data, 0, 0 ); }
+string show_lines( dictionary data, int start ) { return show_lines( data, start, 0 ); }
+string show_lines( dictionary data, int min, int max ) {
+	string result = "";
+	
+	string@[] keys;
+	int count = data.keys( keys );
+	if( count == 0 || !valid( keys ) )
+	{
+		Log( "Data set is empty!" );
+		return "[empty]";
+	}
+	
+	bool auto = false;
+	
+	if( min == 0 && max == 0 ) 
+	{
+		min = 0; 
+		max = keys.length() - 1;
+		
+		auto = true;
+	}
+	
+	if( max == 0 )
+	{
+		int x = 0, max_x = 0;
+		for( uint i = 0, l = keys.length(); i < l; i++ )
+		{
+			if( StrToInt( keys[i], x ) && x > max_x )
+				max_x = x;
+		}
+		max = max_x;
+	}
+	
+	for( int i = min; i <= max; i++ )
+	{
+		uint[][] record;
+		
+		string index = auto ? keys[i] : ( "" + i );
+		
+		if( !data.exists( index ) || !data.get( index, record ) )
+		{
+			//Log( "No data at index '" + index + "', skipping.." );
+			continue;
+		}
+		
+		int len = record.length();
+		result += "\nПропуски размером в " + index + " PID";
+		if( len > 1 )
+			result += " ( всего " + len + " пропусков )";
+		
+		result += ":";
+
+		//string line = "(" + index + "):";
+		
+		for( int j = 0; j < len; j++ )
+		{
+			result += " " + LineToStr( record[j] );
+			//line += " " + LineToStr( record[j] );
+			
+			missed += LineSize( record[j] );
+		}
+
+		//Log( line );
+	}
+	
+	return result;
+}
+
+dictionary sort_lines( uint[][] lines ) {
+	
+	dictionary result;
+	uint[][] record;
+	
+	int skipped = 0;
+	
+	for( int i = 0, l = lines.length(); i < l; i++ )
+	{
+		uint[][] record;
+		int size = LineSize( lines[i] );
+		string index = size + "";
+		
+		if( size == 1 )
+		{
+			skipped++;
+			continue;
+		}
+		
+		//Log( "Добавляю дырку размера " + size + " пидов: " + LineToStr( lines[i] ) );
+		
+		if( !result.exists( index ) )
+		{
+			result.set( index, record );
+		}
+		
+		if( !result.get( index, record ) )
+		{
+			Log( "Failed to get index '" + index + "', skipping line " + LineToStr( lines[i] ) + ".." );
+			continue;
+		}
+		
+		record.insertLast( lines[i] );
+		
+		//Log( "В записи уже " + record.length() + " подобных дырок." );
+		
+		result.set( index, record );
+	}
+	
+	Log( "Скипнуто " + skipped + " микродырок." );
+	
+	missed = skipped;
+	
+	return result;
+}
+
+string LineToStr( uint[] line ) {
+	if( line.length != 2 ) return "[null]";
+	if( LineSize(line) == 1 ) return "[" + line[0] + "]";
+	return "[" + line[0] + "-" + line[1] + "]";
+}
+
+int LineSize( uint[] line ) {
+	if( line.length != 2 ) return -1;
+	return line[1] - line[0] + 1;
+}
+
+uint[][] find_gaps( uint[] list ) {
+	uint[][] result;
+	uint current = 0, last = 0;	
+	for( uint i = 0, l = list.length(); i < l; i++ )
+	{
+		current = list[i];
+		if( last == 0 ) last = current;
+
+		if( current > last + 1 )
+		{
+			uint[] gap = { last + 1, current - 1 };
+			result.insertLast(gap);
+			//Log( "Gap #" + result.length() + ": " + gap[0] + "-" + gap[1] );
+			
+			last = current;
+		}
+	}
+	
+	Log("At all, the is " + result.length() + " gaps in " + list.length() + " array." );
+	return result;
+}

@@ -1,0 +1,530 @@
+#ifndef COOKING
+#define COOKING
+
+#include "_utils.fos"
+#include "cooking_h.fos"
+#include "gathering_h.fos"
+#include "critter_skills_h.fos"
+
+//import void AskCooking( Critter& cr ) from "cooking";
+void AskCooking( Critter& cr ) //exported
+{
+	cr.ShowScreen( SCREEN_DIALOGBOX, 2, "cooking@answer_COOKING" );
+	cr.Say( SAY_DIALOGBOX_TEXT, "Выберите действие" );
+	cr.Say( SAY_DIALOGBOX_BUTTON( 0 ), "погреться" );
+	cr.Say( SAY_DIALOGBOX_BUTTON( 1 ), "пожарить" );
+}
+
+void answer_COOKING( Critter& cr, uint answerI, string& answerS )
+{
+	if( !CookingActions( cr, answerI ) )
+	{
+		cr.Say( SAY_NETMSG, "|0xFF0000 Из этого ничего не вышло." );
+	}
+}
+
+bool CookingActions( Critter& cr, uint answer )
+{
+	switch( answer )
+	{
+		case( 0 ): return GetCraftToken( cr );
+		case( 1 ): return FastFrying( cr );
+		default: return false;
+	}
+	return false;
+}
+
+
+bool GetCraftToken( Critter& cr )
+{
+	cr.Say( SAY_EMOTE, "Греет руки" );
+	SayLog( cr, crInfo( cr ) + " греется." );
+	
+	Map@ map = cr.GetMap();
+	if(!valid(map)) return false;
+	
+	Item@ Workplace;
+	@Workplace = map.GetItem( cr.HexX, cr.HexY, PID_GRAPPLE_HOOK );
+	
+	if( !valid( Workplace ) )
+		@Workplace = cr.GetMap().AddItem( cr.HexX, cr.HexY, PID_GRAPPLE_HOOK, 1 );
+
+	if( !valid( Workplace ) )
+		return false;
+	
+	Workplace.SetScript( "item@_WorkplaceInit" );
+	
+	if( cr.CountItem( PID_FIREPLACE_TOKEN ) == 0 ) cr.AddItem( PID_FIREPLACE_TOKEN, 1 );
+	cr.ShowScreen( SCREEN_FIXBOY, 0, "" );
+	return true;
+}
+
+bool FastFrying( Critter& cr )
+{
+    Item@ item = _CritGetItemHand( cr );
+    if( !valid( item ) )
+    {
+        cr.Say( SAY_NETMSG, "|0xFFFF00 Для этого вам понадобиться мясо в руках." );
+        return true;
+    }
+	
+	SayLog( cr, crInfo( cr ) + " жарит " + itemDesc( item ) + "." );
+
+	//TODO: Нормальная структура.
+	string name = "еду";
+	switch( item.GetProtoId() )
+	{
+		case( PID_MEAT ):
+			_CritAddItem( cr, PID_COOKED_MEAT, 1 );
+			name = "мясо";
+			break;
+		case( PID_RAT_MEAT ):
+			_CritAddItem( cr, PID_COOKED_RAT_MEAT, 1 );
+			name = "крысятину";
+			break;
+		case( PID_GECKO_MEAT ):
+			_CritAddItem( cr, PID_COOKED_GECKO_MEAT, 1 );
+			name = "гекконятину";
+			break;
+		case( PID_MANTIS_MEAT ):
+			_CritAddItem( cr, PID_MANTIS_FOOD, 1 );
+			name = "лапку богомола";
+			break;
+		case( PID_FISH_SMALLEST ):
+			_CritAddItem( cr, PID_COOKED_FISH, 1 );
+			name = "рыбешку";
+			break;
+		case( PID_FISH_SMALL ):
+			_CritAddItem( cr, PID_COOKED_FISH, 2 );
+			name = "рыбку";
+			break;
+		case( PID_FISH ):
+			_CritAddItem( cr, PID_COOKED_FISH, 4 );
+			name = "рыбу";
+			break;
+		case( PID_FISH_BIG ):
+			_CritAddItem( cr, PID_COOKED_FISH, 8 );
+			name = "рыбищу";
+			break;
+		case( PID_FISH_BIGGEST ):
+			_CritAddItem( cr, PID_COOKED_FISH, 16 );
+			name = "огромную рыбу";
+			break;
+		default:
+			cr.Say( SAY_NETMSG, "|0xFF0000 Даже после обжарки эта вещь будет несъедобна." );
+			return true;
+	}
+	
+	if( Random( 1, 3 ) == 1 ) {
+		int skillNum = SK_COOKING;
+		raiseSkill( cr, skillNum );
+	}
+	
+    cr.Say( SAY_EMOTE_ON_HEAD, "Жарит " + name );
+
+    _SubItem( item, 1 );
+	
+	if( valid( item ) )
+		return cr.AddTimeEvent( "cte_repeat_FastFrying", REAL_MS( 1000 ), CTE_WORK );
+	
+	return true;
+}
+
+uint cte_repeat_FastFrying( Critter& cr, int identifier, uint& rate )
+{
+	if( !act(cr) ) return 0;
+	
+	if( cr.CountItem( PID_FIREPLACE_TOKEN ) == 0 )
+		return 0;
+	
+	FastFrying( cr );
+	
+	return 0;
+}
+
+bool CookingMenu( Critter& cr )
+{
+	uint16 count = 0;
+	if( cr.Skill[ SK_COOKING ] < 100 ) 
+	{
+		cr.Say( SAY_NETMSG, "|0xFFFF00 Вы не знаете ни одного полезного рецепта для готовки." );
+	}
+	
+	string[] foodNames = { "Салат", "Похлебка", "Шашлык", "Игуана", "Лепешка", "Рагу", "Желудок",  "Бургер", "Пицца", "Пирог", "Тако" };
+		
+	int skill = ( cr.Skill[ SK_COOKING ] - 100 ) / 10;
+	int skill_max = foodNames.length();
+	skill = CLAMP( skill, 0, skill_max );
+	for( int i = 0; i < skill; i++ ) {
+		count++;
+	}
+
+	cr.ShowScreen( SCREEN_DIALOGBOX, count, "answer_PATTERN" );
+	cr.Say( SAY_DIALOGBOX_TEXT, "Выберите рецепт:" );
+	
+	for( uint8 i = 0; i < count; i++ ) {
+		cr.Say( SAY_DIALOGBOX_BUTTON( i ), foodNames[ i ] );
+	}
+	return true;
+}
+
+void answer_PATTERN( Critter& cr, uint answerI, string& answerS )
+{
+	SayLog( cr, crInfo( cr ) + " готовит блюдо." );
+	
+	bool isFailed = false;
+	if( Random( 0, 100 ) + cr.Skill[ SK_COOKING ] < int( 120 + answerI * 10 ) )	{
+		isFailed = true;
+	}
+	
+	uint i = 0;
+
+    if( answerI == i++ ) {   // салат
+        if( _CritCountItem( cr, PID_ALGAE ) > 1 && _CritCountItem( cr, PID_MUTATED_FRUIT ) > 0 ) {
+			_CritDeleteItem( cr, PID_MUTATED_FRUIT, 1 );
+            _CritDeleteItem( cr, PID_ALGAE, 2 );
+            if( isFailed ) {
+				cr.Say( SAY_NETMSG, "|0xFF0000 Вы испортили салат. Это просто невозможно есть!" );
+			
+			} else {	
+				_CritAddItem( cr, PID_SALAD, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили вкусный салат, потратив мутофрукт и пару водорослей.." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        } else if( _CritCountItem( cr, PID_ALGAE ) < 2 ) {
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вы считаете, что сушеные водоросли хорошо пойдут в салат." );
+		} else if( _CritCountItem( cr, PID_MUTATED_FRUIT ) == 0 ) {
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что мутафрукт идеально подходит к водорослям." );
+		}
+    }
+
+	if( answerI == i++ )     // Травяная пахлебка
+    {
+        if( _CritCountItem( cr, PID_CABBAGE ) > 0 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0 && _CritCountItem( cr, PID_GLASS_BOTTLE_FULL ) > 0 )
+        {
+            _CritDeleteItem( cr, PID_CABBAGE, 1 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT, 1 );
+			_CritDeleteItem( cr, PID_GLASS_BOTTLE_FULL, 1);
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Вы испортили похлебку." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_HERBAL_SOUP, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили похлебку." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_GLASS_BOTTLE_FULL ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Для начала было бы неплохо вскипятить целую бутылку воды" );
+		}
+		else if( _CritCountItem( cr, PID_CABBAGE ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вода вскипела, вы считаете что свeжая капуста хорошо подойдет для похлебки." );
+		}
+		else if( _CritCountItem( cr, PID_XANDER_ROOT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что корень зандера придаст более приятный вкус." );
+		}
+    }
+
+    if( answerI == i++ ) // шашлык
+    {
+        if( _CritCountItem( cr, PID_MEAT ) > 0 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0 )
+        {
+            _CritDeleteItem( cr, PID_MEAT, 1 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT , 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Вы пережарили мясо в угли. Несъедобная хрень!" );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_MEAT_ON_A_STICK, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили сочный шашлык, приправив мясо корнем зандера." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+        else if( _CritCountItem( cr, PID_MEAT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Все-таки даже для такого шашлыка вам понадобится мясо." );
+		}
+        else if(_CritCountItem( cr, PID_XANDER_ROOT ) == 0)
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что корень Зандера не помешает." );
+		} 
+    }
+
+    if( answerI == i++ ) // игуана
+    {
+        if( _CritCountItem( cr, PID_GECKO_MEAT ) > 0 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0 )
+        {
+            _CritDeleteItem( cr, PID_GECKO_MEAT, 1 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT , 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Вы пережарили мясо в угли. Несъедобная хрень!" );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_IGUANA_ON_A_STICK, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили сочную игуану на палочке, приправив мясо корнем зандера." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+        else if( _CritCountItem( cr, PID_GECKO_MEAT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Все-таки игуана на палочке не выйдет без хорошего ломтя гекконятины." );
+		}
+        else if(_CritCountItem( cr, PID_XANDER_ROOT ) == 0)
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что корень Зандера не помешает." );
+		} 
+    }
+
+    if( answerI == i++ )     // кукурузная лепешка
+    {
+        if( _CritCountItem( cr, PID_CORN) > 0 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0 )
+        {
+            _CritDeleteItem( cr, PID_CORN, 1 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT, 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Лепёшка сгорела и воняет." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_FLAPJACK, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили аппетитную кукурузную лепешку, смешав кукурузу и корень зандера." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_CORN ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Для начала вам понадобится кукуруза." );
+		}
+		else if( _CritCountItem( cr, PID_XANDER_ROOT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что корень Зандера не помешает." );
+		}
+    }
+
+    if( answerI == i++ ) // мясное рагу
+    {
+        if( _CritCountItem( cr, PID_MEAT ) > 1 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0 && _CritCountItem( cr, PID_BROC_FLOWER ) > 0)
+        {
+            _CritDeleteItem( cr, PID_MEAT, 2 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT, 1 );
+            _CritDeleteItem( cr, PID_BROC_FLOWER, 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 От вкуса этого рагу вас тянет блевать. Как жаль, а вы старались.." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_RAGOUT, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили прекрасное рагу из пары кусков мяса, цветка брока и корня зандера." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_MEAT ) < 2 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Как рагу может быть мясным без пары кусков хорошего мяса?" );
+		}
+		else if( _CritCountItem( cr, PID_XANDER_ROOT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Приправа в виде корня Зандера - вы думаете это неплохо." );
+		}
+		else if( _CritCountItem( cr, PID_BROC_FLOWER ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Немного цветка Брока завершит это блюдо." );
+		}
+    }
+
+    if( answerI == i++ )     // фаршированный желудок
+    {
+        if( _CritCountItem( cr, PID_MEAT ) > 0 && _CritCountItem( cr, PID_MOLERAT_STOMATCH ) > 0 && _CritCountItem( cr, PID_BROC_FLOWER ) > 1 )
+        {
+            _CritDeleteItem( cr, PID_BROC_FLOWER, 2 );
+            _CritDeleteItem( cr, PID_MEAT, 1 );
+            _CritDeleteItem( cr, PID_MOLERAT_STOMATCH, 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Вы испортили блюдо. Это невозможно есть." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_COOKED_MOLERAT_STOMATCH, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вам удалось приготовить фаршированный желудок, израсходовав кусок мяса, пару цветков брока, ну и сам желудок." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_MOLERAT_STOMATCH ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Для начала вам понадобится желудок кротокрыса." );
+		}
+            
+		else if( _CritCountItem( cr, PID_MEAT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Вам кажется, что мясо пойдет как отличное наполнение желудка." );
+		}
+		else if( _CritCountItem( cr, PID_BROC_FLOWER ) < 2 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Побольше цветка Брока в виде приправы - лучший выбор выживальца." );
+		}
+	}
+
+    if( answerI == i++ ) // Бургер из Геккона
+    {
+        if( _CritCountItem( cr, PID_GECKO_MEAT  ) > 0 && _CritCountItem( cr, PID_FLAPJACK ) > 0 && _CritCountItem( cr, PID_CABBAGE ) > 0)
+        {
+            _CritDeleteItem( cr, PID_GECKO_MEAT, 1 );
+            _CritDeleteItem( cr, PID_FLAPJACK, 1 );
+            _CritDeleteItem( cr, PID_CABBAGE, 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Ваш бургер можно поистинне назвать Тошнотным. Это дерьмо никто есть не будет." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_BURGER, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вам удалось приготовить сытный бургер из мяса геккона, лепешки и листьев капусты." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );				
+			}
+        }
+		else if( _CritCountItem( cr, PID_GECKO_MEAT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Как можно приготовить бургер из Геккона без мяса Геккона?" );
+		}
+		else if( _CritCountItem( cr, PID_FLAPJACK ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Бургер - это не только мясо, но и сочная булочка или хотя бы лепешка." );
+		}
+		else if( _CritCountItem( cr, PID_CABBAGE) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Свежая капуста завершит этот шедевр." );
+		}
+    }
+
+	if( answerI == i++ ) // Пицца
+    {
+        if( _CritCountItem( cr, PID_FLAPJACK  ) > 0 && _CritCountItem( cr, PID_MEAT ) > 0 && _CritCountItem( cr, PID_BLACK_MUSHROOMS ) > 0)
+        {
+            _CritDeleteItem( cr, PID_FLAPJACK , 1 );
+            _CritDeleteItem( cr, PID_MEAT, 1 );
+            _CritDeleteItem( cr, PID_BLACK_MUSHROOMS, 1 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Даже если бы вы жили в канализации, то не стали бы есть это." );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_PIZZA, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вам удалось приготовить подобие пиццы, использовав лепешку, мясо и грибы." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_FLAPJACK ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Основой для пиццы служит кукурузная лепешка" );
+		}
+		else if( _CritCountItem( cr, PID_MEAT ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Мелко нарежьте мясо и распределите равномерно по пицце." );
+		}
+		else if( _CritCountItem( cr, PID_BLACK_MUSHROOMS ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Без грибов пицца не может быть завершенной." );
+		}
+    }
+
+	if( answerI == i++ ) // Пирог с начинкой
+    {
+        if( _CritCountItem( cr, PID_FLAPJACK  ) > 0 && _CritCountItem( cr, PID_COOKED_FISH ) > 0 && _CritCountItem( cr, PID_XANDER_ROOT ) > 0)
+        {
+            _CritDeleteItem( cr, PID_FLAPJACK , 1 );
+            _CritDeleteItem( cr, PID_COOKED_FISH, 2 );
+            _CritDeleteItem( cr, PID_XANDER_ROOT, 2 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Пирог испорчен. Какая досада!" );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_PIROG , 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вы приготовили рыбный пирог из лепешки, двух порций рыбы и пары корней зандера." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_FLAPJACK ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Разрежьте лепешку с в верхней части и приготовьтесь творить" );
+		}
+		else if( _CritCountItem( cr, PID_COOKED_FISH ) < 2 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Мелко нарезанная проваренная рыба подойдет идеально." );
+		}
+		else if( _CritCountItem( cr, PID_XANDER_ROOT ) < 2 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Корень зандера служит прекрасной приправой к рыбе." );
+		}
+
+    }
+	if( answerI == i++ ) // Тако
+    {
+        if( _CritCountItem( cr, PID_RAT_MEAT  ) > 2 && _CritCountItem( cr, PID_FLAPJACK ) > 0 && _CritCountItem( cr, PID_BROC_FLOWER ) > 1)
+        {
+            _CritDeleteItem( cr, PID_RAT_MEAT , 3 );
+            _CritDeleteItem( cr, PID_FLAPJACK, 1 );
+            _CritDeleteItem( cr, PID_BROC_FLOWER, 2 );
+            if( isFailed )
+			{
+				cr.Say( SAY_NETMSG, "|0xFF0000 Это провал! Тако, буррито... уже не важно!" );
+			}
+			else
+			{	
+				_CritAddItem( cr, PID_BURRITO, 1 );
+				cr.Say( SAY_NETMSG, "|0xFFFF00 Вам удалось приготовить тако, мелко нарезав три крысиные туши, заправив их в лепешку и приправив парой цветков брока." );
+				
+				int skillNum = SK_COOKING;
+				raiseSkill( cr, skillNum );
+			}
+        }
+		else if( _CritCountItem( cr, PID_RAT_MEAT  ) < 3 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Было бы куда рациональнее использовать для фарша более мелкую добычу..." );
+		}
+		else if( _CritCountItem( cr, PID_FLAPJACK ) == 0 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Фарш необходимо завернуть в свежую лепешку." );
+		}
+		else if( _CritCountItem( cr, PID_BROC_FLOWER ) < 2 )
+		{
+			cr.Say( SAY_NETMSG, "|0xFFFF00 Измельченные цветы Брока отбивают аромат крысятины." );
+		}
+    }
+}
+
+#endif // COOKING

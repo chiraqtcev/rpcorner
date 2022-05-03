@@ -1,0 +1,66 @@
+#ifndef __MAPSETS__
+#define __MAPSETS__
+
+// ************************************************************************/
+// *                        Наборы карт:                                  */
+// ************************************************************************/
+
+#define MAP_GROUND			( 0 )
+#define MAP_DOWN			( 1 )
+#define MAP_UP				( 2 )
+#define MAP_UP2				( 3 )
+#define MAP_DOWN2			( 4 )
+#define MAP_DOWN3			( 5 )
+uint mPID( uint loc_pid, uint level ) {
+	return loc_pid * 10 + level;
+}
+
+#define	MAP_TRIBES			( 1 )
+#define	MAP_LOOT_ZONES		( 2 )
+#define	MAP_PLANTS			( 3 )
+#define	TECH_MAP			( 4 )
+#define	ALL_DN				( 5 )
+#define	ALL_UP				( 6 )
+#define	ALL_UP2				( 7 )
+#define	ALL_DN2				( 8 )
+#define	ALL_DN3				( 9 )
+#define	ALL_CAVES			( 10 )
+
+uint[] mPIDs( uint type ) 
+{
+	switch( type ) 
+	{
+		case( MAP_TRIBES ):			{ uint[] result; return result; }
+		case( MAP_LOOT_ZONES ):    	{ return merge( mPIDs( MAP_PLANTS ), mPIDs( ALL_CAVES ) ); }
+		case( MAP_PLANTS ):			{ uint[] result = { 3600, 3610, 3620, 3630, 3640, 3650, 3660, 3670, 3680, 3690 }; return result; }
+		case( TECH_MAP ):			{ uint[] result = { 2, 3, 4, 92 }; return result; }
+		case( ALL_CAVES ): 			{ uint[] result = { 3641 }; return result; }
+		case( ALL_DN ):  			{ return SetMapLevel( MAP_DOWN ); }
+		case( ALL_UP ):  			{ return SetMapLevel( MAP_UP ); }
+		case( ALL_UP2 ): 			{ return SetMapLevel( MAP_UP2 ); }
+		case( ALL_DN2 ): 			{ return SetMapLevel( MAP_DOWN2 ); }
+		case( ALL_DN3 ): 			{ return SetMapLevel( MAP_DOWN3 ); }
+	}
+	
+	uint[] empty;
+	return empty;
+}
+
+uint[] SetMapLevel( uint level ) // Памятка: [10 - 42] - диапазон локаций 
+{
+	uint[] result;
+	for( uint i = 1; i <= 600; i++ )
+	{
+		result.insertLast( mPID(i, level) );
+	}	
+	return result;
+}
+
+bool mapIs( uint value, uint[] pids ) {
+	return contains( pids, value );
+}
+
+bool mapIs( uint value, uint map_type ) {
+	return contains( mPIDs(map_type), value );
+}
+#endif //__MAPSETS__

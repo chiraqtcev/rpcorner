@@ -1,0 +1,638 @@
+#include "_utils.fos"
+#include "_npc_pids.fos"
+#include "npc_planes_h.fos"
+
+#define DISTANCE_GROUP_RADIUS    ( 15 ) // расстояние на котором группа видит друг друга (и помогает атаковать противника)
+#define DISTANCE_AGGRO		  # (cr)	( ( cr.StatBase[ST_STRENGTH] + 2 ) * 2 )
+#define DISTANCE_UNAGGRO	  # (cr)	( ( cr.StatBase[ST_STRENGTH] + 2 ) * 4 )
+
+import bool setCorpsePicMap( Item& item, uint dir ) from "gameplay";
+
+// переименования VarX (для удобства и абстрактности)
+#define VarWandering             StatBase[ ST_VAR5 ]
+
+// текстовые сообщения
+#define MSG_GROUP_ATTACK         ( 16001 )
+
+void GM_MobInit( Critter& npc ) // Export
+{
+    npc.SetScript( "_MobInit" );
+}
+
+void _MobInit( Critter& npc, bool firstTime )
+{
+	if( npc.IsPlayer() ) return;
+	
+    npc.ModeBase[ MODE_NO_HOME ] = 1;
+
+	npc.StatBase[ ST_REPLICATION_TIME ] = -1;
+
+	npc.SetEvent( CRITTER_EVENT_SHOW_CRITTER,   "_CritterBecameVisible" );
+	npc.SetEvent( CRITTER_EVENT_HIDE_CRITTER, 	"_CritterOutOfSight" );
+    npc.SetEvent( CRITTER_EVENT_IDLE,        	"_Idle" );
+    npc.SetEvent( CRITTER_EVENT_MESSAGE,     	"_OnMessage" );
+    npc.SetEvent( CRITTER_EVENT_PLANE_BEGIN, 	"_PlaneBegin" );
+	npc.SetEvent( CRITTER_EVENT_PLANE_RUN, 	 	"_PlaneRun" );
+	npc.SetEvent( CRITTER_EVENT_PLANE_END, 	 	"_PlaneEnd" );
+    npc.SetEvent( CRITTER_EVENT_DEAD,        	"_MyDeath" );
+    npc.SetEvent( CRITTER_EVENT_RESPAWN,    	 null );
+    npc.SetEvent( CRITTER_EVENT_ATTACKED,    	"_Attacked" );
+	
+    npc.ShowCritterDist1 = DISTANCE_AGGRO( npc );
+    npc.SetEvent( CRITTER_EVENT_SHOW_CRITTER_1, "_CritterInAggroRange" );
+
+	npc.ShowCritterDist2 = DISTANCE_UNAGGRO( npc );
+	npc.SetEvent( CRITTER_EVENT_HIDE_CRITTER_2, "_CritterOutOfAggroRange" );
+	
+	npc.SetEvent( CRITTER_EVENT_USE_SKILL,		"_MySkill" );
+
+	setFactionBehavior( npc );
+}
+
+void setFactionBehavior( Critter& npc )
+{
+	string faction_name = "";
+	switch( npc.StatBase[ST_BODY_TYPE] )
+	{
+		case(BT_GHOUL):		
+		case(BT_ALIEN):		
+		case(BT_FLOATER):		
+		case(BT_CENTAUR):		
+		case(BT_SWAMP_LURKER):
+			faction_name = "monsters";
+			npc.ParamBase[CR_IS_AGGRESSIVE] = 1;
+			break;
+
+		case(BT_RAT):
+		case(BT_MANTI):
+		case(BT_GIANT_ANT):
+		case(BT_GECKO):
+		case(BT_BRAHMIN):
+		case(BT_PLANT):
+		case(BT_DOG):
+			faction_name = "animals";
+			break;
+
+		case(BT_GIANT_BEETLE):
+		case(BT_GIANT_WASP):
+		case(BT_RADSCORPION):
+		case(BT_DEADCLAW):
+		case(BT_YAO):
+			faction_name = "carnivores";
+			npc.ParamBase[CR_IS_AGGRESSIVE] = 1;
+			break;
+	}
+	
+	if( faction_name.length() > 0 )
+		npc.ParamBase[ ST_FACTION ] = GetStrHash( faction_name );
+} 
+
+//import string item_generic_description( Item@ item ) from "test";
+//import string _informAboutSkill( Critter& cr, int skill, Critter@ targetCr, Item@ targetItem, Scenery@ targetScen ) from "main";
+bool _MySkill( Critter& cr, int skill, Critter@ onCritter, Item@ onItem, Scenery@ onScenery )
+{
+	cr.SetHomePos( cr.HexX, cr.HexY, cr.Dir );
+	cr.Animate( 0, ANIM2_PICKUP, null, true, false );
+	cr.Wait( 1000 );
+	
+	cr.Say( SAY_EMOTE, "Поднимает" );
+	return false;
+}
+
+void _CritterBecameVisible( Critter& self, Critter& target )
+{
+	uint dist = GetDistantion( self.HexX, self.HexY, target.HexX, target.HexY );
+	if( int( dist ) > DISTANCE_AGGRO( self ) ) {
+		return;
+	}
+    _ShowPlayer( self, target );
+}
+void _CritterInAggroRange( Critter& self, Critter& target )
+{
+	if( not self.IsSee(target) ) {
+		return;
+	}
+    _ShowPlayer( self, target );
+}
+
+void _CritterOutOfSight( Critter& self, Critter& target )
+{
+	//AttackOrFind( self, target );
+}
+
+void _CritterOutOfAggroRange( Critter& self, Critter& target )
+{
+	self.EraseEnemyFromStack( target.Id );
+	EraseAttackPlane( self, target );
+}
+
+// CRITTER_EVENT_DEAD
+void _MyDeath( Critter& npc, Critter@ killer ) {
+    npc.ClearEnemyStack();
+	npc.AddTimeEvent( "mob@cte_rotten", 0, CTE_ROTTEN, 0 );
+}
+
+uint cte_rotten (Critter& cr, int identifier, uint& rate ) {
+	if( cr.StatBase[ST_BODY_TYPE] == BT_ROBOT || !cr.IsDead() )
+		return 0;
+	
+	rate++;
+	
+	bool isPlant = cr.StatBase[ST_BODY_TYPE] == BT_PLANT;
+
+	cr.StatBase[ ST_CURRENT_HP ] -= 1 + ( cr.ParamBase[ CR_DEATH_STAGE ] / 25 );
+	
+	if( cr.Stat[ ST_CURRENT_HP ] < __DeadHitPoints - cr.Stat[ ST_MAX_LIFE ]  ) {
+		if( !isPlant ) {
+			Map@ map = cr.GetMap();
+			Item@ bones;
+			Item@ skeleton;
+			Item@[] items;
+			
+			if( valid(map) ) 
+			{
+				if( _CritCanDropItemsOnDead( cr ) )
+				{						
+					cr.GetItems( -1, items );
+					// Disable drop of hidden items
+					for( uint i = 0, j = items.length(); i < j; i++ )
+					{
+						if( FLAG( items[ i ].Flags, ITEM_HIDDEN ) )
+						{
+							@items[ i ] = null;
+						}
+					}
+					
+				}
+				
+				if( cr.Anim2Dead < ANIM2_DEAD_PULSE )
+				{
+					if( cr.StatBase[ST_BODY_TYPE] < BT_BRAHMIN )
+						@skeleton = map.AddItem( cr.HexX, cr.HexY, PID_VAULT_DWELLER_BONES, 1 );
+				}
+				
+				if( valid( skeleton ) )
+				{
+					if( cr.ParamBase[ CR_DEATH_STAGE ] != -1 )
+						skeleton.Val0 = cr.Id;
+
+					skeleton.Val1 = cr.Stat[ ST_BODY_TYPE ];
+					skeleton.Val2 = cr.Stat[ ST_AGE ];
+					skeleton.Val3 = cr.Stat[ ST_GENDER ];
+
+					skeleton.Val4 = cr.Stat[ ST_CHARISMA ];
+					skeleton.Val5 = cr.Stat[ ST_STRENGTH ];
+					skeleton.Val6 = cr.Stat[ ST_ENDURANCE ];
+					skeleton.Val7 = cr.Stat[ ST_AGILITY ];
+
+				//TODO: Переносить лексемы криттера на останки. Проблема в том, что на стороне сервера невозможно взять лексему криттера.
+					
+					MoveItems( items, skeleton, 0 );
+					uint[] values = { map.Id, skeleton.Id };
+					CreateTimeEvent( __FullSecond + REAL_MINUTE( 180 ), "gameplay@e_deleteBody", values, true );
+					
+					setCorpsePicMap( skeleton, cr.Dir );
+				}
+				else
+				{
+					@bones = map.AddItem( cr.HexX, cr.HexY, Random( PID_BLOOD_BONES_1, PID_BLOOD_BONES_3 ), 1 );
+					MoveItems( items, map, cr.HexX, cr.HexY );
+				}
+			
+				if( valid(bones) ) 
+				{
+					uint[] data = { bones.Id, rate };
+					CreateTimeEvent( __FullSecond + REAL_SECOND( 60 ), "e_rotten_bones", data, true );
+				}
+			}
+		}
+		DeleteNpc( cr );
+		return 0;
+		
+	} if( cr.Stat[ ST_CURRENT_HP ] < __DeadHitPoints && !isPlant ) {
+		Map@ map = cr.GetMap();
+		if( valid(map) ) {
+			map.SetText( cr.HexX, cr.HexY, COLOR_SAND, "|0xFF828a96 :запах " + ( rate < 10 ? "крови" : "разложения" ) + ":" );
+		}
+	}
+	return REAL_SECOND( floor( sqrt( cr.Stat[ ST_MAX_LIFE ] ) ) ); //Чем крупней, тем дольше гниёт.
+}
+
+uint e_rotten_bones( uint[] @ values )
+{
+	if( !valid(values) || values.length() != 2 || values[0] == 0 ) { return 0; }
+	
+	Item@ bones = GetItem( values[0] );
+	if( !valid(bones) ) { return 0; }
+	
+	values[1]++;
+	
+	bones.Val0 += Random( 1, 3 );
+
+	if( bones.Val0 > 10 ) {
+		DeleteItem( bones );
+	}
+	
+	Map@ map = GetMap( bones.MapId );
+	if( valid(map) && bones.Accessory == ACCESSORY_HEX ) {
+		map.SetText( bones.HexX, bones.HexY, COLOR_SAND, "|0xFF828a96 :запах " + ( values[1] < 10 ? "крови" : "разложения" ) + ":" );
+	}
+	return REAL_SECOND( Random( 15, 45 ) );
+}
+
+// CRITTER_EVENT_RESPAWN
+void _Respawn( Critter& npc )
+{
+    DeleteNpc( npc );
+}
+
+// CRITTER_EVENT_SHOW_CRITTER
+// Появился новый криттер в поле зрения.
+void _ShowPlayer( Critter& npc, Critter& player )
+{
+    if( !player.IsPlayer() )
+        return;
+
+	//if( RunAndHide( npc ) ) return;
+	
+    if( npc.StatBase[ ST_BASE_CRTYPE ] == player.StatBase[ ST_BASE_CRTYPE ] ) {
+        npc.EraseEnemyFromStack( player.Id );
+        EraseAttackPlane( npc, player );
+		return;
+	}
+	
+	if( player.Param[ CR_SLEEPING_STATE ] != 0 && GetDistantion( player.HexX, player.HexY, npc.HexX, npc.HexY ) > 4 )
+	{
+        npc.EraseEnemyFromStack( player.Id );
+        EraseAttackPlane( npc, player );
+		return;
+	}
+	
+	if( player.IsPlayer() && ( player.IsKnockout() || player.Stat[ST_CURRENT_HP] < 0 ) )
+	{
+        npc.EraseEnemyFromStack( player.Id );
+        EraseAttackPlane( npc, player );
+		return;
+	}
+
+	if( int( player.Id ) == npc.StatBase [ST_FOLLOW_CRIT] || isGM( player ) )
+	{
+        npc.EraseEnemyFromStack( player.Id );
+        EraseAttackPlane( npc, player );
+		return;
+	}
+	
+	if( npc.StatBase[ ST_BODY_TYPE ] == BT_DOG )  //Псины.
+	{
+		uint dist = GetDistantion( player.HexX, player.HexY, npc.HexX, npc.HexY );
+		if( int( dist ) > 4 ) 
+		{
+			string[] emote = { "принюхивается", "рычит", "скалится", "лает" };
+			int n = Random( 0, 2 ) + Random( 0, 1 );
+			npc.Say( SAY_EMOTE_ON_HEAD, emote[n] );
+			npc.SetDir( GetDirection( npc.HexX, npc.HexY, player.HexX, player.HexY ) );
+			return;
+		}
+	}
+	npc.SendMessage( MSG_GROUP_ATTACK, player.Id, MESSAGE_TO_WHO_SEES_ME );
+	AddAttackPlane( npc, AI_PLANE_ATTACK_PRIORITY + 1, player );
+}
+
+// CRITTER_EVENT_HIDE_CRITTER
+// Пропал криттер с поля зрения.
+void _HidePlayer( Critter& npc, Critter& player )
+{
+    if( not player.IsPlayer() )
+        return;
+	
+	uint[] weak_mobs = { BT_MANTI, BT_GIANT_ANT, BT_RAT, BT_RADSCORPION };
+	if( weak_mobs.find( npc.StatBase[ ST_BODY_TYPE ] ) != -1 && ( npc.Stat[ ST_MAX_LIFE ] < 100 || ( npc.Stat[ ST_CURRENT_HP ] < npc.Stat[ ST_MAX_LIFE ] * 0.33 ) ) )
+	{
+		uint   mapId = 0;
+		uint16 homeX = 0;
+		uint16 homeY = 0;
+		uint8  dir = 0;
+		npc.GetHomePos( mapId, homeX, homeY, dir );
+		
+		if( npc.GetMapId() != mapId )
+		{
+			homeX = npc.HexX;
+			homeY = npc.HexY;
+		}
+		
+		uint dist = GetDistantion( homeX, homeY, npc.HexX, npc.HexY );
+		if( dist > 20 )
+		{
+			npc.EraseEnemyFromStack( player.Id );
+			EraseAttackPlane( npc, player );
+		}
+	}
+}
+
+// CRITTER_EVENT_MESSAGE
+// Пришло сообщение отправленное с помощью Critter::SendMessage.
+void _OnMessage( Critter& npc, Critter& fromCrit, int message, int value )
+{
+    if( npc.IsPlayer() )
+        return;
+    if( not npc.IsLife() )
+        return;
+    if( npc.Stat[ ST_TEAM_ID ] == 0 )
+        return;                               // 0 группа не групируеться
+    if( npc.Stat[ ST_TEAM_ID ] != fromCrit.Stat[ ST_TEAM_ID ] )
+	{
+		if( npc.Param[ ST_NPC_ROLE ] == 100 ) {
+			npc.Say( SAY_EMOTE_ON_HEAD, "Игнорит" );
+		}       
+	   return;                               // ктото не из нашей группы
+	}
+	
+	if( npc.Param[ ST_NPC_ROLE ] == 100 ) {
+		npc.Say( SAY_EMOTE, "Саппортит #" + fromCrit.Id );
+	}
+
+    if( fromCrit.IsPlayer() )
+    {
+        AddAttackPlane( npc, 10, fromCrit );
+    }
+
+    if( message == MSG_GROUP_ATTACK ) {
+        Critter@ target = ::GetCritter( value );
+        
+		if( !valid( target ) ) { return; }
+		
+		Map@ mapNpc = npc.GetMap();
+		Map@ mapTarget = target.GetMap();
+		
+		if( mapNpc.Id != mapTarget.Id ) { return; }
+		
+		uint dist = ::GetCrittersDistantion( npc, target ) ;
+		uint max_dist = DISTANCE_UNAGGRO(npc);
+        
+		if( dist >= max_dist ) { return; }
+		
+		AttackOrFind(npc, target);
+	}
+}
+
+// CRITTER_EVENT_IDLE
+// Простой, вызывается каждые __CritterIdleTick секунд, для изменения времени вызывайте Critter::Wait в функции.
+void _Idle( Critter& npc )
+{
+	if( npc.IsPlayer() ) {//ХЗ как, но некоторые игровые чары ловили этот ивент на себя, в итоге движок ругался.
+		npc.SetEvent( CRITTER_EVENT_IDLE, null );
+		return;
+	}
+	
+	if( npc.StatBase [ST_FOLLOW_CRIT] != 0 ) {
+		npc.DropPlanes();
+		return;
+	}
+	
+	if( npc.IsDead() || npc.IsKnockout() ) {
+		return;
+	}
+
+	if( npc.IsBusy() || !npc.IsNoPlanes() ) {
+		return;
+	}
+
+	// if( RunAndHide( npc ) )
+		// return;
+	
+	if( npc.StatBase[ ST_BODY_TYPE ] == BT_DOG ) { //Псины.
+		Map@ map = npc.GetMap();
+		if( !valid(map) ) { return; }
+		
+		Critter@[] players;
+		uint count = map.GetCrittersHex( npc.HexX, npc.HexY, 15, FIND_ONLY_PLAYERS | FIND_LIFE, players );
+		Critter@ closest = null;
+		uint min = 999;
+		
+		for( uint i = 0; i < count; i++ ) {
+			uint dist = GetDistantion( players[i].HexX, players[i].HexY, npc.HexX, npc.HexY );
+			if( dist > 8 ) {
+				EraseAttackPlane( npc, players[i] );
+				continue;
+			}
+			
+			if( dist < 4 ) {
+				if( dist < min ) {
+					min = dist;
+					@closest = @players[i];
+				}
+			} else {
+				_ShowPlayer( npc, players[i] );
+			}
+		}
+		
+		if( valid( closest ) ) {
+			npc.DropPlanes();
+			AddAttackPlane( npc, 0, closest );
+			return;
+		} else {
+			if( Random( 1, 100 ) == 100 ) {
+				npc.Say( SAY_EMOTE_ON_HEAD, "воет" );
+			}
+		}
+	}
+	uint   mapId = 0;
+	uint16 homeX = 0;
+	uint16 homeY = 0;
+	uint8  dir = 0;
+	npc.GetHomePos( mapId, homeX, homeY, dir );
+	
+	if( npc.GetMapId() != mapId ) return; //Если не на домашней карте - не рыпаемся.
+	
+	if( npc.ModeBase[ MODE_NO_HOME ] == 1 )
+	{
+		if( npc.VarWandering == 0 ) {
+			uint dist = GetDistantion( homeX, homeY, npc.HexX, npc.HexY );
+
+			if( int( dist ) > DISTANCE_AGGRO( npc ) ) //Топаем к гнезду, если загулялись.
+			{
+				npc.DropPlanes();
+				AddWalkPlane( npc, 0, homeX, homeY, dir, false, 0 );
+			}
+			// else if( RunAndHide( npc ) )
+				// return;
+				
+				npc.MoveRandom(); //Шароёбимся по родной лощине.
+
+			npc.VarWandering = 1;
+		} else {
+			npc.VarWandering = 0;
+			npc.Wait( Random( 1000, 3000 ) );
+		}
+	}
+}
+
+//import bool RunAndHide( Critter& npc ) from "mob";
+bool RunAndHide( Critter& npc )
+{
+	if( npc.Stat[ ST_CURRENT_HP ] > 50 )
+	{
+		//npc.Say( SAY_NORM, npc.Stat[ ST_CURRENT_HP ] + " > " + npc.Stat[ ST_MAX_LIFE ] + " * 0.25 (" + ( npc.Stat[ ST_MAX_LIFE ] * 0.25 ) );
+		return false;
+	}
+	
+	npc.ParamBase[CR_IS_AGGRESSIVE] = 0;
+	npc.DropPlanes();
+	npc.ClearEnemyStack();
+	
+	Map@ map = npc.GetMap();
+	if( !valid( map ) ) return false;
+	
+	int fear_radius = 20;
+	Critter@[] bodies;
+	uint count = map.GetCrittersHex( npc.HexX, npc.HexY, fear_radius, FIND_LIFE, bodies );
+	
+	uint16 hexX = npc.HexX, hexY = npc.HexY;
+
+	if( count > 0 )
+	{
+		for( uint i = 0; i < count; i++ )
+		{
+			Critter@ danger = bodies[i];
+			if( !valid( danger ) )
+				continue;
+			
+			if( ( npc.Stat[ST_TEAM_ID] != 0 && npc.Stat[ST_TEAM_ID] == danger.Stat[ST_TEAM_ID] ) 
+			 || ( npc.Stat[ST_FACTION] != 0 && npc.Stat[ST_FACTION] == danger.Stat[ST_FACTION] ) 
+			 || npc.Id == danger.Id )
+				continue;
+
+			uint distantion = ::GetCrittersDistantion( npc, danger );
+			uint dir = GetDirection( danger.HexX, danger.HexY, npc.HexX, npc.HexY );
+
+			bool can_see = npc.IsSee(danger);
+			if( !can_see ) 
+				distantion /= 2;
+			
+			map.MoveHexByDir( hexX, hexY, dir, 4 + fear_radius - distantion );
+		}
+		
+		//Стараемся не торчать на одном месте (блуждать):
+		uint   mapId = 0;
+		uint16 homeX = 0;
+		uint16 homeY = 0;
+		uint8  _dir = 0;
+		npc.GetHomePos( mapId, homeX, homeY, _dir );
+
+		int distantion = GetDistantion( homeX, homeY, npc.HexX, npc.HexY );
+		uint dir = GetDirection( homeX, homeY, npc.HexX, npc.HexY );
+		map.MoveHexByDir( hexX, hexY, dir, CLAMP( distantion - 5, 1, 5 ) );
+
+
+		//Если зашел в тупик - ходить туда-сюда в нем:
+		map.MoveHexByDir( hexX, hexY, Random(0,5), Random( 1, 2 ) );
+
+		uint pathLength = map.GetPathLength( npc, hexX, hexY, 0 );
+		if( pathLength != 0 )
+		{
+			npc.SetHomePos( npc.HexX, npc.HexY, npc.Dir );
+			AddWalkPlane( npc, AI_PLANE_ATTACK_PRIORITY + 1, hexX, hexY, npc.Dir, true, pathLength > 5 ? pathLength - 5 : 0 );
+
+			//npc.Say( SAY_EMOTE_ON_HEAD, "Ищет укрытие" );
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+// CRITTER_EVENT_PLANE_BEGIN
+// Когда движок создает план для Нпц. Вызывается и для потомков основного плана в том числе.
+// int reason указывает причину начала плана (см. Plane begin/wait/end reasons в _defines.fos).
+int _PlaneBegin( Critter& npc, NpcPlane& plane, int reason, Critter@ someCr, Item@ someItem )
+{
+    if( plane.Type == AI_PLANE_ATTACK )
+    {
+        Critter@ target = ::GetCritter( plane.Attack_TargId );
+        if( !valid( target ) ) {
+			return PLANE_RUN_GLOBAL;
+		}
+
+        if( target.Stat[ ST_TEAM_ID ] == npc.Stat[ ST_TEAM_ID ] ) {
+			return PLANE_DISCARD;                                                   // не атакуем всех из своей команды
+		}
+
+        if( reason == REASON_FOUND_IN_ENEMY_STACK || reason == REASON_FROM_SCRIPT )
+        {
+            uint distantion = ::GetCrittersDistantion( npc, target );
+			bool can_see = npc.IsSee(target);
+            if( int(distantion) <= DISTANCE_UNAGGRO(npc) )
+            {
+				if( distantion > 1 ) {
+					// анализ на дальность
+					uint pathLength = npc.GetMap().GetPathLength( npc, target.HexX, target.HexY, 1 );
+					// если пройти нельзя, то не идем
+					if( pathLength == 0 ) {
+						return PLANE_DISCARD;
+					}
+					// если слишком далеко, то не идем
+					if( pathLength > distantion * 3 ) {
+						return PLANE_DISCARD;
+					}
+				}
+                return PLANE_KEEP;
+            }
+            else
+            {
+                return PLANE_DISCARD;
+            }
+        }
+    } else if ( reason == REASON_FROM_SCRIPT ) {
+		return PLANE_KEEP;
+	}
+    return PLANE_RUN_GLOBAL;
+}
+
+int _PlaneRun( Critter& npc, NpcPlane& plane, int reason, uint& r0, uint& r1, uint& r2 ) 
+{
+	return PLANE_RUN_GLOBAL;
+}
+
+int _PlaneEnd( Critter& npc, NpcPlane& plane, int reason, Critter@ someCr, Item@ someItem ) 
+{
+	if( reason == REASON_GAG_CRITTER && someCr.IsNpc() ) {
+        if( someCr.ParamBase[ST_TEAM_ID] != npc.ParamBase[ST_TEAM_ID] ) {
+            return PLANE_RUN_GLOBAL;
+		}
+		
+        if( TryLetPassage( someCr, npc ) ) {
+            npc.Wait( AI_DELAY );
+            return PLANE_KEEP;
+        }
+    }
+	return PLANE_RUN_GLOBAL;
+}
+
+// CRITTER_EVENT_ATTACKED
+bool _Attacked( Critter& npc, Critter& attacker )
+{
+	// if( RunAndHide( npc ) ) {
+		// //npc.Say( SAY_EMOTE, "Тяжело ранен" );
+		// return true;
+	// }
+
+	if( int( attacker.Id ) == npc.StatBase [ST_FOLLOW_CRIT] )
+	{
+        npc.EraseEnemyFromStack( attacker.Id );
+        EraseAttackPlane( npc, attacker );
+		return true;
+	}
+	npc.SendMessage( MSG_GROUP_ATTACK, attacker.Id, MESSAGE_TO_WHO_SEES_ME );
+	AttackOrFind(npc, attacker);
+    return true;     // Handle attacked processing
+}
+
+void AttackOrFind( Critter& self, Critter& target ) {
+	if( !valid( target ) ) { return; }
+	
+	if( self.IsSee( target ) ) {
+		AddAttackPlane( self, 0, target );
+	} else {
+		AddWalkPlane( self, AI_PLANE_ATTACK_PRIORITY - 1, target.HexX, target.HexY, Random( 0, 5 ), true, 1 );
+	}
+}

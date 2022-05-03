@@ -1,0 +1,179 @@
+/* Наконец-то у меня появилось свободное время, и я решил потратить его на 
+что-то важное. На первый взгляд может показаться, что модуль пуст, если рассуждать
+здраво, то да, так оно и есть. Знающий человек сказал, что скоро всё наладиться, главное
+перестать бухтеть и дестабилизировать ситуацию!
+
+С любовью, chiraqtcev  */
+
+#ifndef C_ITERATIONS
+#define C_ITERATIONS
+
+#include "_colors.fos"
+#include "_utils.fos"
+#include "client_iterations_h.fos"
+#include "_animation.fos"
+
+
+void StartPlayerMenu( Critter& cr, int p1, int p2, int p3 ) // exported
+{
+    Map@ map = cr.GetMap();
+    if( map is null )
+        return;
+
+    iMenuHandler@ handler = PlayerMenu( p1 );
+    iDialogBox@ menu = OpenMenu( cr, "Меню", handler );
+}
+
+class PlayerMenu: CenteredMenuHandler {
+
+    int deep;
+
+    PlayerMenu( int p1 ) 
+    {
+        deep = p1;
+    }
+
+    bool MenuUpdate( Critter& cr, iDialogBox& menu ) 
+    {
+        switch( deep )
+        {
+            case DEEP_MAIN: // Undone yet, все стопорится на нежелании ебаться с кодом Мио (настроения нет)
+            {
+                if( menu.Button( "Анимации" ) )
+                {   
+                    deep = DEEP_ANIMATIONS;  
+                    return true;            
+                } 
+                break;
+            }
+
+            // animations
+            case DEEP_ANIMATIONS: 
+            {
+                for( uint i = 0; i != CustomAnimations.length(); i++ )
+                {  
+                    if( i == 0 )
+                    {
+                        if( menu.Button( "Сбросить" ) )
+                        {    
+                            StopCustomAnimation( cr );
+                            return false;            
+                        } 
+                        continue;
+                    }
+
+                    if( menu.Button( CustomAnimations[i][0] ) )
+                    {   
+                        int anim = 0;
+                        StrToInt( CustomAnimations[i][1], anim );
+                        PlayCustomAnimation( cr, anim );  
+                        return true;            
+                    } 
+                }
+                break;
+            }
+
+            default:
+                break;
+        }     
+       
+        return true;
+    }
+    
+    // UI менюхи
+    string@ Description( Critter& cr ) 
+    {
+        string info;
+        switch( deep )
+        {
+            case DEEP_ANIMATIONS:
+            {
+                info += "|0xFFFF00 (?) |0x3CF800 Используйте |0xFFFF00 ~stopanim, |0x3CF800 чтобы прервать анимацию.";
+                break;
+            }
+
+            default:
+                info += "> [ |0xFFFF00 Игровое меню |0x3CF800 ]\n";
+                info += "ID|0x3CF800  персонажа: |0xFFFF00 " + cr.Id + "\n";
+                info += "|0x3CF800 Громкость голоса: |0xFFFF00 " + cr.StatBase[ ST_TALK_DISTANCE ] + "\n";
+                info += "\n|0xFF0000 (!)|0x3CF800  Данное меню находится в разработке, используйте |0xFFFF00 ALT + M";
+                break;
+        }
+        return info;
+    }
+    
+    string@ ButtonCancel()
+    {
+        return ButtonDecorator( "Закрыть меню", null );
+    }
+    
+    bool ShouldRedraw( Critter& cr )
+    {
+        return false;
+    }
+}
+
+void PlayCustomAnimation( Critter& cr, int anim, int p1 = 0, int p2 = 0 ) // undone
+{
+    if( valid( GetCritter( p1 ) ) ) 
+    {
+        Critter@ player = GetCritter( p1 );
+        player.SetAnims( COND_LIFE, 0, anim );
+    }
+    else
+        cr.RunClientScript( "client_main@CheckAnimation", anim, 0, 0, null, null );
+    return;
+}
+
+void unsafe_PlayCustomAnimation( Critter& player, int p0, int p1, int p2, string@, int[]@ ) 
+{
+    if( player.IsKnockout() )
+    {
+        SEM( player, "Вы не можете использовать анимации в данный момент.");
+        return;
+    }
+
+    player.SetAnims( COND_LIFE, 0, p0 );
+    player.StatBase[ ST_CUSTOM_ANIMATION ] = p0;
+
+    if( p0 != ANIM2_SWING_1H )
+    {
+        Item@[] items; 
+        uint itemscount = player.GetItems( SLOT_HAND1, items );
+        if( itemscount > 0 )
+        {
+            if( items[ 0 ].GetProtoId() != PID_HANDCUFFS && items[ 0 ].GetProtoId() != PID_ROPE_USED ) {
+                player.MoveItem( items[ 0 ].Id, itemscount, SLOT_INV );
+            }
+        }
+    }
+    //player.Animate( 0, p0, null, true, true ); 
+    return;
+}
+
+void unsafe_StopCustomAnimation( Critter& player, int p0, int p1, int p2, string@, int[]@ ) 
+{
+    StopCustomAnimation( player );
+    return;
+}
+
+void unsafe_CallPlayerMenu( Critter& player, int p0, int p1, int p2, string@, int[]@ ) 
+{
+    StartPlayerMenu( player, p0, 0, 0 );
+    return;
+}
+
+void StopCustomAnimation( Critter& cr ) // undone
+{
+    if( cr.IsKnockout() )
+    {
+        SEM( cr, "Вы не можете использовать анимации в данный момент.");
+        return;
+    }
+
+    cr.StatBase[ ST_CUSTOM_ANIMATION ] = 0;
+    cr.SetAnims( COND_LIFE, 0, ANIM2_IDLE );
+    return;
+}
+
+#endif

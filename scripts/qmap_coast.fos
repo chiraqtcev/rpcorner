@@ -1,0 +1,144 @@
+#include "_macros.fos"
+#include "qmap_defines.fos"
+
+// Export:
+// import uint8 checkCoast(Map& map, uint16 tx, uint16 ty) from "qmap_coast";
+
+bool hashes_inited = false;
+
+uint[][] hashes_coast( HASHES_COAST_MAX );
+
+void init_hashes()
+{
+    string dir = "art/tiles/",
+           seas0 = "seas0",
+           shore0 = "shore0",
+           shor = "shor",
+		   cav = "cav60",
+		   png = ".png",
+           frm = ".frm";
+
+    for( uint type = 0; type < HASHES_COAST_MAX; type++ ) {
+		
+        uint[] @ data = hashes_coast[ type ];
+        data.resize( 0 );
+        uint i = 0;
+
+        switch( type )
+        {
+			case( HASHES_SEA1 ):
+				for( i = 1; i <= 9; i++ ) {
+					data.insertLast( GetStrHash( dir + seas0 + "0" + i + frm ) );
+				}
+				break;
+			case( HASHES_SEA2 ):
+				for( i = 10; i <= 18; i++ ) {
+					data.insertLast( GetStrHash( dir + seas0 + i + frm ) );
+				}
+				break;
+			case( HASHES_COAST_SHOR1 ):
+				for( i = 1; i <= 9; i++ ) {
+					data.insertLast( GetStrHash( dir + shor +"0" + i + frm ) );
+				}
+				break;
+			
+			case( HASHES_COAST_SHOR2 ):
+				for( i = 10; i <= 11; i++ ) {
+					data.insertLast( GetStrHash( dir + shor + i + frm ) );
+				}
+				break;
+			
+			case( HASHES_COAST_SHOR3 ):
+				for( i = 15; i <= 22; i++ ) {
+					data.insertLast( GetStrHash( dir + shor + i + frm ) );
+				}
+				break;
+			
+			case( HASHES_COAST_SHORE ):
+				for( i = 1; i <= 7; i++ ) {
+					data.insertLast( GetStrHash( dir + shore0 + i + frm ) );
+				}
+				break;
+			
+			case( HASHES_COAST_CAVESLIME ):
+				data.insertLast( GetStrHash( dir + "CAVESLIME00.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME00a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME01.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME01a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME02.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME02a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME03.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME03a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME04.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME04a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME07.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME07a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME07b.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME08.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME08a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME11.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME12.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME12a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME13.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME14.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME14a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME14b.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME15.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME15a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME16a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME17.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME18.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME19a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME20.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME21.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME22.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME23.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME24a.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME25.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME26.png" ) );
+				data.insertLast( GetStrHash( dir + "CAVESLIME27a.png" ) );
+				break;
+			
+			case( HASHES_COAST_BLUECAVE ):
+				for( i = 32; i <= 74; i++ ) {
+					data.insertLast( GetStrHash( dir + cav + i + png ) );
+				}
+				break;
+		}
+	}
+    hashes_inited = true;
+}
+
+// проверка на соответствие одному из хэшей, загруженных в массив тайлов побережья
+uint8 checkCoast( Map& map, uint16 tx, uint16 ty )
+{
+    if( !hashes_inited )
+        init_hashes();
+
+    #ifdef TNF_DLL_CHECKCOAST
+    return map.CheckCoast( tx, ty );
+    #endif
+
+    uint hash = map.GetTile( tx, ty );
+    if( hash == 0 )
+        return 0;
+
+    uint8 answer = 0;
+
+    for( uint i = 0; i < 6; i++ )
+    {
+        uint[] @ data = hashes_coast[ i ];
+        for( uint k = 0, len = data.length(); k < len; k++ )
+        {
+            if( data[ k ] != hash )
+                continue;
+            answer |= ( ( 0x01 ) << i );
+            if( i > 3 && len < 5 )
+            {
+                answer |= ( ( 0x01 ) << ( k | 0x01 ) ) | ( ( 0x01 ) << ( ( k + 1 ) & 0x02 ) );
+            }
+            return answer;
+        }
+    }
+    return 0;
+}
