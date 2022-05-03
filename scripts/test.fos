@@ -2153,6 +2153,19 @@ void FindItem( Critter& player, int action, int id, int )
 		default: player.Say( SAY_NETMSG, "Из этого ничего не вышло." );
 	}
 }
+void PiratTeleToTanker( Critter& player, Critter@ target )
+{
+    Map@ map = GetMapByPid( MAP_TANKER_ONBOARD, 0 );
+    if(!valid(map)) return;
+    TeleToTarget( player, map, 235, 242 );
+}
+
+void PiratTeleFromTanker( Critter& player, Critter@ target )
+{
+    Map@ map = GetMapByPid( MAP_PIERCE_SF, 0 );
+    if(!valid(map)) return;
+    TeleToTarget( player, map, 166, 147 );
+}
 
 void TeleToTarget( Critter& player, Critter@ target )
 {

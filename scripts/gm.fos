@@ -2363,19 +2363,19 @@ void answer_GM_PANNEL_CRITTER_PLAYER_GIFT( Critter& player, uint answerI, string
         player.Say( SAY_DIALOGBOX_BUTTON( 1 ), "" + cr.KarmaBase[ KARMA_CHAMPION ] + " - Сваттер из Саттера" );
         player.Say( SAY_DIALOGBOX_BUTTON( 2 ), "" + cr.KarmaBase[ KARMA_CHILDKILLER ] + " - детоубийца" );
         player.Say( SAY_DIALOGBOX_BUTTON( 3 ), "" + cr.KarmaBase[ KARMA_SEXPERT ] + " - сексэксперт" );
-        player.Say( SAY_DIALOGBOX_BUTTON( 4 ), "" + cr.KarmaBase[ KARMA_PRIZEFIGHTER ] + " - боксер" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 4 ), "" + cr.KarmaBase[ KARMA_PRIZEFIGHTER ] + " - Инженер" );
         player.Say( SAY_DIALOGBOX_BUTTON( 5 ), "" + cr.KarmaBase[ KARMA_GIGOLO ] + " - сутенер" );
         player.Say( SAY_DIALOGBOX_BUTTON( 6 ), "" + cr.KarmaBase[ KARMA_GRAVE_DIGGER ] + " - могильщик" );
         player.Say( SAY_DIALOGBOX_BUTTON( 7 ), "" + cr.KarmaBase[ KARMA_MARRIED ] + " - женатый" );
-        player.Say( SAY_DIALOGBOX_BUTTON( 8 ), "" + cr.KarmaBase[ KARMA_PORN_STAR ] + " - порнозвезда" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 8 ), "" + cr.KarmaBase[ KARMA_PORN_STAR ] + " - СтарПом" );
         player.Say( SAY_DIALOGBOX_BUTTON( 9 ), "" + cr.KarmaBase[ KARMA_SLAVER ] + " - работорговец" );
         player.Say( SAY_DIALOGBOX_BUTTON( 10 ), "" + cr.KarmaBase[ KARMA_VIRGIN_WASTES ] + " - девственник" );
         player.Say( SAY_DIALOGBOX_BUTTON( 11 ), "" + cr.KarmaBase[ KARMA_MAN_SALVATORE ] + " - Молох" );
         player.Say( SAY_DIALOGBOX_BUTTON( 12 ), "" + cr.KarmaBase[ KARMA_MAN_BISHOP ] + " - якудза" );
         player.Say( SAY_DIALOGBOX_BUTTON( 13 ), "" + cr.KarmaBase[ KARMA_MAN_MORDINO ] + " - член Ши" );
         player.Say( SAY_DIALOGBOX_BUTTON( 14 ), "" + cr.KarmaBase[ KARMA_MAN_RAY ] + " - член банды Рэя" );
-        player.Say( SAY_DIALOGBOX_BUTTON( 15 ), "" + cr.KarmaBase[ KARMA_SEPARATED ] + " - склады" );
-        player.Say( SAY_DIALOGBOX_BUTTON( 16 ), "" + cr.KarmaBase[ KARMA_PEDOBEAR ] + " - педобир" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 15 ), "" + cr.KarmaBase[ KARMA_SEPARATED ] + " - МедПерсонал" );
+        player.Say( SAY_DIALOGBOX_BUTTON( 16 ), "" + cr.KarmaBase[ KARMA_PEDOBEAR ] + " - Капитан" );
         player.Say( SAY_DIALOGBOX_BUTTON( 17 ), "" + cr.KarmaBase[ KARMA_VC_GUARDSMAN ] + " - СКБ" );
         
 
