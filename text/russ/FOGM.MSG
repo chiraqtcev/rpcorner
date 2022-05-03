@@ -934,7 +934,39 @@
 {36916}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
 {36918}{}{Старый Лагерь}
 
+# Area 370, Map 506
+{37010}{}{stop1_ruin4_2}
+{37015}{}{29mark-morgan-curst.ogg}
+{37016}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37018}{}{Заброшенная шахта}
 
+{37020}{}{stop1_ruin4_2_mine}
+{37025}{}{58the25vault.ogg}
+{37026}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37028}{}{Рейдерская шахта}
+
+# Area 371, Map 506
+{37110}{}{stop1_ruin3_4}
+{37115}{}{09glow.acm}
+{37116}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37118}{}{Городская шахта}
+
+{37120}{}{stop1_ruin3_4_mine}
+{37125}{}{Deeper_and_Darker.ogg}
+{37126}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37128}{}{Городская шахта}
+
+# Area 372, Map 506
+{37210}{}{stop1_ruin2_4}
+{37215}{}{Desert_wind.ogg}
+{37216}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37218}{}{Пустошь}
+
+# Area 373, Map 506
+{37310}{}{stop1_ruin1_3}
+{37315}{}{NNM_FS_05_Collapse.ogg}
+{37316}{}{animal1:20, animal:20, dogbark2:5, gntlwin1:5, gntlwind:5, pebble:5, pebble1:10, vulture:5, vulture1:5}
+{37318}{}{Река}
 #
 # Global map
 #
