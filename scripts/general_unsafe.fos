@@ -36,20 +36,29 @@ const string[] glass_break_sounds = { "glass_break1.ogg", "glass_break2.ogg", "g
 bool Action( Critter& cr, Critter@ targetCr, Item@ targetItem, Scenery@ targetScen )
 {
 	uint16 moverHexX = cr.HexX, moverHexY = cr.HexY, aimHexX = 0, aimHexY = 0;
-	if( valid( targetCr ) ) { 
+	if( valid( targetCr ) ) 
+	{ 
 		aimHexX = targetCr.HexX;   
 		aimHexY = targetCr.HexY;
-		
-	} else if( valid( targetItem ) ) { 
+	} 
+	else if( valid( targetItem ) ) 
+	{ 
 		aimHexX = targetItem.HexX; 
 		aimHexY = targetItem.HexY; 
-	} else if( valid( targetScen ) ) { 
+	} 
+	else if( valid( targetScen ) ) 
+	{ 
 		aimHexX = targetScen.HexX;
 		aimHexY = targetScen.HexY; 
-	} else { return false; }
+	} 
+	else 
+	{ 
+		return false; 
+	}
 
 	uint dist = GetDistantion( moverHexX, moverHexY, aimHexX, aimHexY );
-	if( dist > 1 ) { 
+	if( dist > 1 ) 
+	{ 
 		SEM( cr, "Слишком далеко." ); 
 		return false; 
 	}

@@ -3,8 +3,8 @@
 #include "npc_planes_h.fos"
 
 #define DISTANCE_GROUP_RADIUS    ( 15 ) // рассто€ние на котором группа видит друг друга (и помогает атаковать противника)
-#define DISTANCE_AGGRO		  # (cr)	( ( cr.StatBase[ST_STRENGTH] + 2 ) * 2 )
-#define DISTANCE_UNAGGRO	  # (cr)	( ( cr.StatBase[ST_STRENGTH] + 2 ) * 4 )
+#define DISTANCE_AGGRO			# (cr)	( ( cr.StatBase[ ST_PERCEPTION ] + 2 ) * 2 )
+#define DISTANCE_UNAGGRO		# (cr)	( ( cr.StatBase[ ST_PERCEPTION ] + 2 ) * 4 )
 
 import bool setCorpsePicMap( Item& item, uint dir ) from "gameplay";
 
@@ -28,7 +28,7 @@ void _MobInit( Critter& npc, bool firstTime )
 	npc.StatBase[ ST_REPLICATION_TIME ] = -1;
 
 	npc.SetEvent( CRITTER_EVENT_SHOW_CRITTER,   "_CritterBecameVisible" );
-	npc.SetEvent( CRITTER_EVENT_HIDE_CRITTER, 	"_CritterOutOfSight" );
+	//npc.SetEvent( CRITTER_EVENT_HIDE_CRITTER, 	"_CritterOutOfSight" );
     npc.SetEvent( CRITTER_EVENT_IDLE,        	"_Idle" );
     npc.SetEvent( CRITTER_EVENT_MESSAGE,     	"_OnMessage" );
     npc.SetEvent( CRITTER_EVENT_PLANE_BEGIN, 	"_PlaneBegin" );
@@ -255,7 +255,8 @@ void _ShowPlayer( Critter& npc, Critter& player )
 
 	//if( RunAndHide( npc ) ) return;
 	
-    if( npc.StatBase[ ST_BASE_CRTYPE ] == player.StatBase[ ST_BASE_CRTYPE ] ) {
+    if( npc.StatBase[ ST_BASE_CRTYPE ] == player.StatBase[ ST_BASE_CRTYPE ] ) 
+    {
         npc.EraseEnemyFromStack( player.Id );
         EraseAttackPlane( npc, player );
 		return;
@@ -268,13 +269,14 @@ void _ShowPlayer( Critter& npc, Critter& player )
 		return;
 	}
 	
+	/*  ƒобивание мобами
 	if( player.IsPlayer() && ( player.IsKnockout() || player.Stat[ST_CURRENT_HP] < 0 ) )
 	{
         npc.EraseEnemyFromStack( player.Id );
         EraseAttackPlane( npc, player );
 		return;
 	}
-
+	*/
 	if( int( player.Id ) == npc.StatBase [ST_FOLLOW_CRIT] || isGM( player ) )
 	{
         npc.EraseEnemyFromStack( player.Id );
@@ -627,12 +629,18 @@ bool _Attacked( Critter& npc, Critter& attacker )
     return true;     // Handle attacked processing
 }
 
-void AttackOrFind( Critter& self, Critter& target ) {
-	if( !valid( target ) ) { return; }
+void AttackOrFind( Critter& self, Critter& target ) 
+{
+	if( !valid( target ) ) 
+	{ 
+		return; 
+	}
 	
-	if( self.IsSee( target ) ) {
+	if( self.IsSee( target ) ) 
+	{
 		AddAttackPlane( self, 0, target );
-	} else {
+	} else 
+	{
 		AddWalkPlane( self, AI_PLANE_ATTACK_PRIORITY - 1, target.HexX, target.HexY, Random( 0, 5 ), true, 1 );
 	}
 }

@@ -1328,23 +1328,33 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
             }             // right line
         }
 
-        for( int i = 0, j = len_; i < j; i++ ) {
+        for( int i = 0, j = len_; i < j; i++ ) 
+        {
             ApplyDamage( attack, critsHit[ i ], critsHitBullets [i], ( valid( realTarget ) && realTarget.Id == critsHit[ i ].Id ) && criticalHit, ( cr.IsPlayer() && !changedTarget ) || ( cr.IsNpc() && critsHit[ i ].Id == target.Id ), results );
 		}
 		
-        if( !changedTarget && !attack.TargetHit ) {
+        if( !changedTarget && !attack.TargetHit ) 
+        {
             NotifyMiss( cr, results );
 		}
 		
-    } else if( isRocket || ( weaponSubtype == WS_THROWING ) ) {
+    } 
+    else if( isRocket || ( weaponSubtype == WS_THROWING ) ) 
+    {
         bool exploding = isRocket || isGrenade;// ROCKETS, THROWING
-        if( isHit || changedTarget ) {
-            if( exploding ) {
+        if( isHit || changedTarget ) 
+        {
+            if( exploding ) 
+            {
                 CommenceExplosion( attack, map, hx, hy, tx, ty, realTarget, weapPid, criticalHit, valid( realTarget ) ? realTarget.Id : 0, isRocket, isGrenade, results );
-            } else if( valid( realTarget ) ) {
+            } 
+            else if( valid( realTarget ) ) 
+            {
 				ApplyDamage( attack, realTarget, 1, criticalHit, !changedTarget, results );
 			}
-		} else {
+		} 
+        else 
+        {
             // miss with missiles
             attack.Aim = HIT_LOCATION_UNCALLED;
             baseToHit += GetHitAim( aim );
@@ -1482,17 +1492,24 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
 		}
 	}
 
-    if( ammoRound > 0 && valid( realWeapon ) && cr.Mode[ MODE_UNLIMITED_AMMO ] == 0 ) { 
-		if ( valid( attack.Ammo ) ) {
-			if( realWeapon.AmmoCount <= ammoRound ) {
+    if( ammoRound > 0 && valid( realWeapon ) && cr.Mode[ MODE_UNLIMITED_AMMO ] == 0 ) 
+    { 
+		if ( valid( attack.Ammo ) ) 
+        {
+			if( realWeapon.AmmoCount <= ammoRound ) 
+            {
 				realWeapon.AmmoCount = 0;
-				if( cr.ParamBase[ CR_IS_WINDUPED ] == 1 ) {
+				if( cr.ParamBase[ CR_IS_WINDUPED ] == 1 ) 
+                {
 					cr.ParamBase[ CR_IS_WINDUPED ] = 0;
-					if( cr.Anim2Life == ANIM2_WINDUP ) {
+					if( cr.Anim2Life == ANIM2_WINDUP ) 
+                    {
 						cr.SetAnims(COND_LIFE, 0, ANIM2_IDLE);
 					}
 				}
-			} else {
+			} 
+            else 
+            {
 				realWeapon.AmmoCount -= ammoRound;
 			}
 			
@@ -1505,16 +1522,19 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
 			bool invalidCaliber = ( weapon.Weapon_Caliber == CALIBER_4_7MM_CASELESS ) || ( weapon.Weapon_Caliber == CALIBER_NAILS ) || ( weapon.Weapon_Caliber == CALIBER_SPIKE )
 									  || ( weapon.Weapon_Caliber == CALIBER_BB ) || ( weapon.Weapon_Caliber == CALIBER_HN_NEEDLER ) || ( weapon.Weapon_Caliber == CALIBER_DART );
 			
-			for( uint i = 0; i < ammoRound; i++ ) {
-				
+			for( uint i = 0; i < ammoRound; i++ ) 
+            {
 				if( weapon.Item_Subtype >= ITEM_SUBTYPE_WEAPON_NORMAL_BEGIN && weapon.Item_Subtype <= ITEM_SUBTYPE_WEAPON_NORMAL_END 
 					&& weapon.Item_Subtype != ITEM_SUBTYPE_WEAPON_NORMAL_PISTOL_REVOLVER && !invalidCaliber
-					&& ( ( !isLow && Random( 1 , 100 ) < 80 ) || ( isLow && Random( 1, 100 ) > 80 ) ) ) {
+					&& ( ( !isLow && Random( 1 , 100 ) < 80 ) || ( isLow && Random( 1, 100 ) > 80 ) ) ) 
+                {
 					
 					int shellX = cr.HexX + Random( -1, 1 ), shellY = cr.HexY + Random( -1, 1 );
 					
-					if ( map.IsHexPassed( shellX, shellY ) ) {
-						if( !check_casing( map, shellX, shellY ) ) {
+					if ( map.IsHexPassed( shellX, shellY ) ) 
+                    {
+						if( !check_casing( map, shellX, shellY ) ) 
+                        {
 							map.AddItem( shellX, shellY, PID_SHELL_CASING, 1 );
 						}
 					}
@@ -1523,31 +1543,43 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
 					Critter@[] players;
 					map.GetCrittersHex( shellX, shellY, 6, FIND_ALL | FIND_ONLY_PLAYERS, players );
 					int[] val = { 6 };
-					for( uint i = 0; i < players.length(); i++ ) {
+					for( uint i = 0; i < players.length(); i++ ) 
+                    {
 						Critter@ player = players[i];
-						if( valid( player ) ) {
+						if( valid( player ) ) 
+                        {
 							player.RunClientScript( "fofmod@__PlaySound", map.Id, tx, ty, shellSound, val );
 						}
 					}
 				}
 			} 
-		} else if( isAmmoRegen ) { // scorcher
-			if( realWeapon.AmmoCount <= ammoRound ) {
+		} 
+        else if( isAmmoRegen ) 
+        { // scorcher
+			if( realWeapon.AmmoCount <= ammoRound ) 
+            {
 				realWeapon.AmmoCount = 0;
-			} else {
+			} 
+            else 
+            {
 				realWeapon.AmmoCount -= ammoRound;
 			}
 		}
 		realWeapon.Update();
 	}
 
-    if( valid( realWeapon ) ) {
-        if( realWeapon.IsDeteriorable() && crIsPlayer ) {
-            if( realWeapon.GetProtoId() != PID_CLAW_EXT && realWeapon.GetProtoId() != PID_FIREBREATH && realWeapon.GetProtoId() != PID_FIRE_GECKO_FLAME_WEAPON ) {
+    if( valid( realWeapon ) ) 
+    {
+        if( realWeapon.IsDeteriorable() && crIsPlayer ) 
+        {
+            if( realWeapon.GetProtoId() != PID_CLAW_EXT && realWeapon.GetProtoId() != PID_FIREBREATH && realWeapon.GetProtoId() != PID_FIRE_GECKO_FLAME_WEAPON ) 
+            {
                 int wearCount = Random( 1, 5 );
-				if( valid( attack.Ammo ) ) {
+				if( valid( attack.Ammo ) ) 
+                {
 					uint16 ammoPid = attack.Ammo.ProtoId;
-					if( valid( attack.Attacker ) && ( ammoPid == PID_10mm_LOW || ammoPid == PID_14mm_LOW || ammoPid == PID_12g_LOW || ammoPid == PID_223_LOW  ) ) {
+					if( valid( attack.Attacker ) && ( ammoPid == PID_10mm_LOW || ammoPid == PID_14mm_LOW || ammoPid == PID_12g_LOW || ammoPid == PID_223_LOW  ) ) 
+                    {
 						wearCount += Random( 5, 15 );
 					}
 				}
@@ -1556,17 +1588,22 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
         }
 
         // One time weapon, erase current and push next (if exist)
-        if( wpnIsRemoved && cr.Mode[ MODE_UNLIMITED_AMMO ] == 0 ) {
+        if( wpnIsRemoved && cr.Mode[ MODE_UNLIMITED_AMMO ] == 0 ) 
+        {
             bool placeOnHex = ( skillNum == SK_THROWING && !isGrenade );
-			if( placeOnHex ) {
-				if( !valid( target ) ) {
-					if( !map.IsHexPassed( tx, ty ) ) {
+			if( placeOnHex ) 
+            {
+				if( !valid( target ) ) 
+                {
+					if( !map.IsHexPassed( tx, ty ) ) 
+                    {
 						map.SetText( tx, ty, COLOR_LGRAY, ":отскок:" );
 						uint8 revDir = GetDirection( tx, ty, hx, hy );
 						map.MoveHexByDir( tx, ty, revDir, Random( 1, 2 ) );
 					}
 				}
-				if( map.IsHexPassed( tx, ty ) || map.GetCrittersHex( tx, ty, 0, FIND_LIFE_AND_KO, null ) > 0 ) {
+				if( map.IsHexPassed( tx, ty ) || map.GetCrittersHex( tx, ty, 0, FIND_LIFE_AND_KO, null ) > 0 ) 
+                {
 					MoveItem( realWeapon, 1, map, tx, ty );
 					
 					Item@ thrownItem = map.GetItem( tx, ty, realWeapon.GetProtoId() );
@@ -1575,9 +1612,12 @@ void CombatAttack( Critter& cr, Critter@ target, ProtoItem& weapon, uint8 weapon
 					
 					checkAnimalBait( map, tx, ty );
 					
-				} else {
+				} 
+                else 
+                {
 					_SubItem( realWeapon, 1 );
-					if( cr.IsPlayer() ) {
+					if( cr.IsPlayer() ) 
+                    {
                         cr.Say( SAY_NETMSG, "|0xFFFF00 Метательное оружие разбилось." );
                     }
 				}
@@ -1909,7 +1949,7 @@ void ApplyDamage( AttackStruct& attack, Critter& target, uint rounds, bool isCri
 				if( !FLAG( target.StatBase[ ST_CRSTATUS ], CR_STATUS_HEAVY_DMG ) ) {
 					ChangeStatus( target, CR_STATUS_HEAVY_DMG, 0, true );
 				}
-				FlushScreen( target, COLOR_RED, 0, 5000 );
+				//FlushScreen( target, COLOR_RED, 0, 5000 );
 			}
 			
 			//Heavy Wound
@@ -1917,7 +1957,7 @@ void ApplyDamage( AttackStruct& attack, Critter& target, uint rounds, bool isCri
 				&& !FLAG( target.StatBase[ ST_CRSTATUS ], CR_STATUS_HEAVY_DMG ) ) {
 					
 				ChangeStatus( target, CR_STATUS_HEAVY_DMG, 0, true );
-				FlushScreen( target, COLOR_RED, 0, 5000 );
+				//FlushScreen( target, COLOR_RED, 0, 5000 );
 			}
 			inform( attacker, target, "aftertotal= "+ totalDmg );
 		}
@@ -2028,26 +2068,26 @@ void ApplyDamage( AttackStruct& attack, Critter& target, uint rounds, bool isCri
     if( FLAG( eff, HF_CRIPPLED_LEFT_LEG ) ) {
         target.DamageBase[ DAMAGE_LEFT_LEG ] = 1;
 		SayLog( target, crInfo( target ) + " ломает левую ногу." );
-		FlushScreen( target, COLOR_RED, 0, 5000 );
+		//FlushScreen( target, COLOR_RED, 0, 5000 );
 	}
     // Clipped RLeg
     if( FLAG( eff, HF_CRIPPLED_RIGHT_LEG ) ) {
         target.DamageBase[ DAMAGE_RIGHT_LEG ] = 1;
 		SayLog( target, crInfo( target ) + " ломает правую ногу." );
-		FlushScreen( target, COLOR_RED, 0, 5000 );
+		//FlushScreen( target, COLOR_RED, 0, 5000 );
 	}
     // Clipped LArm
     if( FLAG( eff, HF_CRIPPLED_LEFT_ARM ) ) {
         target.DamageBase[ DAMAGE_LEFT_ARM ] = 1;
 		SayLog( target, crInfo( target ) + " ломает левую руку." );
-		FlushScreen( target, COLOR_RED, 0, 5000 );
+		//FlushScreen( target, COLOR_RED, 0, 5000 );
 	}
     // Clipped RArm
     if( FLAG( eff, HF_CRIPPLED_RIGHT_ARM ) )
 	{
         target.DamageBase[ DAMAGE_RIGHT_ARM ] = 1;
 		SayLog( target, crInfo( target ) + " ломает правую руку." );
-		FlushScreen( target, COLOR_RED, 0, 5000 );
+		//FlushScreen( target, COLOR_RED, 0, 5000 );
 	}
     // Blinded
     if( FLAG( eff, HF_BLINDED ) ) {
@@ -2700,21 +2740,29 @@ void ApplyDamage( AttackStruct& attack, Critter& target, uint rounds, bool isCri
     }
 	
 	//CRITTER ACTION FOR TAKING DAMAGE
-	if( target.Timeout[ TO_DAMAGE ] == 0 ) { 
-		target.Action( ACTION_DAMAGE_FORCE, int( attack.WeaponPid << 16 ) | ( attackFront ? 0 : 1 ), realWeapon );
-		target.TimeoutBase[ TO_DAMAGE ] = DAMAGE_TIMEOUT;
+	if( target.Timeout[ TO_DAMAGE ] == 0 ) 
+    { 
+        if( isCritical || item_Subtype == 0 || item_Subtype >= 55 && item_Subtype <= 69 || item_Subtype == 7 || item_Subtype == 8 )
+        {
+            target.Action( ACTION_DAMAGE_FORCE, int( attack.WeaponPid << 16 ) | ( attackFront ? 0 : 1 ), realWeapon );
+		}
+        target.TimeoutBase[ TO_DAMAGE ] = DAMAGE_TIMEOUT;
 	}		
 
 	//HIT_EFFECTS_ON_TARGET - WIP. TODO: Move to effect manager module. Change to class
-	if( valid( realWeapon ) ) {
+	if( valid( realWeapon ) ) 
+    {
 		
 		uint16 effectPid = 0;
 		Item@ checkArmor = _CritGetItemArmor( target );
 		uint8 attackDir =  attackFront? 0 : 1;
 		
-		if( valid( checkArmor ) && ( checkArmor.Proto.Material != MATERIAL_FABRIC || checkArmor.Proto.Material != MATERIAL_LEATHER ) ) {
+		if( valid( checkArmor ) && ( checkArmor.Proto.Material != MATERIAL_FABRIC || checkArmor.Proto.Material != MATERIAL_LEATHER ) ) 
+        {
 			SparkManager( attacker, map, attackDir, target, aim, checkArmor, realWeapon, rounds );
-		} else {
+		} 
+        else 
+        {
 			BloodManager( map, attackDir, target, aim, rounds );
 		}
 	}
@@ -3178,9 +3226,12 @@ void CriticalFailure( Critter& cr, ProtoItem& weapon, uint8 weaponUse, ProtoItem
 		{
             ammoPid = ammo.ProtoId;
 			int ammoDmgType = _GetAmmoProtoDmgType( ammo );
-			if( FireAmmo.find( ammoPid ) != -1 ) {
+			if( FireAmmo.find( ammoPid ) != -1 ) 
+            {
 				dmgType = DAMAGE_FIRE;
-			} else if( ammoDmgType!=0 ) {
+			} 
+            else if( ammoDmgType!=0 ) 
+            {
 				dmgType = ammoDmgType;
 			}
 		}
