@@ -1,11 +1,10 @@
 // Author: cvet
 // Server and client stuff for radio
 #include "_macros.fos"
+#include "_utils.fos"
 
 // / Server
 #ifndef __CLIENT
-
-import void heard_radio_log_ch0(Critter& cr, string@ message) from "rp_chat";
 
 void _InitMicrophone(Item& item, bool firstTime) 
 {
@@ -18,46 +17,60 @@ void _InitMicrophone(Item& item, bool firstTime)
     }
 }
 
-void unsafe_OutMessage(Critter& cr, int sayType, int p0, int p1, string@ msg, int[]@ p2) {
+void unsafe_OutMessage(Critter& cr, int sayType, int p0, int p1, string@ msg, int[]@ p2) 
+{
     // Не палить ГМов
-    if (0 != cr.ParamBase[QST_INVIS] || null is msg || sayType == SAY_NETMSG) {
+    if (0 != cr.ParamBase[QST_INVIS] || null is msg || sayType == SAY_NETMSG) 
+    {
         return;
     }
 
     Map@ map = cr.GetMap();
-    if (null is map || msg is null) return;
+    if (null is map || msg is null) 
+        return;
 
     // Отсев эмоутов и пустых сообщений
     array<uint8> buffer;
     uint8 prev = ' ';
     bool ignore = false;
-    for (uint i = 0, l = msg.length(); i < l; i++) {
-        if (
-            (prev == ' ' && msg[i] == ' ')
-            || (prev == '*' && msg[i] == '*')
-        ) {
+    for (uint i = 0, l = msg.length(); i < l; i++) 
+    {
+        if ( (prev == ' ' && msg[i] == ' ') || (prev == '*' && msg[i] == '*') ) 
+        {
             continue;
-        } else {
+        } 
+        else 
+        {
             prev = msg[i];
         }
 
-        if (msg[i] == '*') {
+        if (msg[i] == '*') 
+        {
             ignore = !ignore;
-        } else if (!ignore) {
+        } 
+        else if (!ignore) 
+        {
             buffer.insertLast(msg[i]);
         }
     }
+
     ignore = false;
     msg.resize(buffer.length);
-    for (uint i = 0, l = buffer.length; i < l; i++) {
-        if (!ignore || i + 1 == l) {
-            if (buffer[i] == ' ') continue;
-            else ignore = true;
+    for (uint i = 0, l = buffer.length; i < l; i++) 
+    {
+        if (!ignore || i + 1 == l) 
+        {
+            if (buffer[i] == ' ') 
+                continue;
+            else 
+                ignore = true;
         }
 
         msg[i] = buffer[i];
     }
-    if (0 == msg.length()) return;
+
+    if (0 == msg.length()) 
+        return;
 
     // Добавление идентификации голоса
     // msg = msg + " *" + (cr.StatBase[ST_GENDER] == 0 ? "мужской" : "женский") + " голос*";
@@ -98,28 +111,77 @@ void unsafe_OutMessage(Critter& cr, int sayType, int p0, int p1, string@ msg, in
     // Поиск раций и микрофонов на земле
 	
     Item@[] radios;
-    if( 0 < map.GetItems( PID_RADIO, radios ) ) {
-        for( uint i = 0, l = radios.length; i < l; i++ ) {
+    if( 0 < map.GetItems( PID_RADIO, radios ) ) 
+    {
+        for( uint i = 0, l = radios.length; i < l; i++ )
+         {
 			
             Item@ radio = radios[i];
 			
-			if( !valid( radio ) || !FLAG(radio.Flags, ITEM_RADIO) || FLAG( radio.RadioFlags, RADIO_DISABLE_SEND ) ) {
+			if( !valid( radio ) || !FLAG(radio.Flags, ITEM_RADIO) || FLAG( radio.RadioFlags, RADIO_DISABLE_SEND ) ) 
+            {
 				continue;				
 			}
 			
-			if( skip.find( radio.RadioChannel ) != -1 || ( pow( float( radio.HexX ) - float( cr.HexX ), 2 ) + pow( float( radio.HexY ) - float( cr.HexY ), 2 ) >= distance ) ) {
+			if( skip.find( radio.RadioChannel ) != -1 || ( pow( float( radio.HexX ) - float( cr.HexX ), 2 ) + pow( float( radio.HexY ) - float( cr.HexY ), 2 ) >= distance ) ) 
+            {
 				continue;
 			}
 			
-			RadioMessage( radio.RadioChannel, msg );
-			
-			if( radio.RadioChannel == 0 ) {
-				heard_radio_log_ch0( cr, msg );
-			}
-			
+			RadioMessage( radio.RadioChannel, msg );	
+
+            uint index = findFirstOf( msg, "/" );
+            if( index == 0 )
+            {
+                msg = substring( msg, 4, msg.length() );
+            }     
+
+			SendRadioLogs( cr, msg, radio.RadioChannel );
 			skip.insertLast( radio.RadioChannel );
         }
     }
+}
+
+import void char_replace(string& text, uint8 from, uint8 to) from "rp_chat";
+uint8 backtick = "`"[0];
+uint8 apostrophe = "'"[0];
+void SendRadioLogs( Critter& cr, string@ message, uint16 channel )
+{
+    if( !valid( message ) )
+        return;
+
+    uint len = message.length();
+    if( len == 0 || len > 128 ) {
+        return;
+    }
+
+    file f;
+    string@ text,
+            file_path,
+            channel_name;
+
+    if( channel == 0 )
+    {
+        file_path = "logs\\radio_0.txt";
+        text = "`Рация 0> .."+message+"..`";
+        channel_name = "нулевой_радиоканал";
+    }
+    else
+    {
+        file_path = "logs\\radio.txt";
+        text = "`Рация " + channel + " | " + crInfo( cr ) + ": > .." + message + "..`";
+        channel_name = "gm-radio";
+    }
+
+    if( f.open(file_path, "a") < 0 ) 
+        return;
+    
+    f.writeString(message + "\n");
+    f.close();
+
+    char_replace(message, backtick, apostrophe);
+    DiscordSendMessage(channel_name, text);
+    return;
 }
 
 void EditRadioSettings( Critter& player, Item& radio ) // Export
