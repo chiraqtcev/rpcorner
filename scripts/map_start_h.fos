@@ -125,7 +125,8 @@ const uint[][] ItemMassive =
         PID_AXE,
         PID_ROD_STRING_HOOK,
         PID_PICKAXE,
-        PID_SHOVEL
+        PID_SHOVEL,
+        PID_REV_BALL1
     },
     {  // Броня
         PID_PERSONAL_JACKET,
