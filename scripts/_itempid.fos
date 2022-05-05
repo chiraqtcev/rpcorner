@@ -541,8 +541,8 @@
 #define PID_pstair1                           		( 20075 )						// Страж - НЕДОДЕЛКА
 #define PID_pstair2                           		( 20076 )						// Пистолет "Барон" - НЕДОДЕЛКА
 #define PID_pstdtctv                          		( 20078 )						// Пистолет изобретателя - НЕДОДЕЛКА
-#define PID_pstglok1                          		( 20079 )						// Модифицированный Глок - НЕДОДЕЛКА
-#define PID_pstglok2                          		( 20080 )						// Модифицированный Глок МК2 - НЕДОДЕЛКА
+#define PID_GLOCK_17                          		( 20079 )						// Глок 17
+#define PID_HI_POINT                          		( 20080 )						// Hi Point
 #define PID_pstlugr                           		( 20082 )						// Модифицированный Глок МК3 - НЕДОДЕЛКА
 #define PID_pstmagma                          		( 20083 )						// Пистолет "Магма" - НЕДОДЕЛКА
 #define PID_pstosa                            		( 20084 )						// Пистолет "Шмель" - НЕДОДЕЛКА
