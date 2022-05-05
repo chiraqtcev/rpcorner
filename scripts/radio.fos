@@ -17,6 +17,7 @@ void _InitMicrophone(Item& item, bool firstTime)
     }
 }
 
+import void SendRadioLogs( Critter& cr, string@ message, int channel ) from "rp_chat";
 void unsafe_OutMessage(Critter& cr, int sayType, int p0, int p1, string@ msg, int[]@ p2) 
 {
     // Не палить ГМов
@@ -136,53 +137,13 @@ void unsafe_OutMessage(Critter& cr, int sayType, int p0, int p1, string@ msg, in
                 msg = substring( msg, 4, msg.length() );
             }     
 
-			SendRadioLogs( cr, msg, radio.RadioChannel );
+			SendRadioLogs( cr, msg, int( radio.RadioChannel ) );
 			skip.insertLast( radio.RadioChannel );
         }
     }
 }
 
-import void char_replace(string& text, uint8 from, uint8 to) from "rp_chat";
-uint8 backtick = "`"[0];
-uint8 apostrophe = "'"[0];
-void SendRadioLogs( Critter& cr, string@ message, uint16 channel )
-{
-    if( !valid( message ) )
-        return;
 
-    uint len = message.length();
-    if( len == 0 || len > 128 ) {
-        return;
-    }
-
-    file f;
-    string@ text,
-            file_path,
-            channel_name;
-
-    if( channel == 0 )
-    {
-        file_path = "logs\\radio_0.txt";
-        text = "`Рация 0> .."+message+"..`";
-        channel_name = "нулевой_радиоканал";
-    }
-    else
-    {
-        file_path = "logs\\radio.txt";
-        text = "`Рация " + channel + " | " + crInfo( cr ) + ": > .." + message + "..`";
-        channel_name = "gm-radio";
-    }
-
-    if( f.open(file_path, "a") < 0 ) 
-        return;
-    
-    f.writeString(message + "\n");
-    f.close();
-
-    char_replace(message, backtick, apostrophe);
-    DiscordSendMessage(channel_name, text);
-    return;
-}
 
 void EditRadioSettings( Critter& player, Item& radio ) // Export
 {

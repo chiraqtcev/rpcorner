@@ -161,6 +161,50 @@ void char_replace(string& text, uint8 from, uint8 to)
 uint8 backtick = "`"[0];
 uint8 apostrophe = "'"[0];
 
+
+void SendRadioLogs( Critter& cr, string@ message, int channel )
+{
+    if( !valid( message ) )
+        return;
+
+    uint len = message.length();
+    if( len == 0 || len > 128 ) {
+        return;
+    }
+
+    file f;
+    string@ text = "empty",
+            file_path = "empty",
+            channel_name = "empty";
+
+    if( channel == 0 )
+    {
+        file_path = "logs\\radio_0.txt";
+        text = "`Рация 0> .."+message+"..`";
+        channel_name = "нулевой_радиоканал";
+    }
+    else
+    {
+        file_path = "logs\\radio.txt";
+        text = "`Рация " + channel + " | " + crInfo( cr ) + ": > .." + message + "..`";
+        channel_name = "gm-radio";
+    }
+
+    if( text == "empty" || file_path == "empty" || channel_name == "empty" )
+    	return;
+
+    //Log("radio > " + file_path + " > " + text + " > " + channel_name );
+    if( f.open(file_path, "a") < 0 ) 
+        return;
+    
+    f.writeString(message + "\n");
+    f.close();
+
+    char_replace(message, backtick, apostrophe);
+    DiscordSendMessage(channel_name, text);
+    return;
+}
+
 void unsafe_GM_Hear_Radio( Critter& cr, int, int, int, string@ message, int[]@) //TODO: Причесать код, расширить функциональность.
 {
 	int[] channels;
@@ -172,11 +216,8 @@ void unsafe_GM_Hear_Radio( Critter& cr, int, int, int, string@ message, int[]@) 
 		{
 			if( FLAG( items[i].Flags, ITEM_RADIO ) && !FLAG( items[i].RadioFlags, RADIO_DISABLE_SEND ) ) 
 			{
-				if( items[i].RadioChannel == 0 ) 
-				{
-					ch0 = true;
-				}
 				channels.insertLast( int( items[i].RadioChannel ) );
+				SendRadioLogs( cr, message, int( items[i].RadioChannel ) );
 			}
 		}
 	}
