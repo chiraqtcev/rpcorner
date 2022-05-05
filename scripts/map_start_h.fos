@@ -19,7 +19,8 @@ import void RequestStartGameRemote( Critter& player) from "link";
 const uint16[][] StartTeleports = 
 {
     // { mapid, mapx, mapy },
-    { 32, 180, 155 }
+    { 366, 171, 250 },
+    { 369, 172, 154 }
 };
 
 const uint16[] CoatMassive =
