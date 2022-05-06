@@ -244,7 +244,7 @@ bool Profit(  Critter& cr, Item@ tool, Item@ target )
 			break;
 	}
 			
-	uint lootRoll = ( Random( 0, 1 ) + ( cr.ParamBase[ SK_MINING ] / 50 ) );
+	uint lootRoll = ( Random( 0, 1 ) + ( cr.ParamBase[ SK_MINING ] / 100 ) );
 	
 	if( toolMod == PID_DRILL )
 		amount = ( ( amount + lootRoll ) * CLAMP( 3, 1, ( target.RESOURCE_CAPACITY / OBJECT_HP_BASE ) ) );
