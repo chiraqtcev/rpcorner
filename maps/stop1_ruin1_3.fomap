@@ -2,8 +2,8 @@
 Version              4
 MaxHexX              400
 MaxHexY              400
-WorkHexX             171
-WorkHexY             179
+WorkHexX             153
+WorkHexY             195
 ScriptModule         -
 ScriptFunc           -
 NoLogOut             0
@@ -36473,11 +36473,6 @@ MapObjType           1
 ProtoId              2958
 MapX                 226
 MapY                 227
-
-MapObjType           1
-ProtoId              2959
-MapX                 160
-MapY                 199
 
 MapObjType           1
 ProtoId              2959
@@ -90675,11 +90670,6 @@ OffsetX              -4
 OffsetY              1
 
 MapObjType           2
-ProtoId              5473
-MapX                 148
-MapY                 196
-
-MapObjType           2
 ProtoId              5595
 MapX                 160
 MapY                 195
@@ -90745,11 +90735,6 @@ MapX                 146
 MapY                 198
 
 MapObjType           2
-ProtoId              5473
-MapX                 152
-MapY                 196
-
-MapObjType           2
 ProtoId              5472
 MapX                 153
 MapY                 196
@@ -90763,11 +90748,6 @@ MapObjType           2
 ProtoId              5471
 MapX                 154
 MapY                 195
-
-MapObjType           2
-ProtoId              5468
-MapX                 154
-MapY                 194
 
 MapObjType           2
 ProtoId              5467
@@ -90808,11 +90788,6 @@ MapObjType           2
 ProtoId              5599
 MapX                 234
 MapY                 198
-
-MapObjType           2
-ProtoId              5473
-MapX                 150
-MapY                 196
 
 MapObjType           2
 ProtoId              5621
@@ -91617,48 +91592,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 140
 MapY                 204
-
-MapObjType           2
-ProtoId              15278
-MapX                 155
-MapY                 194
-OffsetX              -1
-OffsetY              6
-
-MapObjType           2
-ProtoId              15278
-MapX                 154
-MapY                 197
-OffsetX              -1
-OffsetY              6
-
-MapObjType           2
-ProtoId              15278
-MapX                 152
-MapY                 197
-OffsetX              -1
-OffsetY              6
-
-MapObjType           2
-ProtoId              15278
-MapX                 150
-MapY                 197
-OffsetX              -1
-OffsetY              6
-
-MapObjType           2
-ProtoId              15278
-MapX                 148
-MapY                 197
-OffsetX              -1
-OffsetY              6
-
-MapObjType           2
-ProtoId              15278
-MapX                 155
-MapY                 196
-OffsetX              -1
-OffsetY              6
 
 MapObjType           2
 ProtoId              2099
