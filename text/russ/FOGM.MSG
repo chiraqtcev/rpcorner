@@ -613,7 +613,6 @@
 
 # Area 110, Map 187
 {1880}{}{tanker_deck2}
-{1885}{}{akiss.acm}
 {1886}{}{dice:5, dice1:5, potspan1:5, potspsns:5, laughte1:10, laughter:10, saloon:5, saloon1:5, shuffle:5, steam:5, steam1:5, water:5, water1:5, winner:5}
 {1888}{}{Барная палуба}
 
@@ -882,7 +881,7 @@
 
 # Area 361, Map 497
 {36110}{}{stop1_ruin1_1}
-{36115}{}{02 - Into The Dust.ogg}
+{36115}{}{Under_the_Stars_Cut.ogg}
 {36116}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
 {36118}{}{Подстанция}
 
