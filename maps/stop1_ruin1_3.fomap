@@ -2,8 +2,8 @@
 Version              4
 MaxHexX              400
 MaxHexY              400
-WorkHexX             233
-WorkHexY             228
+WorkHexX             171
+WorkHexY             179
 ScriptModule         -
 ScriptFunc           -
 NoLogOut             0
@@ -6361,18 +6361,31 @@ tile       128  190            art\tiles\edg5006.frm
 tile       130  190            art\tiles\edg5003.frm
 tile       132  190            art\tiles\edg5002.frm
 tile       134  190            art\tiles\edg5006.frm
+roof       134  190            art\tiles\tp076.frm
 tile       136  190            art\tiles\edg5001.frm
+roof       136  190            art\tiles\tp020.frm
 tile       138  190            art\tiles\edg5000.frm
+roof       138  190            art\tiles\tp019.frm
 tile       140  190            art\tiles\edg5003.frm
+roof       140  190            art\tiles\tp019.frm
 tile       142  190            art\tiles\edg5007.frm
+roof       142  190            art\tiles\tp024.frm
 tile       144  190            art\tiles\edg5000.frm
+roof       144  190            art\tiles\tp023.frm
 tile       146  190            art\tiles\edg5001.frm
+roof       146  190            art\tiles\tp020.frm
 tile       148  190            art\tiles\edg1002.frm
+roof       148  190            art\tiles\tp019.frm
 tile       150  190            art\tiles\edg1000.frm
+roof       150  190            art\tiles\tp024.frm
 tile       152  190            art\tiles\edg2000.frm
+roof       152  190            art\tiles\tp023.frm
 tile       154  190            art\tiles\edg5001.frm
+roof       154  190            art\tiles\tp019.frm
 tile       156  190            art\tiles\edg5001.frm
+roof       156  190            art\tiles\tp019.frm
 tile       158  190            art\tiles\edg5000.frm
+roof       158  190            art\tiles\tp069.frm
 tile       160  190            art\tiles\edg5003.frm
 tile       162  190            art\tiles\edg5007.frm
 tile       164  190            art\tiles\curb24.frm
@@ -6501,30 +6514,31 @@ tile       128  192            art\tiles\edg5002.frm
 tile       130  192            art\tiles\edg5000.frm
 tile       132  192            art\tiles\edg6003.frm
 tile       134  192            art\tiles\edg6002.frm
+roof       134  192            art\tiles\tp100.frm
 tile       136  192            art\tiles\tp161.frm
-roof       136  192            art\tiles\tp161.frm
+roof       136  192            art\tiles\tp083.frm
 tile       138  192            art\tiles\tp157.frm
-roof       138  192            art\tiles\tp157.frm
+roof       138  192            art\tiles\tp082.frm
 tile       140  192            art\tiles\tp157.frm
-roof       140  192            art\tiles\tp157.frm
+roof       140  192            art\tiles\tp082.frm
 tile       142  192            art\tiles\tp157.frm
-roof       142  192            art\tiles\tp157.frm
+roof       142  192            art\tiles\tp081.frm
 tile       144  192            art\tiles\tp157.frm
-roof       144  192            art\tiles\tp157.frm
+roof       144  192            art\tiles\tp080.frm
 tile       146  192            art\tiles\tp157.frm
-roof       146  192            art\tiles\tp157.frm
+roof       146  192            art\tiles\tp082.frm
 tile       148  192            art\tiles\tp157.frm
-roof       148  192            art\tiles\tp157.frm
+roof       148  192            art\tiles\tp081.frm
 tile       150  192            art\tiles\tp157.frm
-roof       150  192            art\tiles\tp157.frm
+roof       150  192            art\tiles\tp080.frm
 tile       152  192            art\tiles\tp157.frm
-roof       152  192            art\tiles\tp157.frm
+roof       152  192            art\tiles\tp079.frm
 tile       154  192            art\tiles\tp157.frm
-roof       154  192            art\tiles\tp157.frm
+roof       154  192            art\tiles\tp078.frm
 tile       156  192            art\tiles\tp157.frm
-roof       156  192            art\tiles\tp157.frm
+roof       156  192            art\tiles\tp078.frm
 tile       158  192            art\tiles\tp164.frm
-roof       158  192            art\tiles\tp164.frm
+roof       158  192            art\tiles\tp077.frm
 tile       160  192            art\tiles\edg2002.frm
 tile       162  192            art\tiles\curb35.frm
 tile       164  192            art\tiles\curb23.frm
@@ -6652,30 +6666,31 @@ tile       128  194            art\tiles\edg5003.frm
 tile       130  194            art\tiles\edg1002.frm
 tile       132  194            art\tiles\edg3000.frm
 tile       134  194            art\tiles\curb35.frm
+roof       134  194            art\tiles\tp100.frm
 tile       136  194            art\tiles\tp158.frm
-roof       136  194            art\tiles\tp158.frm
+roof       136  194            art\tiles\tp095.frm
 tile       138  194            art\tiles\tp155.frm
-roof       138  194            art\tiles\tp155.frm
+roof       138  194            art\tiles\tp094.frm
 tile       140  194            art\tiles\tp155.frm
-roof       140  194            art\tiles\tp155.frm
+roof       140  194            art\tiles\tp094.frm
 tile       142  194            art\tiles\tp155.frm
-roof       142  194            art\tiles\tp155.frm
+roof       142  194            art\tiles\tp098.frm
 tile       144  194            art\tiles\tp155.frm
-roof       144  194            art\tiles\tp155.frm
+roof       144  194            art\tiles\tp097.frm
 tile       146  194            art\tiles\tp155.frm
-roof       146  194            art\tiles\tp155.frm
+roof       146  194            art\tiles\tp099.frm
 tile       148  194            art\tiles\tp155.frm
-roof       148  194            art\tiles\tp155.frm
+roof       148  194            art\tiles\tp098.frm
 tile       150  194            art\tiles\tp155.frm
-roof       150  194            art\tiles\tp155.frm
+roof       150  194            art\tiles\tp097.frm
 tile       152  194            art\tiles\tp155.frm
-roof       152  194            art\tiles\tp155.frm
+roof       152  194            art\tiles\tp096.frm
 tile       154  194            art\tiles\tp155.frm
-roof       154  194            art\tiles\tp155.frm
+roof       154  194            art\tiles\tp095.frm
 tile       156  194            art\tiles\tp155.frm
-roof       156  194            art\tiles\tp154.frm
+roof       156  194            art\tiles\tp095.frm
 tile       158  194            art\tiles\tp160.frm
-roof       158  194            art\tiles\tp160.frm
+roof       158  194            art\tiles\tp085.frm
 tile       160  194            art\tiles\edg4008.frm
 tile       162  194            art\tiles\curb24.frm
 tile       164  194            art\tiles\curb16.frm
@@ -6716,17 +6731,29 @@ tile       216  194            art\tiles\edg4000.frm
 tile       218  194            art\tiles\edg7000.frm
 tile       220  194            art\tiles\curb24.frm
 tile       222  194            art\tiles\curb16.frm
+roof       222  194            art\tiles\tp076.frm
 tile       224  194            art\tiles\curb22.frm
+roof       224  194            art\tiles\tp020.frm
 tile       226  194            art\tiles\curb33.frm
+roof       226  194            art\tiles\tp019.frm
 tile       228  194            art\tiles\edg2003.frm
+roof       228  194            art\tiles\tp024.frm
 tile       230  194            art\tiles\edg4000.frm
+roof       230  194            art\tiles\tp023.frm
 tile       232  194            art\tiles\edg2003.frm
+roof       232  194            art\tiles\tp020.frm
 tile       234  194            art\tiles\edg3000.frm
+roof       234  194            art\tiles\tp019.frm
 tile       236  194            art\tiles\edg4000.frm
+roof       236  194            art\tiles\tp024.frm
 tile       238  194            art\tiles\edg2000.frm
+roof       238  194            art\tiles\tp023.frm
 tile       240  194            art\tiles\edg1001.frm
+roof       240  194            art\tiles\tp019.frm
 tile       242  194            art\tiles\edg7000.frm
+roof       242  194            art\tiles\tp019.frm
 tile       244  194            art\tiles\edg5007.frm
+roof       244  194            art\tiles\tp069.frm
 tile       246  194            art\tiles\edg5003.frm
 tile       248  194            art\tiles\edg5003.frm
 tile       250  194            art\tiles\edg5002.frm
@@ -6804,30 +6831,31 @@ tile       128  196            art\tiles\edg3001.frm
 tile       130  196            art\tiles\edg3001.frm
 tile       132  196            art\tiles\edg4002.frm
 tile       134  196            art\tiles\curb25.frm
+roof       134  196            art\tiles\tp100.frm
 tile       136  196            art\tiles\tp158.frm
-roof       136  196            art\tiles\tp158.frm
+roof       136  196            art\tiles\tp096.frm
 tile       138  196            art\tiles\tp155.frm
-roof       138  196            art\tiles\tp155.frm
+roof       138  196            art\tiles\tp095.frm
 tile       140  196            art\tiles\tp155.frm
-roof       140  196            art\tiles\tp155.frm
+roof       140  196            art\tiles\tp095.frm
 tile       142  196            art\tiles\tp155.frm
-roof       142  196            art\tiles\tp155.frm
+roof       142  196            art\tiles\tp099.frm
 tile       144  196            art\tiles\tp155.frm
-roof       144  196            art\tiles\tp155.frm
+roof       144  196            art\tiles\tp098.frm
 tile       146  196            art\tiles\tp155.frm
-roof       146  196            art\tiles\tp155.frm
+roof       146  196            art\tiles\tp094.frm
 tile       148  196            art\tiles\tp155.frm
-roof       148  196            art\tiles\tp155.frm
+roof       148  196            art\tiles\tp095.frm
 tile       150  196            art\tiles\tp155.frm
-roof       150  196            art\tiles\tp155.frm
+roof       150  196            art\tiles\tp096.frm
 tile       152  196            art\tiles\tp155.frm
-roof       152  196            art\tiles\tp155.frm
+roof       152  196            art\tiles\tp097.frm
 tile       154  196            art\tiles\tp155.frm
-roof       154  196            art\tiles\tp155.frm
+roof       154  196            art\tiles\tp095.frm
 tile       156  196            art\tiles\tp155.frm
-roof       156  196            art\tiles\tp154.frm
+roof       156  196            art\tiles\tp095.frm
 tile       158  196            art\tiles\tp160.frm
-roof       158  196            art\tiles\tp160.frm
+roof       158  196            art\tiles\tp190.frm
 tile       160  196            art\tiles\curb33.frm
 tile       162  196            art\tiles\curb25.frm
 tile       164  196            art\tiles\curb17.frm
@@ -6866,28 +6894,29 @@ tile       216  196            art\tiles\edg2003.frm
 tile       218  196            art\tiles\edg2000.frm
 tile       220  196            art\tiles\curb25.frm
 tile       222  196            art\tiles\curb16.frm
+roof       222  196            art\tiles\tp100.frm
 tile       224  196            art\tiles\tp161.frm
-roof       224  196            art\tiles\tp161.frm
+roof       224  196            art\tiles\tp083.frm
 tile       226  196            art\tiles\tp157.frm
-roof       226  196            art\tiles\tp157.frm
+roof       226  196            art\tiles\tp082.frm
 tile       228  196            art\tiles\tp157.frm
-roof       228  196            art\tiles\tp157.frm
+roof       228  196            art\tiles\tp081.frm
 tile       230  196            art\tiles\tp157.frm
-roof       230  196            art\tiles\tp157.frm
+roof       230  196            art\tiles\tp080.frm
 tile       232  196            art\tiles\tp157.frm
-roof       232  196            art\tiles\tp157.frm
+roof       232  196            art\tiles\tp082.frm
 tile       234  196            art\tiles\tp157.frm
-roof       234  196            art\tiles\tp157.frm
+roof       234  196            art\tiles\tp081.frm
 tile       236  196            art\tiles\tp157.frm
-roof       236  196            art\tiles\tp157.frm
+roof       236  196            art\tiles\tp080.frm
 tile       238  196            art\tiles\tp157.frm
-roof       238  196            art\tiles\tp157.frm
+roof       238  196            art\tiles\tp079.frm
 tile       240  196            art\tiles\tp157.frm
-roof       240  196            art\tiles\tp157.frm
+roof       240  196            art\tiles\tp078.frm
 tile       242  196            art\tiles\tp157.frm
-roof       242  196            art\tiles\tp157.frm
+roof       242  196            art\tiles\tp078.frm
 tile       244  196            art\tiles\tp164.frm
-roof       244  196            art\tiles\tp164.frm
+roof       244  196            art\tiles\tp077.frm
 tile       246  196            art\tiles\edg5004.frm
 tile       248  196            art\tiles\edg5000.frm
 tile       250  196            art\tiles\edg5003.frm
@@ -6965,30 +6994,31 @@ tile       128  198            art\tiles\edg6006.frm
 tile       130  198            art\tiles\edg4001.frm
 tile       132  198            art\tiles\edg3000.frm
 tile       134  198            art\tiles\curb24.frm
+roof       134  198            art\tiles\tp092.frm
 tile       136  198            art\tiles\tp158.frm
-roof       136  198            art\tiles\tp158.frm
+roof       136  198            art\tiles\tp097.frm
 tile       138  198            art\tiles\tp155.frm
-roof       138  198            art\tiles\tp155.frm
+roof       138  198            art\tiles\tp096.frm
 tile       140  198            art\tiles\tp155.frm
-roof       140  198            art\tiles\tp155.frm
+roof       140  198            art\tiles\tp096.frm
 tile       142  198            art\tiles\tp155.frm
-roof       142  198            art\tiles\tp155.frm
+roof       142  198            art\tiles\tp098.frm
 tile       144  198            art\tiles\tp155.frm
-roof       144  198            art\tiles\tp155.frm
+roof       144  198            art\tiles\tp099.frm
 tile       146  198            art\tiles\tp155.frm
-roof       146  198            art\tiles\tp155.frm
+roof       146  198            art\tiles\tp096.frm
 tile       148  198            art\tiles\tp155.frm
-roof       148  198            art\tiles\tp155.frm
+roof       148  198            art\tiles\tp094.frm
 tile       150  198            art\tiles\tp155.frm
-roof       150  198            art\tiles\tp155.frm
+roof       150  198            art\tiles\tp094.frm
 tile       152  198            art\tiles\tp155.frm
-roof       152  198            art\tiles\tp155.frm
+roof       152  198            art\tiles\tp094.frm
 tile       154  198            art\tiles\tp155.frm
-roof       154  198            art\tiles\tp155.frm
+roof       154  198            art\tiles\tp096.frm
 tile       156  198            art\tiles\tp155.frm
-roof       156  198            art\tiles\tp154.frm
+roof       156  198            art\tiles\tp096.frm
 tile       158  198            art\tiles\tp160.frm
-roof       158  198            art\tiles\tp160.frm
+roof       158  198            art\tiles\tp190.frm
 tile       160  198            art\tiles\curb27.frm
 tile       162  198            art\tiles\curb24.frm
 tile       164  198            art\tiles\curb16.frm
@@ -7034,28 +7064,29 @@ tile       216  198            art\tiles\edgs000.frm
 tile       218  198            art\tiles\edg6000.frm
 tile       220  198            art\tiles\curb25.frm
 tile       222  198            art\tiles\curb18.frm
+roof       222  198            art\tiles\tp100.frm
 tile       224  198            art\tiles\tp158.frm
-roof       224  198            art\tiles\tp158.frm
+roof       224  198            art\tiles\tp095.frm
 tile       226  198            art\tiles\tp155.frm
-roof       226  198            art\tiles\tp155.frm
+roof       226  198            art\tiles\tp094.frm
 tile       228  198            art\tiles\tp155.frm
-roof       228  198            art\tiles\tp155.frm
+roof       228  198            art\tiles\tp098.frm
 tile       230  198            art\tiles\tp155.frm
-roof       230  198            art\tiles\tp155.frm
+roof       230  198            art\tiles\tp097.frm
 tile       232  198            art\tiles\tp155.frm
-roof       232  198            art\tiles\tp155.frm
+roof       232  198            art\tiles\tp099.frm
 tile       234  198            art\tiles\tp155.frm
-roof       234  198            art\tiles\tp155.frm
+roof       234  198            art\tiles\tp098.frm
 tile       236  198            art\tiles\tp155.frm
-roof       236  198            art\tiles\tp155.frm
+roof       236  198            art\tiles\tp097.frm
 tile       238  198            art\tiles\tp155.frm
-roof       238  198            art\tiles\tp155.frm
+roof       238  198            art\tiles\tp096.frm
 tile       240  198            art\tiles\tp155.frm
-roof       240  198            art\tiles\tp155.frm
+roof       240  198            art\tiles\tp095.frm
 tile       242  198            art\tiles\tp155.frm
-roof       242  198            art\tiles\tp154.frm
+roof       242  198            art\tiles\tp095.frm
 tile       244  198            art\tiles\tp160.frm
-roof       244  198            art\tiles\tp160.frm
+roof       244  198            art\tiles\tp085.frm
 tile       246  198            art\tiles\curb33.frm
 tile       248  198            art\tiles\edg5000.frm
 tile       250  198            art\tiles\edg5004.frm
@@ -7133,30 +7164,31 @@ tile       128  200            art\tiles\edgs000.frm
 tile       130  200            art\tiles\edg2003.frm
 tile       132  200            art\tiles\edg4002.frm
 tile       134  200            art\tiles\curb34.frm
+roof       134  200            art\tiles\tp100.frm
 tile       136  200            art\tiles\tp158.frm
-roof       136  200            art\tiles\tp158.frm
+roof       136  200            art\tiles\tp098.frm
 tile       138  200            art\tiles\tp156.frm
-roof       138  200            art\tiles\tp155.frm
+roof       138  200            art\tiles\tp097.frm
 tile       140  200            art\tiles\tp156.frm
-roof       140  200            art\tiles\tp155.frm
+roof       140  200            art\tiles\tp097.frm
 tile       142  200            art\tiles\tp156.frm
-roof       142  200            art\tiles\tp155.frm
+roof       142  200            art\tiles\tp097.frm
 tile       144  200            art\tiles\tp156.frm
-roof       144  200            art\tiles\tp155.frm
+roof       144  200            art\tiles\tp095.frm
 tile       146  200            art\tiles\tp156.frm
-roof       146  200            art\tiles\tp155.frm
+roof       146  200            art\tiles\tp094.frm
 tile       148  200            art\tiles\tp156.frm
-roof       148  200            art\tiles\tp155.frm
+roof       148  200            art\tiles\tp094.frm
 tile       150  200            art\tiles\tp156.frm
-roof       150  200            art\tiles\tp155.frm
+roof       150  200            art\tiles\tp095.frm
 tile       152  200            art\tiles\tp156.frm
-roof       152  200            art\tiles\tp155.frm
+roof       152  200            art\tiles\tp095.frm
 tile       154  200            art\tiles\tp156.frm
-roof       154  200            art\tiles\tp155.frm
+roof       154  200            art\tiles\tp097.frm
 tile       156  200            art\tiles\tp156.frm
-roof       156  200            art\tiles\tp154.frm
+roof       156  200            art\tiles\tp097.frm
 tile       158  200            art\tiles\tp160.frm
-roof       158  200            art\tiles\tp160.frm
+roof       158  200            art\tiles\tp085.frm
 tile       160  200            art\tiles\curb26.frm
 tile       162  200            art\tiles\curb34.frm
 tile       164  200            art\tiles\curb20.frm
@@ -7202,28 +7234,29 @@ tile       216  200            art\tiles\edg5005.frm
 tile       218  200            art\tiles\edg5000.frm
 tile       220  200            art\tiles\curb34.frm
 tile       222  200            art\tiles\curb20.frm
+roof       222  200            art\tiles\tp100.frm
 tile       224  200            art\tiles\tp158.frm
-roof       224  200            art\tiles\tp158.frm
+roof       224  200            art\tiles\tp096.frm
 tile       226  200            art\tiles\tp155.frm
-roof       226  200            art\tiles\tp155.frm
+roof       226  200            art\tiles\tp095.frm
 tile       228  200            art\tiles\tp155.frm
-roof       228  200            art\tiles\tp155.frm
+roof       228  200            art\tiles\tp099.frm
 tile       230  200            art\tiles\tp155.frm
-roof       230  200            art\tiles\tp155.frm
+roof       230  200            art\tiles\tp098.frm
 tile       232  200            art\tiles\tp155.frm
-roof       232  200            art\tiles\tp155.frm
+roof       232  200            art\tiles\tp094.frm
 tile       234  200            art\tiles\tp155.frm
-roof       234  200            art\tiles\tp155.frm
+roof       234  200            art\tiles\tp095.frm
 tile       236  200            art\tiles\tp155.frm
-roof       236  200            art\tiles\tp155.frm
+roof       236  200            art\tiles\tp096.frm
 tile       238  200            art\tiles\tp155.frm
-roof       238  200            art\tiles\tp155.frm
+roof       238  200            art\tiles\tp097.frm
 tile       240  200            art\tiles\tp155.frm
-roof       240  200            art\tiles\tp155.frm
+roof       240  200            art\tiles\tp095.frm
 tile       242  200            art\tiles\tp155.frm
-roof       242  200            art\tiles\tp154.frm
+roof       242  200            art\tiles\tp095.frm
 tile       244  200            art\tiles\tp160.frm
-roof       244  200            art\tiles\tp160.frm
+roof       244  200            art\tiles\tp190.frm
 tile       246  200            art\tiles\curb27.frm
 tile       248  200            art\tiles\edg5001.frm
 tile       250  200            art\tiles\edg5000.frm
@@ -7302,30 +7335,31 @@ tile       128  202            art\tiles\edg7000.frm
 tile       130  202            art\tiles\edg3000.frm
 tile       132  202            art\tiles\edg4001.frm
 tile       134  202            art\tiles\edg4002.frm
+roof       134  202            art\tiles\tp092.frm
 tile       136  202            art\tiles\tp158.frm
-roof       136  202            art\tiles\tp158.frm
+roof       136  202            art\tiles\tp099.frm
 tile       138  202            art\tiles\tp155.frm
-roof       138  202            art\tiles\tp155.frm
+roof       138  202            art\tiles\tp098.frm
 tile       140  202            art\tiles\tp155.frm
-roof       140  202            art\tiles\tp155.frm
+roof       140  202            art\tiles\tp098.frm
 tile       142  202            art\tiles\tp155.frm
-roof       142  202            art\tiles\tp155.frm
+roof       142  202            art\tiles\tp097.frm
 tile       144  202            art\tiles\tp155.frm
-roof       144  202            art\tiles\tp155.frm
+roof       144  202            art\tiles\tp096.frm
 tile       146  202            art\tiles\tp155.frm
-roof       146  202            art\tiles\tp155.frm
+roof       146  202            art\tiles\tp095.frm
 tile       148  202            art\tiles\tp155.frm
-roof       148  202            art\tiles\tp155.frm
+roof       148  202            art\tiles\tp095.frm
 tile       150  202            art\tiles\tp155.frm
-roof       150  202            art\tiles\tp155.frm
+roof       150  202            art\tiles\tp096.frm
 tile       152  202            art\tiles\tp155.frm
-roof       152  202            art\tiles\tp155.frm
+roof       152  202            art\tiles\tp096.frm
 tile       154  202            art\tiles\tp155.frm
-roof       154  202            art\tiles\tp155.frm
+roof       154  202            art\tiles\tp098.frm
 tile       156  202            art\tiles\tp155.frm
-roof       156  202            art\tiles\tp154.frm
+roof       156  202            art\tiles\tp098.frm
 tile       158  202            art\tiles\tp160.frm
-roof       158  202            art\tiles\tp160.frm
+roof       158  202            art\tiles\tp188.frm
 tile       160  202            art\tiles\curb27.frm
 tile       162  202            art\tiles\edg4003.frm
 tile       164  202            art\tiles\curb24.frm
@@ -7367,28 +7401,29 @@ tile       216  202            art\tiles\edg5001.frm
 tile       218  202            art\tiles\road25.frm
 tile       220  202            art\tiles\curb33.frm
 tile       222  202            art\tiles\edg5003.frm
+roof       222  202            art\tiles\tp092.frm
 tile       224  202            art\tiles\tp158.frm
-roof       224  202            art\tiles\tp158.frm
+roof       224  202            art\tiles\tp097.frm
 tile       226  202            art\tiles\tp156.frm
-roof       226  202            art\tiles\tp155.frm
+roof       226  202            art\tiles\tp096.frm
 tile       228  202            art\tiles\tp156.frm
-roof       228  202            art\tiles\tp155.frm
+roof       228  202            art\tiles\tp098.frm
 tile       230  202            art\tiles\tp156.frm
-roof       230  202            art\tiles\tp155.frm
+roof       230  202            art\tiles\tp099.frm
 tile       232  202            art\tiles\tp156.frm
-roof       232  202            art\tiles\tp155.frm
+roof       232  202            art\tiles\tp096.frm
 tile       234  202            art\tiles\tp156.frm
-roof       234  202            art\tiles\tp155.frm
+roof       234  202            art\tiles\tp094.frm
 tile       236  202            art\tiles\tp156.frm
-roof       236  202            art\tiles\tp155.frm
+roof       236  202            art\tiles\tp094.frm
 tile       238  202            art\tiles\tp156.frm
-roof       238  202            art\tiles\tp155.frm
+roof       238  202            art\tiles\tp094.frm
 tile       240  202            art\tiles\tp156.frm
-roof       240  202            art\tiles\tp155.frm
+roof       240  202            art\tiles\tp096.frm
 tile       242  202            art\tiles\tp156.frm
-roof       242  202            art\tiles\tp154.frm
+roof       242  202            art\tiles\tp096.frm
 tile       244  202            art\tiles\tp160.frm
-roof       244  202            art\tiles\tp160.frm
+roof       244  202            art\tiles\tp190.frm
 tile       246  202            art\tiles\curb22.frm
 tile       248  202            art\tiles\curb33.frm
 tile       250  202            art\tiles\edg5001.frm
@@ -7466,30 +7501,31 @@ tile       128  204            art\tiles\curb33.frm
 tile       130  204            art\tiles\curb35.frm
 tile       132  204            art\tiles\curb29.frm
 tile       134  204            art\tiles\edg4001.frm
+roof       134  204            art\tiles\tp092.frm
 tile       136  204            art\tiles\tp158.frm
-roof       136  204            art\tiles\tp158.frm
+roof       136  204            art\tiles\tp099.frm
 tile       138  204            art\tiles\tp156.frm
-roof       138  204            art\tiles\tp155.frm
+roof       138  204            art\tiles\tp098.frm
 tile       140  204            art\tiles\tp156.frm
-roof       140  204            art\tiles\tp155.frm
+roof       140  204            art\tiles\tp098.frm
 tile       142  204            art\tiles\tp156.frm
-roof       142  204            art\tiles\tp155.frm
+roof       142  204            art\tiles\tp097.frm
 tile       144  204            art\tiles\tp156.frm
-roof       144  204            art\tiles\tp155.frm
+roof       144  204            art\tiles\tp096.frm
 tile       146  204            art\tiles\tp156.frm
-roof       146  204            art\tiles\tp155.frm
+roof       146  204            art\tiles\tp095.frm
 tile       148  204            art\tiles\tp156.frm
-roof       148  204            art\tiles\tp155.frm
+roof       148  204            art\tiles\tp095.frm
 tile       150  204            art\tiles\tp156.frm
-roof       150  204            art\tiles\tp155.frm
+roof       150  204            art\tiles\tp096.frm
 tile       152  204            art\tiles\tp156.frm
-roof       152  204            art\tiles\tp155.frm
+roof       152  204            art\tiles\tp096.frm
 tile       154  204            art\tiles\tp156.frm
-roof       154  204            art\tiles\tp155.frm
+roof       154  204            art\tiles\tp098.frm
 tile       156  204            art\tiles\tp156.frm
-roof       156  204            art\tiles\tp154.frm
+roof       156  204            art\tiles\tp098.frm
 tile       158  204            art\tiles\tp160.frm
-roof       158  204            art\tiles\tp160.frm
+roof       158  204            art\tiles\tp190.frm
 tile       160  204            art\tiles\curb22.frm
 tile       162  204            art\tiles\curb33.frm
 tile       164  204            art\tiles\curb25.frm
@@ -7535,28 +7571,29 @@ tile       218  204            art\tiles\road20.frm
 roof       218  204            art\tiles\tp124.frm
 tile       220  204            art\tiles\curb26.frm
 tile       222  204            art\tiles\edg5000.frm
+roof       222  204            art\tiles\tp100.frm
 tile       224  204            art\tiles\tp158.frm
-roof       224  204            art\tiles\tp158.frm
+roof       224  204            art\tiles\tp098.frm
 tile       226  204            art\tiles\tp155.frm
-roof       226  204            art\tiles\tp155.frm
+roof       226  204            art\tiles\tp097.frm
 tile       228  204            art\tiles\tp155.frm
-roof       228  204            art\tiles\tp155.frm
+roof       228  204            art\tiles\tp097.frm
 tile       230  204            art\tiles\tp155.frm
-roof       230  204            art\tiles\tp155.frm
+roof       230  204            art\tiles\tp095.frm
 tile       232  204            art\tiles\tp155.frm
-roof       232  204            art\tiles\tp155.frm
+roof       232  204            art\tiles\tp094.frm
 tile       234  204            art\tiles\tp155.frm
-roof       234  204            art\tiles\tp155.frm
+roof       234  204            art\tiles\tp094.frm
 tile       236  204            art\tiles\tp155.frm
-roof       236  204            art\tiles\tp155.frm
+roof       236  204            art\tiles\tp095.frm
 tile       238  204            art\tiles\tp155.frm
-roof       238  204            art\tiles\tp155.frm
+roof       238  204            art\tiles\tp095.frm
 tile       240  204            art\tiles\tp155.frm
-roof       240  204            art\tiles\tp155.frm
+roof       240  204            art\tiles\tp097.frm
 tile       242  204            art\tiles\tp155.frm
-roof       242  204            art\tiles\tp154.frm
+roof       242  204            art\tiles\tp097.frm
 tile       244  204            art\tiles\tp160.frm
-roof       244  204            art\tiles\tp160.frm
+roof       244  204            art\tiles\tp085.frm
 tile       246  204            art\tiles\curb16.frm
 tile       248  204            art\tiles\curb26.frm
 tile       250  204            art\tiles\edg5000.frm
@@ -7643,30 +7680,31 @@ tile       128  206            art\tiles\curb22.frm
 tile       130  206            art\tiles\curb23.frm
 tile       132  206            art\tiles\curb16.frm
 tile       134  206            art\tiles\curb16.frm
+roof       134  206            art\tiles\tp100.frm
 tile       136  206            art\tiles\tp158.frm
-roof       136  206            art\tiles\tp158.frm
+roof       136  206            art\tiles\tp099.frm
 tile       138  206            art\tiles\tp155.frm
-roof       138  206            art\tiles\tp155.frm
+roof       138  206            art\tiles\tp098.frm
 tile       140  206            art\tiles\tp155.frm
-roof       140  206            art\tiles\tp155.frm
+roof       140  206            art\tiles\tp098.frm
 tile       142  206            art\tiles\tp155.frm
-roof       142  206            art\tiles\tp155.frm
+roof       142  206            art\tiles\tp097.frm
 tile       144  206            art\tiles\tp155.frm
-roof       144  206            art\tiles\tp155.frm
+roof       144  206            art\tiles\tp096.frm
 tile       146  206            art\tiles\tp155.frm
-roof       146  206            art\tiles\tp155.frm
+roof       146  206            art\tiles\tp095.frm
 tile       148  206            art\tiles\tp155.frm
-roof       148  206            art\tiles\tp155.frm
+roof       148  206            art\tiles\tp095.frm
 tile       150  206            art\tiles\tp155.frm
-roof       150  206            art\tiles\tp155.frm
+roof       150  206            art\tiles\tp096.frm
 tile       152  206            art\tiles\tp155.frm
-roof       152  206            art\tiles\tp155.frm
+roof       152  206            art\tiles\tp096.frm
 tile       154  206            art\tiles\tp155.frm
-roof       154  206            art\tiles\tp155.frm
+roof       154  206            art\tiles\tp098.frm
 tile       156  206            art\tiles\tp155.frm
-roof       156  206            art\tiles\tp154.frm
+roof       156  206            art\tiles\tp098.frm
 tile       158  206            art\tiles\tp160.frm
-roof       158  206            art\tiles\tp160.frm
+roof       158  206            art\tiles\tp188.frm
 tile       160  206            art\tiles\curb16.frm
 tile       162  206            art\tiles\curb26.frm
 tile       164  206            art\tiles\curb34.frm
@@ -7708,28 +7746,29 @@ tile       218  206            art\tiles\road21.frm
 roof       218  206            art\tiles\tp085.frm
 tile       220  206            art\tiles\curb27.frm
 tile       222  206            art\tiles\edg5001.frm
+roof       222  206            art\tiles\tp092.frm
 tile       224  206            art\tiles\tp158.frm
-roof       224  206            art\tiles\tp158.frm
+roof       224  206            art\tiles\tp099.frm
 tile       226  206            art\tiles\tp156.frm
-roof       226  206            art\tiles\tp155.frm
+roof       226  206            art\tiles\tp098.frm
 tile       228  206            art\tiles\tp156.frm
-roof       228  206            art\tiles\tp155.frm
+roof       228  206            art\tiles\tp097.frm
 tile       230  206            art\tiles\tp156.frm
-roof       230  206            art\tiles\tp155.frm
+roof       230  206            art\tiles\tp096.frm
 tile       232  206            art\tiles\tp156.frm
-roof       232  206            art\tiles\tp155.frm
+roof       232  206            art\tiles\tp095.frm
 tile       234  206            art\tiles\tp156.frm
-roof       234  206            art\tiles\tp155.frm
+roof       234  206            art\tiles\tp095.frm
 tile       236  206            art\tiles\tp156.frm
-roof       236  206            art\tiles\tp155.frm
+roof       236  206            art\tiles\tp096.frm
 tile       238  206            art\tiles\tp156.frm
-roof       238  206            art\tiles\tp155.frm
+roof       238  206            art\tiles\tp096.frm
 tile       240  206            art\tiles\tp156.frm
-roof       240  206            art\tiles\tp155.frm
+roof       240  206            art\tiles\tp098.frm
 tile       242  206            art\tiles\tp156.frm
-roof       242  206            art\tiles\tp154.frm
+roof       242  206            art\tiles\tp098.frm
 tile       244  206            art\tiles\tp160.frm
-roof       244  206            art\tiles\tp160.frm
+roof       244  206            art\tiles\tp188.frm
 tile       246  206            art\tiles\curb20.frm
 tile       248  206            art\tiles\curb22.frm
 tile       250  206            art\tiles\curb33.frm
@@ -7817,30 +7856,31 @@ tile       128  208            art\tiles\curb21.frm
 tile       130  208            art\tiles\curb31.frm
 tile       132  208            art\tiles\curb20.frm
 tile       134  208            art\tiles\curb16.frm
+roof       134  208            art\tiles\tp092.frm
 tile       136  208            art\tiles\tp158.frm
-roof       136  208            art\tiles\tp158.frm
+roof       136  208            art\tiles\tp098.frm
 tile       138  208            art\tiles\tp156.frm
-roof       138  208            art\tiles\tp154.frm
+roof       138  208            art\tiles\tp097.frm
 tile       140  208            art\tiles\tp156.frm
-roof       140  208            art\tiles\tp154.frm
+roof       140  208            art\tiles\tp097.frm
 tile       142  208            art\tiles\tp156.frm
-roof       142  208            art\tiles\tp154.frm
+roof       142  208            art\tiles\tp096.frm
 tile       144  208            art\tiles\tp156.frm
-roof       144  208            art\tiles\tp154.frm
+roof       144  208            art\tiles\tp107.frm
 tile       146  208            art\tiles\tp156.frm
-roof       146  208            art\tiles\tp154.frm
+roof       146  208            art\tiles\tp094.frm
 tile       148  208            art\tiles\tp156.frm
-roof       148  208            art\tiles\tp154.frm
+roof       148  208            art\tiles\tp097.frm
 tile       150  208            art\tiles\tp156.frm
-roof       150  208            art\tiles\tp154.frm
+roof       150  208            art\tiles\tp097.frm
 tile       152  208            art\tiles\tp156.frm
-roof       152  208            art\tiles\tp154.frm
+roof       152  208            art\tiles\tp097.frm
 tile       154  208            art\tiles\tp156.frm
-roof       154  208            art\tiles\tp154.frm
+roof       154  208            art\tiles\tp099.frm
 tile       156  208            art\tiles\tp156.frm
-roof       156  208            art\tiles\tp154.frm
+roof       156  208            art\tiles\tp099.frm
 tile       158  208            art\tiles\tp160.frm
-roof       158  208            art\tiles\tp160.frm
+roof       158  208            art\tiles\tp189.frm
 tile       160  208            art\tiles\curb16.frm
 tile       162  208            art\tiles\curb27.frm
 tile       164  208            art\tiles\curb35.frm
@@ -7883,28 +7923,29 @@ tile       218  208            art\tiles\road20.frm
 roof       218  208            art\tiles\tp093.frm
 tile       220  208            art\tiles\curb26.frm
 tile       222  208            art\tiles\edg2003.frm
+roof       222  208            art\tiles\tp100.frm
 tile       224  208            art\tiles\tp158.frm
-roof       224  208            art\tiles\tp158.frm
+roof       224  208            art\tiles\tp099.frm
 tile       226  208            art\tiles\tp155.frm
-roof       226  208            art\tiles\tp155.frm
+roof       226  208            art\tiles\tp098.frm
 tile       228  208            art\tiles\tp155.frm
-roof       228  208            art\tiles\tp155.frm
+roof       228  208            art\tiles\tp097.frm
 tile       230  208            art\tiles\tp155.frm
-roof       230  208            art\tiles\tp155.frm
+roof       230  208            art\tiles\tp096.frm
 tile       232  208            art\tiles\tp155.frm
-roof       232  208            art\tiles\tp155.frm
+roof       232  208            art\tiles\tp095.frm
 tile       234  208            art\tiles\tp155.frm
-roof       234  208            art\tiles\tp155.frm
+roof       234  208            art\tiles\tp095.frm
 tile       236  208            art\tiles\tp155.frm
-roof       236  208            art\tiles\tp155.frm
+roof       236  208            art\tiles\tp096.frm
 tile       238  208            art\tiles\tp155.frm
-roof       238  208            art\tiles\tp155.frm
+roof       238  208            art\tiles\tp096.frm
 tile       240  208            art\tiles\tp155.frm
-roof       240  208            art\tiles\tp155.frm
+roof       240  208            art\tiles\tp098.frm
 tile       242  208            art\tiles\tp155.frm
-roof       242  208            art\tiles\tp154.frm
+roof       242  208            art\tiles\tp098.frm
 tile       244  208            art\tiles\tp160.frm
-roof       244  208            art\tiles\tp160.frm
+roof       244  208            art\tiles\tp190.frm
 tile       246  208            art\tiles\curb34.frm
 tile       248  208            art\tiles\curb20.frm
 tile       250  208            art\tiles\curb22.frm
@@ -7991,30 +8032,31 @@ tile       128  210            art\tiles\curb22.frm
 tile       130  210            art\tiles\curb29.frm
 tile       132  210            art\tiles\curb23.frm
 tile       134  210            art\tiles\curb16.frm
+roof       134  210            art\tiles\tp116.frm
 tile       136  210            art\tiles\tp162.frm
-roof       136  210            art\tiles\tp162.frm
+roof       136  210            art\tiles\tp114.frm
 tile       138  210            art\tiles\tp159.frm
-roof       138  210            art\tiles\tp159.frm
+roof       138  210            art\tiles\tp110.frm
 tile       140  210            art\tiles\tp159.frm
-roof       140  210            art\tiles\tp159.frm
+roof       140  210            art\tiles\tp110.frm
 tile       142  210            art\tiles\tp159.frm
-roof       142  210            art\tiles\tp159.frm
+roof       142  210            art\tiles\tp111.frm
 tile       144  210            art\tiles\tp159.frm
-roof       144  210            art\tiles\tp159.frm
+roof       144  210            art\tiles\tp112.frm
 tile       146  210            art\tiles\tp159.frm
-roof       146  210            art\tiles\tp159.frm
+roof       146  210            art\tiles\tp113.frm
 tile       148  210            art\tiles\tp159.frm
-roof       148  210            art\tiles\tp159.frm
+roof       148  210            art\tiles\tp112.frm
 tile       150  210            art\tiles\tp159.frm
-roof       150  210            art\tiles\tp159.frm
+roof       150  210            art\tiles\tp115.frm
 tile       152  210            art\tiles\tp159.frm
-roof       152  210            art\tiles\tp159.frm
+roof       152  210            art\tiles\tp114.frm
 tile       154  210            art\tiles\tp159.frm
-roof       154  210            art\tiles\tp159.frm
+roof       154  210            art\tiles\tp115.frm
 tile       156  210            art\tiles\tp159.frm
-roof       156  210            art\tiles\tp159.frm
+roof       156  210            art\tiles\tp115.frm
 tile       158  210            art\tiles\tp163.frm
-roof       158  210            art\tiles\tp163.frm
+roof       158  210            art\tiles\tp109.frm
 tile       160  210            art\tiles\curb21.frm
 tile       162  210            art\tiles\curb32.frm
 tile       164  210            art\tiles\curb24.frm
@@ -8057,28 +8099,29 @@ tile       218  210            art\tiles\road21.frm
 roof       218  210            art\tiles\tp085.frm
 tile       220  210            art\tiles\curb22.frm
 tile       222  210            art\tiles\curb33.frm
+roof       222  210            art\tiles\tp092.frm
 tile       224  210            art\tiles\tp158.frm
-roof       224  210            art\tiles\tp158.frm
+roof       224  210            art\tiles\tp098.frm
 tile       226  210            art\tiles\tp156.frm
-roof       226  210            art\tiles\tp155.frm
+roof       226  210            art\tiles\tp097.frm
 tile       228  210            art\tiles\tp156.frm
-roof       228  210            art\tiles\tp155.frm
+roof       228  210            art\tiles\tp096.frm
 tile       230  210            art\tiles\tp156.frm
-roof       230  210            art\tiles\tp155.frm
+roof       230  210            art\tiles\tp107.frm
 tile       232  210            art\tiles\tp156.frm
-roof       232  210            art\tiles\tp155.frm
+roof       232  210            art\tiles\tp094.frm
 tile       234  210            art\tiles\tp156.frm
-roof       234  210            art\tiles\tp155.frm
+roof       234  210            art\tiles\tp097.frm
 tile       236  210            art\tiles\tp156.frm
-roof       236  210            art\tiles\tp155.frm
+roof       236  210            art\tiles\tp097.frm
 tile       238  210            art\tiles\tp156.frm
-roof       238  210            art\tiles\tp155.frm
+roof       238  210            art\tiles\tp097.frm
 tile       240  210            art\tiles\tp156.frm
-roof       240  210            art\tiles\tp155.frm
+roof       240  210            art\tiles\tp099.frm
 tile       242  210            art\tiles\tp156.frm
-roof       242  210            art\tiles\tp154.frm
+roof       242  210            art\tiles\tp099.frm
 tile       244  210            art\tiles\tp160.frm
-roof       244  210            art\tiles\tp160.frm
+roof       244  210            art\tiles\tp189.frm
 tile       246  210            art\tiles\curb29.frm
 tile       248  210            art\tiles\curb23.frm
 tile       250  210            art\tiles\curb21.frm
@@ -8212,28 +8255,29 @@ tile       218  212            art\tiles\road19.frm
 roof       218  212            art\tiles\tp109.frm
 tile       220  212            art\tiles\curb16.frm
 tile       222  212            art\tiles\curb22.frm
+roof       222  212            art\tiles\tp116.frm
 tile       224  212            art\tiles\tp162.frm
-roof       224  212            art\tiles\tp162.frm
+roof       224  212            art\tiles\tp114.frm
 tile       226  212            art\tiles\tp159.frm
-roof       226  212            art\tiles\tp159.frm
+roof       226  212            art\tiles\tp110.frm
 tile       228  212            art\tiles\tp159.frm
-roof       228  212            art\tiles\tp159.frm
+roof       228  212            art\tiles\tp111.frm
 tile       230  212            art\tiles\tp159.frm
-roof       230  212            art\tiles\tp159.frm
+roof       230  212            art\tiles\tp112.frm
 tile       232  212            art\tiles\tp159.frm
-roof       232  212            art\tiles\tp159.frm
+roof       232  212            art\tiles\tp113.frm
 tile       234  212            art\tiles\tp159.frm
-roof       234  212            art\tiles\tp159.frm
+roof       234  212            art\tiles\tp112.frm
 tile       236  212            art\tiles\tp159.frm
-roof       236  212            art\tiles\tp159.frm
+roof       236  212            art\tiles\tp115.frm
 tile       238  212            art\tiles\tp159.frm
-roof       238  212            art\tiles\tp159.frm
+roof       238  212            art\tiles\tp114.frm
 tile       240  212            art\tiles\tp159.frm
-roof       240  212            art\tiles\tp159.frm
+roof       240  212            art\tiles\tp115.frm
 tile       242  212            art\tiles\tp159.frm
-roof       242  212            art\tiles\tp159.frm
+roof       242  212            art\tiles\tp115.frm
 tile       244  212            art\tiles\tp163.frm
-roof       244  212            art\tiles\tp163.frm
+roof       244  212            art\tiles\tp109.frm
 tile       246  212            art\tiles\curb16.frm
 tile       248  212            art\tiles\curb16.frm
 tile       250  212            art\tiles\curb26.frm
@@ -12568,17 +12612,6 @@ tile       254  280            art\tiles\bld2043.frm
 tile       256  280            art\tiles\bld2043.frm
 tile       258  280            art\tiles\bld2043.frm
 tile       260  280            art\tiles\bld2043.frm
-roof       289  281            art\tiles\tp161.frm
-roof       291  281            art\tiles\tp157.frm
-roof       293  281            art\tiles\tp157.frm
-roof       295  281            art\tiles\tp157.frm
-roof       297  281            art\tiles\tp157.frm
-roof       299  281            art\tiles\tp157.frm
-roof       301  281            art\tiles\tp157.frm
-roof       303  281            art\tiles\tp157.frm
-roof       305  281            art\tiles\tp157.frm
-roof       307  281            art\tiles\tp157.frm
-roof       309  281            art\tiles\tp164.frm
 tile       112  282            art\tiles\bld2043.frm
 tile       114  282            art\tiles\bld2043.frm
 tile       116  282            art\tiles\bld2043.frm
@@ -12652,17 +12685,6 @@ tile       250  282            art\tiles\bld2043.frm
 tile       252  282            art\tiles\bld2043.frm
 tile       254  282            art\tiles\bld2043.frm
 tile       256  282            art\tiles\bld2043.frm
-roof       289  283            art\tiles\tp158.frm
-roof       291  283            art\tiles\tp155.frm
-roof       293  283            art\tiles\tp155.frm
-roof       295  283            art\tiles\tp155.frm
-roof       297  283            art\tiles\tp155.frm
-roof       299  283            art\tiles\tp155.frm
-roof       301  283            art\tiles\tp155.frm
-roof       303  283            art\tiles\tp155.frm
-roof       305  283            art\tiles\tp155.frm
-roof       307  283            art\tiles\tp154.frm
-roof       309  283            art\tiles\tp160.frm
 tile       114  284            art\tiles\bld2043.frm
 tile       116  284            art\tiles\bld2043.frm
 tile       118  284            art\tiles\bld2043.frm
@@ -12733,17 +12755,6 @@ tile       246  284            art\tiles\bld2043.frm
 tile       248  284            art\tiles\bld2043.frm
 tile       250  284            art\tiles\bld2043.frm
 tile       252  284            art\tiles\bld2043.frm
-roof       289  285            art\tiles\tp158.frm
-roof       291  285            art\tiles\tp155.frm
-roof       293  285            art\tiles\tp155.frm
-roof       295  285            art\tiles\tp155.frm
-roof       297  285            art\tiles\tp155.frm
-roof       299  285            art\tiles\tp155.frm
-roof       301  285            art\tiles\tp155.frm
-roof       303  285            art\tiles\tp155.frm
-roof       305  285            art\tiles\tp155.frm
-roof       307  285            art\tiles\tp154.frm
-roof       309  285            art\tiles\tp160.frm
 tile       116  286            art\tiles\bld2043.frm
 tile       118  286            art\tiles\bld2043.frm
 tile       120  286            art\tiles\bld2043.frm
@@ -12811,17 +12822,6 @@ tile       242  286            art\tiles\bld2043.frm
 tile       244  286            art\tiles\bld2043.frm
 tile       246  286            art\tiles\bld2043.frm
 tile       248  286            art\tiles\bld2043.frm
-roof       289  287            art\tiles\tp158.frm
-roof       291  287            art\tiles\tp155.frm
-roof       293  287            art\tiles\tp155.frm
-roof       295  287            art\tiles\tp155.frm
-roof       297  287            art\tiles\tp155.frm
-roof       299  287            art\tiles\tp155.frm
-roof       301  287            art\tiles\tp155.frm
-roof       303  287            art\tiles\tp155.frm
-roof       305  287            art\tiles\tp155.frm
-roof       307  287            art\tiles\tp154.frm
-roof       309  287            art\tiles\tp160.frm
 tile       116  288            art\tiles\bld2043.frm
 tile       118  288            art\tiles\bld2043.frm
 tile       120  288            art\tiles\bld2043.frm
@@ -12887,17 +12887,6 @@ tile       238  288            art\tiles\bld2043.frm
 tile       240  288            art\tiles\bld2043.frm
 tile       242  288            art\tiles\bld2043.frm
 tile       244  288            art\tiles\bld2043.frm
-roof       289  289            art\tiles\tp158.frm
-roof       291  289            art\tiles\tp155.frm
-roof       293  289            art\tiles\tp155.frm
-roof       295  289            art\tiles\tp155.frm
-roof       297  289            art\tiles\tp155.frm
-roof       299  289            art\tiles\tp155.frm
-roof       301  289            art\tiles\tp155.frm
-roof       303  289            art\tiles\tp155.frm
-roof       305  289            art\tiles\tp155.frm
-roof       307  289            art\tiles\tp154.frm
-roof       309  289            art\tiles\tp160.frm
 tile       118  290            art\tiles\bld2043.frm
 tile       120  290            art\tiles\bld2043.frm
 tile       122  290            art\tiles\bld2043.frm
@@ -12960,17 +12949,6 @@ tile       234  290            art\tiles\bld2043.frm
 tile       236  290            art\tiles\bld2043.frm
 tile       238  290            art\tiles\bld2043.frm
 tile       240  290            art\tiles\bld2043.frm
-roof       289  291            art\tiles\tp158.frm
-roof       291  291            art\tiles\tp155.frm
-roof       293  291            art\tiles\tp155.frm
-roof       295  291            art\tiles\tp155.frm
-roof       297  291            art\tiles\tp155.frm
-roof       299  291            art\tiles\tp155.frm
-roof       301  291            art\tiles\tp155.frm
-roof       303  291            art\tiles\tp155.frm
-roof       305  291            art\tiles\tp155.frm
-roof       307  291            art\tiles\tp154.frm
-roof       309  291            art\tiles\tp160.frm
 tile       120  292            art\tiles\bld2043.frm
 tile       122  292            art\tiles\bld2043.frm
 tile       124  292            art\tiles\bld2043.frm
@@ -13030,17 +13008,6 @@ tile       230  292            art\tiles\bld2043.frm
 tile       232  292            art\tiles\bld2043.frm
 tile       234  292            art\tiles\bld2043.frm
 tile       236  292            art\tiles\bld2043.frm
-roof       289  293            art\tiles\tp158.frm
-roof       291  293            art\tiles\tp155.frm
-roof       293  293            art\tiles\tp155.frm
-roof       295  293            art\tiles\tp155.frm
-roof       297  293            art\tiles\tp155.frm
-roof       299  293            art\tiles\tp155.frm
-roof       301  293            art\tiles\tp155.frm
-roof       303  293            art\tiles\tp155.frm
-roof       305  293            art\tiles\tp155.frm
-roof       307  293            art\tiles\tp154.frm
-roof       309  293            art\tiles\tp160.frm
 tile       120  294            art\tiles\bld2043.frm
 tile       122  294            art\tiles\bld2043.frm
 tile       124  294            art\tiles\bld2043.frm
@@ -13098,17 +13065,6 @@ tile       226  294            art\tiles\bld2043.frm
 tile       228  294            art\tiles\bld2043.frm
 tile       230  294            art\tiles\bld2043.frm
 tile       232  294            art\tiles\bld2043.frm
-roof       289  295            art\tiles\tp158.frm
-roof       291  295            art\tiles\tp155.frm
-roof       293  295            art\tiles\tp155.frm
-roof       295  295            art\tiles\tp155.frm
-roof       297  295            art\tiles\tp155.frm
-roof       299  295            art\tiles\tp155.frm
-roof       301  295            art\tiles\tp155.frm
-roof       303  295            art\tiles\tp155.frm
-roof       305  295            art\tiles\tp155.frm
-roof       307  295            art\tiles\tp154.frm
-roof       309  295            art\tiles\tp160.frm
 tile       122  296            art\tiles\bld2043.frm
 tile       124  296            art\tiles\bld2043.frm
 tile       126  296            art\tiles\bld2043.frm
@@ -13163,17 +13119,6 @@ tile       222  296            art\tiles\bld2043.frm
 tile       224  296            art\tiles\bld2043.frm
 tile       226  296            art\tiles\bld2043.frm
 tile       228  296            art\tiles\bld2043.frm
-roof       289  297            art\tiles\tp158.frm
-roof       291  297            art\tiles\tp154.frm
-roof       293  297            art\tiles\tp154.frm
-roof       295  297            art\tiles\tp154.frm
-roof       297  297            art\tiles\tp154.frm
-roof       299  297            art\tiles\tp154.frm
-roof       301  297            art\tiles\tp154.frm
-roof       303  297            art\tiles\tp154.frm
-roof       305  297            art\tiles\tp154.frm
-roof       307  297            art\tiles\tp154.frm
-roof       309  297            art\tiles\tp160.frm
 tile       124  298            art\tiles\bld2043.frm
 tile       126  298            art\tiles\bld2043.frm
 tile       128  298            art\tiles\bld2043.frm
@@ -13225,17 +13170,6 @@ tile       218  298            art\tiles\bld2043.frm
 tile       220  298            art\tiles\bld2043.frm
 tile       222  298            art\tiles\bld2043.frm
 tile       224  298            art\tiles\bld2043.frm
-roof       289  299            art\tiles\tp162.frm
-roof       291  299            art\tiles\tp159.frm
-roof       293  299            art\tiles\tp159.frm
-roof       295  299            art\tiles\tp159.frm
-roof       297  299            art\tiles\tp159.frm
-roof       299  299            art\tiles\tp159.frm
-roof       301  299            art\tiles\tp159.frm
-roof       303  299            art\tiles\tp159.frm
-roof       305  299            art\tiles\tp159.frm
-roof       307  299            art\tiles\tp159.frm
-roof       309  299            art\tiles\tp163.frm
 tile       124  300            art\tiles\bld2043.frm
 tile       126  300            art\tiles\bld2043.frm
 tile       128  300            art\tiles\bld2043.frm
@@ -13677,11 +13611,6 @@ tile       170  322            art\tiles\bld2043.frm
 tile       172  322            art\tiles\bld2043.frm
 tile       174  322            art\tiles\bld2043.frm
 tile       176  322            art\tiles\bld2043.frm
-roof       285  322            art\tiles\tp073.frm
-roof       287  322            art\tiles\tp072.frm
-roof       289  322            art\tiles\tp071.frm
-roof       291  322            art\tiles\tp070.frm
-roof       293  322            art\tiles\tp118.frm
 tile       140  324            art\tiles\bld2043.frm
 tile       142  324            art\tiles\bld2043.frm
 tile       144  324            art\tiles\bld2043.frm
@@ -13699,10 +13628,6 @@ tile       166  324            art\tiles\bld2043.frm
 tile       168  324            art\tiles\bld2043.frm
 tile       170  324            art\tiles\bld2043.frm
 tile       172  324            art\tiles\bld2043.frm
-roof       233  324            art\tiles\tp136.frm
-roof       289  324            art\tiles\tp130.frm
-roof       291  324            art\tiles\tp131.frm
-roof       293  324            art\tiles\tp143.frm
 tile       142  326            art\tiles\bld2043.frm
 tile       144  326            art\tiles\bld2043.frm
 tile       146  326            art\tiles\bld2043.frm
@@ -13717,7 +13642,6 @@ tile       162  326            art\tiles\bld2043.frm
 tile       164  326            art\tiles\bld2043.frm
 tile       166  326            art\tiles\bld2043.frm
 tile       168  326            art\tiles\bld2043.frm
-roof       233  326            art\tiles\tp136.frm
 tile       144  328            art\tiles\bld2043.frm
 tile       146  328            art\tiles\bld2043.frm
 tile       148  328            art\tiles\bld2043.frm
@@ -13729,7 +13653,6 @@ tile       158  328            art\tiles\bld2043.frm
 tile       160  328            art\tiles\bld2043.frm
 tile       162  328            art\tiles\bld2043.frm
 tile       164  328            art\tiles\bld2043.frm
-roof       289  328            art\tiles\tp141.frm
 tile       144  330            art\tiles\bld2043.frm
 tile       146  330            art\tiles\bld2043.frm
 tile       148  330            art\tiles\bld2043.frm
@@ -13739,9 +13662,6 @@ tile       154  330            art\tiles\bld2043.frm
 tile       156  330            art\tiles\bld2043.frm
 tile       158  330            art\tiles\bld2043.frm
 tile       160  330            art\tiles\bld2043.frm
-roof       285  330            art\tiles\tp090.frm
-roof       287  330            art\tiles\tp097.frm
-roof       289  330            art\tiles\tp136.frm
 tile       146  332            art\tiles\bld2043.frm
 tile       148  332            art\tiles\bld2043.frm
 tile       150  332            art\tiles\bld2043.frm
@@ -13749,76 +13669,10 @@ tile       152  332            art\tiles\bld2043.frm
 tile       154  332            art\tiles\bld2043.frm
 tile       156  332            art\tiles\bld2043.frm
 tile       231  332            art\tiles\plk3000.frm
-roof       232  333            art\tiles\tp107.frm
-roof       245  333            art\tiles\tp075.frm
-roof       247  333            art\tiles\tp074.frm
-roof       249  333            art\tiles\tp073.frm
-roof       251  333            art\tiles\tp072.frm
-roof       253  333            art\tiles\tp071.frm
-roof       255  333            art\tiles\tp070.frm
-roof       257  333            art\tiles\tp071.frm
 tile       148  334            art\tiles\bld2043.frm
 tile       150  334            art\tiles\bld2043.frm
 tile       152  334            art\tiles\bld2043.frm
 tile       231  334            art\tiles\plk3001.frm
-roof       232  335            art\tiles\tp107.frm
-roof       245  335            art\tiles\tp087.frm
-roof       247  335            art\tiles\tp107.frm
-roof       249  335            art\tiles\tp107.frm
-roof       251  335            art\tiles\tp107.frm
-roof       253  335            art\tiles\tp104.frm
-roof       255  335            art\tiles\tp103.frm
-roof       257  335            art\tiles\tp102.frm
-roof       245  337            art\tiles\tp087.frm
-roof       247  337            art\tiles\tp107.frm
-roof       249  337            art\tiles\tp107.frm
-roof       251  337            art\tiles\tp107.frm
-roof       253  337            art\tiles\tp107.frm
-roof       255  337            art\tiles\tp132.frm
-roof       257  337            art\tiles\tp130.frm
-roof       245  339            art\tiles\tp107.frm
-roof       247  339            art\tiles\tp107.frm
-roof       249  339            art\tiles\tp107.frm
-roof       251  339            art\tiles\tp107.frm
-roof       255  339            art\tiles\tp143.frm
-roof       245  341            art\tiles\tp107.frm
-roof       247  341            art\tiles\tp107.frm
-roof       249  341            art\tiles\tp107.frm
-roof       251  341            art\tiles\tp107.frm
-roof       245  343            art\tiles\tp087.frm
-roof       247  343            art\tiles\tp107.frm
-roof       249  343            art\tiles\tp107.frm
-roof       251  343            art\tiles\tp107.frm
-roof       253  343            art\tiles\tp107.frm
-roof       257  343            art\tiles\tp139.frm
-roof       255  344            art\tiles\tp138.frm
-roof       245  345            art\tiles\tp132.frm
-roof       247  345            art\tiles\tp131.frm
-roof       249  345            art\tiles\tp130.frm
-roof       251  345            art\tiles\tp129.frm
-roof       253  345            art\tiles\tp107.frm
-roof       255  345            art\tiles\tp132.frm
-roof       257  345            art\tiles\tp131.frm
-roof       206  349            art\tiles\tp133.frm
-roof       208  349            art\tiles\tp102.frm
-roof       210  349            art\tiles\tp107.frm
-roof       212  349            art\tiles\tp106.frm
-roof       214  349            art\tiles\tp105.frm
-roof       206  351            art\tiles\tp135.frm
-roof       208  351            art\tiles\tp091.frm
-roof       210  351            art\tiles\tp090.frm
-roof       212  351            art\tiles\tp088.frm
-roof       214  351            art\tiles\tp087.frm
-roof       206  353            art\tiles\tp137.frm
-roof       208  353            art\tiles\tp098.frm
-roof       210  353            art\tiles\tp097.frm
-roof       212  353            art\tiles\tp096.frm
-roof       214  353            art\tiles\tp095.frm
-roof       206  355            art\tiles\tp105.frm
-roof       208  355            art\tiles\tp104.frm
-roof       210  355            art\tiles\tp103.frm
-roof       212  355            art\tiles\tp102.frm
-roof       214  355            art\tiles\tp099.frm
 
 [Objects]
 MapObjType           2
@@ -89379,92 +89233,15 @@ MapY                 239
 
 MapObjType           2
 ProtoId              3853
-MapX                 124
-MapY                 221
-Scenery_ToEntire     200
-
-MapObjType           2
-ProtoId              3853
-MapX                 125
-MapY                 247
-
-MapObjType           2
-ProtoId              3853
-MapX                 153
-MapY                 219
-Scenery_ToEntire     209
-
-MapObjType           2
-ProtoId              3853
 MapX                 243
 MapY                 248
 Scenery_ToEntire     202
 
 MapObjType           2
 ProtoId              3853
-MapX                 215
-MapY                 206
-Scenery_ToEntire     201
-
-MapObjType           2
-ProtoId              3853
-MapX                 214
-MapY                 225
-Scenery_ToEntire     201
-
-MapObjType           2
-ProtoId              3853
-MapX                 153
-MapY                 246
-Scenery_ToEntire     202
-
-MapObjType           2
-ProtoId              3853
-MapX                 232
-MapY                 241
-Scenery_ToEntire     203
-
-MapObjType           2
-ProtoId              3853
-MapX                 237
-MapY                 232
-Scenery_ToEntire     205
-
-MapObjType           2
-ProtoId              3853
-MapX                 137
-MapY                 216
-Scenery_ToEntire     209
-
-MapObjType           2
-ProtoId              3853
-MapX                 215
-MapY                 248
-Scenery_ToEntire     212
-
-MapObjType           2
-ProtoId              3853
 MapX                 241
 MapY                 190
 Scenery_ToEntire     212
-
-MapObjType           2
-ProtoId              3853
-MapX                 229
-MapY                 222
-Scenery_ToEntire     200
-
-MapObjType           2
-ProtoId              3853
-MapX                 164
-MapY                 243
-Scenery_ToEntire     202
-
-MapObjType           2
-ProtoId              3853
-MapX                 135
-MapY                 230
-Scenery_ToEntire     200
 
 MapObjType           2
 ProtoId              5929
@@ -90020,30 +89797,6 @@ MapObjType           1
 ProtoId              2945
 MapX                 111
 MapY                 195
-
-MapObjType           2
-ProtoId              3853
-MapX                 221
-MapY                 241
-Scenery_ToEntire     201
-
-MapObjType           2
-ProtoId              3853
-MapX                 230
-MapY                 240
-Scenery_ToEntire     200
-
-MapObjType           2
-ProtoId              3853
-MapX                 115
-MapY                 224
-Scenery_ToEntire     209
-
-MapObjType           2
-ProtoId              3853
-MapX                 145
-MapY                 244
-Scenery_ToEntire     209
 
 MapObjType           2
 ProtoId              5967
@@ -90992,11 +90745,6 @@ MapX                 146
 MapY                 198
 
 MapObjType           2
-ProtoId              2683
-MapX                 148
-MapY                 192
-
-MapObjType           2
 ProtoId              5473
 MapX                 152
 MapY                 196
@@ -91337,11 +91085,6 @@ MapX                 234
 MapY                 198
 
 MapObjType           2
-ProtoId              2684
-MapX                 224
-MapY                 202
-
-MapObjType           2
 ProtoId              2898
 MapX                 245
 MapY                 204
@@ -91658,16 +91401,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 225
 MapY                 197
-
-MapObjType           2
-ProtoId              2067
-MapX                 225
-MapY                 201
-
-MapObjType           2
-ProtoId              2067
-MapX                 225
-MapY                 202
 
 MapObjType           2
 ProtoId              2067

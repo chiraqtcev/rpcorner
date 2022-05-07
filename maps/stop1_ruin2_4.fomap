@@ -2,17 +2,17 @@
 Version              4
 MaxHexX              400
 MaxHexY              400
-WorkHexX             213
-WorkHexY             241
+WorkHexX             202
+WorkHexY             178
 ScriptModule         -
 ScriptFunc           -
 NoLogOut             0
 Time                 -1
 DayTime              300  600  1140 1380
-DayColor0            21 21 63
+DayColor0            21  21  63 
 DayColor1            109 109 141
-DayColor2            68	68 98
-DayColor3            16 16 46
+DayColor2            68  68  98 
+DayColor3            16  16  46 
 
 [Tiles]
 tile       214  48             art\tiles\bld2043.frm
@@ -72426,8 +72426,8 @@ MapY                 135
 
 MapObjType           2
 ProtoId              3853
-MapX                 182
-MapY                 135
+MapX                 193
+MapY                 216
 Scenery_ToEntire     207
 
 MapObjType           1
@@ -72617,8 +72617,8 @@ MapY                 128
 
 MapObjType           2
 ProtoId              3853
-MapX                 187
-MapY                 130
+MapX                 198
+MapY                 210
 Scenery_ToEntire     207
 
 MapObjType           2
@@ -72633,8 +72633,8 @@ MapY                 132
 
 MapObjType           2
 ProtoId              3853
-MapX                 187
-MapY                 134
+MapX                 198
+MapY                 214
 Scenery_ToEntire     207
 
 MapObjType           2
@@ -72789,8 +72789,8 @@ MapY                 133
 
 MapObjType           2
 ProtoId              3853
-MapX                 191
-MapY                 133
+MapX                 202
+MapY                 213
 Scenery_ToEntire     207
 
 MapObjType           2

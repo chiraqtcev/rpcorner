@@ -2,17 +2,17 @@
 Version              4
 MaxHexX              400
 MaxHexY              400
-WorkHexX             146
-WorkHexY             218
+WorkHexX             160
+WorkHexY             244
 ScriptModule         -
 ScriptFunc           -
 NoLogOut             0
 Time                 -1
 DayTime              300  600  1140 1380
-DayColor0            21 21 63
+DayColor0            21  21  63 
 DayColor1            109 109 141
-DayColor2            68	68 98
-DayColor3            16 16 46
+DayColor2            68  68  98 
+DayColor3            16  16  46 
 
 [Tiles]
 tile       214  48             art\tiles\bld2043.frm
@@ -93317,19 +93317,7 @@ MapObjType           2
 ProtoId              3853
 MapX                 119
 MapY                 199
-Scenery_ToEntire     202
-
-MapObjType           2
-ProtoId              3853
-MapX                 114
-MapY                 240
-Scenery_ToEntire     202
-
-MapObjType           2
-ProtoId              3853
-MapX                 235
-MapY                 201
-Scenery_ToEntire     202
+Scenery_ToEntire     200
 
 MapObjType           2
 ProtoId              3853
@@ -93369,18 +93357,6 @@ Scenery_ToEntire     201
 
 MapObjType           2
 ProtoId              3853
-MapX                 168
-MapY                 226
-Scenery_ToEntire     208
-
-MapObjType           2
-ProtoId              3853
-MapX                 154
-MapY                 238
-Scenery_ToEntire     208
-
-MapObjType           2
-ProtoId              3853
 MapX                 244
 MapY                 190
 Scenery_ToEntire     212
@@ -93389,18 +93365,6 @@ MapObjType           2
 ProtoId              3853
 MapX                 242
 MapY                 248
-
-MapObjType           2
-ProtoId              3853
-MapX                 234
-MapY                 225
-Scenery_ToEntire     208
-
-MapObjType           2
-ProtoId              3853
-MapX                 180
-MapY                 182
-Scenery_ToEntire     212
 
 MapObjType           2
 ProtoId              3853
@@ -93428,12 +93392,6 @@ Scenery_ToEntire     203
 
 MapObjType           2
 ProtoId              3853
-MapX                 195
-MapY                 249
-Scenery_ToEntire     201
-
-MapObjType           2
-ProtoId              3853
 MapX                 214
 MapY                 244
 Scenery_ToEntire     200
@@ -93453,12 +93411,6 @@ ProtoId              3853
 MapX                 171
 MapY                 207
 Scenery_ToEntire     208
-
-MapObjType           2
-ProtoId              3853
-MapX                 127
-MapY                 222
-Scenery_ToEntire     209
 
 MapObjType           2
 ProtoId              3853
@@ -93589,5 +93541,101 @@ ProtoId              3853
 MapX                 162
 MapY                 232
 Scenery_ToEntire     1010
+
+MapObjType           2
+ProtoId              3853
+MapX                 122
+MapY                 197
+Scenery_ToEntire     228
+
+MapObjType           2
+ProtoId              3853
+MapX                 115
+MapY                 196
+Scenery_ToEntire     228
+
+MapObjType           2
+ProtoId              3853
+MapX                 122
+MapY                 207
+Scenery_ToEntire     228
+
+MapObjType           2
+ProtoId              3853
+MapX                 193
+MapY                 207
+Scenery_ToEntire     228
+
+MapObjType           2
+ProtoId              3853
+MapX                 216
+MapY                 202
+Scenery_ToEntire     205
+
+MapObjType           2
+ProtoId              3853
+MapX                 213
+MapY                 210
+Scenery_ToEntire     205
+
+MapObjType           2
+ProtoId              3853
+MapX                 208
+MapY                 201
+Scenery_ToEntire     206
+
+MapObjType           2
+ProtoId              3853
+MapX                 229
+MapY                 203
+Scenery_ToEntire     200
+
+MapObjType           2
+ProtoId              3853
+MapX                 228
+MapY                 229
+Scenery_ToEntire     200
+
+MapObjType           2
+ProtoId              3853
+MapX                 208
+MapY                 228
+Scenery_ToEntire     203
+
+MapObjType           2
+ProtoId              3853
+MapX                 215
+MapY                 227
+Scenery_ToEntire     203
+
+MapObjType           2
+ProtoId              3853
+MapX                 224
+MapY                 248
+Scenery_ToEntire     200
+
+MapObjType           2
+ProtoId              3853
+MapX                 213
+MapY                 245
+Scenery_ToEntire     200
+
+MapObjType           2
+ProtoId              3853
+MapX                 154
+MapY                 238
+Scenery_ToEntire     210
+
+MapObjType           2
+ProtoId              3853
+MapX                 159
+MapY                 238
+Scenery_ToEntire     210
+
+MapObjType           2
+ProtoId              3853
+MapX                 150
+MapY                 235
+Scenery_ToEntire     210
 
 
