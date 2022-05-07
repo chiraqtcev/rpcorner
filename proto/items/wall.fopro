@@ -3421,6 +3421,7 @@ Type=12
 PicMap=art\walls\bar001.frm
 PicInv=art\walls\bar001.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5468
@@ -3428,6 +3429,7 @@ Type=12
 PicMap=art\walls\bar002.frm
 PicInv=art\walls\bar002.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5469
@@ -3435,6 +3437,7 @@ Type=12
 PicMap=art\walls\bar003.frm
 PicInv=art\walls\bar003.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5470
@@ -3442,6 +3445,7 @@ Type=12
 PicMap=art\walls\bar004.frm
 PicInv=art\walls\bar004.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5471
@@ -3450,6 +3454,7 @@ PicMap=art\walls\bar005.frm
 PicInv=art\walls\bar005.frm
 Corner=3
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5472
@@ -3458,6 +3463,7 @@ PicMap=art\walls\bar006.frm
 PicInv=art\walls\bar006.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5473
@@ -3466,6 +3472,7 @@ PicMap=art\walls\bar007.frm
 PicInv=art\walls\bar007.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5474
@@ -3474,6 +3481,7 @@ PicMap=art\walls\bar008.frm
 PicInv=art\walls\bar008.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5475
@@ -3482,6 +3490,7 @@ PicMap=art\walls\bar009.frm
 PicInv=art\walls\bar009.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5476
@@ -3490,6 +3499,7 @@ PicMap=art\walls\bar010.frm
 PicInv=art\walls\bar010.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5477
@@ -3498,6 +3508,7 @@ PicMap=art\walls\bar011.frm
 PicInv=art\walls\bar011.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5478
@@ -3506,6 +3517,7 @@ PicMap=art\walls\bar012.frm
 PicInv=art\walls\bar012.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5479
@@ -3514,6 +3526,7 @@ PicMap=art\walls\bar013.frm
 PicInv=art\walls\bar013.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5480
@@ -3522,6 +3535,7 @@ PicMap=art\walls\bar014.frm
 PicInv=art\walls\bar014.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5481
@@ -3530,6 +3544,7 @@ PicMap=art\walls\bar015.frm
 PicInv=art\walls\bar015.frm
 Corner=5
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5482
@@ -3538,6 +3553,7 @@ PicMap=art\walls\bar016.frm
 PicInv=art\walls\bar016.frm
 Corner=4
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5483
@@ -3545,6 +3561,7 @@ Type=12
 PicMap=art\walls\bar017.frm
 PicInv=art\walls\bar017.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5484
@@ -3552,6 +3569,7 @@ Type=12
 PicMap=art\walls\bar018.frm
 PicInv=art\walls\bar018.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5485
@@ -3559,6 +3577,7 @@ Type=12
 PicMap=art\walls\bar019.frm
 PicInv=art\walls\bar019.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5486
@@ -3566,6 +3585,7 @@ Type=12
 PicMap=art\walls\bar020.frm
 PicInv=art\walls\bar020.frm
 Flags=24
+DisableEgg=1
 
 [Proto]
 ProtoId=5487

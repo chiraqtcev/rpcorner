@@ -881,7 +881,7 @@
 
 # Area 361, Map 497
 {36110}{}{stop1_ruin1_1}
-{36115}{}{Under_the_Stars_Cut.ogg}
+{36115}{}{NNM_FS_12_Casa_Grande.ogg}
 {36116}{}{brdchir1:5, brdchirp:5, gntlwin1:3, gntlwind:3, gustwin1:3, gustwind:3, ore:2, ore1:2, pebble:2, pebble1:2, seagull:5, seagull1:5, seawind:5, seawind1:5, waves:15, waves1:15}
 {36118}{}{Подстанция}
 
