@@ -2253,7 +2253,7 @@
 #define PID_MAG_LENTA                         		( 1513 )						// Запись
 #define PID_SAMURAI_MAG                       		( 1516 )						// Журнал по холодному оружию
 #define PID_SCIENCE_MAG                       		( 1518 )						// Научно популярный журнал
-#define PID_GM_PISTOL                         		( 1523 )						// GmPistol
+#define PID_VOODOO                             		( 1523 )						// Кукла Вуду
 #define PID_GRAPPLE_HOOK                      		( 1524 )						// Захват
 #define PID_MELEE_HOOK                        		( 1525 )						// Захват
 #define PID_HOLD_HOOK                         		( 1526 )						// Захват

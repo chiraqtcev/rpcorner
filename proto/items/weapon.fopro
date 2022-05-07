@@ -8115,39 +8115,6 @@ Weapon_ApCost_0=70
 Weapon_SoundId_0=48
 Item_Subtype=14
 
-[Proto] #  PID_GM_PISTOL {ГМ Инструмент УСТАРЕВШИЙ}
-ProtoId=1523
-Type=3
-PicMap=art\items\pistol.frm
-PicInv=art\inven\cigarettes.frm
-Flags=404226078
-DisableEgg=1
-Deteriorable=1
-SoundId=48
-Cost=1
-Material=1
-Weapon_Anim1=1
-Weapon_MinStrength=1
-Weapon_Perk=2
-Weapon_ActiveUses=3
-Weapon_CriticalFailture=3
-Weapon_Skill_0=200
-Weapon_Skill_1=200
-Weapon_Skill_2=200
-Weapon_DmgType_0=1
-Weapon_DmgType_1=5
-Weapon_Anim2_0=Anim2Single
-Weapon_Anim2_1=Anim2Single
-Weapon_PicUse_0=art\intrface\single.frm
-Weapon_PicUse_1=art\intrface\blank.frm
-Weapon_PicUse_2=art\intrface\blank.frm
-Weapon_MaxDist_0=50
-Weapon_MaxDist_1=50
-Weapon_ApCost_0=10
-Weapon_ApCost_1=10
-Weapon_Aim_0=1
-Weapon_Aim_1=1
-
 [Proto] #  {Модифицированный пистолет калибра 0.223 с гравировкой на рукояти.}
 ProtoId=1531
 Type=3
