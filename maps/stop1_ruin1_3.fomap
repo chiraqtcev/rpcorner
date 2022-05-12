@@ -2,7 +2,7 @@
 Version              4
 MaxHexX              400
 MaxHexY              400
-WorkHexX             212
+WorkHexX             189
 WorkHexY             176
 ScriptModule         -
 ScriptFunc           -
@@ -3878,6 +3878,16 @@ tile       282  152            art\tiles\bld2043.frm
 tile       284  152            art\tiles\bld2043.frm
 tile       286  152            art\tiles\bld2043.frm
 tile       288  152            art\tiles\bld2043.frm
+roof       309  153            art\tiles\tp076.frm
+roof       311  153            art\tiles\tp075.frm
+roof       313  153            art\tiles\tp074.frm
+roof       315  153            art\tiles\tp073.frm
+roof       317  153            art\tiles\tp072.frm
+roof       319  153            art\tiles\tp071.frm
+roof       321  153            art\tiles\tp070.frm
+roof       323  153            art\tiles\tp070.frm
+roof       325  153            art\tiles\tp019.frm
+roof       327  153            art\tiles\tp069.frm
 tile       28   154            art\tiles\bld2043.frm
 tile       30   154            art\tiles\bld2043.frm
 tile       32   154            art\tiles\bld2043.frm
@@ -4009,6 +4019,16 @@ tile       282  154            art\tiles\bld2043.frm
 tile       284  154            art\tiles\bld2043.frm
 tile       286  154            art\tiles\bld2043.frm
 tile       288  154            art\tiles\bld2043.frm
+roof       309  155            art\tiles\tp084.frm
+roof       311  155            art\tiles\tp090.frm
+roof       313  155            art\tiles\tp091.frm
+roof       315  155            art\tiles\tp090.frm
+roof       317  155            art\tiles\tp090.frm
+roof       319  155            art\tiles\tp091.frm
+roof       321  155            art\tiles\tp090.frm
+roof       323  155            art\tiles\tp090.frm
+roof       325  155            art\tiles\tp078.frm
+roof       327  155            art\tiles\tp077.frm
 tile       28   156            art\tiles\bld2043.frm
 tile       30   156            art\tiles\bld2043.frm
 tile       32   156            art\tiles\bld2043.frm
@@ -4141,6 +4161,16 @@ tile       284  156            art\tiles\bld2043.frm
 tile       286  156            art\tiles\bld2043.frm
 tile       288  156            art\tiles\bld2043.frm
 tile       290  156            art\tiles\bld2043.frm
+roof       309  157            art\tiles\tp092.frm
+roof       311  157            art\tiles\tp095.frm
+roof       313  157            art\tiles\tp096.frm
+roof       315  157            art\tiles\tp095.frm
+roof       317  157            art\tiles\tp095.frm
+roof       319  157            art\tiles\tp096.frm
+roof       321  157            art\tiles\tp095.frm
+roof       323  157            art\tiles\tp095.frm
+roof       325  157            art\tiles\tp095.frm
+roof       327  157            art\tiles\tp085.frm
 tile       32   158            art\tiles\bld2043.frm
 tile       34   158            art\tiles\bld2043.frm
 tile       36   158            art\tiles\bld2043.frm
@@ -4272,6 +4302,16 @@ tile       286  158            art\tiles\bld2043.frm
 tile       288  158            art\tiles\bld2043.frm
 tile       290  158            art\tiles\bld2043.frm
 tile       292  158            art\tiles\bld2043.frm
+roof       309  159            art\tiles\tp084.frm
+roof       311  159            art\tiles\tp097.frm
+roof       313  159            art\tiles\tp098.frm
+roof       315  159            art\tiles\tp097.frm
+roof       317  159            art\tiles\tp097.frm
+roof       319  159            art\tiles\tp098.frm
+roof       321  159            art\tiles\tp095.frm
+roof       323  159            art\tiles\tp095.frm
+roof       325  159            art\tiles\tp095.frm
+roof       327  159            art\tiles\tp190.frm
 tile       32   160            art\tiles\bld2043.frm
 tile       34   160            art\tiles\bld2043.frm
 tile       36   160            art\tiles\bld2043.frm
@@ -4403,6 +4443,16 @@ tile       286  160            art\tiles\bld2043.frm
 tile       288  160            art\tiles\bld2043.frm
 tile       290  160            art\tiles\bld2043.frm
 tile       292  160            art\tiles\bld2043.frm
+roof       309  161            art\tiles\tp092.frm
+roof       311  161            art\tiles\tp090.frm
+roof       313  161            art\tiles\tp091.frm
+roof       315  161            art\tiles\tp090.frm
+roof       317  161            art\tiles\tp097.frm
+roof       319  161            art\tiles\tp090.frm
+roof       321  161            art\tiles\tp091.frm
+roof       323  161            art\tiles\tp090.frm
+roof       325  161            art\tiles\tp096.frm
+roof       327  161            art\tiles\tp190.frm
 tile       32   162            art\tiles\bld2043.frm
 tile       34   162            art\tiles\bld2043.frm
 tile       36   162            art\tiles\bld2043.frm
@@ -4535,6 +4585,16 @@ tile       288  162            art\tiles\bld2043.frm
 tile       290  162            art\tiles\bld2043.frm
 tile       292  162            art\tiles\bld2043.frm
 tile       294  162            art\tiles\bld2043.frm
+roof       309  163            art\tiles\tp084.frm
+roof       311  163            art\tiles\tp098.frm
+roof       313  163            art\tiles\tp090.frm
+roof       315  163            art\tiles\tp091.frm
+roof       317  163            art\tiles\tp090.frm
+roof       319  163            art\tiles\tp095.frm
+roof       321  163            art\tiles\tp096.frm
+roof       323  163            art\tiles\tp095.frm
+roof       325  163            art\tiles\tp097.frm
+roof       327  163            art\tiles\tp085.frm
 tile       34   164            art\tiles\bld2043.frm
 tile       36   164            art\tiles\bld2043.frm
 tile       38   164            art\tiles\bld2043.frm
@@ -4667,6 +4727,16 @@ tile       290  164            art\tiles\bld2043.frm
 tile       292  164            art\tiles\bld2043.frm
 tile       294  164            art\tiles\bld2043.frm
 tile       296  164            art\tiles\bld2043.frm
+roof       309  165            art\tiles\tp092.frm
+roof       311  165            art\tiles\tp091.frm
+roof       313  165            art\tiles\tp090.frm
+roof       315  165            art\tiles\tp097.frm
+roof       317  165            art\tiles\tp132.frm
+roof       319  165            art\tiles\tp131.frm
+roof       321  165            art\tiles\tp130_b.frm
+roof       323  165            art\tiles\tp131_b.frm
+roof       325  165            art\tiles\tp130_b.frm
+roof       327  165            art\tiles\tp121_b.frm
 tile       36   166            art\tiles\bld2043.frm
 tile       38   166            art\tiles\bld2043.frm
 tile       40   166            art\tiles\bld2043.frm
@@ -6269,8 +6339,9 @@ roof       212  188            art\tiles\tp071.frm
 tile       214  188            art\tiles\curb29.frm
 roof       214  188            art\tiles\tp070.frm
 tile       216  188            art\tiles\curb33.frm
-roof       216  188            art\tiles\tp118.frm
+roof       216  188            art\tiles\tp070.frm
 tile       218  188            art\tiles\edg5004.frm
+roof       218  188            art\tiles\tp069.frm
 tile       220  188            art\tiles\edg5000.frm
 tile       222  188            art\tiles\edg5003.frm
 tile       224  188            art\tiles\edg5000.frm
@@ -6415,15 +6486,16 @@ tile       206  190            art\tiles\tp157.frm
 roof       206  190            art\tiles\tp091.frm
 tile       208  190            art\tiles\tp164.frm
 roof       208  190            art\tiles\tp090.frm
-tile       210  190            art\tiles\curb16.frm
-roof       210  190            art\tiles\tp132.frm
-tile       212  190            art\tiles\curb21.frm
-roof       212  190            art\tiles\tp130.frm
-tile       214  190            art\tiles\curb31.frm
-roof       214  190            art\tiles\tp131.frm
-tile       216  190            art\tiles\curb32.frm
-roof       216  190            art\tiles\tp143.frm
-tile       218  190            art\tiles\edgs004.frm
+tile       210  190            art\tiles\crbm007.frm
+roof       210  190            art\tiles\tp090.frm
+tile       212  190            art\tiles\crbm004.frm
+roof       212  190            art\tiles\tp091.frm
+tile       214  190            art\tiles\crbm007.frm
+roof       214  190            art\tiles\tp090.frm
+tile       216  190            art\tiles\crbm007.frm
+roof       216  190            art\tiles\tp090.frm
+tile       218  190            art\tiles\crbm007.frm
+roof       218  190            art\tiles\tp077.frm
 tile       220  190            art\tiles\edg5003.frm
 tile       222  190            art\tiles\edg5007.frm
 tile       224  190            art\tiles\edg5000.frm
@@ -6570,12 +6642,16 @@ tile       206  192            art\tiles\tp153.frm
 roof       206  192            art\tiles\tp096.frm
 tile       208  192            art\tiles\tp160.frm
 roof       208  192            art\tiles\tp095.frm
-tile       210  192            art\tiles\curb16.frm
-roof       210  192            art\tiles\tp134.frm
-tile       212  192            art\tiles\curb26.frm
-tile       214  192            art\tiles\edg4003.frm
-tile       216  192            art\tiles\edg2003.frm
-tile       218  192            art\tiles\edg7002.frm
+tile       210  192            art\tiles\crbm007.frm
+roof       210  192            art\tiles\tp095.frm
+tile       212  192            art\tiles\crbm004.frm
+roof       212  192            art\tiles\tp096.frm
+tile       214  192            art\tiles\crbm007.frm
+roof       214  192            art\tiles\tp095.frm
+tile       216  192            art\tiles\crbm007.frm
+roof       216  192            art\tiles\tp095.frm
+tile       218  192            art\tiles\crbm007.frm
+roof       218  192            art\tiles\tp085.frm
 tile       220  192            art\tiles\curb35.frm
 tile       222  192            art\tiles\curb29.frm
 tile       224  192            art\tiles\curb33.frm
@@ -6722,13 +6798,16 @@ tile       206  194            art\tiles\tp154.frm
 roof       206  194            art\tiles\tp098.frm
 tile       208  194            art\tiles\tp160.frm
 roof       208  194            art\tiles\tp097.frm
-tile       210  194            art\tiles\curb18.frm
-roof       210  194            art\tiles\tp140.frm
-tile       212  194            art\tiles\curb27.frm
-roof       212  194            art\tiles\tp141.frm
-tile       214  194            art\tiles\edg3000.frm
-tile       216  194            art\tiles\edg4000.frm
-tile       218  194            art\tiles\edg7000.frm
+tile       210  194            art\tiles\crbm007.frm
+roof       210  194            art\tiles\tp097.frm
+tile       212  194            art\tiles\crbm004.frm
+roof       212  194            art\tiles\tp098.frm
+tile       214  194            art\tiles\crbm007.frm
+roof       214  194            art\tiles\tp095.frm
+tile       216  194            art\tiles\crbm007.frm
+roof       216  194            art\tiles\tp095.frm
+tile       218  194            art\tiles\crbm007.frm
+roof       218  194            art\tiles\tp190.frm
 tile       220  194            art\tiles\curb24.frm
 tile       222  194            art\tiles\curb16.frm
 roof       222  194            art\tiles\tp076.frm
@@ -6885,13 +6964,16 @@ tile       206  196            art\tiles\tp155.frm
 roof       206  196            art\tiles\tp091.frm
 tile       208  196            art\tiles\tp160.frm
 roof       208  196            art\tiles\tp090.frm
-tile       210  196            art\tiles\curb21.frm
+tile       210  196            art\tiles\crbm007.frm
 roof       210  196            art\tiles\tp097.frm
-tile       212  196            art\tiles\curb32.frm
-roof       212  196            art\tiles\tp136.frm
-tile       214  196            art\tiles\edg4001.frm
-tile       216  196            art\tiles\edg2003.frm
-tile       218  196            art\tiles\edg2000.frm
+tile       212  196            art\tiles\crbm004.frm
+roof       212  196            art\tiles\tp090.frm
+tile       214  196            art\tiles\crbm007.frm
+roof       214  196            art\tiles\tp091.frm
+tile       216  196            art\tiles\crbm007.frm
+roof       216  196            art\tiles\tp090.frm
+tile       218  196            art\tiles\crbm007.frm
+roof       218  196            art\tiles\tp190.frm
 tile       220  196            art\tiles\curb25.frm
 tile       222  196            art\tiles\curb16.frm
 roof       222  196            art\tiles\tp100.frm
@@ -7054,14 +7136,16 @@ tile       206  198            art\tiles\tp156.frm
 roof       206  198            art\tiles\tp090.frm
 tile       208  198            art\tiles\tp160.frm
 roof       208  198            art\tiles\tp091.frm
-tile       210  198            art\tiles\curb22.frm
+tile       210  198            art\tiles\crbm007.frm
 roof       210  198            art\tiles\tp090.frm
-tile       212  198            art\tiles\curb29.frm
-roof       212  198            art\tiles\tp140.frm
-tile       214  198            art\tiles\curb33.frm
-roof       214  198            art\tiles\tp141.frm
-tile       216  198            art\tiles\edgs000.frm
-tile       218  198            art\tiles\edg6000.frm
+tile       212  198            art\tiles\crbm007.frm
+roof       212  198            art\tiles\tp095.frm
+tile       214  198            art\tiles\crbm007.frm
+roof       214  198            art\tiles\tp096.frm
+tile       216  198            art\tiles\crbm007.frm
+roof       216  198            art\tiles\tp095.frm
+tile       218  198            art\tiles\crbm007.frm
+roof       218  198            art\tiles\tp085.frm
 tile       220  198            art\tiles\curb25.frm
 tile       222  198            art\tiles\curb18.frm
 roof       222  198            art\tiles\tp100.frm
@@ -7229,9 +7313,11 @@ roof       210  200            art\tiles\tp132.frm
 tile       212  200            art\tiles\road11.frm
 roof       212  200            art\tiles\tp131.frm
 tile       214  200            art\tiles\road31.frm
-roof       214  200            art\tiles\tp143.frm
+roof       214  200            art\tiles\tp130_b.frm
 tile       216  200            art\tiles\edg5005.frm
+roof       216  200            art\tiles\tp131_b.frm
 tile       218  200            art\tiles\edg5000.frm
+roof       218  200            art\tiles\tp121_b.frm
 tile       220  200            art\tiles\curb34.frm
 tile       222  200            art\tiles\curb20.frm
 roof       222  200            art\tiles\tp100.frm
@@ -7321,17 +7407,30 @@ tile       100  202            art\tiles\bld2043.frm
 tile       102  202            art\tiles\bld2043.frm
 tile       104  202            art\tiles\edg5003.frm
 tile       106  202            art\tiles\edg5000.frm
+tile       106  202            art\tiles\edg5000.frm
+tile       108  202            art\tiles\edg5001.frm
 tile       108  202            art\tiles\edg5001.frm
 tile       110  202            art\tiles\edg5002.frm
+tile       110  202            art\tiles\edg5002.frm
+tile       112  202            art\tiles\edg5000.frm
 tile       112  202            art\tiles\edg5000.frm
 tile       114  202            art\tiles\edg5003.frm
+tile       114  202            art\tiles\edg5003.frm
+tile       116  202            art\tiles\edg5001.frm
 tile       116  202            art\tiles\edg5001.frm
 tile       118  202            art\tiles\edg5000.frm
+tile       118  202            art\tiles\edg5000.frm
+tile       120  202            art\tiles\edg5002.frm
 tile       120  202            art\tiles\edg5002.frm
 tile       122  202            art\tiles\edg5001.frm
+tile       122  202            art\tiles\edg5001.frm
+tile       124  202            art\tiles\edg5003.frm
 tile       124  202            art\tiles\edg5003.frm
 tile       126  202            art\tiles\edg5000.frm
+tile       126  202            art\tiles\edg5000.frm
 tile       128  202            art\tiles\edg7000.frm
+tile       128  202            art\tiles\edg7000.frm
+tile       130  202            art\tiles\edg3000.frm
 tile       130  202            art\tiles\edg3000.frm
 tile       132  202            art\tiles\edg4001.frm
 tile       134  202            art\tiles\edg4002.frm
@@ -7486,6 +7585,7 @@ tile       98   204            art\tiles\bld2043.frm
 tile       100  204            art\tiles\bld2043.frm
 tile       102  204            art\tiles\bld2043.frm
 tile       104  204            art\tiles\edg5005.frm
+tile       106  204            art\tiles\edg5000.frm
 tile       106  204            art\tiles\edg5000.frm
 tile       108  204            art\tiles\edg5004.frm
 tile       110  204            art\tiles\curb35.frm
@@ -7657,23 +7757,24 @@ tile       100  206            art\tiles\bld2043.frm
 tile       102  206            art\tiles\bld2043.frm
 tile       104  206            art\tiles\edg5001.frm
 tile       106  206            art\tiles\edg5007.frm
+tile       106  206            art\tiles\edg5007.frm
 tile       108  206            art\tiles\curb35.frm
 tile       110  206            art\tiles\curb23.frm
 roof       110  206            art\tiles\tp076.frm
 tile       112  206            art\tiles\curb16.frm
-roof       112  206            art\tiles\tp073.frm
+roof       112  206            art\tiles\tp019.frm
 tile       114  206            art\tiles\curb22.frm
-roof       114  206            art\tiles\tp075.frm
+roof       114  206            art\tiles\tp023.frm
 tile       116  206            art\tiles\curb28.frm
-roof       116  206            art\tiles\tp074.frm
+roof       116  206            art\tiles\tp019.frm
 tile       118  206            art\tiles\curb29.frm
-roof       118  206            art\tiles\tp073.frm
+roof       118  206            art\tiles\tp019.frm
 tile       120  206            art\tiles\curb28.frm
-roof       120  206            art\tiles\tp072.frm
+roof       120  206            art\tiles\tp023.frm
 tile       122  206            art\tiles\curb23.frm
-roof       122  206            art\tiles\tp071.frm
+roof       122  206            art\tiles\tp019.frm
 tile       124  206            art\tiles\curb16.frm
-roof       124  206            art\tiles\tp070.frm
+roof       124  206            art\tiles\tp019.frm
 tile       126  206            art\tiles\curb19.frm
 roof       126  206            art\tiles\tp069.frm
 tile       128  206            art\tiles\curb22.frm
@@ -7833,25 +7934,26 @@ tile       100  208            art\tiles\bld2043.frm
 tile       102  208            art\tiles\bld2043.frm
 tile       104  208            art\tiles\edg5000.frm
 tile       106  208            art\tiles\edg5005.frm
+tile       106  208            art\tiles\edg5005.frm
 tile       108  208            art\tiles\curb24.frm
 tile       110  208            art\tiles\curb16.frm
-roof       110  208            art\tiles\tp092.frm
-tile       112  208            art\tiles\road13.frm
-roof       112  208            art\tiles\tp090.frm
-tile       114  208            art\tiles\road12.frm
-roof       114  208            art\tiles\tp088.frm
-tile       116  208            art\tiles\road11.frm
-roof       116  208            art\tiles\tp087.frm
-tile       118  208            art\tiles\road12.frm
-roof       118  208            art\tiles\tp104.frm
-tile       120  208            art\tiles\road11.frm
-roof       120  208            art\tiles\tp103.frm
-tile       122  208            art\tiles\road12.frm
-roof       122  208            art\tiles\tp102.frm
-tile       124  208            art\tiles\road11.frm
-roof       124  208            art\tiles\tp099.frm
-tile       126  208            art\tiles\road10.frm
-roof       126  208            art\tiles\tp085.frm
+roof       110  208            art\tiles\tp100.frm
+tile       112  208            art\tiles\crbm004.frm
+roof       112  208            art\tiles\tp082.frm
+tile       114  208            art\tiles\crbm007.frm
+roof       114  208            art\tiles\tp079.frm
+tile       116  208            art\tiles\crbm004.frm
+roof       116  208            art\tiles\tp078.frm
+tile       118  208            art\tiles\crbm004.frm
+roof       118  208            art\tiles\tp078.frm
+tile       120  208            art\tiles\crbm007.frm
+roof       120  208            art\tiles\tp079.frm
+tile       122  208            art\tiles\crbm004.frm
+roof       122  208            art\tiles\tp078.frm
+tile       124  208            art\tiles\crbm007.frm
+roof       124  208            art\tiles\tp078.frm
+tile       126  208            art\tiles\crbm007.frm
+roof       126  208            art\tiles\tp077.frm
 tile       128  208            art\tiles\curb21.frm
 tile       130  208            art\tiles\curb31.frm
 tile       132  208            art\tiles\curb20.frm
@@ -8009,25 +8111,26 @@ tile       100  210            art\tiles\bld2043.frm
 tile       102  210            art\tiles\bld2043.frm
 tile       104  210            art\tiles\edg5002.frm
 tile       106  210            art\tiles\edg5006.frm
+tile       106  210            art\tiles\edg5006.frm
 tile       108  210            art\tiles\curb34.frm
 tile       110  210            art\tiles\curb20.frm
-roof       110  210            art\tiles\tp084.frm
-tile       112  210            art\tiles\road15.frm
-roof       112  210            art\tiles\tp097.frm
-tile       114  210            art\tiles\edg5007.frm
-roof       114  210            art\tiles\tp096.frm
-tile       116  210            art\tiles\edg5000.frm
+roof       110  210            art\tiles\tp100.frm
+tile       112  210            art\tiles\crbm004.frm
+roof       112  210            art\tiles\tp095.frm
+tile       114  210            art\tiles\crbm007.frm
+roof       114  210            art\tiles\tp095.frm
+tile       116  210            art\tiles\crbm004.frm
 roof       116  210            art\tiles\tp095.frm
-tile       118  210            art\tiles\edg5001.frm
-roof       118  210            art\tiles\tp102.frm
-tile       120  210            art\tiles\edg5006.frm
-roof       120  210            art\tiles\tp107.frm
-tile       122  210            art\tiles\edg5003.frm
-roof       122  210            art\tiles\tp106.frm
-tile       124  210            art\tiles\edg5002.frm
-roof       124  210            art\tiles\tp105.frm
-tile       126  210            art\tiles\road20.frm
-roof       126  210            art\tiles\tp093.frm
+tile       118  210            art\tiles\crbm007.frm
+roof       118  210            art\tiles\tp097.frm
+tile       120  210            art\tiles\crbm004.frm
+roof       120  210            art\tiles\tp095.frm
+tile       122  210            art\tiles\crbm007.frm
+roof       122  210            art\tiles\tp097.frm
+tile       124  210            art\tiles\crbm007.frm
+roof       124  210            art\tiles\tp097.frm
+tile       126  210            art\tiles\crbm004.frm
+roof       126  210            art\tiles\tp085.frm
 tile       128  210            art\tiles\curb22.frm
 tile       130  210            art\tiles\curb29.frm
 tile       132  210            art\tiles\curb23.frm
@@ -8185,25 +8288,26 @@ tile       100  212            art\tiles\bld2043.frm
 tile       102  212            art\tiles\bld2043.frm
 tile       104  212            art\tiles\edg5000.frm
 tile       106  212            art\tiles\edg5000.frm
+tile       106  212            art\tiles\edg5000.frm
 tile       108  212            art\tiles\edg5003.frm
 tile       110  212            art\tiles\curb34.frm
-roof       110  212            art\tiles\tp123.frm
-tile       112  212            art\tiles\road31.frm
-roof       112  212            art\tiles\tp130.frm
-tile       114  212            art\tiles\edg6002.frm
-roof       114  212            art\tiles\tp129.frm
-tile       116  212            art\tiles\edg5004.frm
-roof       116  212            art\tiles\tp102.frm
-tile       118  212            art\tiles\edg5000.frm
-roof       118  212            art\tiles\tp090.frm
-tile       120  212            art\tiles\edg5002.frm
-roof       120  212            art\tiles\tp088.frm
-tile       122  212            art\tiles\edg5000.frm
-roof       122  212            art\tiles\tp087.frm
-tile       124  212            art\tiles\edg5000.frm
-roof       124  212            art\tiles\tp132.frm
-tile       126  212            art\tiles\road21.frm
-roof       126  212            art\tiles\tp121.frm
+roof       110  212            art\tiles\tp100.frm
+tile       112  212            art\tiles\crbm004.frm
+roof       112  212            art\tiles\tp098.frm
+tile       114  212            art\tiles\crbm007.frm
+roof       114  212            art\tiles\tp097.frm
+tile       116  212            art\tiles\crbm004.frm
+roof       116  212            art\tiles\tp097.frm
+tile       118  212            art\tiles\crbm004.frm
+roof       118  212            art\tiles\tp096.frm
+tile       120  212            art\tiles\crbm007.frm
+roof       120  212            art\tiles\tp094.frm
+tile       122  212            art\tiles\crbm004.frm
+roof       122  212            art\tiles\tp096.frm
+tile       124  212            art\tiles\crbm004.frm
+roof       124  212            art\tiles\tp096.frm
+tile       126  212            art\tiles\crbm007.frm
+roof       126  212            art\tiles\tp190.frm
 tile       128  212            art\tiles\curb17.frm
 tile       130  212            art\tiles\curb16.frm
 tile       132  212            art\tiles\curb16.frm
@@ -8321,6 +8425,9 @@ tile       322  212            art\tiles\bld2043.frm
 tile       324  212            art\tiles\bld2043.frm
 tile       326  212            art\tiles\bld2043.frm
 tile       328  212            art\tiles\bld2043.frm
+roof       31   214            art\tiles\tp092.frm
+roof       33   214            art\tiles\tp097.frm
+roof       35   214            art\tiles\tp096.frm
 tile       66   214            art\tiles\bld2043.frm
 tile       68   214            art\tiles\bld2043.frm
 tile       70   214            art\tiles\bld2043.frm
@@ -8342,22 +8449,26 @@ tile       100  214            art\tiles\bld2043.frm
 tile       102  214            art\tiles\bld2043.frm
 tile       104  214            art\tiles\edg5005.frm
 tile       106  214            art\tiles\edg5006.frm
+tile       106  214            art\tiles\edg5006.frm
 tile       108  214            art\tiles\edg5002.frm
 tile       110  214            art\tiles\edg7003.frm
-tile       112  214            art\tiles\edg3000.frm
-tile       114  214            art\tiles\edg4000.frm
-roof       114  214            art\tiles\tp133.frm
-tile       116  214            art\tiles\edg2003.frm
-roof       116  214            art\tiles\tp106.frm
-tile       118  214            art\tiles\edg7003.frm
-roof       118  214            art\tiles\tp097.frm
-tile       120  214            art\tiles\edg5003.frm
-roof       120  214            art\tiles\tp096.frm
-tile       122  214            art\tiles\edg5002.frm
-roof       122  214            art\tiles\tp095.frm
-tile       124  214            art\tiles\edg5005.frm
-roof       124  214            art\tiles\tp136.frm
-tile       126  214            art\tiles\road28.frm
+roof       110  214            art\tiles\tp092.frm
+tile       112  214            art\tiles\crbm004.frm
+roof       112  214            art\tiles\tp099.frm
+tile       114  214            art\tiles\crbm007.frm
+roof       114  214            art\tiles\tp098.frm
+tile       116  214            art\tiles\crbm004.frm
+roof       116  214            art\tiles\tp097.frm
+tile       118  214            art\tiles\crbm007.frm
+roof       118  214            art\tiles\tp079.frm
+tile       120  214            art\tiles\crbm007.frm
+roof       120  214            art\tiles\tp095.frm
+tile       122  214            art\tiles\crbm004.frm
+roof       122  214            art\tiles\tp097.frm
+tile       124  214            art\tiles\crbm007.frm
+roof       124  214            art\tiles\tp097.frm
+tile       126  214            art\tiles\crbm004.frm
+roof       126  214            art\tiles\tp085.frm
 tile       128  214            art\tiles\curb20.frm
 tile       130  214            art\tiles\curb16.frm
 tile       132  214            art\tiles\curb19.frm
@@ -8365,15 +8476,25 @@ tile       134  214            art\tiles\curb26.frm
 tile       136  214            art\tiles\edg4007.frm
 tile       138  214            art\tiles\edg4000.frm
 tile       140  214            art\tiles\edg4008.frm
+roof       140  214            art\tiles\tp076.frm
 tile       142  214            art\tiles\curb34.frm
+roof       142  214            art\tiles\tp020.frm
 tile       144  214            art\tiles\curb31.frm
+roof       144  214            art\tiles\tp019.frm
 tile       146  214            art\tiles\curb30.frm
+roof       146  214            art\tiles\tp024.frm
 tile       148  214            art\tiles\curb20.frm
+roof       148  214            art\tiles\tp019.frm
 tile       150  214            art\tiles\curb16.frm
+roof       150  214            art\tiles\tp024.frm
 tile       152  214            art\tiles\curb16.frm
+roof       152  214            art\tiles\tp023.frm
 tile       154  214            art\tiles\curb16.frm
+roof       154  214            art\tiles\tp019.frm
 tile       156  214            art\tiles\curb19.frm
+roof       156  214            art\tiles\tp019.frm
 tile       158  214            art\tiles\curb16.frm
+roof       158  214            art\tiles\tp069.frm
 tile       160  214            art\tiles\curb22.frm
 tile       162  214            art\tiles\curb23.frm
 tile       164  214            art\tiles\curb16.frm
@@ -8405,6 +8526,7 @@ tile       214  214            art\tiles\curb16.frm
 tile       216  214            art\tiles\curb16.frm
 tile       218  214            art\tiles\curb16.frm
 tile       220  214            art\tiles\curb19.frm
+tile       222  214            art\tiles\curb16.frm
 tile       222  214            art\tiles\curb16.frm
 tile       224  214            art\tiles\curb16.frm
 tile       226  214            art\tiles\curb21.frm
@@ -8460,6 +8582,9 @@ tile       322  214            art\tiles\bld2043.frm
 tile       324  214            art\tiles\bld2043.frm
 tile       326  214            art\tiles\bld2043.frm
 tile       328  214            art\tiles\bld2043.frm
+roof       31   216            art\tiles\tp100.frm
+roof       33   216            art\tiles\tp098.frm
+roof       35   216            art\tiles\tp097.frm
 tile       68   216            art\tiles\bld2043.frm
 tile       70   216            art\tiles\bld2043.frm
 tile       72   216            art\tiles\bld2043.frm
@@ -8480,22 +8605,27 @@ tile       100  216            art\tiles\bld2043.frm
 tile       102  216            art\tiles\bld2043.frm
 tile       104  216            art\tiles\edg5000.frm
 tile       106  216            art\tiles\edg5007.frm
+tile       106  216            art\tiles\edg5007.frm
 tile       108  216            art\tiles\edg5000.frm
 tile       110  216            art\tiles\edg6002.frm
-tile       112  216            art\tiles\edg4003.frm
-tile       114  216            art\tiles\road25.frm
-roof       114  216            art\tiles\tp127.frm
-tile       116  216            art\tiles\road18.frm
+roof       110  216            art\tiles\tp116.frm
+tile       112  216            art\tiles\crbm004.frm
+roof       112  216            art\tiles\tp114.frm
+tile       114  216            art\tiles\crbm007.frm
+roof       114  216            art\tiles\tp110.frm
+tile       116  216            art\tiles\crbm004.frm
 roof       116  216            art\tiles\tp111.frm
-tile       118  216            art\tiles\road17.frm
+tile       118  216            art\tiles\crbm007.frm
 roof       118  216            art\tiles\tp114.frm
-tile       120  216            art\tiles\road18.frm
-roof       120  216            art\tiles\tp187.frm
-tile       122  216            art\tiles\road24.frm
-roof       122  216            art\tiles\tp132.frm
-tile       124  216            art\tiles\road22.frm
-roof       124  216            art\tiles\tp143.frm
-tile       126  216            art\tiles\edg1003.frm
+roof       118  216            art\tiles\tp100.frm
+tile       120  216            art\tiles\crbm007.frm
+roof       120  216            art\tiles\tp096.frm
+tile       122  216            art\tiles\crbm004.frm
+roof       122  216            art\tiles\tp098.frm
+tile       124  216            art\tiles\crbm007.frm
+roof       124  216            art\tiles\tp098.frm
+tile       126  216            art\tiles\crbm004.frm
+roof       126  216            art\tiles\tp188.frm
 tile       128  216            art\tiles\curb34.frm
 tile       130  216            art\tiles\curb20.frm
 tile       132  216            art\tiles\curb21.frm
@@ -8503,25 +8633,25 @@ tile       134  216            art\tiles\curb32.frm
 tile       136  216            art\tiles\edg4005.frm
 tile       138  216            art\tiles\edg4002.frm
 tile       140  216            art\tiles\edg4001.frm
-tile       142  216            art\tiles\edg4005.frm
-tile       144  216            art\tiles\edg6007.frm
-tile       146  216            art\tiles\edgs004.frm
-tile       148  216            art\tiles\curb24.frm
-tile       150  216            art\tiles\curb16.frm
-roof       150  216            art\tiles\tp133.frm
-roof       150  216            art\tiles\tp133.frm
-tile       152  216            art\tiles\curb16.frm
-roof       152  216            art\tiles\tp091.frm
-roof       152  216            art\tiles\tp091.frm
-tile       154  216            art\tiles\curb16.frm
-roof       154  216            art\tiles\tp090.frm
-roof       154  216            art\tiles\tp090.frm
-tile       156  216            art\tiles\curb16.frm
-roof       156  216            art\tiles\tp088.frm
-roof       156  216            art\tiles\tp088.frm
-tile       158  216            art\tiles\curb16.frm
-roof       158  216            art\tiles\tp087.frm
-roof       158  216            art\tiles\tp087.frm
+roof       140  216            art\tiles\tp100.frm
+tile       142  216            art\tiles\crbm007.frm
+roof       142  216            art\tiles\tp083.frm
+tile       144  216            art\tiles\crbm004.frm
+roof       144  216            art\tiles\tp082.frm
+tile       146  216            art\tiles\crbm004.frm
+roof       146  216            art\tiles\tp081.frm
+tile       148  216            art\tiles\crbm007.frm
+roof       148  216            art\tiles\tp081.frm
+tile       150  216            art\tiles\crbm004.frm
+roof       150  216            art\tiles\tp080.frm
+tile       152  216            art\tiles\crbm007.frm
+roof       152  216            art\tiles\tp079.frm
+tile       154  216            art\tiles\crbm004.frm
+roof       154  216            art\tiles\tp078.frm
+tile       156  216            art\tiles\crbm007.frm
+roof       156  216            art\tiles\tp078.frm
+tile       158  216            art\tiles\crbm004.frm
+roof       158  216            art\tiles\tp077.frm
 tile       160  216            art\tiles\curb16.frm
 tile       162  216            art\tiles\curb21.frm
 tile       164  216            art\tiles\curb30.frm
@@ -8609,6 +8739,9 @@ tile       324  216            art\tiles\bld2043.frm
 tile       326  216            art\tiles\bld2043.frm
 tile       328  216            art\tiles\bld2043.frm
 tile       330  216            art\tiles\bld2043.frm
+roof       31   218            art\tiles\tp092.frm
+roof       33   218            art\tiles\tp099.frm
+roof       35   218            art\tiles\tp098.frm
 tile       70   218            art\tiles\bld2043.frm
 tile       72   218            art\tiles\bld2043.frm
 tile       74   218            art\tiles\bld2043.frm
@@ -8628,20 +8761,22 @@ tile       100  218            art\tiles\bld2043.frm
 tile       102  218            art\tiles\bld2043.frm
 tile       104  218            art\tiles\edg5006.frm
 tile       106  218            art\tiles\edg5001.frm
+tile       106  218            art\tiles\edg5001.frm
 tile       108  218            art\tiles\edg5003.frm
 tile       110  218            art\tiles\curb35.frm
-tile       112  218            art\tiles\curb41.frm
+tile       112  218            art\tiles\curb11.frm
 tile       114  218            art\tiles\curb11.frm
 tile       116  218            art\tiles\curb18.frm
 tile       118  218            art\tiles\curb16.frm
-roof       118  218            art\tiles\tp084.frm
-tile       120  218            art\tiles\road13.frm
-roof       120  218            art\tiles\tp087.frm
-tile       122  218            art\tiles\road11.frm
-roof       122  218            art\tiles\tp140.frm
-tile       124  218            art\tiles\road31.frm
-roof       124  218            art\tiles\tp141.frm
-tile       126  218            art\tiles\edg5002.frm
+roof       118  218            art\tiles\tp100.frm
+tile       120  218            art\tiles\crbm007.frm
+roof       120  218            art\tiles\tp094.frm
+tile       122  218            art\tiles\crbm004.frm
+roof       122  218            art\tiles\tp096.frm
+tile       124  218            art\tiles\crbm007.frm
+roof       124  218            art\tiles\tp096.frm
+tile       126  218            art\tiles\crbm004.frm
+roof       126  218            art\tiles\tp190.frm
 tile       128  218            art\tiles\edg6005.frm
 tile       130  218            art\tiles\curb34.frm
 tile       132  218            art\tiles\curb32.frm
@@ -8649,20 +8784,25 @@ tile       134  218            art\tiles\edg4000.frm
 tile       136  218            art\tiles\edg4006.frm
 tile       138  218            art\tiles\edg4008.frm
 tile       140  218            art\tiles\edg6009.frm
-tile       142  218            art\tiles\edg4007.frm
-tile       144  218            art\tiles\edg1000.frm
-tile       146  218            art\tiles\edgs003.frm
-tile       148  218            art\tiles\curb25.frm
-tile       150  218            art\tiles\curb16.frm
-roof       150  218            art\tiles\tp135.frm
-tile       152  218            art\tiles\curb16.frm
-roof       152  218            art\tiles\tp098.frm
-tile       154  218            art\tiles\curb16.frm
-roof       154  218            art\tiles\tp097.frm
-tile       156  218            art\tiles\curb16.frm
-roof       156  218            art\tiles\tp096.frm
-tile       158  218            art\tiles\curb16.frm
-roof       158  218            art\tiles\tp095.frm
+roof       140  218            art\tiles\tp100.frm
+tile       142  218            art\tiles\crbm007.frm
+roof       142  218            art\tiles\tp095.frm
+tile       144  218            art\tiles\crbm007.frm
+roof       144  218            art\tiles\tp094.frm
+tile       146  218            art\tiles\crbm007.frm
+roof       146  218            art\tiles\tp098.frm
+tile       148  218            art\tiles\crbm004.frm
+roof       148  218            art\tiles\tp098.frm
+tile       150  218            art\tiles\crbm007.frm
+roof       150  218            art\tiles\tp097.frm
+tile       152  218            art\tiles\crbm004.frm
+roof       152  218            art\tiles\tp096.frm
+tile       154  218            art\tiles\crbm007.frm
+roof       154  218            art\tiles\tp095.frm
+tile       156  218            art\tiles\crbm004.frm
+roof       156  218            art\tiles\tp095.frm
+tile       158  218            art\tiles\crbm007.frm
+roof       158  218            art\tiles\tp085.frm
 tile       160  218            art\tiles\curb21.frm
 tile       162  218            art\tiles\curb32.frm
 tile       164  218            art\tiles\edg3000.frm
@@ -8751,6 +8891,9 @@ tile       326  218            art\tiles\bld2043.frm
 tile       328  218            art\tiles\bld2043.frm
 tile       330  218            art\tiles\bld2043.frm
 tile       332  218            art\tiles\bld2043.frm
+roof       31   220            art\tiles\tp116.frm
+roof       33   220            art\tiles\tp114.frm
+roof       35   220            art\tiles\tp110.frm
 tile       70   220            art\tiles\bld2043.frm
 tile       72   220            art\tiles\bld2043.frm
 tile       74   220            art\tiles\bld2043.frm
@@ -8770,20 +8913,22 @@ tile       100  220            art\tiles\bld2043.frm
 tile       102  220            art\tiles\bld2043.frm
 tile       104  220            art\tiles\edg5007.frm
 tile       106  220            art\tiles\edg5000.frm
+tile       106  220            art\tiles\edg5000.frm
 tile       108  220            art\tiles\edg5005.frm
 tile       110  220            art\tiles\curb24.frm
 tile       112  220            art\tiles\curb11.frm
 tile       114  220            art\tiles\curb11.frm
 tile       116  220            art\tiles\curb16.frm
 tile       118  220            art\tiles\curb17.frm
-roof       118  220            art\tiles\tp092.frm
-tile       120  220            art\tiles\road15.frm
+roof       118  220            art\tiles\tp100.frm
+tile       120  220            art\tiles\crbm007.frm
 roof       120  220            art\tiles\tp095.frm
-tile       122  220            art\tiles\edg5000.frm
-roof       122  220            art\tiles\tp102.frm
-tile       124  220            art\tiles\edg5007.frm
-roof       124  220            art\tiles\tp136.frm
-tile       126  220            art\tiles\road25.frm
+tile       122  220            art\tiles\crbm004.frm
+roof       122  220            art\tiles\tp097.frm
+tile       124  220            art\tiles\crbm007.frm
+roof       124  220            art\tiles\tp097.frm
+tile       126  220            art\tiles\crbm004.frm
+roof       126  220            art\tiles\tp085.frm
 tile       128  220            art\tiles\curb33.frm
 tile       130  220            art\tiles\edg6009.frm
 tile       132  220            art\tiles\edg1001.frm
@@ -8791,20 +8936,25 @@ tile       134  220            art\tiles\edg6008.frm
 tile       136  220            art\tiles\edgs001.frm
 tile       138  220            art\tiles\edg6009.frm
 tile       140  220            art\tiles\edg1001.frm
-tile       142  220            art\tiles\edg6008.frm
-tile       144  220            art\tiles\edg1001.frm
-tile       146  220            art\tiles\curb35.frm
-tile       148  220            art\tiles\curb23.frm
-tile       150  220            art\tiles\curb16.frm
-roof       150  220            art\tiles\tp135.frm
-tile       152  220            art\tiles\curb16.frm
-roof       152  220            art\tiles\tp104.frm
-tile       154  220            art\tiles\curb18.frm
-roof       154  220            art\tiles\tp103.frm
-tile       156  220            art\tiles\curb16.frm
-roof       156  220            art\tiles\tp102.frm
-tile       158  220            art\tiles\curb16.frm
-roof       158  220            art\tiles\tp099.frm
+roof       140  220            art\tiles\tp100.frm
+tile       142  220            art\tiles\crbm004.frm
+roof       142  220            art\tiles\tp096.frm
+tile       144  220            art\tiles\crbm004.frm
+roof       144  220            art\tiles\tp095.frm
+tile       146  220            art\tiles\crbm004.frm
+roof       146  220            art\tiles\tp099.frm
+tile       148  220            art\tiles\crbm007.frm
+roof       148  220            art\tiles\tp095.frm
+tile       150  220            art\tiles\crbm004.frm
+roof       150  220            art\tiles\tp096.frm
+tile       152  220            art\tiles\crbm007.frm
+roof       152  220            art\tiles\tp097.frm
+tile       154  220            art\tiles\crbm004.frm
+roof       154  220            art\tiles\tp095.frm
+tile       156  220            art\tiles\crbm007.frm
+roof       156  220            art\tiles\tp095.frm
+tile       158  220            art\tiles\crbm004.frm
+roof       158  220            art\tiles\tp190.frm
 tile       160  220            art\tiles\curb26.frm
 tile       162  220            art\tiles\edg4000.frm
 tile       164  220            art\tiles\edg2003.frm
@@ -8911,21 +9061,22 @@ tile       100  222            art\tiles\bld2043.frm
 tile       102  222            art\tiles\bld2043.frm
 tile       104  222            art\tiles\edg5003.frm
 tile       106  222            art\tiles\edg5000.frm
+tile       106  222            art\tiles\edg5000.frm
 tile       108  222            art\tiles\edg7001.frm
 tile       110  222            art\tiles\curb25.frm
 tile       112  222            art\tiles\curb11.frm
 tile       114  222            art\tiles\curb10.frm
 tile       116  222            art\tiles\curb02.frm
 tile       118  222            art\tiles\curb02.frm
-roof       118  222            art\tiles\tp084.frm
-tile       120  222            art\tiles\road14.frm
-roof       120  222            art\tiles\tp102.frm
-tile       122  222            art\tiles\edgs003.frm
-roof       122  222            art\tiles\tp090.frm
-tile       124  222            art\tiles\edg5003.frm
-roof       124  222            art\tiles\tp140.frm
-tile       126  222            art\tiles\road21.frm
-roof       126  222            art\tiles\tp124.frm
+roof       118  222            art\tiles\tp092.frm
+tile       120  222            art\tiles\crbm007.frm
+roof       120  222            art\tiles\tp096.frm
+tile       122  222            art\tiles\crbm004.frm
+roof       122  222            art\tiles\tp098.frm
+tile       124  222            art\tiles\crbm007.frm
+roof       124  222            art\tiles\tp098.frm
+tile       126  222            art\tiles\crbm004.frm
+roof       126  222            art\tiles\tp188.frm
 tile       128  222            art\tiles\curb22.frm
 tile       130  222            art\tiles\curb29.frm
 tile       132  222            art\tiles\curb33.frm
@@ -8933,20 +9084,25 @@ tile       134  222            art\tiles\edg7002.frm
 tile       136  222            art\tiles\edg6011.frm
 tile       138  222            art\tiles\edg5002.frm
 tile       140  222            art\tiles\edg5000.frm
-tile       142  222            art\tiles\edg5003.frm
-tile       144  222            art\tiles\edg5001.frm
-tile       146  222            art\tiles\curb34.frm
-tile       148  222            art\tiles\curb20.frm
-tile       150  222            art\tiles\curb16.frm
-roof       150  222            art\tiles\tp133.frm
-tile       152  222            art\tiles\curb16.frm
-roof       152  222            art\tiles\tp102.frm
-tile       154  222            art\tiles\curb16.frm
-roof       154  222            art\tiles\tp107.frm
-tile       156  222            art\tiles\curb16.frm
-roof       156  222            art\tiles\tp106.frm
-tile       158  222            art\tiles\curb16.frm
-roof       158  222            art\tiles\tp105.frm
+roof       140  222            art\tiles\tp092.frm
+tile       142  222            art\tiles\crbm007.frm
+roof       142  222            art\tiles\tp097.frm
+tile       144  222            art\tiles\crbm007.frm
+roof       144  222            art\tiles\tp096.frm
+tile       146  222            art\tiles\crbm007.frm
+roof       146  222            art\tiles\tp098.frm
+tile       148  222            art\tiles\crbm007.frm
+roof       148  222            art\tiles\tp094.frm
+tile       150  222            art\tiles\crbm004.frm
+roof       150  222            art\tiles\tp094.frm
+tile       152  222            art\tiles\crbm007.frm
+roof       152  222            art\tiles\tp094.frm
+tile       154  222            art\tiles\crbm004.frm
+roof       154  222            art\tiles\tp096.frm
+tile       156  222            art\tiles\crbm007.frm
+roof       156  222            art\tiles\tp096.frm
+tile       158  222            art\tiles\crbm007.frm
+roof       158  222            art\tiles\tp190.frm
 tile       160  222            art\tiles\curb22.frm
 tile       162  222            art\tiles\curb33.frm
 tile       164  222            art\tiles\edg3000.frm
@@ -9053,20 +9209,21 @@ tile       100  224            art\tiles\bld2043.frm
 tile       102  224            art\tiles\bld2043.frm
 tile       104  224            art\tiles\edg5005.frm
 tile       106  224            art\tiles\edg5000.frm
+tile       106  224            art\tiles\edg5000.frm
 tile       108  224            art\tiles\edg6002.frm
 tile       110  224            art\tiles\curb24.frm
 tile       112  224            art\tiles\curb10.frm
 tile       114  224            art\tiles\curb02.frm
 tile       116  224            art\tiles\curb02.frm
 tile       118  224            art\tiles\curb02.frm
-roof       118  224            art\tiles\tp092.frm
-tile       120  224            art\tiles\road16.frm
-roof       120  224            art\tiles\tp111.frm
-tile       122  224            art\tiles\road18.frm
-roof       122  224            art\tiles\tp112.frm
-tile       124  224            art\tiles\road17.frm
-roof       124  224            art\tiles\tp111.frm
-tile       126  224            art\tiles\road19.frm
+roof       118  224            art\tiles\tp116.frm
+tile       120  224            art\tiles\crbm007.frm
+roof       120  224            art\tiles\tp114.frm
+tile       122  224            art\tiles\crbm004.frm
+roof       122  224            art\tiles\tp115.frm
+tile       124  224            art\tiles\crbm007.frm
+roof       124  224            art\tiles\tp115.frm
+tile       126  224            art\tiles\crbm004.frm
 roof       126  224            art\tiles\tp109.frm
 tile       128  224            art\tiles\curb21.frm
 tile       130  224            art\tiles\curb30.frm
@@ -9075,20 +9232,25 @@ tile       134  224            art\tiles\edgs004.frm
 tile       136  224            art\tiles\edg5000.frm
 tile       138  224            art\tiles\edg5000.frm
 tile       140  224            art\tiles\edg5003.frm
-tile       142  224            art\tiles\edg5000.frm
-tile       144  224            art\tiles\edg5007.frm
-tile       146  224            art\tiles\edg5005.frm
-tile       148  224            art\tiles\curb25.frm
-tile       150  224            art\tiles\curb16.frm
-roof       150  224            art\tiles\tp135.frm
-tile       152  224            art\tiles\curb16.frm
-roof       152  224            art\tiles\tp091.frm
-tile       154  224            art\tiles\curb16.frm
-roof       154  224            art\tiles\tp090.frm
-tile       156  224            art\tiles\curb16.frm
-roof       156  224            art\tiles\tp088.frm
-tile       158  224            art\tiles\curb16.frm
-roof       158  224            art\tiles\tp087.frm
+roof       140  224            art\tiles\tp100.frm
+tile       142  224            art\tiles\crbm007.frm
+roof       142  224            art\tiles\tp098.frm
+tile       144  224            art\tiles\crbm007.frm
+roof       144  224            art\tiles\tp097.frm
+tile       146  224            art\tiles\crbm004.frm
+roof       146  224            art\tiles\tp097.frm
+tile       148  224            art\tiles\crbm004.frm
+roof       148  224            art\tiles\tp094.frm
+tile       150  224            art\tiles\crbm007.frm
+roof       150  224            art\tiles\tp095.frm
+tile       152  224            art\tiles\crbm004.frm
+roof       152  224            art\tiles\tp095.frm
+tile       154  224            art\tiles\crbm007.frm
+roof       154  224            art\tiles\tp097.frm
+tile       156  224            art\tiles\crbm007.frm
+roof       156  224            art\tiles\tp097.frm
+tile       158  224            art\tiles\crbm004.frm
+roof       158  224            art\tiles\tp085.frm
 tile       160  224            art\tiles\curb16.frm
 tile       162  224            art\tiles\curb22.frm
 tile       164  224            art\tiles\curb29.frm
@@ -9195,6 +9357,7 @@ tile       100  226            art\tiles\bld2043.frm
 tile       102  226            art\tiles\bld2043.frm
 tile       104  226            art\tiles\edg5001.frm
 tile       106  226            art\tiles\edg6006.frm
+tile       106  226            art\tiles\edg6006.frm
 tile       108  226            art\tiles\edg6005.frm
 tile       110  226            art\tiles\curb34.frm
 tile       112  226            art\tiles\curb31.frm
@@ -9212,21 +9375,25 @@ tile       134  226            art\tiles\edg2000.frm
 tile       136  226            art\tiles\edg5003.frm
 tile       138  226            art\tiles\edg5005.frm
 tile       140  226            art\tiles\edg5002.frm
-tile       142  226            art\tiles\edg5001.frm
-tile       144  226            art\tiles\edg5004.frm
-tile       146  226            art\tiles\curb35.frm
-tile       148  226            art\tiles\curb23.frm
-roof       148  226            art\tiles\tp142.frm
-tile       150  226            art\tiles\curb16.frm
-roof       150  226            art\tiles\tp137.frm
-tile       152  226            art\tiles\curb16.frm
-roof       152  226            art\tiles\tp098.frm
-tile       154  226            art\tiles\curb16.frm
-roof       154  226            art\tiles\tp097.frm
-tile       156  226            art\tiles\curb19.frm
-roof       156  226            art\tiles\tp096.frm
-tile       158  226            art\tiles\curb16.frm
-roof       158  226            art\tiles\tp095.frm
+roof       140  226            art\tiles\tp092.frm
+tile       142  226            art\tiles\crbm004.frm
+roof       142  226            art\tiles\tp099.frm
+tile       144  226            art\tiles\crbm004.frm
+roof       144  226            art\tiles\tp098.frm
+tile       146  226            art\tiles\crbm007.frm
+roof       146  226            art\tiles\tp097.frm
+tile       148  226            art\tiles\crbm007.frm
+roof       148  226            art\tiles\tp095.frm
+tile       150  226            art\tiles\crbm004.frm
+roof       150  226            art\tiles\tp096.frm
+tile       152  226            art\tiles\crbm007.frm
+roof       152  226            art\tiles\tp096.frm
+tile       154  226            art\tiles\crbm004.frm
+roof       154  226            art\tiles\tp098.frm
+tile       156  226            art\tiles\crbm004.frm
+roof       156  226            art\tiles\tp098.frm
+tile       158  226            art\tiles\crbm007.frm
+roof       158  226            art\tiles\tp188.frm
 tile       160  226            art\tiles\curb18.frm
 tile       162  226            art\tiles\curb16.frm
 tile       164  226            art\tiles\curb21.frm
@@ -9354,38 +9521,55 @@ tile       100  228            art\tiles\bld2043.frm
 tile       102  228            art\tiles\bld2043.frm
 tile       104  228            art\tiles\edg6004.frm
 tile       106  228            art\tiles\edg6001.frm
+tile       106  228            art\tiles\edg6001.frm
+tile       108  228            art\tiles\edg6007.frm
 tile       108  228            art\tiles\edg6007.frm
 tile       110  228            art\tiles\edg6004.frm
+tile       110  228            art\tiles\edg6004.frm
+tile       112  228            art\tiles\edgs000.frm
 tile       112  228            art\tiles\edgs000.frm
 tile       114  228            art\tiles\curb34.frm
+tile       114  228            art\tiles\curb34.frm
+tile       116  228            art\tiles\curb31.frm
 tile       116  228            art\tiles\curb31.frm
 tile       118  228            art\tiles\curb30.frm
+tile       118  228            art\tiles\curb30.frm
+tile       120  228            art\tiles\curb20.frm
 tile       120  228            art\tiles\curb20.frm
 tile       122  228            art\tiles\curb16.frm
+tile       122  228            art\tiles\curb16.frm
+tile       124  228            art\tiles\curb21.frm
 tile       124  228            art\tiles\curb21.frm
 tile       126  228            art\tiles\curb20.frm
+tile       126  228            art\tiles\curb20.frm
 tile       128  228            art\tiles\curb19.frm
+tile       128  228            art\tiles\curb19.frm
+tile       130  228            art\tiles\curb16.frm
 tile       130  228            art\tiles\curb16.frm
 tile       132  228            art\tiles\curb22.frm
 tile       134  228            art\tiles\curb33.frm
 tile       136  228            art\tiles\edg5000.frm
 tile       138  228            art\tiles\edg5004.frm
 tile       140  228            art\tiles\edg5000.frm
-tile       142  228            art\tiles\edg5003.frm
-tile       144  228            art\tiles\edg5000.frm
-tile       146  228            art\tiles\curb24.frm
-tile       148  228            art\tiles\curb16.frm
-roof       148  228            art\tiles\tp135.frm
-tile       150  228            art\tiles\curb16.frm
-roof       150  228            art\tiles\tp105.frm
-tile       152  228            art\tiles\curb16.frm
-roof       152  228            art\tiles\tp104.frm
-tile       154  228            art\tiles\curb16.frm
-roof       154  228            art\tiles\tp103.frm
-tile       156  228            art\tiles\curb16.frm
-roof       156  228            art\tiles\tp102.frm
-tile       158  228            art\tiles\curb16.frm
-roof       158  228            art\tiles\tp099.frm
+roof       140  228            art\tiles\tp116.frm
+tile       142  228            art\tiles\crbm007.frm
+roof       142  228            art\tiles\tp114.frm
+tile       144  228            art\tiles\crbm007.frm
+roof       144  228            art\tiles\tp110.frm
+tile       146  228            art\tiles\crbm007.frm
+roof       146  228            art\tiles\tp111.frm
+tile       148  228            art\tiles\crbm004.frm
+roof       148  228            art\tiles\tp112.frm
+tile       150  228            art\tiles\crbm007.frm
+roof       150  228            art\tiles\tp115.frm
+tile       152  228            art\tiles\crbm007.frm
+roof       152  228            art\tiles\tp114.frm
+tile       154  228            art\tiles\crbm004.frm
+roof       154  228            art\tiles\tp115.frm
+tile       156  228            art\tiles\crbm007.frm
+roof       156  228            art\tiles\tp115.frm
+tile       158  228            art\tiles\crbm004.frm
+roof       158  228            art\tiles\tp109.frm
 tile       160  228            art\tiles\curb16.frm
 tile       162  228            art\tiles\curb17.frm
 tile       164  228            art\tiles\curb26.frm
@@ -9531,9 +9715,9 @@ tile       134  230            art\tiles\curb38.frm
 tile       136  230            art\tiles\edg5001.frm
 tile       138  230            art\tiles\edg5000.frm
 tile       140  230            art\tiles\edg5003.frm
-tile       142  230            art\tiles\edg5007.frm
-tile       144  230            art\tiles\edg5000.frm
-tile       146  230            art\tiles\curb36.frm
+tile       142  230            art\tiles\curb36.frm
+tile       144  230            art\tiles\curb07.frm
+tile       146  230            art\tiles\curb02.frm
 tile       148  230            art\tiles\curb02.frm
 tile       150  230            art\tiles\curb02.frm
 tile       152  230            art\tiles\curb02.frm
@@ -11405,6 +11589,8 @@ tile       306  254            art\tiles\bld2043.frm
 tile       308  254            art\tiles\bld2043.frm
 tile       310  254            art\tiles\bld2043.frm
 tile       312  254            art\tiles\bld2043.frm
+roof       59   256            art\tiles\tp092.frm
+roof       61   256            art\tiles\tp097.frm
 tile       96   256            art\tiles\bld2043.frm
 tile       98   256            art\tiles\bld2043.frm
 tile       100  256            art\tiles\bld2043.frm
@@ -11513,6 +11699,7 @@ tile       302  256            art\tiles\bld2043.frm
 tile       304  256            art\tiles\bld2043.frm
 tile       306  256            art\tiles\bld2043.frm
 tile       308  256            art\tiles\bld2043.frm
+roof       61   258            art\tiles\tp098.frm
 tile       96   258            art\tiles\bld2043.frm
 tile       98   258            art\tiles\bld2043.frm
 tile       100  258            art\tiles\bld2043.frm
@@ -11622,6 +11809,11 @@ tile       304  258            art\tiles\bld2043.frm
 tile       334  258            art\tiles\fonroofc002.frm
 tile       341  258            art\tiles\fonroofc0025.frm
 tile       343  258            art\tiles\fonroofb0021.frm
+roof       61   260            art\tiles\tp099.frm
+roof       67   260            art\tiles\tp094.frm
+roof       69   260            art\tiles\tp096.frm
+roof       71   260            art\tiles\tp096.frm
+roof       73   260            art\tiles\tp190.frm
 tile       98   260            art\tiles\bld2043.frm
 tile       100  260            art\tiles\bld2043.frm
 tile       102  260            art\tiles\bld2043.frm
@@ -11728,6 +11920,11 @@ tile       338  261            art\tiles\fonroofb0040.frm
 tile       340  261            art\tiles\fonroofc0031.frm
 tile       342  261            art\tiles\fonroadd002.frm
 tile       344  261            art\tiles\fonroofa0040.frm
+roof       61   262            art\tiles\tp114.frm
+roof       67   262            art\tiles\tp095.frm
+roof       69   262            art\tiles\tp097.frm
+roof       71   262            art\tiles\tp097.frm
+roof       73   262            art\tiles\tp085.frm
 tile       100  262            art\tiles\bld2043.frm
 tile       102  262            art\tiles\bld2043.frm
 tile       104  262            art\tiles\bld2043.frm
@@ -11832,6 +12029,10 @@ tile       338  263            art\tiles\fonroofb003.frm
 tile       340  263            art\tiles\fonroofe0029.frm
 tile       342  263            art\tiles\fonroofa008.frm
 tile       344  263            art\tiles\fonroofb0024.frm
+roof       67   264            art\tiles\tp096.frm
+roof       69   264            art\tiles\tp098.frm
+roof       71   264            art\tiles\tp098.frm
+roof       73   264            art\tiles\tp188.frm
 tile       100  264            art\tiles\bld2043.frm
 tile       102  264            art\tiles\bld2043.frm
 tile       104  264            art\tiles\bld2043.frm
@@ -13170,6 +13371,10 @@ tile       218  298            art\tiles\bld2043.frm
 tile       220  298            art\tiles\bld2043.frm
 tile       222  298            art\tiles\bld2043.frm
 tile       224  298            art\tiles\bld2043.frm
+roof       97   300            art\tiles\tp023.frm
+roof       99   300            art\tiles\tp019.frm
+roof       101  300            art\tiles\tp019.frm
+roof       103  300            art\tiles\tp069.frm
 tile       124  300            art\tiles\bld2043.frm
 tile       126  300            art\tiles\bld2043.frm
 tile       128  300            art\tiles\bld2043.frm
@@ -13224,6 +13429,10 @@ tile       244  301            art\tiles\plk2000.frm
 tile       246  301            art\tiles\plk1000.frm
 tile       248  301            art\tiles\plk2000.frm
 tile       250  301            art\tiles\plk1000.frm
+roof       97   302            art\tiles\tp079.frm
+roof       99   302            art\tiles\tp078.frm
+roof       101  302            art\tiles\tp078.frm
+roof       103  302            art\tiles\tp077.frm
 tile       126  302            art\tiles\bld2043.frm
 tile       128  302            art\tiles\bld2043.frm
 tile       130  302            art\tiles\bld2043.frm
@@ -13275,6 +13484,10 @@ tile       244  303            art\tiles\plk1000.frm
 tile       246  303            art\tiles\plk2000.frm
 tile       248  303            art\tiles\plk1000.frm
 tile       250  303            art\tiles\plk2000.frm
+roof       97   304            art\tiles\tp095.frm
+roof       99   304            art\tiles\tp097.frm
+roof       101  304            art\tiles\tp097.frm
+roof       103  304            art\tiles\tp085.frm
 tile       128  304            art\tiles\bld2043.frm
 tile       130  304            art\tiles\bld2043.frm
 tile       132  304            art\tiles\bld2043.frm
@@ -13323,6 +13536,10 @@ tile       244  305            art\tiles\plk2000.frm
 tile       246  305            art\tiles\plk1000.frm
 tile       248  305            art\tiles\plk2000.frm
 tile       250  305            art\tiles\plk1000.frm
+roof       97   306            art\tiles\tp096.frm
+roof       99   306            art\tiles\tp098.frm
+roof       101  306            art\tiles\tp098.frm
+roof       103  306            art\tiles\tp188.frm
 tile       128  306            art\tiles\bld2043.frm
 tile       130  306            art\tiles\bld2043.frm
 tile       132  306            art\tiles\bld2043.frm
@@ -13480,6 +13697,16 @@ tile       190  312            art\tiles\bld2043.frm
 tile       192  312            art\tiles\bld2043.frm
 tile       194  312            art\tiles\bld2043.frm
 tile       196  312            art\tiles\bld2043.frm
+roof       73   314            art\tiles\tp076.frm
+roof       75   314            art\tiles\tp020.frm
+roof       77   314            art\tiles\tp019.frm
+roof       79   314            art\tiles\tp024.frm
+roof       81   314            art\tiles\tp019.frm
+roof       83   314            art\tiles\tp024.frm
+roof       85   314            art\tiles\tp023.frm
+roof       87   314            art\tiles\tp019.frm
+roof       89   314            art\tiles\tp019.frm
+roof       91   314            art\tiles\tp069.frm
 tile       134  314            art\tiles\bld2043.frm
 tile       136  314            art\tiles\bld2043.frm
 tile       138  314            art\tiles\bld2043.frm
@@ -13513,6 +13740,26 @@ tile       192  314            art\tiles\bld2043.frm
 tile       246  315            art\tiles\shut020.frm
 tile       248  315            art\tiles\shut019.frm
 tile       254  315            art\tiles\plk1000.frm
+roof       73   316            art\tiles\tp100.frm
+roof       75   316            art\tiles\tp083.frm
+roof       77   316            art\tiles\tp082.frm
+roof       79   316            art\tiles\tp081.frm
+roof       81   316            art\tiles\tp081.frm
+roof       83   316            art\tiles\tp080.frm
+roof       85   316            art\tiles\tp079.frm
+roof       87   316            art\tiles\tp078.frm
+roof       89   316            art\tiles\tp078.frm
+roof       91   316            art\tiles\tp077.frm
+roof       107  316            art\tiles\tp076.frm
+roof       109  316            art\tiles\tp020.frm
+roof       111  316            art\tiles\tp019.frm
+roof       113  316            art\tiles\tp024.frm
+roof       115  316            art\tiles\tp019.frm
+roof       117  316            art\tiles\tp024.frm
+roof       119  316            art\tiles\tp023.frm
+roof       121  316            art\tiles\tp019.frm
+roof       123  316            art\tiles\tp019.frm
+roof       125  316            art\tiles\tp069.frm
 tile       136  316            art\tiles\bld2043.frm
 tile       138  316            art\tiles\bld2043.frm
 tile       140  316            art\tiles\bld2043.frm
@@ -13543,6 +13790,26 @@ tile       188  316            art\tiles\bld2043.frm
 tile       246  317            art\tiles\shut021.frm
 tile       248  317            art\tiles\shut019.frm
 tile       254  317            art\tiles\plk2000.frm
+roof       73   318            art\tiles\tp100.frm
+roof       75   318            art\tiles\tp095.frm
+roof       77   318            art\tiles\tp094.frm
+roof       79   318            art\tiles\tp098.frm
+roof       81   318            art\tiles\tp098.frm
+roof       83   318            art\tiles\tp097.frm
+roof       85   318            art\tiles\tp096.frm
+roof       87   318            art\tiles\tp095.frm
+roof       89   318            art\tiles\tp095.frm
+roof       91   318            art\tiles\tp085.frm
+roof       107  318            art\tiles\tp100.frm
+roof       109  318            art\tiles\tp083.frm
+roof       111  318            art\tiles\tp082.frm
+roof       113  318            art\tiles\tp081.frm
+roof       115  318            art\tiles\tp081.frm
+roof       117  318            art\tiles\tp080.frm
+roof       119  318            art\tiles\tp079.frm
+roof       121  318            art\tiles\tp078.frm
+roof       123  318            art\tiles\tp078.frm
+roof       125  318            art\tiles\tp077.frm
 tile       136  318            art\tiles\bld2043.frm
 tile       138  318            art\tiles\bld2043.frm
 tile       140  318            art\tiles\bld2043.frm
@@ -13570,6 +13837,26 @@ tile       182  318            art\tiles\bld2043.frm
 tile       184  318            art\tiles\bld2043.frm
 tile       246  319            art\tiles\shut021.frm
 tile       248  319            art\tiles\shut020.frm
+roof       73   320            art\tiles\tp100.frm
+roof       75   320            art\tiles\tp096.frm
+roof       77   320            art\tiles\tp095.frm
+roof       79   320            art\tiles\tp099.frm
+roof       81   320            art\tiles\tp095.frm
+roof       83   320            art\tiles\tp096.frm
+roof       85   320            art\tiles\tp097.frm
+roof       87   320            art\tiles\tp095.frm
+roof       89   320            art\tiles\tp095.frm
+roof       91   320            art\tiles\tp190.frm
+roof       107  320            art\tiles\tp100.frm
+roof       109  320            art\tiles\tp095.frm
+roof       111  320            art\tiles\tp094.frm
+roof       113  320            art\tiles\tp098.frm
+roof       115  320            art\tiles\tp098.frm
+roof       117  320            art\tiles\tp097.frm
+roof       119  320            art\tiles\tp096.frm
+roof       121  320            art\tiles\tp095.frm
+roof       123  320            art\tiles\tp095.frm
+roof       125  320            art\tiles\tp085.frm
 tile       138  320            art\tiles\bld2043.frm
 tile       140  320            art\tiles\bld2043.frm
 tile       142  320            art\tiles\bld2043.frm
@@ -13592,6 +13879,22 @@ tile       174  320            art\tiles\bld2043.frm
 tile       176  320            art\tiles\bld2043.frm
 tile       178  320            art\tiles\bld2043.frm
 tile       180  320            art\tiles\bld2043.frm
+roof       73   322            art\tiles\tp092.frm
+roof       75   322            art\tiles\tp097.frm
+roof       77   322            art\tiles\tp096.frm
+roof       79   322            art\tiles\tp098.frm
+roof       81   322            art\tiles\tp094.frm
+roof       83   322            art\tiles\tp094.frm
+roof       107  322            art\tiles\tp100.frm
+roof       109  322            art\tiles\tp096.frm
+roof       111  322            art\tiles\tp095.frm
+roof       113  322            art\tiles\tp099.frm
+roof       115  322            art\tiles\tp095.frm
+roof       117  322            art\tiles\tp096.frm
+roof       119  322            art\tiles\tp097.frm
+roof       121  322            art\tiles\tp095.frm
+roof       123  322            art\tiles\tp095.frm
+roof       125  322            art\tiles\tp190.frm
 tile       140  322            art\tiles\bld2043.frm
 tile       142  322            art\tiles\bld2043.frm
 tile       144  322            art\tiles\bld2043.frm
@@ -13611,6 +13914,22 @@ tile       170  322            art\tiles\bld2043.frm
 tile       172  322            art\tiles\bld2043.frm
 tile       174  322            art\tiles\bld2043.frm
 tile       176  322            art\tiles\bld2043.frm
+roof       73   324            art\tiles\tp100.frm
+roof       75   324            art\tiles\tp098.frm
+roof       77   324            art\tiles\tp097.frm
+roof       79   324            art\tiles\tp097.frm
+roof       81   324            art\tiles\tp094.frm
+roof       83   324            art\tiles\tp095.frm
+roof       107  324            art\tiles\tp092.frm
+roof       109  324            art\tiles\tp097.frm
+roof       111  324            art\tiles\tp096.frm
+roof       113  324            art\tiles\tp098.frm
+roof       115  324            art\tiles\tp094.frm
+roof       117  324            art\tiles\tp094.frm
+roof       119  324            art\tiles\tp094.frm
+roof       121  324            art\tiles\tp096.frm
+roof       123  324            art\tiles\tp096.frm
+roof       125  324            art\tiles\tp190.frm
 tile       140  324            art\tiles\bld2043.frm
 tile       142  324            art\tiles\bld2043.frm
 tile       144  324            art\tiles\bld2043.frm
@@ -13628,6 +13947,22 @@ tile       166  324            art\tiles\bld2043.frm
 tile       168  324            art\tiles\bld2043.frm
 tile       170  324            art\tiles\bld2043.frm
 tile       172  324            art\tiles\bld2043.frm
+roof       73   326            art\tiles\tp092.frm
+roof       75   326            art\tiles\tp099.frm
+roof       77   326            art\tiles\tp098.frm
+roof       79   326            art\tiles\tp097.frm
+roof       81   326            art\tiles\tp095.frm
+roof       83   326            art\tiles\tp096.frm
+roof       107  326            art\tiles\tp100.frm
+roof       109  326            art\tiles\tp098.frm
+roof       111  326            art\tiles\tp097.frm
+roof       113  326            art\tiles\tp097.frm
+roof       115  326            art\tiles\tp094.frm
+roof       117  326            art\tiles\tp095.frm
+roof       119  326            art\tiles\tp095.frm
+roof       121  326            art\tiles\tp097.frm
+roof       123  326            art\tiles\tp097.frm
+roof       125  326            art\tiles\tp085.frm
 tile       142  326            art\tiles\bld2043.frm
 tile       144  326            art\tiles\bld2043.frm
 tile       146  326            art\tiles\bld2043.frm
@@ -13642,6 +13977,22 @@ tile       162  326            art\tiles\bld2043.frm
 tile       164  326            art\tiles\bld2043.frm
 tile       166  326            art\tiles\bld2043.frm
 tile       168  326            art\tiles\bld2043.frm
+roof       73   328            art\tiles\tp116.frm
+roof       75   328            art\tiles\tp114.frm
+roof       77   328            art\tiles\tp110.frm
+roof       79   328            art\tiles\tp111.frm
+roof       81   328            art\tiles\tp112.frm
+roof       83   328            art\tiles\tp115.frm
+roof       107  328            art\tiles\tp092.frm
+roof       109  328            art\tiles\tp099.frm
+roof       111  328            art\tiles\tp098.frm
+roof       113  328            art\tiles\tp097.frm
+roof       115  328            art\tiles\tp095.frm
+roof       117  328            art\tiles\tp096.frm
+roof       119  328            art\tiles\tp096.frm
+roof       121  328            art\tiles\tp098.frm
+roof       123  328            art\tiles\tp098.frm
+roof       125  328            art\tiles\tp188.frm
 tile       144  328            art\tiles\bld2043.frm
 tile       146  328            art\tiles\bld2043.frm
 tile       148  328            art\tiles\bld2043.frm
@@ -13653,6 +14004,16 @@ tile       158  328            art\tiles\bld2043.frm
 tile       160  328            art\tiles\bld2043.frm
 tile       162  328            art\tiles\bld2043.frm
 tile       164  328            art\tiles\bld2043.frm
+roof       107  330            art\tiles\tp116.frm
+roof       109  330            art\tiles\tp114.frm
+roof       111  330            art\tiles\tp110.frm
+roof       113  330            art\tiles\tp111.frm
+roof       115  330            art\tiles\tp112.frm
+roof       117  330            art\tiles\tp115.frm
+roof       119  330            art\tiles\tp114.frm
+roof       121  330            art\tiles\tp115.frm
+roof       123  330            art\tiles\tp115.frm
+roof       125  330            art\tiles\tp109.frm
 tile       144  330            art\tiles\bld2043.frm
 tile       146  330            art\tiles\bld2043.frm
 tile       148  330            art\tiles\bld2043.frm
@@ -29799,32 +30160,12 @@ MapY                 218
 
 MapObjType           2
 ProtoId              2104
-MapX                 163
-MapY                 221
-
-MapObjType           2
-ProtoId              2103
-MapX                 163
-MapY                 223
-
-MapObjType           2
-ProtoId              2104
 MapX                 176
 MapY                 235
 
 MapObjType           2
 ProtoId              2103
 MapX                 168
-MapY                 220
-
-MapObjType           2
-ProtoId              2104
-MapX                 163
-MapY                 220
-
-MapObjType           2
-ProtoId              2104
-MapX                 162
 MapY                 220
 
 MapObjType           2
@@ -29947,11 +30288,6 @@ ProtoId              2947
 MapX                 166
 MapY                 221
 
-MapObjType           1
-ProtoId              2945
-MapX                 214
-MapY                 194
-
 MapObjType           2
 ProtoId              2103
 MapX                 153
@@ -30018,11 +30354,6 @@ MapX                 214
 MapY                 224
 
 MapObjType           2
-ProtoId              2103
-MapX                 210
-MapY                 213
-
-MapObjType           2
 ProtoId              2105
 MapX                 202
 MapY                 232
@@ -30046,11 +30377,6 @@ MapObjType           2
 ProtoId              2103
 MapX                 165
 MapY                 237
-
-MapObjType           2
-ProtoId              2105
-MapX                 155
-MapY                 224
 
 MapObjType           2
 ProtoId              2103
@@ -30098,44 +30424,9 @@ MapX                 139
 MapY                 220
 
 MapObjType           2
-ProtoId              2105
-MapX                 145
-MapY                 220
-
-MapObjType           2
-ProtoId              2103
-MapX                 218
-MapY                 191
-
-MapObjType           2
-ProtoId              2103
-MapX                 124
-MapY                 221
-
-MapObjType           2
-ProtoId              2105
-MapX                 218
-MapY                 195
-
-MapObjType           2
 ProtoId              2103
 MapX                 199
 MapY                 194
-
-MapObjType           2
-ProtoId              2103
-MapX                 221
-MapY                 191
-
-MapObjType           2
-ProtoId              2105
-MapX                 124
-MapY                 222
-
-MapObjType           2
-ProtoId              2105
-MapX                 205
-MapY                 212
 
 MapObjType           2
 ProtoId              2105
@@ -30144,18 +30435,8 @@ MapY                 196
 
 MapObjType           2
 ProtoId              2105
-MapX                 204
-MapY                 212
-
-MapObjType           2
-ProtoId              2105
 MapX                 191
 MapY                 188
-
-MapObjType           2
-ProtoId              2105
-MapX                 125
-MapY                 224
 
 MapObjType           2
 ProtoId              2105
@@ -30184,33 +30465,8 @@ MapY                 198
 
 MapObjType           2
 ProtoId              2103
-MapX                 118
-MapY                 215
-
-MapObjType           2
-ProtoId              2103
-MapX                 109
-MapY                 226
-
-MapObjType           2
-ProtoId              2103
-MapX                 131
-MapY                 210
-
-MapObjType           2
-ProtoId              2103
-MapX                 128
-MapY                 215
-
-MapObjType           2
-ProtoId              2103
 MapX                 133
 MapY                 218
-
-MapObjType           2
-ProtoId              2103
-MapX                 129
-MapY                 217
 
 MapObjType           2
 ProtoId              2103
@@ -30224,18 +30480,8 @@ MapY                 196
 
 MapObjType           2
 ProtoId              2103
-MapX                 143
-MapY                 217
-
-MapObjType           2
-ProtoId              2103
 MapX                 133
 MapY                 227
-
-MapObjType           2
-ProtoId              2103
-MapX                 130
-MapY                 220
 
 MapObjType           2
 ProtoId              2103
@@ -30254,18 +30500,8 @@ MapY                 239
 
 MapObjType           2
 ProtoId              2103
-MapX                 146
-MapY                 218
-
-MapObjType           2
-ProtoId              2103
 MapX                 132
 MapY                 198
-
-MapObjType           2
-ProtoId              2103
-MapX                 111
-MapY                 217
 
 MapObjType           2
 ProtoId              2103
@@ -30281,11 +30517,6 @@ MapObjType           2
 ProtoId              2105
 MapX                 134
 MapY                 199
-
-MapObjType           2
-ProtoId              2105
-MapX                 126
-MapY                 219
 
 MapObjType           2
 ProtoId              2103
@@ -30384,11 +30615,6 @@ MapY                 221
 
 MapObjType           2
 ProtoId              2103
-MapX                 215
-MapY                 194
-
-MapObjType           2
-ProtoId              2103
 MapX                 245
 MapY                 242
 
@@ -30401,11 +30627,6 @@ MapObjType           2
 ProtoId              2103
 MapX                 204
 MapY                 235
-
-MapObjType           2
-ProtoId              2103
-MapX                 215
-MapY                 197
 
 MapObjType           2
 ProtoId              2103
@@ -30423,11 +30644,6 @@ MapX                 248
 MapY                 238
 
 MapObjType           2
-ProtoId              2103
-MapX                 206
-MapY                 213
-
-MapObjType           2
 ProtoId              2105
 MapX                 251
 MapY                 243
@@ -30436,11 +30652,6 @@ MapObjType           2
 ProtoId              2103
 MapX                 248
 MapY                 223
-
-MapObjType           2
-ProtoId              2103
-MapX                 218
-MapY                 197
 
 MapObjType           2
 ProtoId              2103
@@ -30493,11 +30704,6 @@ MapX                 225
 MapY                 190
 
 MapObjType           2
-ProtoId              2103
-MapX                 214
-MapY                 198
-
-MapObjType           2
 ProtoId              2105
 MapX                 236
 MapY                 229
@@ -30526,11 +30732,6 @@ MapObjType           2
 ProtoId              2103
 MapX                 188
 MapY                 232
-
-MapObjType           2
-ProtoId              2105
-MapX                 162
-MapY                 214
 
 MapObjType           2
 ProtoId              2103
@@ -31887,11 +32088,6 @@ MapY                 244
 
 MapObjType           1
 ProtoId              2946
-MapX                 111
-MapY                 218
-
-MapObjType           1
-ProtoId              2946
 MapX                 242
 MapY                 254
 
@@ -31904,11 +32100,6 @@ MapObjType           1
 ProtoId              2947
 MapX                 133
 MapY                 254
-
-MapObjType           2
-ProtoId              3806
-MapX                 212
-MapY                 204
 
 MapObjType           2
 ProtoId              3806
@@ -31982,23 +32173,8 @@ MapY                 230
 
 MapObjType           2
 ProtoId              3806
-MapX                 157
-MapY                 192
-
-MapObjType           2
-ProtoId              3806
 MapX                 127
 MapY                 193
-
-MapObjType           2
-ProtoId              3806
-MapX                 119
-MapY                 205
-
-MapObjType           2
-ProtoId              3806
-MapX                 110
-MapY                 210
 
 MapObjType           2
 ProtoId              4600
@@ -32071,11 +32247,6 @@ MapObjType           2
 ProtoId              2314
 MapX                 187
 MapY                 186
-
-MapObjType           1
-ProtoId              2003
-MapX                 159
-MapY                 193
 
 MapObjType           2
 ProtoId              2118
@@ -32176,11 +32347,6 @@ MapObjType           2
 ProtoId              2092
 MapX                 221
 MapY                 243
-
-MapObjType           2
-ProtoId              2093
-MapX                 216
-MapY                 203
 
 MapObjType           2
 ProtoId              2093
@@ -32344,16 +32510,6 @@ MapY                 243
 
 MapObjType           2
 ProtoId              2278
-MapX                 217
-MapY                 205
-
-MapObjType           2
-ProtoId              2278
-MapX                 213
-MapY                 203
-
-MapObjType           2
-ProtoId              2278
 MapX                 161
 MapY                 247
 
@@ -32381,16 +32537,6 @@ MapObjType           2
 ProtoId              2278
 MapX                 206
 MapY                 229
-
-MapObjType           2
-ProtoId              2280
-MapX                 218
-MapY                 207
-
-MapObjType           2
-ProtoId              2280
-MapX                 217
-MapY                 202
 
 MapObjType           2
 ProtoId              2280
@@ -32443,11 +32589,6 @@ MapX                 138
 MapY                 189
 
 MapObjType           2
-ProtoId              2280
-MapX                 136
-MapY                 210
-
-MapObjType           2
 ProtoId              2279
 MapX                 220
 MapY                 245
@@ -32461,21 +32602,6 @@ MapObjType           2
 ProtoId              2279
 MapX                 222
 MapY                 242
-
-MapObjType           2
-ProtoId              2279
-MapX                 214
-MapY                 200
-
-MapObjType           2
-ProtoId              2279
-MapX                 219
-MapY                 205
-
-MapObjType           2
-ProtoId              2279
-MapX                 221
-MapY                 190
 
 MapObjType           2
 ProtoId              2279
@@ -32496,11 +32622,6 @@ MapObjType           2
 ProtoId              2279
 MapX                 119
 MapY                 230
-
-MapObjType           2
-ProtoId              2279
-MapX                 108
-MapY                 217
 
 MapObjType           2
 ProtoId              2279
@@ -32638,904 +32759,9 @@ MapX                 160
 MapY                 209
 
 MapObjType           2
-ProtoId              5586
-MapX                 158
-MapY                 211
-
-MapObjType           2
-ProtoId              5589
-MapX                 154
-MapY                 211
-
-MapObjType           2
-ProtoId              5588
-MapX                 159
-MapY                 211
-
-MapObjType           2
-ProtoId              5590
-MapX                 157
-MapY                 211
-
-MapObjType           2
-ProtoId              5591
-MapX                 155
-MapY                 211
-
-MapObjType           2
-ProtoId              5588
-MapX                 153
-MapY                 211
-
-MapObjType           2
-ProtoId              5590
-MapX                 151
-MapY                 211
-
-MapObjType           2
-ProtoId              5587
-MapX                 150
-MapY                 211
-
-MapObjType           2
-ProtoId              5589
-MapX                 148
-MapY                 211
-
-MapObjType           2
-ProtoId              5591
-MapX                 149
-MapY                 211
-
-MapObjType           2
-ProtoId              5590
-MapX                 145
-MapY                 211
-
-MapObjType           2
-ProtoId              5587
-MapX                 144
-MapY                 211
-
-MapObjType           2
-ProtoId              5591
-MapX                 143
-MapY                 211
-
-MapObjType           2
-ProtoId              5588
-MapX                 141
-MapY                 211
-
-MapObjType           2
-ProtoId              5586
-MapX                 140
-MapY                 211
-
-MapObjType           2
-ProtoId              5590
-MapX                 139
-MapY                 211
-
-MapObjType           2
-ProtoId              5591
-MapX                 137
-MapY                 211
-
-MapObjType           2
 ProtoId              5595
 MapX                 160
 MapY                 210
-
-MapObjType           2
-ProtoId              5610
-MapX                 136
-MapY                 211
-
-MapObjType           2
-ProtoId              5594
-MapX                 136
-MapY                 207
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 208
-
-MapObjType           2
-ProtoId              5598
-MapX                 136
-MapY                 209
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 210
-
-MapObjType           2
-ProtoId              5619
-MapX                 156
-MapY                 211
-
-MapObjType           2
-ProtoId              5619
-MapX                 152
-MapY                 211
-
-MapObjType           2
-ProtoId              5619
-MapX                 138
-MapY                 211
-
-MapObjType           2
-ProtoId              5619
-MapX                 142
-MapY                 211
-
-MapObjType           2
-ProtoId              5586
-MapX                 158
-MapY                 229
-
-MapObjType           2
-ProtoId              5588
-MapX                 159
-MapY                 229
-
-MapObjType           2
-ProtoId              5612
-MapX                 160
-MapY                 215
-
-MapObjType           2
-ProtoId              5599
-MapX                 160
-MapY                 217
-
-MapObjType           2
-ProtoId              5600
-MapX                 160
-MapY                 219
-
-MapObjType           2
-ProtoId              5598
-MapX                 160
-MapY                 220
-
-MapObjType           2
-ProtoId              5620
-MapX                 160
-MapY                 221
-
-MapObjType           2
-ProtoId              5594
-MapX                 160
-MapY                 222
-
-MapObjType           2
-ProtoId              5595
-MapX                 160
-MapY                 223
-
-MapObjType           2
-ProtoId              5598
-MapX                 160
-MapY                 224
-
-MapObjType           2
-ProtoId              5595
-MapX                 160
-MapY                 225
-
-MapObjType           2
-ProtoId              5620
-MapX                 160
-MapY                 226
-
-MapObjType           2
-ProtoId              5594
-MapX                 160
-MapY                 227
-
-MapObjType           2
-ProtoId              5595
-MapX                 160
-MapY                 228
-
-MapObjType           2
-ProtoId              5615
-MapX                 160
-MapY                 229
-
-MapObjType           2
-ProtoId              5591
-MapX                 149
-MapY                 229
-
-MapObjType           2
-ProtoId              5587
-MapX                 150
-MapY                 229
-
-MapObjType           2
-ProtoId              5590
-MapX                 151
-MapY                 229
-
-MapObjType           2
-ProtoId              5619
-MapX                 152
-MapY                 229
-
-MapObjType           2
-ProtoId              5588
-MapX                 153
-MapY                 229
-
-MapObjType           2
-ProtoId              5589
-MapX                 154
-MapY                 229
-
-MapObjType           2
-ProtoId              5591
-MapX                 155
-MapY                 229
-
-MapObjType           2
-ProtoId              5619
-MapX                 156
-MapY                 229
-
-MapObjType           2
-ProtoId              5590
-MapX                 157
-MapY                 229
-
-MapObjType           2
-ProtoId              5590
-MapX                 151
-MapY                 215
-
-MapObjType           2
-ProtoId              5619
-MapX                 152
-MapY                 215
-
-MapObjType           2
-ProtoId              5588
-MapX                 153
-MapY                 215
-
-MapObjType           2
-ProtoId              5589
-MapX                 154
-MapY                 215
-
-MapObjType           2
-ProtoId              5591
-MapX                 155
-MapY                 215
-
-MapObjType           2
-ProtoId              5619
-MapX                 156
-MapY                 215
-
-MapObjType           2
-ProtoId              5590
-MapX                 157
-MapY                 215
-
-MapObjType           2
-ProtoId              5586
-MapX                 158
-MapY                 215
-
-MapObjType           2
-ProtoId              5588
-MapX                 159
-MapY                 215
-
-MapObjType           2
-ProtoId              5632
-MapX                 150
-MapY                 215
-
-MapObjType           2
-ProtoId              5632
-MapX                 148
-MapY                 229
-
-MapObjType           2
-ProtoId              5543
-MapX                 128
-MapY                 225
-
-MapObjType           2
-ProtoId              5544
-MapX                 127
-MapY                 225
-
-MapObjType           2
-ProtoId              5546
-MapX                 125
-MapY                 225
-
-MapObjType           2
-ProtoId              5664
-MapX                 126
-MapY                 225
-
-MapObjType           2
-ProtoId              5551
-MapX                 124
-MapY                 225
-
-MapObjType           2
-ProtoId              5552
-MapX                 123
-MapY                 225
-
-MapObjType           2
-ProtoId              5664
-MapX                 122
-MapY                 225
-
-MapObjType           2
-ProtoId              5560
-MapX                 120
-MapY                 225
-
-MapObjType           2
-ProtoId              5552
-MapX                 121
-MapY                 225
-
-MapObjType           2
-ProtoId              5561
-MapX                 128
-MapY                 208
-
-MapObjType           2
-ProtoId              5590
-MapX                 127
-MapY                 207
-
-MapObjType           2
-ProtoId              5587
-MapX                 126
-MapY                 207
-
-MapObjType           2
-ProtoId              5589
-MapX                 124
-MapY                 207
-
-MapObjType           2
-ProtoId              5591
-MapX                 125
-MapY                 207
-
-MapObjType           2
-ProtoId              5586
-MapX                 122
-MapY                 207
-
-MapObjType           2
-ProtoId              5588
-MapX                 123
-MapY                 207
-
-MapObjType           2
-ProtoId              5590
-MapX                 121
-MapY                 207
-
-MapObjType           2
-ProtoId              5587
-MapX                 120
-MapY                 207
-
-MapObjType           2
-ProtoId              5590
-MapX                 119
-MapY                 207
-
-MapObjType           2
-ProtoId              5587
-MapX                 118
-MapY                 207
-
-MapObjType           2
-ProtoId              5589
-MapX                 116
-MapY                 207
-
-MapObjType           2
-ProtoId              5591
-MapX                 117
-MapY                 207
-
-MapObjType           2
-ProtoId              5586
-MapX                 114
-MapY                 207
-
-MapObjType           2
-ProtoId              5588
-MapX                 115
-MapY                 207
-
-MapObjType           2
-ProtoId              5590
-MapX                 113
-MapY                 207
-
-MapObjType           2
-ProtoId              5593
-MapX                 112
-MapY                 207
-
-MapObjType           2
-ProtoId              5660
-MapX                 117
-MapY                 217
-
-MapObjType           2
-ProtoId              5661
-MapX                 115
-MapY                 217
-
-MapObjType           2
-ProtoId              5664
-MapX                 118
-MapY                 217
-
-MapObjType           2
-ProtoId              5631
-MapX                 124
-MapY                 217
-
-MapObjType           2
-ProtoId              5609
-MapX                 120
-MapY                 217
-
-MapObjType           2
-ProtoId              5587
-MapX                 122
-MapY                 217
-
-MapObjType           2
-ProtoId              5590
-MapX                 123
-MapY                 217
-
-MapObjType           2
-ProtoId              5590
-MapX                 121
-MapY                 217
-
-MapObjType           2
-ProtoId              5546
-MapX                 119
-MapY                 217
-
-MapObjType           2
-ProtoId              5595
-MapX                 120
-MapY                 220
-
-MapObjType           2
-ProtoId              5594
-MapX                 120
-MapY                 219
-
-MapObjType           2
-ProtoId              5598
-MapX                 120
-MapY                 221
-
-MapObjType           2
-ProtoId              5595
-MapX                 120
-MapY                 222
-
-MapObjType           2
-ProtoId              5598
-MapX                 120
-MapY                 223
-
-MapObjType           2
-ProtoId              5595
-MapX                 120
-MapY                 224
-
-MapObjType           2
-ProtoId              5628
-MapX                 114
-MapY                 217
-
-MapObjType           2
-ProtoId              5629
-MapX                 128
-MapY                 213
-
-MapObjType           2
-ProtoId              5630
-MapX                 128
-MapY                 222
-
-MapObjType           2
-ProtoId              5553
-MapX                 128
-MapY                 223
-
-MapObjType           2
-ProtoId              5554
-MapX                 128
-MapY                 224
-
-MapObjType           2
-ProtoId              5553
-MapX                 128
-MapY                 209
-
-MapObjType           2
-ProtoId              5554
-MapX                 128
-MapY                 210
-
-MapObjType           2
-ProtoId              5555
-MapX                 128
-MapY                 211
-
-MapObjType           2
-ProtoId              5553
-MapX                 128
-MapY                 212
-
-MapObjType           2
-ProtoId              5633
-MapX                 112
-MapY                 212
-
-MapObjType           2
-ProtoId              5594
-MapX                 112
-MapY                 209
-
-MapObjType           2
-ProtoId              5595
-MapX                 112
-MapY                 210
-
-MapObjType           2
-ProtoId              5598
-MapX                 112
-MapY                 211
-
-MapObjType           2
-ProtoId              5497
-MapX                 220
-MapY                 213
-
-MapObjType           2
-ProtoId              5498
-MapX                 219
-MapY                 213
-
-MapObjType           2
-ProtoId              5499
-MapX                 218
-MapY                 213
-
-MapObjType           2
-ProtoId              5502
-MapX                 217
-MapY                 213
-
-MapObjType           2
-ProtoId              5505
-MapX                 215
-MapY                 213
-
-MapObjType           2
-ProtoId              5624
-MapX                 214
-MapY                 213
-
-MapObjType           2
-ProtoId              5633
-MapX                 204
-MapY                 205
-
-MapObjType           2
-ProtoId              5613
-MapX                 204
-MapY                 203
-
-MapObjType           2
-ProtoId              5592
-MapX                 206
-MapY                 203
-
-MapObjType           2
-ProtoId              5590
-MapX                 205
-MapY                 203
-
-MapObjType           2
-ProtoId              5583
-MapX                 207
-MapY                 203
-
-MapObjType           2
-ProtoId              5582
-MapX                 209
-MapY                 204
-
-MapObjType           2
-ProtoId              5611
-MapX                 210
-MapY                 203
-
-MapObjType           2
-ProtoId              5590
-MapX                 209
-MapY                 203
-
-MapObjType           2
-ProtoId              5633
-MapX                 210
-MapY                 209
-
-MapObjType           2
-ProtoId              5594
-MapX                 210
-MapY                 205
-
-MapObjType           2
-ProtoId              5595
-MapX                 210
-MapY                 206
-
-MapObjType           2
-ProtoId              5595
-MapX                 210
-MapY                 208
-
-MapObjType           2
-ProtoId              5598
-MapX                 210
-MapY                 207
-
-MapObjType           2
-ProtoId              5591
-MapX                 209
-MapY                 189
-
-MapObjType           2
-ProtoId              5589
-MapX                 208
-MapY                 189
-
-MapObjType           2
-ProtoId              5590
-MapX                 207
-MapY                 189
-
-MapObjType           2
-ProtoId              5591
-MapX                 205
-MapY                 189
-
-MapObjType           2
-ProtoId              5593
-MapX                 204
-MapY                 189
-
-MapObjType           2
-ProtoId              5594
-MapX                 204
-MapY                 191
-
-MapObjType           2
-ProtoId              5598
-MapX                 204
-MapY                 192
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 193
-
-MapObjType           2
-ProtoId              5598
-MapX                 204
-MapY                 194
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 195
-
-MapObjType           2
-ProtoId              5598
-MapX                 204
-MapY                 196
-
-MapObjType           2
-ProtoId              5598
-MapX                 204
-MapY                 198
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 197
-
-MapObjType           2
-ProtoId              5598
-MapX                 204
-MapY                 200
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 199
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 201
-
-MapObjType           2
-ProtoId              5595
-MapX                 204
-MapY                 202
-
-MapObjType           2
-ProtoId              5599
-MapX                 210
-MapY                 193
-
-MapObjType           2
-ProtoId              5600
-MapX                 210
-MapY                 195
-
-MapObjType           2
-ProtoId              5594
-MapX                 210
-MapY                 196
-
-MapObjType           2
-ProtoId              5595
-MapX                 210
-MapY                 197
-
-MapObjType           2
-ProtoId              5598
-MapX                 210
-MapY                 198
-
-MapObjType           2
-ProtoId              5609
-MapX                 210
-MapY                 189
-
-MapObjType           2
-ProtoId              5594
-MapX                 210
-MapY                 191
-
-MapObjType           2
-ProtoId              5595
-MapX                 210
-MapY                 192
-
-MapObjType           2
-ProtoId              5598
-MapX                 210
-MapY                 202
-
-MapObjType           2
-ProtoId              5595
-MapX                 210
-MapY                 201
-
-MapObjType           2
-ProtoId              5613
-MapX                 210
-MapY                 199
-
-MapObjType           2
-ProtoId              5626
-MapX                 220
-MapY                 203
-
-MapObjType           2
-ProtoId              5507
-MapX                 220
-MapY                 204
-
-MapObjType           2
-ProtoId              5511
-MapX                 220
-MapY                 207
-
-MapObjType           2
-ProtoId              5504
-MapX                 216
-MapY                 213
-
-MapObjType           2
-ProtoId              5507
-MapX                 220
-MapY                 208
-
-MapObjType           2
-ProtoId              5511
-MapX                 220
-MapY                 211
-
-MapObjType           2
-ProtoId              5507
-MapX                 220
-MapY                 212
-
-MapObjType           2
-ProtoId              5631
-MapX                 214
-MapY                 199
-
-MapObjType           2
-ProtoId              5587
-MapX                 212
-MapY                 199
-
-MapObjType           2
-ProtoId              5590
-MapX                 213
-MapY                 199
-
-MapObjType           2
-ProtoId              5590
-MapX                 211
-MapY                 199
-
-MapObjType           2
-ProtoId              5631
-MapX                 216
-MapY                 189
-
-MapObjType           2
-ProtoId              5590
-MapX                 215
-MapY                 189
-
-MapObjType           2
-ProtoId              5590
-MapX                 213
-MapY                 189
-
-MapObjType           2
-ProtoId              5589
-MapX                 212
-MapY                 189
-
-MapObjType           2
-ProtoId              5590
-MapX                 211
-MapY                 189
-
-MapObjType           2
-ProtoId              5644
-MapX                 214
-MapY                 189
 
 MapObjType           2
 ProtoId              5645
@@ -34688,11 +33914,6 @@ MapX                 137
 MapY                 191
 
 MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 200
-
-MapObjType           2
 ProtoId              5590
 MapX                 139
 MapY                 191
@@ -34958,11 +34179,6 @@ MapX                 145
 MapY                 241
 
 MapObjType           2
-ProtoId              2007
-MapX                 159
-MapY                 230
-
-MapObjType           2
 ProtoId              5625
 MapX                 138
 MapY                 252
@@ -35091,26 +34307,6 @@ MapObjType           2
 ProtoId              5529
 MapX                 138
 MapY                 249
-
-MapObjType           2
-ProtoId              5512
-MapX                 220
-MapY                 206
-
-MapObjType           2
-ProtoId              5513
-MapX                 220
-MapY                 205
-
-MapObjType           2
-ProtoId              5513
-MapX                 220
-MapY                 209
-
-MapObjType           2
-ProtoId              5512
-MapX                 220
-MapY                 210
 
 MapObjType           2
 ProtoId              5528
@@ -35348,11 +34544,6 @@ MapX                 230
 MapY                 251
 
 MapObjType           2
-ProtoId              2081
-MapX                 151
-MapY                 230
-
-MapObjType           2
 ProtoId              2091
 MapX                 202
 MapY                 228
@@ -35381,11 +34572,6 @@ MapObjType           2
 ProtoId              2110
 MapX                 170
 MapY                 234
-
-MapObjType           2
-ProtoId              2110
-MapX                 141
-MapY                 229
 
 MapObjType           2
 ProtoId              2101
@@ -35421,16 +34607,6 @@ MapObjType           2
 ProtoId              2225
 MapX                 221
 MapY                 220
-
-MapObjType           2
-ProtoId              2226
-MapX                 145
-MapY                 229
-
-MapObjType           2
-ProtoId              2232
-MapX                 221
-MapY                 213
 
 MapObjType           2
 ProtoId              2253
@@ -35485,11 +34661,6 @@ MapY                 250
 
 MapObjType           2
 ProtoId              2273
-MapX                 129
-MapY                 212
-
-MapObjType           2
-ProtoId              2273
 MapX                 215
 MapY                 237
 
@@ -35501,34 +34672,9 @@ OffsetX              5
 OffsetY              4
 
 MapObjType           2
-ProtoId              2275
-MapX                 155
-MapY                 217
-
-MapObjType           2
-ProtoId              2276
-MapX                 153
-MapY                 217
-
-MapObjType           2
-ProtoId              2275
-MapX                 123
-MapY                 209
-
-MapObjType           2
-ProtoId              2276
-MapX                 121
-MapY                 209
-
-MapObjType           2
 ProtoId              2276
 MapX                 201
 MapY                 239
-
-MapObjType           2
-ProtoId              2275
-MapX                 212
-MapY                 200
 
 MapObjType           2
 ProtoId              2272
@@ -35607,11 +34753,6 @@ MapY                 233
 
 MapObjType           2
 ProtoId              2314
-MapX                 215
-MapY                 192
-
-MapObjType           2
-ProtoId              2314
 MapX                 139
 MapY                 228
 
@@ -35672,35 +34813,6 @@ MapX                 228
 MapY                 236
 
 MapObjType           2
-ProtoId              2570
-MapX                 153
-MapY                 227
-OffsetY              24
-
-MapObjType           2
-ProtoId              2570
-MapX                 153
-MapY                 223
-OffsetY              24
-
-MapObjType           2
-ProtoId              2570
-MapX                 157
-MapY                 227
-OffsetY              24
-
-MapObjType           2
-ProtoId              2570
-MapX                 157
-MapY                 223
-OffsetY              24
-
-MapObjType           2
-ProtoId              2569
-MapX                 117
-MapY                 209
-
-MapObjType           2
 ProtoId              2569
 MapX                 238
 MapY                 250
@@ -35713,11 +34825,6 @@ OffsetX              -13
 OffsetY              -13
 
 MapObjType           2
-ProtoId              2610
-MapX                 113
-MapY                 210
-
-MapObjType           2
 ProtoId              2613
 MapX                 132
 MapY                 244
@@ -35728,19 +34835,9 @@ MapX                 242
 MapY                 230
 
 MapObjType           2
-ProtoId              2791
-MapX                 122
-MapY                 218
-
-MapObjType           2
 ProtoId              2899
 MapX                 236
 MapY                 251
-
-MapObjType           2
-ProtoId              3037
-MapX                 125
-MapY                 225
 
 MapObjType           2
 ProtoId              3060
@@ -35758,19 +34855,9 @@ MapX                 168
 MapY                 251
 
 MapObjType           2
-ProtoId              3155
-MapX                 126
-MapY                 225
-
-MapObjType           2
 ProtoId              3166
 MapX                 164
 MapY                 222
-
-MapObjType           2
-ProtoId              3604
-MapX                 161
-MapY                 228
 
 MapObjType           2
 ProtoId              3603
@@ -35786,28 +34873,13 @@ MapY                 250
 
 MapObjType           2
 ProtoId              3806
-MapX                 145
-MapY                 221
-
-MapObjType           2
-ProtoId              3806
 MapX                 111
 MapY                 196
 
 MapObjType           2
 ProtoId              4599
-MapX                 161
-MapY                 226
-
-MapObjType           2
-ProtoId              4599
 MapX                 139
 MapY                 251
-
-MapObjType           2
-ProtoId              4725
-MapX                 124
-MapY                 207
 
 MapObjType           2
 ProtoId              4733
@@ -35858,16 +34930,6 @@ MapObjType           2
 ProtoId              3521
 MapX                 112
 MapY                 244
-
-MapObjType           2
-ProtoId              3529
-MapX                 154
-MapY                 215
-
-MapObjType           2
-ProtoId              2806
-MapX                 122
-MapY                 219
 
 MapObjType           2
 ProtoId              2434
@@ -35930,16 +34992,6 @@ MapX                 249
 MapY                 196
 
 MapObjType           2
-ProtoId              2434
-MapX                 206
-MapY                 209
-
-MapObjType           2
-ProtoId              2431
-MapX                 207
-MapY                 212
-
-MapObjType           2
 ProtoId              2431
 MapX                 246
 MapY                 251
@@ -35975,11 +35027,6 @@ MapX                 244
 MapY                 232
 
 MapObjType           2
-ProtoId              2303
-MapX                 213
-MapY                 190
-
-MapObjType           2
 ProtoId              2302
 MapX                 132
 MapY                 207
@@ -36010,11 +35057,6 @@ MapObjType           2
 ProtoId              2299
 MapX                 183
 MapY                 216
-
-MapObjType           2
-ProtoId              2276
-MapX                 205
-MapY                 205
 
 MapObjType           2
 ProtoId              2279
@@ -36092,21 +35134,6 @@ MapX                 244
 MapY                 228
 
 MapObjType           2
-ProtoId              2223
-MapX                 206
-MapY                 190
-
-MapObjType           2
-ProtoId              2221
-MapX                 205
-MapY                 190
-
-MapObjType           2
-ProtoId              2213
-MapX                 207
-MapY                 192
-
-MapObjType           2
 ProtoId              2207
 MapX                 123
 MapY                 246
@@ -36115,11 +35142,6 @@ MapObjType           2
 ProtoId              2209
 MapX                 127
 MapY                 244
-
-MapObjType           2
-ProtoId              2118
-MapX                 144
-MapY                 222
 
 MapObjType           2
 ProtoId              2118
@@ -36187,21 +35209,6 @@ MapX                 163
 MapY                 252
 
 MapObjType           2
-ProtoId              2078
-MapX                 212
-MapY                 203
-
-MapObjType           2
-ProtoId              2079
-MapX                 211
-MapY                 205
-
-MapObjType           2
-ProtoId              2079
-MapX                 215
-MapY                 190
-
-MapObjType           2
 ProtoId              2081
 MapX                 245
 MapY                 244
@@ -36252,16 +35259,6 @@ MapX                 132
 MapY                 220
 
 MapObjType           2
-ProtoId              2081
-MapX                 141
-MapY                 220
-
-MapObjType           2
-ProtoId              2079
-MapX                 142
-MapY                 218
-
-MapObjType           2
 ProtoId              2078
 MapX                 114
 MapY                 242
@@ -36296,41 +35293,6 @@ MapObjType           2
 ProtoId              2092
 MapX                 201
 MapY                 230
-
-MapObjType           2
-ProtoId              2090
-MapX                 125
-MapY                 213
-
-MapObjType           2
-ProtoId              2091
-MapX                 124
-MapY                 215
-
-MapObjType           2
-ProtoId              2092
-MapX                 125
-MapY                 215
-
-MapObjType           2
-ProtoId              2093
-MapX                 124
-MapY                 213
-
-MapObjType           2
-ProtoId              2093
-MapX                 127
-MapY                 214
-
-MapObjType           2
-ProtoId              2090
-MapX                 110
-MapY                 209
-
-MapObjType           2
-ProtoId              2092
-MapX                 108
-MapY                 207
 
 MapObjType           2
 ProtoId              2091
@@ -36400,29 +35362,9 @@ MapX                 237
 MapY                 242
 
 MapObjType           1
-ProtoId              61
-MapX                 211
-MapY                 190
-
-MapObjType           1
-ProtoId              65
-MapX                 205
-MapY                 196
-
-MapObjType           1
 ProtoId              70
 MapX                 246
 MapY                 228
-
-MapObjType           1
-ProtoId              66
-MapX                 116
-MapY                 210
-
-MapObjType           1
-ProtoId              180
-MapX                 115
-MapY                 218
 
 MapObjType           1
 ProtoId              180
@@ -36435,16 +35377,6 @@ MapX                 228
 MapY                 236
 
 MapObjType           1
-ProtoId              188
-MapX                 151
-MapY                 216
-
-MapObjType           1
-ProtoId              189
-MapX                 113
-MapY                 212
-
-MapObjType           1
 ProtoId              189
 MapX                 119
 MapY                 243
@@ -36455,11 +35387,6 @@ MapX                 113
 MapY                 248
 
 MapObjType           1
-ProtoId              130
-MapX                 121
-MapY                 224
-
-MapObjType           1
 ProtoId              2959
 MapX                 236
 MapY                 246
@@ -36468,16 +35395,6 @@ MapObjType           1
 ProtoId              2958
 MapX                 226
 MapY                 227
-
-MapObjType           1
-ProtoId              2959
-MapX                 160
-MapY                 218
-
-MapObjType           1
-ProtoId              180
-MapX                 127
-MapY                 224
 
 MapObjType           2
 ProtoId              2103
@@ -36527,11 +35444,6 @@ MapX                 164
 MapY                 184
 OffsetX              1
 OffsetY              13
-
-MapObjType           2
-ProtoId              4916
-MapX                 144
-MapY                 194
 
 MapObjType           2
 ProtoId              6669
@@ -86192,26 +85104,6 @@ MapY                 190
 
 MapObjType           2
 ProtoId              5621
-MapX                 128
-MapY                 207
-
-MapObjType           2
-ProtoId              5621
-MapX                 112
-MapY                 208
-
-MapObjType           2
-ProtoId              5621
-MapX                 120
-MapY                 218
-
-MapObjType           2
-ProtoId              5621
-MapX                 160
-MapY                 216
-
-MapObjType           2
-ProtoId              5621
 MapX                 112
 MapY                 242
 
@@ -86307,26 +85199,6 @@ MapY                 204
 
 MapObjType           2
 ProtoId              5621
-MapX                 210
-MapY                 204
-
-MapObjType           2
-ProtoId              5621
-MapX                 204
-MapY                 190
-
-MapObjType           2
-ProtoId              5621
-MapX                 210
-MapY                 190
-
-MapObjType           2
-ProtoId              5621
-MapX                 210
-MapY                 200
-
-MapObjType           2
-ProtoId              5621
 MapX                 192
 MapY                 194
 
@@ -86339,21 +85211,6 @@ MapObjType           2
 ProtoId              5621
 MapX                 198
 MapY                 200
-
-MapObjType           2
-ProtoId              5622
-MapX                 211
-MapY                 190
-
-MapObjType           2
-ProtoId              5622
-MapX                 205
-MapY                 196
-
-MapObjType           2
-ProtoId              5622
-MapX                 205
-MapY                 197
 
 MapObjType           2
 ProtoId              5622
@@ -86439,46 +85296,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 113
 MapY                 249
-
-MapObjType           2
-ProtoId              2067
-MapX                 121
-MapY                 224
-
-MapObjType           2
-ProtoId              2067
-MapX                 127
-MapY                 224
-
-MapObjType           2
-ProtoId              2067
-MapX                 115
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 118
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
-MapX                 117
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
-MapX                 116
-MapY                 210
-
-MapObjType           2
-ProtoId              5622
-MapX                 113
-MapY                 212
-
-MapObjType           2
-ProtoId              5622
-MapX                 151
-MapY                 216
 
 MapObjType           2
 ProtoId              2067
@@ -86589,41 +85406,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 194
 MapY                 185
-
-MapObjType           2
-ProtoId              2067
-MapX                 206
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 205
-MapY                 191
-
-MapObjType           2
-ProtoId              2067
-MapX                 205
-MapY                 193
-
-MapObjType           2
-ProtoId              2067
-MapX                 206
-MapY                 192
-
-MapObjType           2
-ProtoId              2067
-MapX                 207
-MapY                 193
-
-MapObjType           2
-ProtoId              2067
-MapX                 206
-MapY                 191
-
-MapObjType           2
-ProtoId              2067
-MapX                 205
-MapY                 192
 
 MapObjType           2
 ProtoId              2067
@@ -86771,59 +85553,9 @@ MapX                 247
 MapY                 214
 
 MapObjType           2
-ProtoId              2067
-MapX                 213
-MapY                 192
-
-MapObjType           2
-ProtoId              2067
-MapX                 213
-MapY                 191
-
-MapObjType           2
-ProtoId              2067
-MapX                 214
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 215
-MapY                 191
-
-MapObjType           2
-ProtoId              2067
-MapX                 216
-MapY                 190
-
-MapObjType           2
-ProtoId              5622
-MapX                 218
-MapY                 188
-
-MapObjType           2
-ProtoId              5622
-MapX                 218
-MapY                 187
-
-MapObjType           2
 ProtoId              5622
 MapX                 218
 MapY                 186
-
-MapObjType           2
-ProtoId              5622
-MapX                 217
-MapY                 188
-
-MapObjType           2
-ProtoId              5622
-MapX                 216
-MapY                 187
-
-MapObjType           2
-ProtoId              5622
-MapX                 215
-MapY                 187
 
 MapObjType           2
 ProtoId              5622
@@ -86864,101 +85596,6 @@ MapObjType           2
 ProtoId              5622
 MapX                 216
 MapY                 186
-
-MapObjType           2
-ProtoId              5622
-MapX                 217
-MapY                 187
-
-MapObjType           2
-ProtoId              2067
-MapX                 213
-MapY                 200
-
-MapObjType           2
-ProtoId              2067
-MapX                 211
-MapY                 200
-
-MapObjType           2
-ProtoId              2067
-MapX                 211
-MapY                 201
-
-MapObjType           2
-ProtoId              2067
-MapX                 214
-MapY                 203
-
-MapObjType           2
-ProtoId              2067
-MapX                 213
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 213
-MapY                 205
-
-MapObjType           2
-ProtoId              2067
-MapX                 212
-MapY                 205
-
-MapObjType           2
-ProtoId              2067
-MapX                 211
-MapY                 206
-
-MapObjType           2
-ProtoId              5622
-MapX                 213
-MapY                 203
-
-MapObjType           2
-ProtoId              5622
-MapX                 212
-MapY                 202
-
-MapObjType           2
-ProtoId              5622
-MapX                 211
-MapY                 202
-
-MapObjType           2
-ProtoId              5622
-MapX                 211
-MapY                 203
-
-MapObjType           2
-ProtoId              5622
-MapX                 211
-MapY                 204
-
-MapObjType           2
-ProtoId              5622
-MapX                 212
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 217
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 216
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 205
-MapY                 204
-
-MapObjType           2
-ProtoId              5621
-MapX                 204
-MapY                 204
 
 MapObjType           2
 ProtoId              2067
@@ -87674,11 +86311,6 @@ MapY                 219
 
 MapObjType           2
 ProtoId              2067
-MapX                 202
-MapY                 215
-
-MapObjType           2
-ProtoId              2067
 MapX                 198
 MapY                 215
 
@@ -87983,41 +86615,6 @@ MapX                 166
 MapY                 222
 
 MapObjType           2
-ProtoId              5622
-MapX                 163
-MapY                 222
-
-MapObjType           2
-ProtoId              5622
-MapX                 162
-MapY                 222
-
-MapObjType           2
-ProtoId              2067
-MapX                 161
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 161
-MapY                 229
-
-MapObjType           2
-ProtoId              2067
-MapX                 160
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 159
-MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 230
-
-MapObjType           2
 ProtoId              2067
 MapX                 176
 MapY                 251
@@ -88116,236 +86713,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 160
 MapY                 245
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 222
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 226
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 228
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 226
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 228
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 226
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 222
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 222
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 222
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 226
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 228
-
-MapObjType           2
-ProtoId              2067
-MapX                 156
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 217
-
-MapObjType           2
-ProtoId              2067
-MapX                 152
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 155
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 150
-MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 149
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 152
-MapY                 231
-
-MapObjType           2
-ProtoId              5622
-MapX                 151
-MapY                 231
-
-MapObjType           2
-ProtoId              5622
-MapX                 150
-MapY                 230
-
-MapObjType           2
-ProtoId              5622
-MapX                 152
-MapY                 230
-
-MapObjType           2
-ProtoId              5622
-MapX                 151
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 147
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 146
-MapY                 230
-
-MapObjType           2
-ProtoId              2067
-MapX                 146
-MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 145
-MapY                 232
-
-MapObjType           2
-ProtoId              2067
-MapX                 144
-MapY                 232
-
-MapObjType           2
-ProtoId              2067
-MapX                 143
-MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 144
-MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 147
-MapY                 229
-
-MapObjType           2
-ProtoId              2067
-MapX                 147
-MapY                 228
-
-MapObjType           2
-ProtoId              2067
-MapX                 146
-MapY                 227
-
-MapObjType           2
-ProtoId              2067
-MapX                 145
-MapY                 228
-
-MapObjType           2
-ProtoId              2067
-MapX                 144
-MapY                 229
-
-MapObjType           2
-ProtoId              5622
-MapX                 144
-MapY                 230
-
-MapObjType           2
-ProtoId              5622
-MapX                 145
-MapY                 231
-
-MapObjType           2
-ProtoId              5622
-MapX                 145
-MapY                 230
-
-MapObjType           2
-ProtoId              5622
-MapX                 146
-MapY                 229
-
-MapObjType           2
-ProtoId              5622
-MapX                 146
-MapY                 228
 
 MapObjType           2
 ProtoId              5622
@@ -88569,21 +86936,6 @@ MapY                 232
 
 MapObjType           2
 ProtoId              2067
-MapX                 122
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 121
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 121
-MapY                 219
-
-MapObjType           2
-ProtoId              2067
 MapX                 132
 MapY                 231
 
@@ -88596,96 +86948,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 130
 MapY                 231
-
-MapObjType           2
-ProtoId              2067
-MapX                 113
-MapY                 211
-
-MapObjType           2
-ProtoId              2067
-MapX                 114
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 113
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
-MapX                 113
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 113
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 119
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 119
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 124
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 123
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 121
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 122
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 121
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 123
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 118
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 117
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 116
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 115
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 115
-MapY                 209
 
 MapObjType           2
 ProtoId              2067
@@ -88753,47 +87015,12 @@ MapX                 140
 MapY                 223
 
 MapObjType           2
-ProtoId              2067
-MapX                 142
-MapY                 220
-
-MapObjType           2
-ProtoId              2067
-MapX                 143
-MapY                 220
-
-MapObjType           2
-ProtoId              2067
-MapX                 143
-MapY                 219
-
-MapObjType           2
-ProtoId              2067
-MapX                 143
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 142
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 142
-MapY                 222
-
-MapObjType           2
 ProtoId              5622
 MapX                 141
 MapY                 223
 
 MapObjType           2
 ProtoId              5622
-MapX                 142
-MapY                 221
-
-MapObjType           2
-ProtoId              5622
 MapX                 141
 MapY                 221
 
@@ -88801,11 +87028,6 @@ MapObjType           2
 ProtoId              5622
 MapX                 141
 MapY                 222
-
-MapObjType           2
-ProtoId              5622
-MapX                 142
-MapY                 219
 
 MapObjType           2
 ProtoId              5622
@@ -88904,126 +87126,6 @@ MapY                 208
 
 MapObjType           2
 ProtoId              2067
-MapX                 128
-MapY                 214
-
-MapObjType           2
-ProtoId              2067
-MapX                 127
-MapY                 215
-
-MapObjType           2
-ProtoId              2067
-MapX                 126
-MapY                 215
-
-MapObjType           2
-ProtoId              2067
-MapX                 125
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 125
-MapY                 217
-
-MapObjType           2
-ProtoId              5622
-MapX                 126
-MapY                 214
-
-MapObjType           2
-ProtoId              5622
-MapX                 124
-MapY                 214
-
-MapObjType           2
-ProtoId              5622
-MapX                 124
-MapY                 216
-
-MapObjType           2
-ProtoId              5622
-MapX                 126
-MapY                 213
-
-MapObjType           2
-ProtoId              5622
-MapX                 125
-MapY                 214
-
-MapObjType           2
-ProtoId              5622
-MapX                 123
-MapY                 215
-
-MapObjType           2
-ProtoId              5622
-MapX                 123
-MapY                 216
-
-MapObjType           2
-ProtoId              2067
-MapX                 111
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
-MapX                 111
-MapY                 211
-
-MapObjType           2
-ProtoId              2067
-MapX                 110
-MapY                 211
-
-MapObjType           2
-ProtoId              2067
-MapX                 109
-MapY                 211
-
-MapObjType           2
-ProtoId              2067
-MapX                 108
-MapY                 208
-
-MapObjType           2
-ProtoId              5622
-MapX                 111
-MapY                 209
-
-MapObjType           2
-ProtoId              5622
-MapX                 111
-MapY                 208
-
-MapObjType           2
-ProtoId              5622
-MapX                 109
-MapY                 208
-
-MapObjType           2
-ProtoId              5622
-MapX                 110
-MapY                 208
-
-MapObjType           2
-ProtoId              5622
-MapX                 109
-MapY                 209
-
-MapObjType           2
-ProtoId              5622
-MapX                 110
-MapY                 210
-
-MapObjType           2
-ProtoId              5622
-MapX                 109
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
 MapX                 153
 MapY                 154
 
@@ -89068,16 +87170,6 @@ MapX                 170
 MapY                 156
 
 MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 221
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 221
-
-MapObjType           2
 ProtoId              2006
 MapX                 113
 MapY                 246
@@ -89096,100 +87188,6 @@ MapObjType           2
 ProtoId              2067
 MapX                 234
 MapY                 221
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 223
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 224
-
-MapObjType           2
-ProtoId              2067
-MapX                 158
-MapY                 225
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 225
-
-MapObjType           2
-ProtoId              2067
-MapX                 157
-MapY                 224
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 224
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 223
-
-MapObjType           2
-ProtoId              2067
-MapX                 154
-MapY                 225
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 225
-
-MapObjType           2
-ProtoId              2067
-MapX                 153
-MapY                 224
-
-MapObjType           2
-ProtoId              2402
-MapX                 156
-MapY                 228
-OffsetX              5
-OffsetY              1
-
-MapObjType           2
-ProtoId              2396
-MapX                 152
-MapY                 228
-OffsetX              6
-OffsetY              -4
-
-MapObjType           2
-ProtoId              2067
-MapX                 123
-MapY                 218
-
-MapObjType           2
-ProtoId              2067
-MapX                 123
-MapY                 219
-
-MapObjType           2
-ProtoId              2067
-MapX                 114
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 114
-MapY                 210
-
-MapObjType           2
-ProtoId              2067
-MapX                 212
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 212
-MapY                 191
 
 MapObjType           2
 ProtoId              2007
@@ -89784,16 +87782,6 @@ MapX                 111
 MapY                 195
 
 MapObjType           2
-ProtoId              5967
-MapX                 211
-MapY                 196
-
-MapObjType           2
-ProtoId              5968
-MapX                 211
-MapY                 194
-
-MapObjType           2
 ProtoId              5968
 MapX                 223
 MapY                 182
@@ -89802,31 +87790,6 @@ MapObjType           2
 ProtoId              5967
 MapX                 223
 MapY                 190
-
-MapObjType           2
-ProtoId              5970
-MapX                 219
-MapY                 190
-
-MapObjType           2
-ProtoId              5971
-MapX                 221
-MapY                 190
-
-MapObjType           2
-ProtoId              5963
-MapX                 217
-MapY                 190
-
-MapObjType           2
-ProtoId              5958
-MapX                 218
-MapY                 189
-
-MapObjType           2
-ProtoId              5959
-MapX                 220
-MapY                 189
 
 MapObjType           2
 ProtoId              5958
@@ -89877,66 +87840,6 @@ MapObjType           2
 ProtoId              5621
 MapX                 223
 MapY                 189
-
-MapObjType           2
-ProtoId              5621
-MapX                 211
-MapY                 195
-
-MapObjType           2
-ProtoId              5135
-MapX                 210
-MapY                 211
-
-MapObjType           2
-ProtoId              5136
-MapX                 209
-MapY                 211
-
-MapObjType           2
-ProtoId              5134
-MapX                 210
-MapY                 210
-
-MapObjType           2
-ProtoId              5133
-MapX                 210
-MapY                 209
-
-MapObjType           2
-ProtoId              5096
-MapX                 208
-MapY                 211
-
-MapObjType           2
-ProtoId              5097
-MapX                 207
-MapY                 211
-
-MapObjType           2
-ProtoId              5963
-MapX                 206
-MapY                 211
-
-MapObjType           2
-ProtoId              5097
-MapX                 205
-MapY                 211
-
-MapObjType           2
-ProtoId              5098
-MapX                 204
-MapY                 211
-
-MapObjType           2
-ProtoId              5099
-MapX                 203
-MapY                 211
-
-MapObjType           2
-ProtoId              5100
-MapX                 202
-MapY                 211
 
 MapObjType           2
 ProtoId              5101
@@ -90089,37 +87992,9 @@ MapX                 169
 MapY                 211
 
 MapObjType           2
-ProtoId              2108
-MapX                 207
-MapY                 212
-
-MapObjType           2
 ProtoId              2107
 MapX                 201
 MapY                 212
-
-MapObjType           2
-ProtoId              2124
-MapX                 210
-MapY                 212
-
-MapObjType           2
-ProtoId              2119
-MapX                 211
-MapY                 212
-OffsetX              4
-OffsetY              -4
-
-MapObjType           2
-ProtoId              2118
-MapX                 211
-MapY                 209
-
-MapObjType           2
-ProtoId              2108
-MapX                 217
-MapY                 191
-OffsetX              -31
 
 MapObjType           2
 ProtoId              2111
@@ -90142,11 +88017,6 @@ MapObjType           2
 ProtoId              2114
 MapX                 224
 MapY                 183
-
-MapObjType           2
-ProtoId              2110
-MapX                 221
-MapY                 191
 
 MapObjType           2
 ProtoId              2110
@@ -90174,28 +88044,8 @@ MapY                 212
 
 MapObjType           2
 ProtoId              2067
-MapX                 220
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 218
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
 MapX                 222
 MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 220
-MapY                 190
-
-MapObjType           2
-ProtoId              2067
-MapX                 163
-MapY                 223
 
 MapObjType           2
 ProtoId              2067
@@ -90528,31 +88378,6 @@ MapX                 150
 MapY                 191
 
 MapObjType           2
-ProtoId              5599
-MapX                 146
-MapY                 203
-
-MapObjType           2
-ProtoId              5600
-MapX                 146
-MapY                 205
-
-MapObjType           2
-ProtoId              5598
-MapX                 136
-MapY                 205
-
-MapObjType           2
-ProtoId              5620
-MapX                 136
-MapY                 201
-
-MapObjType           2
-ProtoId              5620
-MapX                 136
-MapY                 206
-
-MapObjType           2
 ProtoId              5594
 MapX                 234
 MapY                 197
@@ -90573,93 +88398,6 @@ MapX                 228
 MapY                 195
 
 MapObjType           2
-ProtoId              5609
-MapX                 146
-MapY                 191
-
-MapObjType           2
-ProtoId              5600
-MapX                 136
-MapY                 204
-
-MapObjType           2
-ProtoId              5599
-MapX                 136
-MapY                 202
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 202
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 199
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 200
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 201
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 209
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 208
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 207
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 206
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 210
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 209
-
-MapObjType           2
-ProtoId              5614
-MapX                 146
-MapY                 211
-
-MapObjType           2
-ProtoId              5590
-MapX                 147
-MapY                 211
-
-MapObjType           2
-ProtoId              5472
-MapX                 149
-MapY                 196
-
-MapObjType           2
-ProtoId              5476
-MapX                 147
-MapY                 196
-OffsetX              -4
-OffsetY              1
-
-MapObjType           2
 ProtoId              5595
 MapX                 160
 MapY                 195
@@ -90673,86 +88411,6 @@ MapObjType           2
 ProtoId              5595
 MapX                 160
 MapY                 194
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 198
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 196
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 194
-
-MapObjType           2
-ProtoId              5594
-MapX                 136
-MapY                 193
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 197
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 195
-
-MapObjType           2
-ProtoId              5595
-MapX                 136
-MapY                 199
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 196
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 197
-
-MapObjType           2
-ProtoId              5595
-MapX                 146
-MapY                 198
-
-MapObjType           2
-ProtoId              5472
-MapX                 153
-MapY                 196
-
-MapObjType           2
-ProtoId              5472
-MapX                 151
-MapY                 196
-
-MapObjType           2
-ProtoId              5471
-MapX                 154
-MapY                 195
-
-MapObjType           2
-ProtoId              5467
-MapX                 154
-MapY                 193
-
-MapObjType           2
-ProtoId              5599
-MapX                 146
-MapY                 193
-
-MapObjType           2
-ProtoId              5600
-MapX                 146
-MapY                 195
 
 MapObjType           2
 ProtoId              5609
@@ -90799,11 +88457,6 @@ ProtoId              5621
 MapX                 234
 MapY                 204
 
-MapObjType           1
-ProtoId              42
-MapX                 150
-MapY                 192
-
 MapObjType           2
 ProtoId              5591
 MapX                 149
@@ -90813,24 +88466,6 @@ MapObjType           2
 ProtoId              5589
 MapX                 148
 MapY                 191
-
-MapObjType           2
-ProtoId              5621
-MapX                 136
-MapY                 192
-
-MapObjType           2
-ProtoId              2356
-MapX                 137
-MapY                 193
-Scenery_ToMapPid     3631
-Scenery_ToEntire     10
-
-MapObjType           2
-ProtoId              3804
-MapX                 149
-MapY                 211
-OffsetX              12
 
 MapObjType           2
 ProtoId              2067
@@ -90868,13 +88503,6 @@ MapX                 147
 MapY                 213
 
 MapObjType           2
-ProtoId              3853
-MapX                 138
-MapY                 195
-Scenery_ToMapPid     2
-Scenery_ToEntire     10
-
-MapObjType           2
 ProtoId              3031
 MapX                 196
 MapY                 211
@@ -90889,24 +88517,11 @@ OffsetX              -8
 OffsetY              -6
 
 MapObjType           2
-ProtoId              3054
-MapX                 148
-MapY                 211
-OffsetY              -2
-
-MapObjType           2
 ProtoId              3056
 MapX                 153
 MapY                 191
 OffsetX              1
 OffsetY              -3
-
-MapObjType           2
-ProtoId              3059
-MapX                 155
-MapY                 230
-OffsetX              -2
-OffsetY              -9
 
 MapObjType           2
 ProtoId              3061
@@ -90985,16 +88600,6 @@ ProtoId              2067
 MapX                 162
 MapY                 212
 
-MapObjType           2
-ProtoId              3407
-MapX                 146
-MapY                 200
-
-MapObjType           2
-ProtoId              3408
-MapX                 146
-MapY                 202
-
 MapObjType           1
 ProtoId              2566
 MapX                 159
@@ -91013,11 +88618,6 @@ MapX                 241
 MapY                 217
 OffsetX              -10
 OffsetY              -6
-
-MapObjType           2
-ProtoId              2856
-MapX                 140
-MapY                 211
 
 MapObjType           2
 ProtoId              8173
@@ -91516,113 +89116,6 @@ MapX                 168
 MapY                 183
 
 MapObjType           2
-ProtoId              3675
-MapX                 147
-MapY                 201
-FuncName             riverdale_dogs_motel_dnri
-OffsetX              -18
-OffsetY              -42
-
-MapObjType           1
-ProtoId              514
-MapX                 140
-MapY                 204
-
-MapObjType           2
-ProtoId              16641
-MapX                 139
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 140
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 140
-MapY                 207
-
-MapObjType           2
-ProtoId              2067
-MapX                 139
-MapY                 207
-
-MapObjType           2
-ProtoId              2067
-MapX                 138
-MapY                 208
-
-MapObjType           2
-ProtoId              2067
-MapX                 139
-MapY                 209
-
-MapObjType           2
-ProtoId              2067
-MapX                 138
-MapY                 207
-
-MapObjType           2
-ProtoId              2067
-MapX                 141
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 139
-MapY                 204
-
-MapObjType           2
-ProtoId              2067
-MapX                 140
-MapY                 203
-
-MapObjType           2
-ProtoId              2067
-MapX                 140
-MapY                 204
-
-MapObjType           2
-ProtoId              2099
-MapX                 137
-MapY                 199
-OffsetX              2
-OffsetY              -11
-
-MapObjType           2
-ProtoId              2099
-MapX                 137
-MapY                 201
-OffsetX              3
-OffsetY              -8
-
-MapObjType           2
-ProtoId              2100
-MapX                 138
-MapY                 197
-
-MapObjType           2
-ProtoId              3089
-MapX                 136
-MapY                 208
-
-MapObjType           2
-ProtoId              3090
-MapX                 136
-MapY                 210
-
-MapObjType           2
-ProtoId              3066
-MapX                 136
-MapY                 196
-
-MapObjType           2
-ProtoId              3067
-MapX                 136
-MapY                 198
-
-MapObjType           2
 ProtoId              5619
 MapX                 142
 MapY                 191
@@ -91640,8 +89133,2172 @@ OffsetX              6
 OffsetY              -1
 
 MapObjType           2
+ProtoId              5621
+MapX                 136
+MapY                 192
+
+MapObjType           2
+ProtoId              5594
+MapX                 136
+MapY                 193
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 194
+
+MapObjType           2
+ProtoId              3066
+MapX                 136
+MapY                 194
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 195
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 196
+
+MapObjType           2
+ProtoId              3067
+MapX                 136
+MapY                 196
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 197
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 198
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 199
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 200
+
+MapObjType           2
+ProtoId              3407
+MapX                 136
+MapY                 200
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 201
+
+MapObjType           2
+ProtoId              5599
+MapX                 136
+MapY                 202
+
+MapObjType           2
+ProtoId              3408
+MapX                 136
+MapY                 202
+
+MapObjType           2
+ProtoId              5600
+MapX                 136
+MapY                 204
+
+MapObjType           2
+ProtoId              5598
+MapX                 136
+MapY                 205
+
+MapObjType           2
+ProtoId              5620
+MapX                 136
+MapY                 206
+
+MapObjType           2
+ProtoId              5594
+MapX                 136
+MapY                 207
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 208
+
+MapObjType           2
+ProtoId              3089
+MapX                 136
+MapY                 208
+
+MapObjType           2
+ProtoId              5598
+MapX                 136
+MapY                 209
+
+MapObjType           2
+ProtoId              5595
+MapX                 136
+MapY                 210
+
+MapObjType           2
+ProtoId              2280
+MapX                 136
+MapY                 210
+
+MapObjType           2
+ProtoId              3090
+MapX                 136
+MapY                 210
+
+MapObjType           2
+ProtoId              5610
+MapX                 136
+MapY                 211
+
+MapObjType           2
+ProtoId              5591
+MapX                 137
+MapY                 211
+
+MapObjType           2
+ProtoId              5619
+MapX                 138
+MapY                 211
+
+MapObjType           2
+ProtoId              5476
+MapX                 139
+MapY                 201
+
+MapObjType           2
+ProtoId              22565
+MapX                 139
+MapY                 210
+Scenery_ToMapPid     3631
+Scenery_ToEntire     10
+
+MapObjType           2
+ProtoId              5590
+MapX                 139
+MapY                 211
+
+MapObjType           2
+ProtoId              5473
+MapX                 43
+MapY                 225
+
+MapObjType           2
+ProtoId              3853
+MapX                 140
+MapY                 207
+Scenery_ToMapPid     2
+Scenery_ToEntire     10
+
+MapObjType           2
+ProtoId              5586
+MapX                 140
+MapY                 211
+
+MapObjType           2
+ProtoId              2856
+MapX                 140
+MapY                 211
+
+MapObjType           2
+ProtoId              5472
+MapX                 141
+MapY                 201
+
+MapObjType           2
+ProtoId              5588
+MapX                 141
+MapY                 211
+
+MapObjType           2
+ProtoId              5467
+MapX                 142
+MapY                 193
+
+MapObjType           2
+ProtoId              5468
+MapX                 142
+MapY                 194
+
+MapObjType           2
+ProtoId              5469
+MapX                 45
+MapY                 219
+
+MapObjType           2
+ProtoId              5470
+MapX                 142
+MapY                 196
+
+MapObjType           2
+ProtoId              5469
+MapX                 45
+MapY                 221
+
+MapObjType           2
+ProtoId              5470
+MapX                 142
+MapY                 198
+
+MapObjType           2
+ProtoId              5469
+MapX                 45
+MapY                 223
+
+MapObjType           2
+ProtoId              5471
+MapX                 142
+MapY                 200
+
+MapObjType           2
+ProtoId              5619
+MapX                 142
+MapY                 211
+
+MapObjType           2
+ProtoId              5591
+MapX                 143
+MapY                 211
+
+MapObjType           2
+ProtoId              4916
+MapX                 144
+MapY                 194
+
+MapObjType           2
+ProtoId              5587
+MapX                 144
+MapY                 211
+
+MapObjType           2
+ProtoId              5590
+MapX                 145
+MapY                 211
+
+MapObjType           2
+ProtoId              8063
+MapX                 146
+MapY                 192
+
+MapObjType           2
+ProtoId              5589
+MapX                 146
+MapY                 211
+
+MapObjType           2
+ProtoId              5590
+MapX                 147
+MapY                 211
+
+MapObjType           2
+ProtoId              8064
+MapX                 148
+MapY                 192
+
+MapObjType           2
+ProtoId              5589
+MapX                 148
+MapY                 211
+
+MapObjType           2
+ProtoId              3054
+MapX                 148
+MapY                 211
+OffsetY              -2
+
+MapObjType           2
+ProtoId              5591
+MapX                 149
+MapY                 211
+
+MapObjType           2
+ProtoId              3804
+MapX                 149
+MapY                 211
+OffsetX              12
+
+MapObjType           2
+ProtoId              8063
+MapX                 150
+MapY                 192
+
+MapObjType           2
+ProtoId              23152
+MapX                 150
+MapY                 194
+
+MapObjType           2
+ProtoId              5587
+MapX                 150
+MapY                 211
+
+MapObjType           2
+ProtoId              5590
+MapX                 151
+MapY                 211
+
+MapObjType           2
+ProtoId              5589
+MapX                 152
+MapY                 211
+
+MapObjType           2
+ProtoId              8062
+MapX                 153
+MapY                 192
+
+MapObjType           2
+ProtoId              5588
+MapX                 153
+MapY                 211
+
+MapObjType           2
+ProtoId              5589
+MapX                 154
+MapY                 211
+
+MapObjType           2
+ProtoId              5591
+MapX                 155
+MapY                 211
+
+MapObjType           2
+ProtoId              5619
+MapX                 156
+MapY                 211
+
+MapObjType           2
+ProtoId              3806
+MapX                 157
+MapY                 192
+
+MapObjType           2
+ProtoId              5590
+MapX                 157
+MapY                 211
+
+MapObjType           2
+ProtoId              5586
+MapX                 158
+MapY                 211
+
+MapObjType           1
+ProtoId              2003
+MapX                 159
+MapY                 193
+
+MapObjType           2
+ProtoId              5588
+MapX                 159
+MapY                 211
+
+MapObjType           2
+ProtoId              5589
+MapX                 146
+MapY                 191
+
+MapObjType           2
+ProtoId              2092
+MapX                 108
+MapY                 207
+
+MapObjType           2
+ProtoId              2067
+MapX                 108
+MapY                 208
+
+MapObjType           2
+ProtoId              2279
+MapX                 108
+MapY                 217
+
+MapObjType           2
+ProtoId              5622
+MapX                 109
+MapY                 208
+
+MapObjType           2
+ProtoId              5622
+MapX                 109
+MapY                 209
+
+MapObjType           2
+ProtoId              5622
+MapX                 109
+MapY                 210
+
+MapObjType           2
+ProtoId              2067
+MapX                 109
+MapY                 211
+
+MapObjType           2
+ProtoId              2103
+MapX                 109
+MapY                 226
+
+MapObjType           1
+ProtoId              2319
+MapX                 109
+MapY                 229
+
+MapObjType           2
+ProtoId              5622
+MapX                 110
+MapY                 208
+
+MapObjType           2
+ProtoId              2090
+MapX                 110
+MapY                 209
+
+MapObjType           2
+ProtoId              5622
+MapX                 110
+MapY                 210
+
+MapObjType           2
+ProtoId              2067
+MapX                 110
+MapY                 211
+
+MapObjType           2
+ProtoId              5622
+MapX                 111
+MapY                 208
+
+MapObjType           2
+ProtoId              5622
+MapX                 111
+MapY                 209
+
+MapObjType           2
+ProtoId              2067
+MapX                 111
+MapY                 210
+
+MapObjType           2
+ProtoId              2067
+MapX                 111
+MapY                 211
+
+MapObjType           2
+ProtoId              2103
+MapX                 111
+MapY                 217
+
+MapObjType           1
+ProtoId              2946
+MapX                 111
+MapY                 218
+
+MapObjType           2
+ProtoId              2103
+MapX                 111
+MapY                 229
+
+MapObjType           2
+ProtoId              5593
+MapX                 112
+MapY                 207
+
+MapObjType           2
+ProtoId              5621
+MapX                 112
+MapY                 208
+
+MapObjType           2
+ProtoId              5594
+MapX                 112
+MapY                 209
+
+MapObjType           2
+ProtoId              5595
+MapX                 112
+MapY                 210
+
+MapObjType           2
+ProtoId              5598
+MapX                 112
+MapY                 211
+
+MapObjType           2
+ProtoId              5594
+MapX                 112
+MapY                 212
+
+MapObjType           2
+ProtoId              5595
+MapX                 112
+MapY                 213
+
+MapObjType           2
+ProtoId              5598
+MapX                 112
+MapY                 214
+
+MapObjType           2
+ProtoId              5595
+MapX                 112
+MapY                 215
+
+MapObjType           2
+ProtoId              5598
+MapX                 112
+MapY                 216
+
+MapObjType           2
+ProtoId              5560
+MapX                 112
+MapY                 217
+
+MapObjType           2
+ProtoId              5590
+MapX                 113
+MapY                 207
+
+MapObjType           2
+ProtoId              5552
+MapX                 113
+MapY                 217
+
+MapObjType           2
+ProtoId              5586
+MapX                 114
+MapY                 207
+
+MapObjType           2
+ProtoId              5551
+MapX                 114
+MapY                 217
+
+MapObjType           2
+ProtoId              5588
+MapX                 115
+MapY                 207
+
+MapObjType           2
+ProtoId              5661
+MapX                 115
+MapY                 217
+
+MapObjType           2
+ProtoId              5589
+MapX                 116
+MapY                 207
+
+MapObjType           2
+ProtoId              5591
+MapX                 117
+MapY                 207
+
+MapObjType           2
+ProtoId              5660
+MapX                 117
+MapY                 217
+
+MapObjType           2
+ProtoId              5587
+MapX                 118
+MapY                 207
+
+MapObjType           2
+ProtoId              5664
+MapX                 118
+MapY                 217
+
+MapObjType           2
+ProtoId              5590
+MapX                 119
+MapY                 207
+
+MapObjType           2
+ProtoId              5546
+MapX                 119
+MapY                 217
+
+MapObjType           2
+ProtoId              5587
+MapX                 120
+MapY                 207
+
+MapObjType           2
+ProtoId              5609
+MapX                 120
+MapY                 217
+
+MapObjType           2
+ProtoId              5594
+MapX                 120
+MapY                 219
+
+MapObjType           2
+ProtoId              5595
+MapX                 120
+MapY                 220
+
+MapObjType           2
+ProtoId              5598
+MapX                 120
+MapY                 221
+
+MapObjType           2
+ProtoId              5595
+MapX                 120
+MapY                 222
+
+MapObjType           2
+ProtoId              5598
+MapX                 120
+MapY                 223
+
+MapObjType           2
+ProtoId              5595
+MapX                 120
+MapY                 224
+
+MapObjType           2
+ProtoId              5560
+MapX                 120
+MapY                 225
+
+MapObjType           2
+ProtoId              5590
+MapX                 121
+MapY                 207
+
+MapObjType           2
+ProtoId              5590
+MapX                 121
+MapY                 217
+
+MapObjType           2
+ProtoId              5552
+MapX                 121
+MapY                 225
+
+MapObjType           2
+ProtoId              5586
+MapX                 122
+MapY                 207
+
+MapObjType           2
+ProtoId              5587
+MapX                 122
+MapY                 217
+
+MapObjType           2
+ProtoId              5664
+MapX                 122
+MapY                 225
+
+MapObjType           2
+ProtoId              23309
+MapX                 122
+MapY                 225
+FuncName             riverdale_dogs_motel_dn
+
+MapObjType           2
+ProtoId              5621
+MapX                 122
+MapY                 225
+
+MapObjType           2
+ProtoId              5588
+MapX                 123
+MapY                 207
+
+MapObjType           2
+ProtoId              5590
+MapX                 123
+MapY                 217
+
+MapObjType           2
+ProtoId              5552
+MapX                 123
+MapY                 225
+
+MapObjType           2
+ProtoId              5589
+MapX                 124
+MapY                 207
+
+MapObjType           2
+ProtoId              4725
+MapX                 124
+MapY                 207
+
+MapObjType           2
+ProtoId              5587
+MapX                 124
+MapY                 217
+
+MapObjType           2
+ProtoId              5551
+MapX                 124
+MapY                 225
+
+MapObjType           2
+ProtoId              5591
+MapX                 125
+MapY                 207
+
+MapObjType           2
+ProtoId              5583
+MapX                 125
+MapY                 217
+
+MapObjType           2
+ProtoId              5546
+MapX                 125
+MapY                 225
+
+MapObjType           2
+ProtoId              3037
+MapX                 125
+MapY                 225
+
+MapObjType           2
+ProtoId              5587
+MapX                 126
+MapY                 207
+
+MapObjType           2
+ProtoId              5664
+MapX                 126
+MapY                 225
+
+MapObjType           2
+ProtoId              3155
+MapX                 126
+MapY                 225
+
+MapObjType           2
+ProtoId              23311
+MapX                 126
+MapY                 225
+
+MapObjType           2
+ProtoId              5621
+MapX                 126
+MapY                 225
+
+MapObjType           2
+ProtoId              5590
+MapX                 127
+MapY                 207
+
+MapObjType           2
+ProtoId              5590
+MapX                 127
+MapY                 217
+
+MapObjType           2
+ProtoId              5582
+MapX                 127
+MapY                 218
+
+MapObjType           2
+ProtoId              2067
+MapX                 127
+MapY                 224
+
+MapObjType           1
+ProtoId              180
+MapX                 127
+MapY                 224
+
+MapObjType           2
+ProtoId              5544
+MapX                 127
+MapY                 225
+
+MapObjType           2
+ProtoId              5621
+MapX                 128
+MapY                 207
+
+MapObjType           2
+ProtoId              5561
+MapX                 128
+MapY                 208
+
+MapObjType           2
+ProtoId              5553
+MapX                 128
+MapY                 209
+
+MapObjType           2
+ProtoId              5665
+MapX                 128
+MapY                 210
+FuncName             riverdale_dogs_motel_dnri
+
+MapObjType           2
+ProtoId              23310
+MapX                 128
+MapY                 210
+
+MapObjType           2
+ProtoId              5621
+MapX                 128
+MapY                 210
+
+MapObjType           2
+ProtoId              5555
+MapX                 128
+MapY                 211
+
+MapObjType           2
+ProtoId              5553
+MapX                 128
+MapY                 212
+
+MapObjType           2
+ProtoId              5554
+MapX                 128
+MapY                 213
+
+MapObjType           2
+ProtoId              5555
+MapX                 128
+MapY                 214
+
+MapObjType           2
+ProtoId              5555
+MapX                 128
+MapY                 215
+
+MapObjType           2
+ProtoId              5553
+MapX                 128
+MapY                 216
+
+MapObjType           2
+ProtoId              5657
+MapX                 128
+MapY                 217
+
+MapObjType           2
+ProtoId              5621
+MapX                 128
+MapY                 218
+
+MapObjType           2
+ProtoId              5555
+MapX                 128
+MapY                 219
+
+MapObjType           2
+ProtoId              5555
+MapX                 128
+MapY                 220
+
+MapObjType           2
+ProtoId              5665
+MapX                 128
+MapY                 221
+FuncName             riverdale_dogs_motel_dnri
+
+MapObjType           2
+ProtoId              23310
+MapX                 128
+MapY                 221
+
+MapObjType           2
+ProtoId              5621
+MapX                 128
+MapY                 221
+
+MapObjType           2
+ProtoId              5553
+MapX                 128
+MapY                 222
+
+MapObjType           2
+ProtoId              5553
+MapX                 128
+MapY                 223
+
+MapObjType           2
+ProtoId              5554
+MapX                 128
+MapY                 224
+
+MapObjType           2
+ProtoId              5543
+MapX                 128
+MapY                 225
+
+MapObjType           2
+ProtoId              2313
+MapX                 128
+MapY                 228
+
+MapObjType           2
+ProtoId              2103
+MapX                 129
+MapY                 202
+
+MapObjType           2
+ProtoId              2273
+MapX                 129
+MapY                 212
+
+MapObjType           2
+ProtoId              2103
+MapX                 130
+MapY                 220
+
+MapObjType           2
+ProtoId              2103
+MapX                 131
+MapY                 210
+
+MapObjType           2
+ProtoId              2103
+MapX                 141
+MapY                 214
+
+MapObjType           2
+ProtoId              2434
+MapX                 141
+MapY                 225
+
+MapObjType           2
+ProtoId              5593
+MapX                 142
+MapY                 215
+
+MapObjType           2
+ProtoId              5621
+MapX                 142
+MapY                 215
+
+MapObjType           2
+ProtoId              5621
+MapX                 142
+MapY                 216
+
+MapObjType           2
+ProtoId              5594
+MapX                 142
+MapY                 217
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 218
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 219
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 220
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 221
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 222
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 223
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 224
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 225
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 226
+
+MapObjType           2
+ProtoId              5598
+MapX                 142
+MapY                 227
+
+MapObjType           2
+ProtoId              5595
+MapX                 142
+MapY                 228
+
+MapObjType           2
+ProtoId              5610
+MapX                 142
+MapY                 229
+
+MapObjType           2
+ProtoId              5590
+MapX                 143
+MapY                 215
+
+MapObjType           2
+ProtoId              5590
+MapX                 143
+MapY                 229
+
+MapObjType           2
+ProtoId              5619
+MapX                 144
+MapY                 215
+
+MapObjType           2
+ProtoId              5619
+MapX                 144
+MapY                 229
+
+MapObjType           2
+ProtoId              5590
+MapX                 145
+MapY                 215
+
+MapObjType           2
+ProtoId              5590
+MapX                 145
+MapY                 229
+
+MapObjType           2
+ProtoId              5589
+MapX                 146
+MapY                 215
+
+MapObjType           2
+ProtoId              5589
+MapX                 146
+MapY                 229
+
+MapObjType           2
+ProtoId              5591
+MapX                 147
+MapY                 215
+
+MapObjType           2
+ProtoId              5591
+MapX                 147
+MapY                 229
+
+MapObjType           2
+ProtoId              5589
+MapX                 148
+MapY                 215
+
+MapObjType           2
+ProtoId              5589
+MapX                 148
+MapY                 229
+
+MapObjType           2
+ProtoId              5590
+MapX                 149
+MapY                 215
+
+MapObjType           2
+ProtoId              5591
+MapX                 149
+MapY                 229
+
+MapObjType           2
+ProtoId              2067
+MapX                 149
+MapY                 230
+
+MapObjType           2
+ProtoId              5589
+MapX                 150
+MapY                 215
+
+MapObjType           2
+ProtoId              5592
+MapX                 150
+MapY                 229
+
+MapObjType           2
+ProtoId              5622
+MapX                 150
+MapY                 230
+
+MapObjType           2
+ProtoId              5590
+MapX                 151
+MapY                 215
+
+MapObjType           2
+ProtoId              5590
+MapX                 151
+MapY                 229
+
+MapObjType           2
+ProtoId              5590
+MapX                 151
+MapY                 229
+
+MapObjType           2
+ProtoId              2081
+MapX                 151
+MapY                 230
+
+MapObjType           2
+ProtoId              5622
+MapX                 151
+MapY                 230
+
+MapObjType           2
+ProtoId              5619
+MapX                 152
+MapY                 215
+
+MapObjType           2
+ProtoId              5619
+MapX                 152
+MapY                 229
+
+MapObjType           2
+ProtoId              5622
+MapX                 152
+MapY                 230
+
+MapObjType           2
+ProtoId              5588
+MapX                 153
+MapY                 215
+
+MapObjType           2
+ProtoId              5588
+MapX                 153
+MapY                 229
+
+MapObjType           2
+ProtoId              2067
+MapX                 153
+MapY                 230
+
+MapObjType           2
+ProtoId              5589
+MapX                 154
+MapY                 215
+
+MapObjType           2
+ProtoId              3529
+MapX                 154
+MapY                 215
+
+MapObjType           2
+ProtoId              5589
+MapX                 154
+MapY                 229
+
+MapObjType           2
+ProtoId              5591
+MapX                 155
+MapY                 215
+
+MapObjType           2
+ProtoId              5591
+MapX                 155
+MapY                 229
+
+MapObjType           2
+ProtoId              3059
+MapX                 155
+MapY                 230
+OffsetX              -2
+OffsetY              -9
+
+MapObjType           2
+ProtoId              5619
+MapX                 156
+MapY                 215
+
+MapObjType           2
+ProtoId              5619
+MapX                 156
+MapY                 229
+
+MapObjType           2
+ProtoId              5590
+MapX                 157
+MapY                 215
+
+MapObjType           2
+ProtoId              5590
+MapX                 157
+MapY                 229
+
+MapObjType           2
+ProtoId              5586
+MapX                 158
+MapY                 215
+
+MapObjType           2
+ProtoId              5586
+MapX                 158
+MapY                 229
+
+MapObjType           2
+ProtoId              5588
+MapX                 159
+MapY                 215
+
+MapObjType           2
+ProtoId              5588
+MapX                 159
+MapY                 229
+
+MapObjType           2
+ProtoId              5612
+MapX                 160
+MapY                 215
+
+MapObjType           2
+ProtoId              5621
+MapX                 160
+MapY                 215
+
+MapObjType           2
+ProtoId              5621
+MapX                 160
+MapY                 216
+
+MapObjType           2
+ProtoId              5599
+MapX                 160
+MapY                 217
+
+MapObjType           1
+ProtoId              2959
+MapX                 160
+MapY                 218
+
+MapObjType           2
+ProtoId              5600
+MapX                 160
+MapY                 219
+
+MapObjType           2
+ProtoId              5598
+MapX                 160
+MapY                 220
+
+MapObjType           2
+ProtoId              5620
+MapX                 160
+MapY                 221
+
+MapObjType           2
+ProtoId              5594
+MapX                 160
+MapY                 222
+
+MapObjType           2
+ProtoId              5595
+MapX                 160
+MapY                 223
+
+MapObjType           2
+ProtoId              5598
+MapX                 160
+MapY                 224
+
+MapObjType           2
+ProtoId              5595
+MapX                 160
+MapY                 225
+
+MapObjType           2
+ProtoId              5620
+MapX                 160
+MapY                 226
+
+MapObjType           2
+ProtoId              5594
+MapX                 160
+MapY                 227
+
+MapObjType           2
+ProtoId              5595
+MapX                 160
+MapY                 228
+
+MapObjType           2
+ProtoId              5621
+MapX                 160
+MapY                 228
+
+MapObjType           2
+ProtoId              5615
+MapX                 160
+MapY                 229
+
+MapObjType           2
+ProtoId              2007
+MapX                 160
+MapY                 229
+
+MapObjType           2
+ProtoId              5621
+MapX                 160
+MapY                 229
+
+MapObjType           2
+ProtoId              2067
+MapX                 160
+MapY                 230
+
+MapObjType           2
+ProtoId              5351
+MapX                 161
+MapY                 214
+
+MapObjType           2
+ProtoId              4599
+MapX                 161
+MapY                 226
+
+MapObjType           2
+ProtoId              2067
+MapX                 161
+MapY                 227
+
+MapObjType           2
+ProtoId              3604
+MapX                 161
+MapY                 228
+
+MapObjType           2
+ProtoId              2067
+MapX                 161
+MapY                 229
+
+MapObjType           2
+ProtoId              2105
+MapX                 162
+MapY                 214
+
+MapObjType           2
+ProtoId              5622
+MapX                 162
+MapY                 215
+
+MapObjType           2
+ProtoId              5349
+MapX                 163
+MapY                 214
+
+MapObjType           2
+ProtoId              5622
+MapX                 163
+MapY                 215
+
+MapObjType           2
+ProtoId              2067
+MapX                 163
+MapY                 216
+
+MapObjType           2
+ProtoId              2271
+MapX                 147
+MapY                 231
+
+MapObjType           2
+ProtoId              5622
+MapX                 148
+MapY                 231
+
+MapObjType           2
+ProtoId              5622
+MapX                 147
+MapY                 231
+
+MapObjType           2
+ProtoId              5100
+MapX                 202
+MapY                 211
+
+MapObjType           2
+ProtoId              5099
+MapX                 203
+MapY                 211
+
+MapObjType           2
+ProtoId              5593
+MapX                 204
+MapY                 189
+
+MapObjType           2
+ProtoId              5621
+MapX                 204
+MapY                 190
+
+MapObjType           2
+ProtoId              5594
+MapX                 204
+MapY                 191
+
+MapObjType           2
+ProtoId              5598
+MapX                 204
+MapY                 192
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 193
+
+MapObjType           2
+ProtoId              5598
+MapX                 204
+MapY                 194
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 195
+
+MapObjType           2
+ProtoId              5598
+MapX                 204
+MapY                 196
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 197
+
+MapObjType           2
+ProtoId              5598
+MapX                 204
+MapY                 198
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 199
+
+MapObjType           2
+ProtoId              5598
+MapX                 204
+MapY                 200
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 201
+
+MapObjType           2
+ProtoId              5595
+MapX                 204
+MapY                 202
+
+MapObjType           2
+ProtoId              5613
+MapX                 204
+MapY                 203
+
+MapObjType           2
+ProtoId              5621
+MapX                 204
+MapY                 204
+
+MapObjType           2
+ProtoId              5633
+MapX                 204
+MapY                 205
+
+MapObjType           2
+ProtoId              5098
+MapX                 204
+MapY                 211
+
+MapObjType           2
+ProtoId              5591
+MapX                 205
+MapY                 189
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 192
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 193
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 194
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 195
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 196
+
+MapObjType           1
+ProtoId              189
+MapX                 205
+MapY                 197
+
+MapObjType           2
+ProtoId              5590
+MapX                 205
+MapY                 203
+
+MapObjType           2
+ProtoId              2067
+MapX                 205
+MapY                 204
+
+MapObjType           2
+ProtoId              5097
+MapX                 205
+MapY                 211
+
+MapObjType           2
 ProtoId              5589
 MapX                 206
 MapY                 189
+
+MapObjType           2
+ProtoId              5592
+MapX                 206
+MapY                 203
+
+MapObjType           2
+ProtoId              5963
+MapX                 206
+MapY                 211
+
+MapObjType           2
+ProtoId              5590
+MapX                 207
+MapY                 189
+
+MapObjType           2
+ProtoId              5583
+MapX                 207
+MapY                 203
+
+MapObjType           2
+ProtoId              5097
+MapX                 207
+MapY                 211
+
+MapObjType           2
+ProtoId              5589
+MapX                 208
+MapY                 189
+
+MapObjType           2
+ProtoId              5096
+MapX                 208
+MapY                 211
+
+MapObjType           2
+ProtoId              5591
+MapX                 209
+MapY                 189
+
+MapObjType           2
+ProtoId              5590
+MapX                 209
+MapY                 203
+
+MapObjType           2
+ProtoId              5582
+MapX                 209
+MapY                 204
+
+MapObjType           2
+ProtoId              5136
+MapX                 209
+MapY                 211
+
+MapObjType           2
+ProtoId              5609
+MapX                 210
+MapY                 189
+
+MapObjType           2
+ProtoId              5621
+MapX                 210
+MapY                 190
+
+MapObjType           2
+ProtoId              5594
+MapX                 210
+MapY                 191
+
+MapObjType           2
+ProtoId              5595
+MapX                 210
+MapY                 192
+
+MapObjType           2
+ProtoId              5599
+MapX                 210
+MapY                 193
+
+MapObjType           2
+ProtoId              5600
+MapX                 210
+MapY                 195
+
+MapObjType           2
+ProtoId              5594
+MapX                 210
+MapY                 196
+
+MapObjType           2
+ProtoId              5595
+MapX                 210
+MapY                 197
+
+MapObjType           2
+ProtoId              5598
+MapX                 210
+MapY                 198
+
+MapObjType           2
+ProtoId              5613
+MapX                 210
+MapY                 199
+
+MapObjType           2
+ProtoId              5621
+MapX                 210
+MapY                 200
+
+MapObjType           2
+ProtoId              5595
+MapX                 210
+MapY                 201
+
+MapObjType           2
+ProtoId              5598
+MapX                 210
+MapY                 202
+
+MapObjType           2
+ProtoId              5611
+MapX                 210
+MapY                 203
+
+MapObjType           2
+ProtoId              5621
+MapX                 210
+MapY                 204
+
+MapObjType           2
+ProtoId              5594
+MapX                 210
+MapY                 205
+
+MapObjType           2
+ProtoId              5595
+MapX                 210
+MapY                 206
+
+MapObjType           2
+ProtoId              5598
+MapX                 210
+MapY                 207
+
+MapObjType           2
+ProtoId              5595
+MapX                 210
+MapY                 208
+
+MapObjType           2
+ProtoId              5633
+MapX                 210
+MapY                 209
+
+MapObjType           2
+ProtoId              5133
+MapX                 210
+MapY                 209
+
+MapObjType           2
+ProtoId              5134
+MapX                 210
+MapY                 210
+
+MapObjType           2
+ProtoId              5135
+MapX                 210
+MapY                 211
+
+MapObjType           2
+ProtoId              5590
+MapX                 211
+MapY                 189
+
+MapObjType           2
+ProtoId              5590
+MapX                 211
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 211
+MapY                 200
+
+MapObjType           2
+ProtoId              2067
+MapX                 211
+MapY                 201
+
+MapObjType           2
+ProtoId              5622
+MapX                 211
+MapY                 202
+
+MapObjType           2
+ProtoId              5622
+MapX                 211
+MapY                 203
+
+MapObjType           2
+ProtoId              5622
+MapX                 211
+MapY                 204
+
+MapObjType           2
+ProtoId              2067
+MapX                 211
+MapY                 206
+
+MapObjType           2
+ProtoId              5589
+MapX                 212
+MapY                 189
+
+MapObjType           2
+ProtoId              5587
+MapX                 212
+MapY                 199
+
+MapObjType           2
+ProtoId              5622
+MapX                 212
+MapY                 202
+
+MapObjType           2
+ProtoId              5622
+MapX                 212
+MapY                 204
+
+MapObjType           2
+ProtoId              2067
+MapX                 212
+MapY                 205
+
+MapObjType           2
+ProtoId              5590
+MapX                 213
+MapY                 189
+
+MapObjType           2
+ProtoId              5590
+MapX                 213
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 213
+MapY                 200
+
+MapObjType           2
+ProtoId              5622
+MapX                 213
+MapY                 203
+
+MapObjType           2
+ProtoId              2067
+MapX                 213
+MapY                 204
+
+MapObjType           2
+ProtoId              2067
+MapX                 213
+MapY                 205
+
+MapObjType           2
+ProtoId              5644
+MapX                 214
+MapY                 189
+
+MapObjType           2
+ProtoId              5589
+MapX                 214
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 214
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 214
+MapY                 203
+
+MapObjType           2
+ProtoId              5624
+MapX                 214
+MapY                 213
+
+MapObjType           2
+ProtoId              5590
+MapX                 215
+MapY                 189
+
+MapObjType           2
+ProtoId              5590
+MapX                 215
+MapY                 199
+
+MapObjType           2
+ProtoId              3853
+MapX                 215
+MapY                 206
+Scenery_ToEntire     201
+
+MapObjType           2
+ProtoId              5505
+MapX                 215
+MapY                 213
+
+MapObjType           2
+ProtoId              5589
+MapX                 216
+MapY                 189
+
+MapObjType           2
+ProtoId              5589
+MapX                 216
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 216
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 216
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 216
+MapY                 204
+
+MapObjType           2
+ProtoId              5504
+MapX                 216
+MapY                 213
+
+MapObjType           2
+ProtoId              5590
+MapX                 217
+MapY                 189
+
+MapObjType           2
+ProtoId              5591
+MapX                 217
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 217
+MapY                 204
+
+MapObjType           2
+ProtoId              5502
+MapX                 217
+MapY                 213
+
+MapObjType           2
+ProtoId              5589
+MapX                 218
+MapY                 189
+
+MapObjType           2
+ProtoId              5592
+MapX                 218
+MapY                 199
+
+MapObjType           2
+ProtoId              2067
+MapX                 218
+MapY                 199
+
+MapObjType           2
+ProtoId              5499
+MapX                 218
+MapY                 213
+
+MapObjType           2
+ProtoId              5591
+MapX                 219
+MapY                 189
+
+MapObjType           2
+ProtoId              5621
+MapX                 219
+MapY                 190
+
+MapObjType           2
+ProtoId              5591
+MapX                 219
+MapY                 199
+
+MapObjType           2
+ProtoId              5498
+MapX                 219
+MapY                 213
+
+MapObjType           2
+ProtoId              5612
+MapX                 220
+MapY                 189
+
+MapObjType           2
+ProtoId              2067
+MapX                 220
+MapY                 190
+
+MapObjType           2
+ProtoId              2067
+MapX                 220
+MapY                 190
+
+MapObjType           2
+ProtoId              5598
+MapX                 220
+MapY                 191
+
+MapObjType           2
+ProtoId              5620
+MapX                 220
+MapY                 192
+FuncName             riverdale_dogs_motel_dnri
+
+MapObjType           2
+ProtoId              5598
+MapX                 220
+MapY                 193
+
+MapObjType           2
+ProtoId              5595
+MapX                 220
+MapY                 194
+
+MapObjType           2
+ProtoId              5598
+MapX                 220
+MapY                 195
+
+MapObjType           2
+ProtoId              5595
+MapX                 220
+MapY                 196
+
+MapObjType           2
+ProtoId              5620
+MapX                 220
+MapY                 197
+FuncName             riverdale_dogs_motel_dnri
+
+MapObjType           2
+ProtoId              5595
+MapX                 220
+MapY                 198
+
+MapObjType           2
+ProtoId              5615
+MapX                 220
+MapY                 199
+
+MapObjType           2
+ProtoId              5626
+MapX                 220
+MapY                 203
+
+MapObjType           2
+ProtoId              5507
+MapX                 220
+MapY                 204
+
+MapObjType           2
+ProtoId              5513
+MapX                 220
+MapY                 205
+
+MapObjType           2
+ProtoId              5512
+MapX                 220
+MapY                 206
+
+MapObjType           2
+ProtoId              5511
+MapX                 220
+MapY                 207
+
+MapObjType           2
+ProtoId              5507
+MapX                 220
+MapY                 208
+
+MapObjType           2
+ProtoId              5513
+MapX                 220
+MapY                 209
+
+MapObjType           2
+ProtoId              5512
+MapX                 220
+MapY                 210
+
+MapObjType           2
+ProtoId              5511
+MapX                 220
+MapY                 211
+
+MapObjType           2
+ProtoId              5507
+MapX                 220
+MapY                 212
+
+MapObjType           2
+ProtoId              5497
+MapX                 220
+MapY                 213
+
+MapObjType           2
+ProtoId              2078
+MapX                 212
+MapY                 203
+
+MapObjType           2
+ProtoId              3200
+MapX                 215
+MapY                 195
+LightColor           33333333
+LightDistance        10
+LightIntensity       50
+
+MapObjType           2
+ProtoId              3604
+MapX                 219
+MapY                 198
+
+MapObjType           2
+ProtoId              3604
+MapX                 219
+MapY                 195
+
+MapObjType           2
+ProtoId              3604
+MapX                 219
+MapY                 192
+
+MapObjType           2
+ProtoId              3603
+MapX                 217
+MapY                 190
+OffsetX              27
+OffsetY              -7
+
+MapObjType           2
+ProtoId              3603
+MapX                 213
+MapY                 190
+
+MapObjType           2
+ProtoId              3604
+MapX                 211
+MapY                 192
+
+MapObjType           2
+ProtoId              3604
+MapX                 211
+MapY                 197
+
+MapObjType           2
+ProtoId              23541
+MapX                 216
+MapY                 196
+
+MapObjType           2
+ProtoId              2275
+MapX                 212
+MapY                 200
+
+MapObjType           2
+ProtoId              5621
+MapX                 220
+MapY                 190
+
+MapObjType           2
+ProtoId              2067
+MapX                 202
+MapY                 215
+
+MapObjType           2
+ProtoId              5622
+MapX                 217
+MapY                 188
+
+MapObjType           2
+ProtoId              5622
+MapX                 218
+MapY                 188
+
+MapObjType           2
+ProtoId              2093
+MapX                 216
+MapY                 203
+
+MapObjType           2
+ProtoId              5621
+MapX                 120
+MapY                 218
 
 
