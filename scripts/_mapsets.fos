@@ -33,7 +33,7 @@ uint[] mPIDs( uint type )
 		case( MAP_TRIBES ):			{ uint[] result; return result; }
 		case( MAP_LOOT_ZONES ):    	{ return merge( mPIDs( MAP_PLANTS ), mPIDs( ALL_CAVES ) ); }
 		case( MAP_PLANTS ):			{ uint[] result = { 3610, 3620, 3640, 3650, 3660, 3670, 3680, 3690 }; return result; }
-		case( TECH_MAP ):			{ uint[] result = { 2, 3, 4, 92 }; return result; }
+		case( TECH_MAP ):			{ uint[] result = { 92, 93, 95, 300 }; return result; }
 		case( ALL_CAVES ): 			{ uint[] result = { 3641 }; return result; }
 		case( ALL_DN ):  			{ return SetMapLevel( MAP_DOWN ); }
 		case( ALL_UP ):  			{ return SetMapLevel( MAP_UP ); }
