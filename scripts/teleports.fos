@@ -29,7 +29,7 @@ void InitTeleports()
 	//Базовые:
 		.add( "Активация",			LOCATION_START,		0, 337, 184 )
 		.add( "Сон",				LOCATION_DREAM,		0, 296, 178 )
-		.add( "Рай",				LOCATION_DREAM,		0, 129, 77 )
+		.add( "Рай",				LOCATION_HEAVEN,	0, 129, 77 )
 		.add( "Ад",					LOCATION_HELL,		0, 229, 177 )
 
 	// FOnline Legacy

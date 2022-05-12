@@ -8,11 +8,11 @@
 //other
 #define LOCATION_START				( 92 )
 	#define MAP_UTILITY_START	( LOCATION_START )
-#define LOCATION_DREAM				( 2 )
+#define LOCATION_DREAM				( 93 )
 	#define MAP_DREAM			( LOCATION_DREAM )
-#define LOCATION_HEAVEN				( 3 )
+#define LOCATION_HEAVEN				( 95 )
 	#define MAP_HEAVEN			( LOCATION_HEAVEN )
-#define LOCATION_HELL				( 4 )
+#define LOCATION_HELL				( 300 )
 	#define MAP_HELL			( LOCATION_HELL )
 
 #define LOCATION_MODOC				( 378 )
